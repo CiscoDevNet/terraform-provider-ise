@@ -1,0 +1,33 @@
+---
+name: Endpoint Identity Group
+rest_endpoint: /ers/config/endpointgroup/
+doc_category: Administration
+attributes:
+  - model_name: name
+    data_path: [EndPointGroup]
+    tf_name: name
+    type: String
+    mandatory: true
+    description: The name of the endpoint identity group
+    example: Group1
+  - model_name: description
+    data_path: [EndPointGroup]
+    tf_name: description
+    type: String
+    description: Description
+    example: My endpoint identity group
+  - model_name: systemDefined
+    data_path: [EndPointGroup]
+    tf_name: system_defined
+    type: Bool
+    default_value: false
+    description: System defined endpoint identity group
+    example: false
+  - model_name: parentId
+    data_path: [EndPointGroup]
+    tf_name: parent_endpoint_identity_group_id
+    type: String
+    description: Parent endpoint identity group ID
+    example: 76d24097-41c4-4558-a4d0-a8c07ac08470
+    exclude_test: true
+  

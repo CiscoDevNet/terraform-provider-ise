@@ -1,0 +1,28 @@
+---
+name: User Identity Group
+rest_endpoint: /ers/config/identitygroup/
+doc_category: Administration
+skip_minimum_test: true
+test_tags: [ISE32]
+attributes:
+  - model_name: name
+    data_path: [IdentityGroup]
+    tf_name: name
+    type: String
+    mandatory: true
+    description: The name of the user identity group
+    example: Group1
+  - model_name: description
+    data_path: [IdentityGroup]
+    tf_name: description
+    type: String
+    description: Description
+    example: My endpoint identity group
+  - model_name: parentId
+    data_path: [IdentityGroup]
+    tf_name: parent_user_identity_group_id
+    type: String
+    description: Parent user identity group ID
+    example: 76d24097-41c4-4558-a4d0-a8c07ac08470
+    exclude_test: true
+  

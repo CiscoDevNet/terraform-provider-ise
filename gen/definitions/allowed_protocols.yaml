@@ -1,0 +1,516 @@
+---
+name: Allowed Protocols
+rest_endpoint: /ers/config/allowedprotocols/
+res_description: This resource can manage an allowed protocols policy element.
+ds_description: This data source can read an allowed protocols policy element.
+skip_minimum_test: true
+doc_category: Policy
+attributes:
+  - model_name: name
+    data_path: [AllowedProtocols]
+    tf_name: name
+    type: String
+    mandatory: true
+    description: The name of the allowed protocols
+    example: Protocols1
+  - model_name: description
+    data_path: [AllowedProtocols]
+    tf_name: description
+    type: String
+    description: Description
+    example: My allowed protocols
+  - model_name: processHostLookup
+    data_path: [AllowedProtocols]
+    tf_name: process_host_lookup
+    type: Bool
+    mandatory: true
+    description: Process host lookup
+    example: true
+  - model_name: allowPapAscii
+    data_path: [AllowedProtocols]
+    tf_name: allow_pap_ascii
+    type: Bool
+    mandatory: true
+    description: Allow PAP ASCII
+    example: true
+  - model_name: allowChap
+    data_path: [AllowedProtocols]
+    tf_name: allow_chap
+    type: Bool
+    mandatory: true
+    description: Allow CHAP
+    example: true
+  - model_name: allowMsChapV1
+    data_path: [AllowedProtocols]
+    tf_name: allow_ms_chap_v1
+    type: Bool
+    mandatory: true
+    description: Allow MS CHAP v1
+    example: true
+  - model_name: allowMsChapV2
+    data_path: [AllowedProtocols]
+    tf_name: allow_ms_chap_v2
+    type: Bool
+    mandatory: true
+    description: Allow MS CHAP v2
+    example: true
+  - model_name: allowEapMd5
+    data_path: [AllowedProtocols]
+    tf_name: allow_eap_md5
+    type: Bool
+    mandatory: true
+    description: Allow EAP MD5
+    example: true
+  - model_name: allowLeap
+    data_path: [AllowedProtocols]
+    tf_name: allow_leap
+    type: Bool
+    mandatory: true
+    description: Allow LEAP
+    example: true
+  - model_name: allowEapTls
+    data_path: [AllowedProtocols]
+    tf_name: allow_eap_tls
+    type: Bool
+    mandatory: true
+    description: Allow EAP TLS
+    example: true
+  - model_name: allowEapTtls
+    data_path: [AllowedProtocols]
+    tf_name: allow_eap_ttls
+    type: Bool
+    mandatory: true
+    description: Allow EAP TTLS
+    example: true
+  - model_name: allowEapFast
+    data_path: [AllowedProtocols]
+    tf_name: allow_eap_fast
+    type: Bool
+    mandatory: true
+    description: Allow EAP Fast
+    example: true
+  - model_name: allowPeap
+    data_path: [AllowedProtocols]
+    tf_name: allow_peap
+    type: Bool
+    mandatory: true
+    description: Allow PEAP
+    example: true
+  - model_name: allowTeap
+    data_path: [AllowedProtocols]
+    tf_name: allow_teap
+    type: Bool
+    mandatory: true
+    description: Allow TEAP
+    example: true
+  - model_name: allowPreferredEapProtocol
+    data_path: [AllowedProtocols]
+    tf_name: allow_preferred_eap_protocol
+    type: Bool
+    mandatory: true
+    description: Allow preferred EAP protocol
+    example: true
+  - model_name: preferredEapProtocol
+    data_path: [AllowedProtocols]
+    tf_name: preferred_eap_protocol
+    type: String
+    enum_values: [EAP_FAST, PEAP, LEAP, EAP_MD5, EAP_TLS, EAP_TTLS, TEAP]
+    description: Preferred EAP protocol
+    example: LEAP
+  - model_name: eapTlsLBit
+    data_path: [AllowedProtocols]
+    tf_name: eap_tls_l_bit
+    type: Bool
+    mandatory: true
+    description: EAP TLS L-Bit
+    example: true
+  - model_name: allowWeakCiphersForEap
+    data_path: [AllowedProtocols]
+    tf_name: allow_weak_ciphers_for_eap
+    type: Bool
+    mandatory: true
+    description: Allow weak ciphers for EAP
+    example: true
+  - model_name: requireMessageAuth
+    data_path: [AllowedProtocols]
+    tf_name: require_message_auth
+    type: Bool
+    mandatory: true
+    description: Require message authentication
+    example: true
+  - model_name: allowEapTlsAuthOfExpiredCerts
+    data_path: [AllowedProtocols, eapTls]
+    tf_name: eap_tls_allow_auth_of_expired_certs
+    type: Bool
+    description: Allow authentication of expired certificates
+    example: true
+  - model_name: eapTlsEnableStatelessSessionResume
+    data_path: [AllowedProtocols, eapTls]
+    tf_name: eap_tls_enable_stateless_session_resume
+    type: Bool
+    description: Enable stateless session resume
+    example: true
+  - model_name: eapTlsSessionTicketTtl
+    data_path: [AllowedProtocols, eapTls]
+    tf_name: eap_tls_session_ticket_ttl
+    type: Int64
+    min_int: 0
+    description: Session ticket TTL. Is required only if `eap_tls_enable_stateless_session_resume` is `true`.
+    example: 5
+  - model_name: eapTlsSessionTicketTtlUnits
+    data_path: [AllowedProtocols, eapTls]
+    tf_name: eap_tls_session_ticket_ttl_unit
+    type: String
+    enum_values: [SECONDS, MINUTES, HOURS, DAYS, WEEKS]
+    description: Session ticket TTL unit. Is required only if `eap_tls_enable_stateless_session_resume` is `true`.
+    example: DAYS
+  - model_name: eapTlsSessionTicketPrecentage
+    data_path: [AllowedProtocols, eapTls]
+    tf_name: eap_tls_session_ticket_percentage
+    type: Int64
+    min_int: 1
+    max_int: 100
+    description: Session ticket percentage. Is required only if `eap_tls_enable_stateless_session_resume` is `true`.
+    example: 5
+  - model_name: allowPeapEapMsChapV2
+    data_path: [AllowedProtocols, peap]
+    tf_name: peap_allow_peap_eap_ms_chap_v2
+    type: Bool
+    description: Allow PEAP EAP MS CHAP v2
+    example: true
+  - model_name: allowPeapEapMsChapV2PwdChange
+    data_path: [AllowedProtocols, peap]
+    tf_name: peap_allow_peap_eap_ms_chap_v2_pwd_change
+    type: Bool
+    description: Allow PEAP EAP MS CHAP v2 password change. Is required only if `allow_peap_eap_ms_chap_v2` is `true`.
+    example: true
+  - model_name: allowPeapEapMsChapV2PwdChangeRetries
+    data_path: [AllowedProtocols, peap]
+    tf_name: peap_allow_peap_eap_ms_chap_v2_pwd_change_retries
+    type: Int64
+    min_int: 0
+    max_int: 3
+    description: Allow PEAP EAP MS CHAP v2 password change retries. Is required only if `allow_peap_eap_ms_chap_v2` is `true`.
+    example: 3
+  - model_name: allowPeapEapGtc
+    data_path: [AllowedProtocols, peap]
+    tf_name: peap_allow_peap_eap_gtc
+    type: Bool
+    description: Allow PEAP EAP GTC
+    example: true
+  - model_name: allowPeapEapGtcPwdChange
+    data_path: [AllowedProtocols, peap]
+    tf_name: peap_allow_peap_eap_gtc_pwd_change
+    type: Bool
+    description: Allow PEAP EAP GTC password change. Is required only if `allow_peap_eap_gtc` is `true`.
+    example: true
+  - model_name: allowPeapEapGtcPwdChangeRetries
+    data_path: [AllowedProtocols, peap]
+    tf_name: peap_allow_peap_eap_gtc_pwd_change_retries
+    type: Int64
+    min_int: 0
+    max_int: 3
+    description: PEAP EAP GTC password change retries. Is required only if `allow_peap_eap_gtc` is `true`.
+    example: 3
+  - model_name: allowPeapEapTls
+    data_path: [AllowedProtocols, peap]
+    tf_name: peap_allow_peap_eap_tls
+    type: Bool
+    description: Allow PEAP EAP TLS
+    example: true
+  - model_name: allowPeapEapTlsAuthOfExpiredCerts
+    data_path: [AllowedProtocols, peap]
+    tf_name: peap_allow_peap_eap_tls_auth_of_expired_certs
+    type: Bool
+    description: Allow PEAP EAP TLS authentication of expired certificates. Is required only if `peap_allow_peap_eap_tls` is `true`.
+    example: true
+  - model_name: requireCryptobinding
+    data_path: [AllowedProtocols, peap]
+    tf_name: require_cryptobinding
+    type: Bool
+    description: Require cryptobinding
+    example: true
+  - model_name: allowPeapV0
+    data_path: [AllowedProtocols, peap]
+    tf_name: peap_peap_v0
+    type: Bool
+    description: Allow PEAP v0
+    example: true
+  - model_name: eapTtlsPapAscii
+    data_path: [AllowedProtocols, eapTtls]
+    tf_name: eap_ttls_pap_ascii
+    type: Bool
+    description: Allow PAP ASCII
+    example: true
+  - model_name: eapTtlsChap
+    data_path: [AllowedProtocols, eapTtls]
+    tf_name: eap_ttls_chap
+    type: Bool
+    description: Allow CHAP
+    example: true
+  - model_name: eapTtlsMsChapV1
+    data_path: [AllowedProtocols, eapTtls]
+    tf_name: eap_ttls_ms_chap_v1
+    type: Bool
+    description: Allow MS CHAP v1
+    example: true
+  - model_name: eapTtlsMsChapV2
+    data_path: [AllowedProtocols, eapTtls]
+    tf_name: eap_ttls_ms_chap_v2
+    type: Bool
+    description: Allow MS CHAP v2
+    example: true
+  - model_name: eapTtlsEapMd5
+    data_path: [AllowedProtocols, eapTtls]
+    tf_name: eap_ttls_eap_md5
+    type: Bool
+    description: Allow EAP MD5
+    example: true
+  - model_name: eapTtlsEapMsChapV2
+    data_path: [AllowedProtocols, eapTtls]
+    tf_name: eap_ttls_eap_ms_chap_v2
+    type: Bool
+    description: Allow EAP MS CHAP v2
+    example: true
+  - model_name: eapTtlsEapMsChapV2PwdChange
+    data_path: [AllowedProtocols, eapTtls]
+    tf_name: eap_ttls_eap_ms_chap_v2_pwd_change
+    type: Bool
+    description: Allow EAP MS CHAP v2 password change. Is required only if `eap_ttls_eap_ms_chap_v2` is `true`.
+    example: true
+  - model_name: eapTtlsEapMsChapV2PwdChangeRetries
+    data_path: [AllowedProtocols, eapTtls]
+    tf_name: eap_ttls_eap_ms_chap_v2_pwd_change_retries
+    type: Int64
+    min_int: 0
+    max_int: 3
+    description: EAP MS CHAP v2 password change retries. Is required only if `eap_ttls_eap_ms_chap_v2` is `true`.
+    example: 3
+  - model_name: allowEapFastEapMsChapV2
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_eap_ms_chap_v2
+    type: Bool
+    description: Allow EAP MS CHAP v2
+    example: true
+  - model_name: allowEapFastEapMsChapV2PwdChange
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_eap_ms_chap_v2_pwd_change
+    type: Bool
+    description: Allow EAP MS CHAP v2 password change. Is required only if `eap_fast_eap_ms_chap_v2` is `true`.
+    example: true
+  - model_name: allowEapFastEapMsChapV2PwdChangeRetries
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_eap_ms_chap_v2_pwd_change_retries
+    type: Int64
+    min_int: 0
+    max_int: 3
+    description: EAP MS CHAP v2 password change retries. Is required only if `eap_fast_eap_ms_chap_v2` is `true`.
+    example: 3
+  - model_name: allowEapFastEapGtc
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_eap_gtc
+    type: Bool
+    description: Allow EAP GTC
+    example: true
+  - model_name: allowEapFastEapGtcPwdChange
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_eap_gtc_pwd_change
+    type: Bool
+    description: Allow EAP GTC password change. Is required only if `eap_fast_eap_gtc` is `true`.
+    example: true
+  - model_name: allowEapFastEapGtcPwdChangeRetries
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_eap_gtc_pwd_change_retries
+    type: Int64
+    min_int: 0
+    max_int: 3
+    description: EAP GTC password change retries. Is required only if `eap_fast_eap_gtc` is `true`.
+    example: 3
+  - model_name: allowEapFastEapTls
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_eap_tls
+    type: Bool
+    description: Allow EAP TLS
+    example: true
+  - model_name: allowEapFastEapTlsAuthOfExpiredCerts
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_eap_tls_auth_of_expired_certs
+    type: Bool
+    description: Allow EAP TLS authentication of expired certificates. Is required only if `eap_fast_eap_tls` is `true`.
+    example: true
+  - model_name: eapFastEnableEAPChaining
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_enable_eap_chaining
+    type: Bool
+    description: Enable EAP chaining
+    example: true
+  - model_name: eapFastUsePacs
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_use_pacs
+    type: Bool
+    description: Use PACs
+    example: true
+  - model_name: eapFastUsePacsTunnelPacTtl
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_pacs_tunnel_pac_ttl
+    type: Int64
+    min_int: 0
+    description: PACs tunnel PAC time to live. Is required only if `eap_fast_use_pacs` is `true`.
+    example: 5
+  - model_name: eapFastUsePacsTunnelPacTtlUnits
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_pacs_tunnel_pac_ttl_unit
+    type: String
+    enum_values: [SECONDS, MINUTES, HOURS, DAYS, WEEKS]
+    description: PACs tunnel PAC time to live unit. Is required only if `eap_fast_use_pacs` is `true`.
+    example: DAYS
+  - model_name: eapFastUsePacsUseProactivePacUpdatePrecentage
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_pacs_use_proactive_pac_update_percentage
+    type: Int64
+    min_int: 1
+    max_int: 100
+    description: Use proactive pac update percentage. Is required only if `eap_fast_use_pacs` is `true`.
+    example: 5
+  - model_name: eapFastUsePacsAllowAnonymProvisioning
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_pacs_allow_anonymous_provisioning
+    type: Bool
+    description: Allow anonymous provisioning. Is required only if `eap_fast_use_pacs` is `true`.
+    example: true
+  - model_name: eapFastUsePacsAllowAuthenProvisioning
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_pacs_allow_authenticated_provisioning
+    type: Bool
+    description: Allow authenticated provisioning. Is required only if `eap_fast_use_pacs` is `true`.
+    example: true
+  - model_name: eapFastUsePacsServerReturns
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_pacs_server_returns
+    type: Bool
+    description: Server returns access accept after authenticated provisioning. Is required only if `eap_fast_pacs_allow_authenticated_provisioning` is `true`.
+    example: true
+  - model_name: eapFastUsePacsAcceptClientCert
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_pacs_allow_client_cert
+    type: Bool
+    description: Accept client certification for provisioning. Is required only if `eap_fast_pacs_allow_authenticated_provisioning` is `true`.
+    example: true
+  - model_name: eapFastUsePacsAllowMachineAuthentication
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_pacs_allow_machine_authentication
+    type: Bool
+    description: Allow machine authentication. Is required only if `eap_fast_use_pacs` is `true`.
+    example: true
+  - model_name: eapFastUsePacsMachinePacTtl
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_pacs_machine_pac_ttl
+    type: Int64
+    min_int: 0
+    description: Machine PAC TTL. Is required only if `eap_fast_pacs_allow_machine_authentication` is `true`.
+    example: 5
+  - model_name: eapFastUsePacsMachinePacTtlUnits
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_pacs_machine_pac_ttl_unit
+    type: String
+    enum_values: [SECONDS, MINUTES, HOURS, DAYS, WEEKS]
+    description: Machine PAC TTL unit. Is required only if `eap_fast_pacs_allow_machine_authentication` is `true`.
+    example: DAYS
+  - model_name: eapFastUsePacsStatelessSessionResume
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_pacs_stateless_session_resume
+    type: Bool
+    description: Stateless session resume. Is required only if `eap_fast_use_pacs` is `true`.
+    example: true
+  - model_name: eapFastUsePacsAuthorizationPacTtl
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_pacs_authorization_pac_ttl
+    type: Int64
+    min_int: 0
+    description: Authorization PAC TTL. Is required only if `eap_fast_pacs_stateless_session_resume` is `true`.
+    example: 5
+  - model_name: eapFastUsePacsAuthorizationPacTtlUnits
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_pacs_authorization_pac_ttl_unit
+    type: String
+    enum_values: [SECONDS, MINUTES, HOURS, DAYS, WEEKS]
+    description: Authorization PAC TTL unit. Is required only if `eap_fast_pacs_stateless_session_resume` is `true`.
+    example: HOURS
+  - model_name: eapFastDontUsePacsAcceptClientCert
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_accept_client_cert
+    type: Bool
+    description: Accept client certificates. Is required only if `eap_fast_use_pacs` is `false`.
+    example: true
+    exclude_test: true
+  - model_name: eapFastDontUsePacsAllowMachineAuthentication
+    data_path: [AllowedProtocols, eapFast]
+    tf_name: eap_fast_allow_machine_authentication
+    type: Bool
+    description: Allow machine authentication. Is required only if `eap_fast_use_pacs` is `false`.
+    example: true
+    exclude_test: true
+  - model_name: allowTeapEapMsChapV2
+    data_path: [AllowedProtocols, teap]
+    tf_name: teap_eap_ms_chap_v2
+    type: Bool
+    description: Allow EAP MS CHAP v2
+    example: true
+  - model_name: allowTeapEapMsChapV2PwdChange
+    data_path: [AllowedProtocols, teap]
+    tf_name: teap_eap_ms_chap_v2_pwd_change
+    type: Bool
+    description: Allow EAP MS CHAP v2 password change. Is required only if `teap_eap_ms_chap_v2` is `true`.
+    example: true
+  - model_name: allowTeapEapMsChapV2PwdChangeRetries
+    data_path: [AllowedProtocols, teap]
+    tf_name: teap_eap_ms_chap_v2_pwd_change_retries
+    type: Int64
+    min_int: 0
+    max_int: 3
+    description: EAP MS CHAP v2 password change retries. Is required only if `teap_eap_ms_chap_v2` is `true`.
+    example: 3
+  - model_name: allowTeapEapTls
+    data_path: [AllowedProtocols, teap]
+    tf_name: teap_eap_tls
+    type: Bool
+    description: Allow EAP TLS
+    example: true
+  - model_name: allowTeapEapTlsAuthOfExpiredCerts
+    data_path: [AllowedProtocols, teap]
+    tf_name: teap_eap_tls_auth_of_expired_certs
+    type: Bool
+    description: Allow EAP TLS authentication of expired certs. Is required only if `teap_eap_tls` is `true`.
+    example: true
+  - model_name: acceptClientCertDuringTunnelEst
+    data_path: [AllowedProtocols, teap]
+    tf_name: teap_eap_accept_client_cert_during_tunnel_est
+    type: Bool
+    description: Accept client certificate during tunnel establishment
+    example: true
+  - model_name: enableEapChaining
+    data_path: [AllowedProtocols, teap]
+    tf_name: teap_eap_chaining
+    type: Bool
+    description: Allow EAP chaining
+    example: true
+  - model_name: allowDowngradeMsk
+    data_path: [AllowedProtocols, teap]
+    tf_name: teap_downgrade_msk
+    type: Bool
+    description: Allow downgrade to MSK
+    example: true
+  - model_name: requestBasicPwdAuth
+    data_path: [AllowedProtocols, teap]
+    tf_name: teap_request_basic_pwd_auth
+    type: Bool
+    write_only: true
+    description: Request basic password authentication
+    example: true
+  - model_name: fiveG
+    data_path: [AllowedProtocols]
+    tf_name: allow_5g
+    type: Bool
+    description: Allow 5G. This field is only supported from ISE 3.2.
+    test_tags: [ISE32]
+    example: true
