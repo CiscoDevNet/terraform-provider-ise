@@ -5,14 +5,12 @@ doc_category: Administration
 attributes:
   - model_name: name
     data_path: [InternalUser]
-    tf_name: name
     type: String
     mandatory: true
     description: The name of the internal user
     example: User1
   - model_name: password
     data_path: [InternalUser]
-    tf_name: password
     type: String
     mandatory: true
     write_only: true
@@ -21,52 +19,44 @@ attributes:
     example: Cisco123
   - model_name: changePassword
     data_path: [InternalUser]
-    tf_name: change_password
     type: Bool
     description: Requires the user to change the password
     example: true
   - model_name: email
     data_path: [InternalUser]
-    tf_name: email
     type: String
     description: Email address
     example: aaa@cisco.com
   - model_name: accountNameAlias
     data_path: [InternalUser]
-    tf_name: account_name_alias
     test_tags: [ISE32]
     type: String
     description: The Account Name Alias will be used to send email notifications about password expiration. This field is only supported from ISE 3.2.
     example: User1
   - model_name: enablePassword
     data_path: [InternalUser]
-    tf_name: enable_password
     write_only: true
     type: String
     description: This field is added in ISE 2.0 to support TACACS+
     example: Cisco123
   - model_name: enabled
     data_path: [InternalUser]
-    tf_name: enabled
     type: Bool
     description: Whether the user is enabled/disabled
     example: true
   - model_name: passwordNeverExpires
     data_path: [InternalUser]
-    tf_name: password_never_expires
     test_tags: [ISE32]
     type: Bool
     description: Set to `true` to indicate the user password never expires. This will not apply to Users who are also ISE Admins. This field is only supported from ISE 3.2.
     example: false
   - model_name: firstName
     data_path: [InternalUser]
-    tf_name: first_name
     type: String
     description: First name of the internal user
     example: John
   - model_name: lastName
     data_path: [InternalUser]
-    tf_name: last_name
     type: String
     description: Last name of the internal user
     example: Doe
@@ -91,7 +81,6 @@ attributes:
   #   exclude_test: true
   - model_name: description
     data_path: [InternalUser]
-    tf_name: description
     type: String
     description: Description
     example: My first Terraform user

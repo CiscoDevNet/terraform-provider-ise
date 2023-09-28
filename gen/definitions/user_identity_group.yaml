@@ -7,14 +7,12 @@ test_tags: [ISE32]
 attributes:
   - model_name: name
     data_path: [IdentityGroup]
-    tf_name: name
     type: String
     mandatory: true
     description: The name of the user identity group
     example: Group1
   - model_name: description
     data_path: [IdentityGroup]
-    tf_name: description
     type: String
     description: Description
     example: My endpoint identity group

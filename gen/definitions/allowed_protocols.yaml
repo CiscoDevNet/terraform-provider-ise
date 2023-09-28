@@ -8,132 +8,113 @@ doc_category: Policy
 attributes:
   - model_name: name
     data_path: [AllowedProtocols]
-    tf_name: name
     type: String
     mandatory: true
     description: The name of the allowed protocols
     example: Protocols1
   - model_name: description
     data_path: [AllowedProtocols]
-    tf_name: description
     type: String
     description: Description
     example: My allowed protocols
   - model_name: processHostLookup
     data_path: [AllowedProtocols]
-    tf_name: process_host_lookup
     type: Bool
     mandatory: true
     description: Process host lookup
     example: true
   - model_name: allowPapAscii
     data_path: [AllowedProtocols]
-    tf_name: allow_pap_ascii
     type: Bool
     mandatory: true
     description: Allow PAP ASCII
     example: true
   - model_name: allowChap
     data_path: [AllowedProtocols]
-    tf_name: allow_chap
     type: Bool
     mandatory: true
     description: Allow CHAP
     example: true
   - model_name: allowMsChapV1
     data_path: [AllowedProtocols]
-    tf_name: allow_ms_chap_v1
     type: Bool
     mandatory: true
     description: Allow MS CHAP v1
     example: true
   - model_name: allowMsChapV2
     data_path: [AllowedProtocols]
-    tf_name: allow_ms_chap_v2
     type: Bool
     mandatory: true
     description: Allow MS CHAP v2
     example: true
   - model_name: allowEapMd5
     data_path: [AllowedProtocols]
-    tf_name: allow_eap_md5
     type: Bool
     mandatory: true
     description: Allow EAP MD5
     example: true
   - model_name: allowLeap
     data_path: [AllowedProtocols]
-    tf_name: allow_leap
     type: Bool
     mandatory: true
     description: Allow LEAP
     example: true
   - model_name: allowEapTls
     data_path: [AllowedProtocols]
-    tf_name: allow_eap_tls
     type: Bool
     mandatory: true
     description: Allow EAP TLS
     example: true
   - model_name: allowEapTtls
     data_path: [AllowedProtocols]
-    tf_name: allow_eap_ttls
     type: Bool
     mandatory: true
     description: Allow EAP TTLS
     example: true
   - model_name: allowEapFast
     data_path: [AllowedProtocols]
-    tf_name: allow_eap_fast
     type: Bool
     mandatory: true
     description: Allow EAP Fast
     example: true
   - model_name: allowPeap
     data_path: [AllowedProtocols]
-    tf_name: allow_peap
     type: Bool
     mandatory: true
     description: Allow PEAP
     example: true
   - model_name: allowTeap
     data_path: [AllowedProtocols]
-    tf_name: allow_teap
     type: Bool
     mandatory: true
     description: Allow TEAP
     example: true
   - model_name: allowPreferredEapProtocol
     data_path: [AllowedProtocols]
-    tf_name: allow_preferred_eap_protocol
     type: Bool
     mandatory: true
     description: Allow preferred EAP protocol
     example: true
   - model_name: preferredEapProtocol
     data_path: [AllowedProtocols]
-    tf_name: preferred_eap_protocol
     type: String
     enum_values: [EAP_FAST, PEAP, LEAP, EAP_MD5, EAP_TLS, EAP_TTLS, TEAP]
     description: Preferred EAP protocol
     example: LEAP
   - model_name: eapTlsLBit
     data_path: [AllowedProtocols]
-    tf_name: eap_tls_l_bit
     type: Bool
     mandatory: true
     description: EAP TLS L-Bit
     example: true
   - model_name: allowWeakCiphersForEap
     data_path: [AllowedProtocols]
-    tf_name: allow_weak_ciphers_for_eap
     type: Bool
     mandatory: true
     description: Allow weak ciphers for EAP
     example: true
   - model_name: requireMessageAuth
     data_path: [AllowedProtocols]
-    tf_name: require_message_auth
     type: Bool
     mandatory: true
     description: Require message authentication

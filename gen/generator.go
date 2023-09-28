@@ -29,6 +29,7 @@ import (
 	"path/filepath"
 	"strings"
 	"text/template"
+	"unicode"
 
 	"gopkg.in/yaml.v3"
 )
@@ -209,7 +210,16 @@ var functions = template.FuncMap{
 
 func augmentAttribute(attr *YamlConfigAttribute) {
 	if attr.TfName == "" {
-		attr.TfName = SnakeCase(attr.ModelName)
+		var words []string
+		l := 0
+		for s := attr.ModelName; s != ""; s = s[l:] {
+			l = strings.IndexFunc(s[1:], unicode.IsUpper) + 1
+			if l <= 0 {
+				l = len(s)
+			}
+			words = append(words, strings.ToLower(s[:l]))
+		}
+		attr.TfName = strings.Join(words, "_")
 	}
 	if attr.Type == "List" || attr.Type == "Set" {
 		for a := range attr.Attributes {
