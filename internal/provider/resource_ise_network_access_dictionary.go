@@ -24,12 +24,13 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
@@ -37,25 +38,25 @@ import (
 )
 
 // Ensure provider defined types fully satisfy framework interfaces
-var _ resource.Resource = &EndpointIdentityGroupResource{}
-var _ resource.ResourceWithImportState = &EndpointIdentityGroupResource{}
+var _ resource.Resource = &NetworkAccessDictionaryResource{}
+var _ resource.ResourceWithImportState = &NetworkAccessDictionaryResource{}
 
-func NewEndpointIdentityGroupResource() resource.Resource {
-	return &EndpointIdentityGroupResource{}
+func NewNetworkAccessDictionaryResource() resource.Resource {
+	return &NetworkAccessDictionaryResource{}
 }
 
-type EndpointIdentityGroupResource struct {
+type NetworkAccessDictionaryResource struct {
 	client *ise.Client
 }
 
-func (r *EndpointIdentityGroupResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_endpoint_identity_group"
+func (r *NetworkAccessDictionaryResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_network_access_dictionary"
 }
 
-func (r *EndpointIdentityGroupResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *NetworkAccessDictionaryResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage an Endpoint Identity Group.").String,
+		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage a Network Access Dictionary.").String,
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -66,28 +67,29 @@ func (r *EndpointIdentityGroupResource) Schema(ctx context.Context, req resource
 				},
 			},
 			"name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The name of the endpoint identity group").String,
-				Required:            true,
+				MarkdownDescription: helpers.NewAttributeDescription("The dictionary name").String,
+				Optional:            true,
 			},
 			"description": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Description").String,
+				MarkdownDescription: helpers.NewAttributeDescription("The description of the dictionary").String,
 				Optional:            true,
 			},
-			"system_defined": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("System defined endpoint identity group").AddDefaultValueDescription("false").String,
-				Optional:            true,
-				Computed:            true,
-				Default:             booldefault.StaticBool(false),
+			"version": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("The version of the dictionary").String,
+				Required:            true,
 			},
-			"parent_endpoint_identity_group_id": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Parent endpoint identity group ID").String,
-				Optional:            true,
+			"dictionary_attr_type": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("The dictionary attribute type").AddStringEnumDescription("ENTITY_ATTR", "MSG_ATTR", "PIP_ATTR").String,
+				Required:            true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("ENTITY_ATTR", "MSG_ATTR", "PIP_ATTR"),
+				},
 			},
 		},
 	}
 }
 
-func (r *EndpointIdentityGroupResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+func (r *NetworkAccessDictionaryResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -95,8 +97,8 @@ func (r *EndpointIdentityGroupResource) Configure(_ context.Context, req resourc
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-func (r *EndpointIdentityGroupResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan EndpointIdentityGroup
+func (r *NetworkAccessDictionaryResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan NetworkAccessDictionary
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -108,14 +110,13 @@ func (r *EndpointIdentityGroupResource) Create(ctx context.Context, req resource
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
 
 	// Create object
-	body := plan.toBody(ctx, EndpointIdentityGroup{})
-	res, location, err := r.client.Post("/ers/config/endpointgroup", body)
+	body := plan.toBody(ctx, NetworkAccessDictionary{})
+	res, _, err := r.client.Post("/api/v1/policy/network-access/dictionaries", body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
 		return
 	}
-	locationElements := strings.Split(location, "/")
-	plan.Id = types.StringValue(locationElements[len(locationElements)-1])
+	plan.Id = types.StringValue(fmt.Sprint(plan.Name.ValueString()))
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -123,8 +124,8 @@ func (r *EndpointIdentityGroupResource) Create(ctx context.Context, req resource
 	resp.Diagnostics.Append(diags...)
 }
 
-func (r *EndpointIdentityGroupResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state EndpointIdentityGroup
+func (r *NetworkAccessDictionaryResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state NetworkAccessDictionary
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -135,7 +136,7 @@ func (r *EndpointIdentityGroupResource) Read(ctx context.Context, req resource.R
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
-	res, err := r.client.Get("/ers/config/endpointgroup" + "/" + state.Id.ValueString())
+	res, err := r.client.Get("/api/v1/policy/network-access/dictionaries" + "/" + state.Id.ValueString())
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
@@ -152,8 +153,8 @@ func (r *EndpointIdentityGroupResource) Read(ctx context.Context, req resource.R
 	resp.Diagnostics.Append(diags...)
 }
 
-func (r *EndpointIdentityGroupResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan, state EndpointIdentityGroup
+func (r *NetworkAccessDictionaryResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var plan, state NetworkAccessDictionary
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -171,7 +172,7 @@ func (r *EndpointIdentityGroupResource) Update(ctx context.Context, req resource
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
-	res, err := r.client.Put("/ers/config/endpointgroup"+"/"+plan.Id.ValueString(), body)
+	res, err := r.client.Put("/api/v1/policy/network-access/dictionaries"+"/"+plan.Id.ValueString(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -183,8 +184,8 @@ func (r *EndpointIdentityGroupResource) Update(ctx context.Context, req resource
 	resp.Diagnostics.Append(diags...)
 }
 
-func (r *EndpointIdentityGroupResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state EndpointIdentityGroup
+func (r *NetworkAccessDictionaryResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state NetworkAccessDictionary
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -195,7 +196,7 @@ func (r *EndpointIdentityGroupResource) Delete(ctx context.Context, req resource
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
 
-	res, err := r.client.Delete("/ers/config/endpointgroup" + "/" + state.Id.ValueString())
+	res, err := r.client.Delete("/api/v1/policy/network-access/dictionaries" + "/" + state.Id.ValueString())
 	if err != nil && strings.Contains(err.Error(), "StatusCode 405") {
 		// silently ignore if DELETE method not implemented
 		tflog.Debug(ctx, fmt.Sprintf("%s: Cannot be deleted due to REST method missing", state.Id.ValueString()))
@@ -209,6 +210,6 @@ func (r *EndpointIdentityGroupResource) Delete(ctx context.Context, req resource
 	resp.State.RemoveResource(ctx)
 }
 
-func (r *EndpointIdentityGroupResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *NetworkAccessDictionaryResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }

@@ -102,8 +102,7 @@ func (r *UserIdentityGroupResource) Create(ctx context.Context, req resource.Cre
 
 	// Create object
 	body := plan.toBody(ctx, UserIdentityGroup{})
-
-	res, location, err := r.client.Post("/ers/config/identitygroup/", body)
+	res, location, err := r.client.Post("/ers/config/identitygroup", body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
 		return
@@ -129,7 +128,7 @@ func (r *UserIdentityGroupResource) Read(ctx context.Context, req resource.ReadR
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
-	res, err := r.client.Get("/ers/config/identitygroup/" + state.Id.ValueString())
+	res, err := r.client.Get("/ers/config/identitygroup" + "/" + state.Id.ValueString())
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
@@ -165,7 +164,7 @@ func (r *UserIdentityGroupResource) Update(ctx context.Context, req resource.Upd
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
-	res, err := r.client.Put("/ers/config/identitygroup/"+plan.Id.ValueString(), body)
+	res, err := r.client.Put("/ers/config/identitygroup"+"/"+plan.Id.ValueString(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -189,7 +188,7 @@ func (r *UserIdentityGroupResource) Delete(ctx context.Context, req resource.Del
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
 
-	res, err := r.client.Delete("/ers/config/identitygroup/" + state.Id.ValueString())
+	res, err := r.client.Delete("/ers/config/identitygroup" + "/" + state.Id.ValueString())
 	if err != nil && strings.Contains(err.Error(), "StatusCode 405") {
 		// silently ignore if DELETE method not implemented
 		tflog.Debug(ctx, fmt.Sprintf("%s: Cannot be deleted due to REST method missing", state.Id.ValueString()))

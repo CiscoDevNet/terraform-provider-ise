@@ -1,6 +1,6 @@
 ---
 name: Internal User
-rest_endpoint: /ers/config/internaluser/
+rest_endpoint: /ers/config/internaluser
 doc_category: Administration
 attributes:
   - model_name: name

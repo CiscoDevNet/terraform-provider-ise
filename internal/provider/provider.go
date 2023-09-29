@@ -245,6 +245,7 @@ func (p *IseProvider) Resources(ctx context.Context) []func() resource.Resource 
 		NewCertificateAuthenticationProfileResource,
 		NewEndpointIdentityGroupResource,
 		NewInternalUserResource,
+		NewNetworkAccessDictionaryResource,
 		NewTrustSecSecurityGroupResource,
 		NewUserIdentityGroupResource,
 	}
@@ -256,6 +257,7 @@ func (p *IseProvider) DataSources(ctx context.Context) []func() datasource.DataS
 		NewCertificateAuthenticationProfileDataSource,
 		NewEndpointIdentityGroupDataSource,
 		NewInternalUserDataSource,
+		NewNetworkAccessDictionaryDataSource,
 		NewTrustSecSecurityGroupDataSource,
 		NewUserIdentityGroupDataSource,
 	}

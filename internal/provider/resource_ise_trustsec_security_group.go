@@ -115,8 +115,7 @@ func (r *TrustSecSecurityGroupResource) Create(ctx context.Context, req resource
 
 	// Create object
 	body := plan.toBody(ctx, TrustSecSecurityGroup{})
-
-	res, location, err := r.client.Post("/ers/config/sgt/", body)
+	res, location, err := r.client.Post("/ers/config/sgt", body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
 		return
@@ -142,7 +141,7 @@ func (r *TrustSecSecurityGroupResource) Read(ctx context.Context, req resource.R
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
-	res, err := r.client.Get("/ers/config/sgt/" + state.Id.ValueString())
+	res, err := r.client.Get("/ers/config/sgt" + "/" + state.Id.ValueString())
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
@@ -178,7 +177,7 @@ func (r *TrustSecSecurityGroupResource) Update(ctx context.Context, req resource
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
-	res, err := r.client.Put("/ers/config/sgt/"+plan.Id.ValueString(), body)
+	res, err := r.client.Put("/ers/config/sgt"+"/"+plan.Id.ValueString(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -202,7 +201,7 @@ func (r *TrustSecSecurityGroupResource) Delete(ctx context.Context, req resource
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
 
-	res, err := r.client.Delete("/ers/config/sgt/" + state.Id.ValueString())
+	res, err := r.client.Delete("/ers/config/sgt" + "/" + state.Id.ValueString())
 	if err != nil && strings.Contains(err.Error(), "StatusCode 405") {
 		// silently ignore if DELETE method not implemented
 		tflog.Debug(ctx, fmt.Sprintf("%s: Cannot be deleted due to REST method missing", state.Id.ValueString()))

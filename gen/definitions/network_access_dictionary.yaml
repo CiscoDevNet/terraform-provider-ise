@@ -1,0 +1,27 @@
+---
+name: Network Access Dictionary
+rest_endpoint: /api/v1/policy/network-access/dictionaries
+open_api: true
+doc_category: Network Access
+attributes:
+  - model_name: name
+    type: String
+    id: true
+    description: The dictionary name
+    example: Dict1
+  - model_name: description
+    type: String
+    description: The description of the dictionary
+    example: My description
+  - model_name: version
+    type: String
+    mandatory: true
+    description: The version of the dictionary
+    example: "1.1"
+  - model_name: dictionaryAttrType
+    type: String
+    mandatory: true
+    enum_values: [ENTITY_ATTR, MSG_ATTR, PIP_ATTR]
+    description: The dictionary attribute type
+    example: ENTITY_ATTR
+  

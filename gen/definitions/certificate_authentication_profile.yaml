@@ -1,6 +1,6 @@
 ---
 name: Certificate Authentication Profile
-rest_endpoint: /ers/config/certificateprofile/
+rest_endpoint: /ers/config/certificateprofile
 doc_category: Administration
 test_tags: [CERT_PROFILE]
 attributes:

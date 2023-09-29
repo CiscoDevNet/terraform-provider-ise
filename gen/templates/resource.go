@@ -387,20 +387,23 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	// Create object
 	body := plan.toBody(ctx, {{camelCase .Name}}{})
 
+	{{- if hasId .Attributes}}
+	res, _, err := r.client.Post("{{if .PostRestEndpoint}}{{.PostRestEndpoint}}{{else}}{{.RestEndpoint}}{{end}}", body)
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
+		return
+	}
+	{{- range .Attributes}}
+	{{- if .Id}}
+	plan.Id = types.StringValue(fmt.Sprint(plan.{{toGoName .TfName}}.Value{{.Type}}()))
+	{{- end}}
+	{{- end}}
+	{{- else}}
 	res, location, err := r.client.Post("{{if .PostRestEndpoint}}{{.PostRestEndpoint}}{{else}}{{.RestEndpoint}}{{end}}", body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
 		return
 	}
-
-	{{- $id := false}}
-	{{- range .Attributes}}
-	{{- if .Id}}
-	{{$id = true}}
-	plan.Id = types.StringValue(fmt.Sprint(plan.{{toGoName .TfName}}))
-	{{- end}}
-	{{- end}}
-	{{- if not $id}}
 	locationElements := strings.Split(location, "/")
 	plan.Id = types.StringValue(locationElements[len(locationElements)-1])
 	{{- end}}
@@ -423,7 +426,7 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
-	res, err := r.client.Get("{{if .GetRestEndpoint}}{{.GetRestEndpoint}}{{else}}{{.RestEndpoint}}{{end}}" + state.Id.ValueString())
+	res, err := r.client.Get("{{if .GetRestEndpoint}}{{.GetRestEndpoint}}{{else}}{{.RestEndpoint}}{{end}}" + "/" + state.Id.ValueString())
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
@@ -459,7 +462,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
-	res, err := r.client.Put("{{.RestEndpoint}}" + plan.Id.ValueString(), body)
+	res, err := r.client.Put("{{.RestEndpoint}}" + "/" + plan.Id.ValueString(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -483,7 +486,7 @@ func (r *{{camelCase .Name}}Resource) Delete(ctx context.Context, req resource.D
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
 
-	res, err := r.client.Delete("{{.RestEndpoint}}" + state.Id.ValueString())
+	res, err := r.client.Delete("{{.RestEndpoint}}" + "/" + state.Id.ValueString())
 	if err != nil && strings.Contains(err.Error(), "StatusCode 405") {
 		// silently ignore if DELETE method not implemented
 		tflog.Debug(ctx, fmt.Sprintf("%s: Cannot be deleted due to REST method missing", state.Id.ValueString()))

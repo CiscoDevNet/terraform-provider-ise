@@ -1,6 +1,6 @@
 ---
 name: User Identity Group
-rest_endpoint: /ers/config/identitygroup/
+rest_endpoint: /ers/config/identitygroup
 doc_category: Administration
 skip_minimum_test: true
 test_tags: [ISE32]

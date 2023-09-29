@@ -109,7 +109,7 @@ func (d *CertificateAuthenticationProfileDataSource) Read(ctx context.Context, r
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
 
-	res, err := d.client.Get("/ers/config/certificateprofile/" + config.Id.ValueString())
+	res, err := d.client.Get("/ers/config/certificateprofile" + "/" + config.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object, got error: %s", err))
 		return

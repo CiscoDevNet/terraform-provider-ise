@@ -1,6 +1,6 @@
 ---
 name: Endpoint Identity Group
-rest_endpoint: /ers/config/endpointgroup/
+rest_endpoint: /ers/config/endpointgroup
 doc_category: Administration
 attributes:
   - model_name: name

@@ -31,26 +31,26 @@ import (
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
-	_ datasource.DataSource              = &TrustSecSecurityGroupDataSource{}
-	_ datasource.DataSourceWithConfigure = &TrustSecSecurityGroupDataSource{}
+	_ datasource.DataSource              = &NetworkAccessDictionaryDataSource{}
+	_ datasource.DataSourceWithConfigure = &NetworkAccessDictionaryDataSource{}
 )
 
-func NewTrustSecSecurityGroupDataSource() datasource.DataSource {
-	return &TrustSecSecurityGroupDataSource{}
+func NewNetworkAccessDictionaryDataSource() datasource.DataSource {
+	return &NetworkAccessDictionaryDataSource{}
 }
 
-type TrustSecSecurityGroupDataSource struct {
+type NetworkAccessDictionaryDataSource struct {
 	client *ise.Client
 }
 
-func (d *TrustSecSecurityGroupDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_trustsec_security_group"
+func (d *NetworkAccessDictionaryDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_network_access_dictionary"
 }
 
-func (d *TrustSecSecurityGroupDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *NetworkAccessDictionaryDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: "This data source can read the TrustSec Security Group.",
+		MarkdownDescription: "This data source can read the Network Access Dictionary.",
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -58,30 +58,26 @@ func (d *TrustSecSecurityGroupDataSource) Schema(ctx context.Context, req dataso
 				Required:            true,
 			},
 			"name": schema.StringAttribute{
-				MarkdownDescription: "The name of the security group",
+				MarkdownDescription: "The dictionary name",
 				Computed:            true,
 			},
 			"description": schema.StringAttribute{
-				MarkdownDescription: "Description",
+				MarkdownDescription: "The description of the dictionary",
 				Computed:            true,
 			},
-			"value": schema.Int64Attribute{
-				MarkdownDescription: "`-1` to auto-generate",
+			"version": schema.StringAttribute{
+				MarkdownDescription: "The version of the dictionary",
 				Computed:            true,
 			},
-			"propogate_to_apic": schema.BoolAttribute{
-				MarkdownDescription: "Propagate to APIC (ACI)",
-				Computed:            true,
-			},
-			"is_read_only": schema.BoolAttribute{
-				MarkdownDescription: "Read-only",
+			"dictionary_attr_type": schema.StringAttribute{
+				MarkdownDescription: "The dictionary attribute type",
 				Computed:            true,
 			},
 		},
 	}
 }
 
-func (d *TrustSecSecurityGroupDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
+func (d *NetworkAccessDictionaryDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -89,8 +85,8 @@ func (d *TrustSecSecurityGroupDataSource) Configure(_ context.Context, req datas
 	d.client = req.ProviderData.(*IseProviderData).Client
 }
 
-func (d *TrustSecSecurityGroupDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var config TrustSecSecurityGroup
+func (d *NetworkAccessDictionaryDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var config NetworkAccessDictionary
 
 	// Read config
 	diags := req.Config.Get(ctx, &config)
@@ -101,7 +97,7 @@ func (d *TrustSecSecurityGroupDataSource) Read(ctx context.Context, req datasour
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
 
-	res, err := d.client.Get("/ers/config/sgt" + "/" + config.Id.ValueString())
+	res, err := d.client.Get("/api/v1/policy/network-access/dictionaries" + "/" + config.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object, got error: %s", err))
 		return

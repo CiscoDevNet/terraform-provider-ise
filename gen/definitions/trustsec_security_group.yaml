@@ -1,6 +1,6 @@
 ---
 name: TrustSec Security Group
-rest_endpoint: /ers/config/sgt/
+rest_endpoint: /ers/config/sgt
 doc_category: TrustSec
 attributes:
   - model_name: name
