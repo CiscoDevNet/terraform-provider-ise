@@ -1,0 +1,140 @@
+---
+name: Network Access Condition
+rest_endpoint: /api/v1/policy/network-access/condition
+open_api: true
+skip_minimum_test: true
+id_path: response.id
+doc_category: Network Access
+attributes:
+  - model_name: name
+    type: String
+    description: Condition name
+    example: Cond1
+  - model_name: description
+    type: String
+    description: Condition description
+    example: My description
+  - model_name: conditionType
+    type: String
+    mandatory: true
+    enum_values: [ConditionAndBlock, ConditionAttributes, ConditionOrBlock, ConditionReference, LibraryConditionAndBlock, LibraryConditionAttributes, LibraryConditionOrBlock, TimeAndDateCondition]
+    description: Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
+    example: LibraryConditionAttributes
+  - model_name: isNegate
+    type: Bool
+    description: Indicates whereas this condition is in negate mode
+    example: false
+  - model_name: attributeName
+    type: String
+    description: Dictionary attribute name
+    example: EapAuthentication
+  - model_name: attributeValue
+    type: String
+    description: Attribute value for condition. Value type is specified in dictionary object. 
+    example: EAP-TLS
+  - model_name: dictionaryName
+    type: String
+    description: Dictionary name
+    example: Network Access
+  - model_name: dictionaryValue
+    type: String
+    description: Dictionary value
+    example: abc
+    exclude_test: true
+  - model_name: operator
+    type: String
+    enum_values: [contains, endsWith, equals, greaterOrEquals, greaterThan, in, ipEquals, ipGreaterThan, ipLessThan, ipNotEquals, lessOrEquals, lessThan, matches, notContains, notEndsWith, notEquals, notIn, notStartsWith, startsWith]
+    description: Equality operator
+    example: equals
+  - model_name: children
+    type: List
+    description: List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `LibraryConditionAndBlock` or `LibraryConditionOrBlock`.
+    exclude_test: true
+    attributes:
+      - model_name: name
+        type: String
+        id: true
+        description: Condition name
+        example: Cond1
+      - model_name: description
+        type: String
+        description: Condition description
+        example: My description
+      - model_name: conditionType
+        type: String
+        mandatory: true
+        enum_values: [ConditionAndBlock, ConditionAttributes, ConditionOrBlock, ConditionReference, LibraryConditionAndBlock, LibraryConditionAttributes, LibraryConditionOrBlock, TimeAndDateCondition]
+        description: Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
+        example: LibraryConditionAttributes
+      - model_name: isNegate
+        type: Bool
+        description: Indicates whereas this condition is in negate mode
+        example: false
+      - model_name: attributeName
+        type: String
+        description: Dictionary attribute name
+        example: EapAuthentication
+      - model_name: attributeValue
+        type: String
+        description: Attribute value for condition. Value type is specified in dictionary object. 
+        example: EAP-TLS
+      - model_name: dictionaryName
+        type: String
+        description: Dictionary name
+        example: Network Access
+      - model_name: dictionaryValue
+        type: String
+        description: Dictionary value
+        example: abc
+        exclude_test: true
+      - model_name: operator
+        type: String
+        enum_values: [contains, endsWith, equals, greaterOrEquals, greaterThan, in, ipEquals, ipGreaterThan, ipLessThan, ipNotEquals, lessOrEquals, lessThan, matches, notContains, notEndsWith, notEquals, notIn, notStartsWith, startsWith]
+        description: Equality operator
+        example: equals
+      - model_name: children
+        type: List
+        description: List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `LibraryConditionAndBlock` or `LibraryConditionOrBlock`.
+        exclude_test: true
+        attributes:
+          - model_name: name
+            type: String
+            id: true
+            description: Condition name
+            example: Cond1
+          - model_name: description
+            type: String
+            description: Condition description
+            example: My description
+          - model_name: conditionType
+            type: String
+            mandatory: true
+            enum_values: [ConditionAndBlock, ConditionAttributes, ConditionOrBlock, ConditionReference, LibraryConditionAndBlock, LibraryConditionAttributes, LibraryConditionOrBlock, TimeAndDateCondition]
+            description: Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
+            example: LibraryConditionAttributes
+          - model_name: isNegate
+            type: Bool
+            description: Indicates whereas this condition is in negate mode
+            example: false
+          - model_name: attributeName
+            type: String
+            description: Dictionary attribute name
+            example: EapAuthentication
+          - model_name: attributeValue
+            type: String
+            description: Attribute value for condition. Value type is specified in dictionary object. 
+            example: EAP-TLS
+          - model_name: dictionaryName
+            type: String
+            description: Dictionary name
+            example: Network Access
+          - model_name: dictionaryValue
+            type: String
+            description: Dictionary value
+            example: abc
+            exclude_test: true
+          - model_name: operator
+            type: String
+            enum_values: [contains, endsWith, equals, greaterOrEquals, greaterThan, in, ipEquals, ipGreaterThan, ipLessThan, ipNotEquals, lessOrEquals, lessThan, matches, notContains, notEndsWith, notEquals, notIn, notStartsWith, startsWith]
+            description: Equality operator
+            example: equals

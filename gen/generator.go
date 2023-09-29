@@ -99,6 +99,7 @@ type YamlConfig struct {
 	GetRestEndpoint   string                `yaml:"get_rest_endpoint"`
 	PostRestEndpoint  string                `yaml:"post_rest_endpoint"`
 	OpenApi           bool                  `yaml:"open_api"`
+	IdPath            string                `yaml:"id_path"`
 	MinimumVersion    string                `yaml:"minimum_version"`
 	DsDescription     string                `yaml:"ds_description"`
 	ResDescription    string                `yaml:"res_description"`

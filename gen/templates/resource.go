@@ -387,15 +387,19 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	// Create object
 	body := plan.toBody(ctx, {{camelCase .Name}}{})
 
-	{{- if hasId .Attributes}}
+	{{- if .OpenApi}}
 	res, _, err := r.client.Post("{{if .PostRestEndpoint}}{{.PostRestEndpoint}}{{else}}{{.RestEndpoint}}{{end}}", body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
 		return
 	}
+	{{- if .IdPath}}
+	plan.Id = types.StringValue(res.Get("{{.IdPath}}").String())
+	{{- else}}
 	{{- range .Attributes}}
 	{{- if .Id}}
 	plan.Id = types.StringValue(fmt.Sprint(plan.{{toGoName .TfName}}.Value{{.Type}}()))
+	{{- end}}
 	{{- end}}
 	{{- end}}
 	{{- else}}
