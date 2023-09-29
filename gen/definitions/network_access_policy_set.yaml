@@ -1,0 +1,79 @@
+---
+name: Network Access Policy Set
+rest_endpoint: /api/v1/policy/network-access/policy-set
+open_api: true
+id_path: response.id
+skip_minimum_test: true
+doc_category: Network Access
+attributes:
+  - model_name: name
+    type: String
+    mandatory: true
+    description: Given name for the policy set, [Valid characters are alphanumerics, underscore, hyphen, space, period, parentheses]
+    example: PolicySet1
+  - model_name: description
+    type: String
+    description: The description of the policy set
+    example: My description
+  - model_name: isProxy
+    type: Bool
+    description: Flag which indicates if the policy set service is of type 'Proxy Sequence' or 'Allowed Protocols'
+    example: false
+  - model_name: rank
+    type: Int64
+    description: The rank (priority) in relation to other policy sets. Lower rank is higher priority.
+    example: 0
+  - model_name: serviceName
+    type: String
+    mandatory: true
+    description: Policy set service identifier. 'Allowed Protocols' or 'Server Sequence'.
+    example: Default Network Access
+  - model_name: state
+    type: String
+    enum_values: [disabled, enabled, monitor]
+    description: The state that the policy set is in. A disabled policy set cannot be matched.
+    example: enabled
+  - model_name: conditionType
+    data_path: [condition]
+    type: String
+    enum_values: [ConditionAndBlock, ConditionAttributes, ConditionOrBlock, ConditionReference, LibraryConditionAndBlock, LibraryConditionAttributes, LibraryConditionOrBlock, TimeAndDateCondition]
+    description: Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
+    example: ConditionAttributes
+  - model_name: isNegate
+    data_path: [condition]
+    tf_name: condition_is_negate
+    type: Bool
+    description: Indicates whereas this condition is in negate mode
+    example: false
+  - model_name: attributeName
+    data_path: [condition]
+    tf_name: condition_attribute_name
+    type: String
+    description: Dictionary attribute name
+    example: Location
+  - model_name: attributeValue
+    data_path: [condition]
+    tf_name: condition_attribute_value
+    type: String
+    description: Attribute value for condition. Value type is specified in dictionary object. 
+    example: All Locations
+  - model_name: dictionaryName
+    data_path: [condition]
+    tf_name: condition_dictionary_name
+    type: String
+    description: Dictionary name
+    example: DEVICE
+  - model_name: dictionaryValue
+    data_path: [condition]
+    tf_name: condition_dictionary_value
+    type: String
+    description: Dictionary value
+    example: abc
+    exclude_test: true
+  - model_name: operator
+    data_path: [condition]
+    tf_name: condition_operator
+    type: String
+    enum_values: [contains, endsWith, equals, greaterOrEquals, greaterThan, in, ipEquals, ipGreaterThan, ipLessThan, ipNotEquals, lessOrEquals, lessThan, matches, notContains, notEndsWith, notEquals, notIn, notStartsWith, startsWith]
+    description: Equality operator
+    example: equals
