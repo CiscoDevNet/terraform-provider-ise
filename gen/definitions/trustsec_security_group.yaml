@@ -1,0 +1,41 @@
+---
+name: TrustSec Security Group
+rest_endpoint: /ers/config/sgt/
+doc_category: TrustSec
+attributes:
+  - model_name: name
+    data_path: [Sgt]
+    type: String
+    mandatory: true
+    description: The name of the security group
+    example: SGT1234
+  - model_name: description
+    data_path: [Sgt]
+    type: String
+    description: Description
+    example: My SGT
+  - model_name: value
+    data_path: [Sgt]
+    type: Int64
+    mandatory: true
+    min_int: -1
+    max_int: 65519
+    description: "`-1` to auto-generate"
+    example: 1234
+  - model_name: propogateToApic
+    data_path: [Sgt]
+    type: Bool
+    description: Propagate to APIC (ACI)
+    example: true
+  - model_name: isReadOnly
+    data_path: [Sgt]
+    write_only: true
+    type: Bool
+    description: Read-only
+    example: false
+  # - model_name: defaultSGACLs
+  #   data_path: [Sgt]
+  #   tf_name: default_sg_acls
+  #   type: StringList
+  #   description: List of default SG ACLs
+  #   example: SGACL1

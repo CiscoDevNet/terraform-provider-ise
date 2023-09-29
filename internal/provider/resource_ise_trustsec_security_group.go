@@ -24,12 +24,13 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
@@ -37,25 +38,25 @@ import (
 )
 
 // Ensure provider defined types fully satisfy framework interfaces
-var _ resource.Resource = &EndpointIdentityGroupResource{}
-var _ resource.ResourceWithImportState = &EndpointIdentityGroupResource{}
+var _ resource.Resource = &TrustSecSecurityGroupResource{}
+var _ resource.ResourceWithImportState = &TrustSecSecurityGroupResource{}
 
-func NewEndpointIdentityGroupResource() resource.Resource {
-	return &EndpointIdentityGroupResource{}
+func NewTrustSecSecurityGroupResource() resource.Resource {
+	return &TrustSecSecurityGroupResource{}
 }
 
-type EndpointIdentityGroupResource struct {
+type TrustSecSecurityGroupResource struct {
 	client *ise.Client
 }
 
-func (r *EndpointIdentityGroupResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_endpoint_identity_group"
+func (r *TrustSecSecurityGroupResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_trustsec_security_group"
 }
 
-func (r *EndpointIdentityGroupResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *TrustSecSecurityGroupResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage an Endpoint Identity Group.").String,
+		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage a TrustSec Security Group.").String,
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -66,28 +67,33 @@ func (r *EndpointIdentityGroupResource) Schema(ctx context.Context, req resource
 				},
 			},
 			"name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The name of the endpoint identity group").String,
+				MarkdownDescription: helpers.NewAttributeDescription("The name of the security group").String,
 				Required:            true,
 			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Description").String,
 				Optional:            true,
 			},
-			"system_defined": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("System defined endpoint identity group").AddDefaultValueDescription("false").String,
-				Optional:            true,
-				Computed:            true,
-				Default:             booldefault.StaticBool(false),
+			"value": schema.Int64Attribute{
+				MarkdownDescription: helpers.NewAttributeDescription("`-1` to auto-generate").AddIntegerRangeDescription(-1, 65519).String,
+				Required:            true,
+				Validators: []validator.Int64{
+					int64validator.Between(-1, 65519),
+				},
 			},
-			"parent_endpoint_identity_group_id": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Parent endpoint identity group ID").String,
+			"propogate_to_apic": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Propagate to APIC (ACI)").String,
+				Optional:            true,
+			},
+			"is_read_only": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Read-only").String,
 				Optional:            true,
 			},
 		},
 	}
 }
 
-func (r *EndpointIdentityGroupResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+func (r *TrustSecSecurityGroupResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -95,8 +101,8 @@ func (r *EndpointIdentityGroupResource) Configure(_ context.Context, req resourc
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-func (r *EndpointIdentityGroupResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan EndpointIdentityGroup
+func (r *TrustSecSecurityGroupResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan TrustSecSecurityGroup
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -108,9 +114,9 @@ func (r *EndpointIdentityGroupResource) Create(ctx context.Context, req resource
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
 
 	// Create object
-	body := plan.toBody(ctx, EndpointIdentityGroup{})
+	body := plan.toBody(ctx, TrustSecSecurityGroup{})
 
-	res, location, err := r.client.Post("/ers/config/endpointgroup/", body)
+	res, location, err := r.client.Post("/ers/config/sgt/", body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
 		return
@@ -125,8 +131,8 @@ func (r *EndpointIdentityGroupResource) Create(ctx context.Context, req resource
 	resp.Diagnostics.Append(diags...)
 }
 
-func (r *EndpointIdentityGroupResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state EndpointIdentityGroup
+func (r *TrustSecSecurityGroupResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state TrustSecSecurityGroup
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -137,7 +143,7 @@ func (r *EndpointIdentityGroupResource) Read(ctx context.Context, req resource.R
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
-	res, err := r.client.Get("/ers/config/endpointgroup/" + state.Id.ValueString())
+	res, err := r.client.Get("/ers/config/sgt/" + state.Id.ValueString())
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
@@ -154,8 +160,8 @@ func (r *EndpointIdentityGroupResource) Read(ctx context.Context, req resource.R
 	resp.Diagnostics.Append(diags...)
 }
 
-func (r *EndpointIdentityGroupResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan, state EndpointIdentityGroup
+func (r *TrustSecSecurityGroupResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var plan, state TrustSecSecurityGroup
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -173,7 +179,7 @@ func (r *EndpointIdentityGroupResource) Update(ctx context.Context, req resource
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
-	res, err := r.client.Put("/ers/config/endpointgroup/"+plan.Id.ValueString(), body)
+	res, err := r.client.Put("/ers/config/sgt/"+plan.Id.ValueString(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -185,8 +191,8 @@ func (r *EndpointIdentityGroupResource) Update(ctx context.Context, req resource
 	resp.Diagnostics.Append(diags...)
 }
 
-func (r *EndpointIdentityGroupResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state EndpointIdentityGroup
+func (r *TrustSecSecurityGroupResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state TrustSecSecurityGroup
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -197,7 +203,7 @@ func (r *EndpointIdentityGroupResource) Delete(ctx context.Context, req resource
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
 
-	res, err := r.client.Delete("/ers/config/endpointgroup/" + state.Id.ValueString())
+	res, err := r.client.Delete("/ers/config/sgt/" + state.Id.ValueString())
 	if err != nil && strings.Contains(err.Error(), "StatusCode 405") {
 		// silently ignore if DELETE method not implemented
 		tflog.Debug(ctx, fmt.Sprintf("%s: Cannot be deleted due to REST method missing", state.Id.ValueString()))
@@ -211,6 +217,6 @@ func (r *EndpointIdentityGroupResource) Delete(ctx context.Context, req resource
 	resp.State.RemoveResource(ctx)
 }
 
-func (r *EndpointIdentityGroupResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *TrustSecSecurityGroupResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }

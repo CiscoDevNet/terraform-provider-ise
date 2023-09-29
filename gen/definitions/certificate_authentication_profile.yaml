@@ -1,0 +1,45 @@
+---
+name: Certificate Authentication Profile
+rest_endpoint: /ers/config/certificateprofile/
+doc_category: Administration
+test_tags: [CERT_PROFILE]
+attributes:
+  - model_name: name
+    data_path: [CertificateProfile]
+    type: String
+    mandatory: true
+    description: The name of the certificate profile
+    example: CertProf1
+  - model_name: description
+    data_path: [CertificateProfile]
+    type: String
+    description: Description
+    example: My cert profile
+  - model_name: allowedAsUserName
+    data_path: [CertificateProfile]
+    type: Bool
+    description: Allow as username
+    example: false
+  - model_name: externalIdentityStoreName
+    data_path: [CertificateProfile]
+    type: String
+    description: Referred IDStore name for the Certificate Profile or `[not applicable]` in case no identity store is chosen
+    example: "[not applicable]"
+  - model_name: certificateAttributeName
+    data_path: [CertificateProfile]
+    type: String
+    enum_values: [SUBJECT_COMMON_NAME, SUBJECT_ALTERNATIVE_NAME, SUBJECT_SERIAL_NUMBER, SUBJECT, SUBJECT_ALTERNATIVE_NAME_OTHER_NAME, SUBJECT_ALTERNATIVE_NAME_EMAIL, SUBJECT_ALTERNATIVE_NAME_DNS]
+    description: "Attribute name of the Certificate Profile - used only when CERTIFICATE is chosen in `username_from`."
+    example: SUBJECT_COMMON_NAME
+  - model_name: matchMode
+    data_path: [CertificateProfile]
+    type: String
+    enum_values: [NEVER, RESOLVE_IDENTITY_AMBIGUITY, BINARY_COMPARISON]
+    description: "Match mode of the Certificate Profile. Allowed values: NEVER, RESOLVE_IDENTITY_AMBIGUITY, BINARY_COMPARISON"
+    example: NEVER
+  - model_name: usernameFrom
+    data_path: [CertificateProfile]
+    type: String
+    enum_values: [CERTIFICATE, UPN]
+    description: "The attribute in the certificate where the user name should be taken from. Allowed values: `CERTIFICATE` (for a specific attribute as defined in certificateAttributeName), `UPN` (for using any Subject or Alternative Name Attributes in the Certificate - an option only in AD)"
+    example: CERTIFICATE

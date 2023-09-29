@@ -529,7 +529,10 @@ func (r *AllowedProtocolsResource) Delete(ctx context.Context, req resource.Dele
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
 
 	res, err := r.client.Delete("/ers/config/allowedprotocols/" + state.Id.ValueString())
-	if err != nil {
+	if err != nil && strings.Contains(err.Error(), "StatusCode 405") {
+		// silently ignore if DELETE method not implemented
+		tflog.Debug(ctx, fmt.Sprintf("%s: Cannot be deleted due to REST method missing", state.Id.ValueString()))
+	} else if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
 	}

@@ -242,8 +242,10 @@ func (p *IseProvider) Configure(ctx context.Context, req provider.ConfigureReque
 func (p *IseProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewAllowedProtocolsResource,
+		NewCertificateAuthenticationProfileResource,
 		NewEndpointIdentityGroupResource,
 		NewInternalUserResource,
+		NewTrustSecSecurityGroupResource,
 		NewUserIdentityGroupResource,
 	}
 }
@@ -251,8 +253,10 @@ func (p *IseProvider) Resources(ctx context.Context) []func() resource.Resource 
 func (p *IseProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		NewAllowedProtocolsDataSource,
+		NewCertificateAuthenticationProfileDataSource,
 		NewEndpointIdentityGroupDataSource,
 		NewInternalUserDataSource,
+		NewTrustSecSecurityGroupDataSource,
 		NewUserIdentityGroupDataSource,
 	}
 }
