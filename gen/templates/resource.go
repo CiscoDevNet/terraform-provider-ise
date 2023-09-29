@@ -393,8 +393,17 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 		return
 	}
 
+	{{- $id := false}}
+	{{- range .Attributes}}
+	{{- if .Id}}
+	{{$id = true}}
+	plan.Id = types.StringValue(fmt.Sprint(plan.{{toGoName .TfName}}))
+	{{- end}}
+	{{- end}}
+	{{- if not $id}}
 	locationElements := strings.Split(location, "/")
 	plan.Id = types.StringValue(locationElements[len(locationElements)-1])
+	{{- end}}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 

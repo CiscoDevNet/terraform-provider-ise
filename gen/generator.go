@@ -198,6 +198,16 @@ func contains(s []string, str string) bool {
 	return false
 }
 
+// Templating helper function to return true if id included in attributes
+func HasId(attributes []YamlConfigAttribute) bool {
+	for _, attr := range attributes {
+		if attr.Id {
+			return true
+		}
+	}
+	return false
+}
+
 // Map of templating functions
 var functions = template.FuncMap{
 	"toGoName":  ToGoName,
@@ -206,6 +216,7 @@ var functions = template.FuncMap{
 	"sprintf":   fmt.Sprintf,
 	"toLower":   strings.ToLower,
 	"path":      BuildPath,
+	"hasId":     HasId,
 }
 
 func augmentAttribute(attr *YamlConfigAttribute) {
