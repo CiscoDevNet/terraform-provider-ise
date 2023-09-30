@@ -1,0 +1,38 @@
+---
+name: Repository
+rest_endpoint: /api/v1/repository
+open_api: true
+skip_minimum_test: true
+doc_category: Administration
+attributes:
+  - model_name: name
+    type: String
+    id: true
+    description: Repository name should be less than 80 characters and can contain alphanumeric, underscore, hyphen and dot characters.
+    example: repo1
+  - model_name: protocol
+    type: String
+    enum_values: [CDROM, DISK, FTP, HTTP, HTTPS, NFS, SFTP, TFTP]
+    description: Protocol
+    example: SFTP
+  - model_name: path
+    type: String
+    description: 'Path should always start with \"/\" and can contain alphanumeric, underscore, hyphen and dot characters.'
+    example: /dir
+  - model_name: serverName
+    type: String
+    description: Name of the server
+    example: server1
+  - model_name: userName
+    type: String
+    description: User name
+    example: user1
+  - model_name: password
+    type: String
+    write_only: true
+    description: Password can contain alphanumeric and/or special characters.
+    example: cisco123
+  - model_name: enablePki
+    type: Bool
+    description: Enable PKI
+    example: false
