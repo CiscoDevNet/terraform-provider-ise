@@ -101,7 +101,7 @@ func (d *TrustSecSecurityGroupDataSource) Read(ctx context.Context, req datasour
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
 
-	res, err := d.client.Get("/ers/config/sgt" + "/" + config.Id.ValueString())
+	res, err := d.client.Get(config.getPath() + "/" + config.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object, got error: %s", err))
 		return

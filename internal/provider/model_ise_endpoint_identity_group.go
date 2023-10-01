@@ -35,6 +35,10 @@ type EndpointIdentityGroup struct {
 	ParentEndpointIdentityGroupId types.String `tfsdk:"parent_endpoint_identity_group_id"`
 }
 
+func (data EndpointIdentityGroup) getPath() string {
+	return "/ers/config/endpointgroup"
+}
+
 func (data EndpointIdentityGroup) toBody(ctx context.Context, state EndpointIdentityGroup) string {
 	body := ""
 	if !data.Name.IsNull() {

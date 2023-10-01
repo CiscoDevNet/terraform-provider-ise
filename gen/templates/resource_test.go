@@ -121,10 +121,12 @@ func TestAccIse{{camelCase .Name}}(t *testing.T) {
 		Config: {{if .TestPrerequisites}}testAccIse{{camelCase .Name}}PrerequisitesConfig+{{end}}testAccIse{{camelCase .Name}}Config_all(),
 		Check: resource.ComposeTestCheckFunc(checks...),
 	})
+	{{- if not (hasReference .Attributes)}}
 	steps = append(steps, resource.TestStep{
 		ResourceName:  "ise_{{snakeCase $name}}.test",
 		ImportState:   true,
 	})
+	{{- end}}
 	
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -142,7 +144,7 @@ const testAccIse{{camelCase .Name}}PrerequisitesConfig = `
 func testAccIse{{camelCase .Name}}Config_minimum() string {
 	config := `resource "ise_{{snakeCase $name}}" "test" {` + "\n"
 	{{- range  .Attributes}}
-	{{- if or .Id .Mandatory}}
+	{{- if or .Id .Reference .Mandatory}}
 	{{- if len .TestTags}}
 	if {{range $i, $e := .TestTags}}{{if $i}} || {{end}}os.Getenv("{{$e}}") != ""{{end}} {
 		config += `	{{.TfName}} = {{if .TestValue}}{{.TestValue}}{{else}}{{if eq .Type "String"}}"{{.Example}}"{{else if eq .Type "StringList"}}["{{.Example}}"]{{else}}{{.Example}}{{end}}{{end}}` + "\n"

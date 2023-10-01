@@ -43,6 +43,10 @@ type InternalUser struct {
 	Description          types.String `tfsdk:"description"`
 }
 
+func (data InternalUser) getPath() string {
+	return "/ers/config/internaluser"
+}
+
 func (data InternalUser) toBody(ctx context.Context, state InternalUser) string {
 	body := ""
 	if !data.Name.IsNull() {

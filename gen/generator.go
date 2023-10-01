@@ -96,8 +96,6 @@ type YamlConfig struct {
 	Name              string                `yaml:"name"`
 	Model             string                `yaml:"model"`
 	RestEndpoint      string                `yaml:"rest_endpoint"`
-	GetRestEndpoint   string                `yaml:"get_rest_endpoint"`
-	PostRestEndpoint  string                `yaml:"post_rest_endpoint"`
 	OpenApi           bool                  `yaml:"open_api"`
 	IdPath            string                `yaml:"id_path"`
 	MinimumVersion    string                `yaml:"minimum_version"`
@@ -120,6 +118,7 @@ type YamlConfigAttribute struct {
 	DataPath         []string              `yaml:"data_path"`
 	Keys             []string              `yaml:"keys"`
 	Id               bool                  `yaml:"id"`
+	Reference        bool                  `yaml:"reference"`
 	Mandatory        bool                  `yaml:"mandatory"`
 	WriteOnly        bool                  `yaml:"write_only"`
 	WriteChangesOnly bool                  `yaml:"write_changes_only"`
@@ -210,15 +209,26 @@ func HasId(attributes []YamlConfigAttribute) bool {
 	return false
 }
 
+// Templating helper function to return true if reference included in attributes
+func HasReference(attributes []YamlConfigAttribute) bool {
+	for _, attr := range attributes {
+		if attr.Reference {
+			return true
+		}
+	}
+	return false
+}
+
 // Map of templating functions
 var functions = template.FuncMap{
-	"toGoName":  ToGoName,
-	"camelCase": CamelCase,
-	"snakeCase": SnakeCase,
-	"sprintf":   fmt.Sprintf,
-	"toLower":   strings.ToLower,
-	"path":      BuildPath,
-	"hasId":     HasId,
+	"toGoName":     ToGoName,
+	"camelCase":    CamelCase,
+	"snakeCase":    SnakeCase,
+	"sprintf":      fmt.Sprintf,
+	"toLower":      strings.ToLower,
+	"path":         BuildPath,
+	"hasId":        HasId,
+	"hasReference": HasReference,
 }
 
 func augmentAttribute(attr *YamlConfigAttribute) {

@@ -31,54 +31,50 @@ import (
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
-	_ datasource.DataSource              = &NetworkAccessPolicySetDataSource{}
-	_ datasource.DataSourceWithConfigure = &NetworkAccessPolicySetDataSource{}
+	_ datasource.DataSource              = &NetworkAccessAuthenticationRuleDataSource{}
+	_ datasource.DataSourceWithConfigure = &NetworkAccessAuthenticationRuleDataSource{}
 )
 
-func NewNetworkAccessPolicySetDataSource() datasource.DataSource {
-	return &NetworkAccessPolicySetDataSource{}
+func NewNetworkAccessAuthenticationRuleDataSource() datasource.DataSource {
+	return &NetworkAccessAuthenticationRuleDataSource{}
 }
 
-type NetworkAccessPolicySetDataSource struct {
+type NetworkAccessAuthenticationRuleDataSource struct {
 	client *ise.Client
 }
 
-func (d *NetworkAccessPolicySetDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_network_access_policy_set"
+func (d *NetworkAccessAuthenticationRuleDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_network_access_authentication_rule"
 }
 
-func (d *NetworkAccessPolicySetDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *NetworkAccessAuthenticationRuleDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: "This data source can read the Network Access Policy Set.",
+		MarkdownDescription: "This data source can read the Network Access Authentication Rule.",
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The id of the object",
 				Required:            true,
 			},
+			"policy_set_id": schema.StringAttribute{
+				MarkdownDescription: "Policy set ID",
+				Required:            true,
+			},
 			"name": schema.StringAttribute{
-				MarkdownDescription: "Given name for the policy set, [Valid characters are alphanumerics, underscore, hyphen, space, period, parentheses]",
+				MarkdownDescription: "Rule name, [Valid characters are alphanumerics, underscore, hyphen, space, period, parentheses]",
 				Computed:            true,
 			},
-			"description": schema.StringAttribute{
-				MarkdownDescription: "The description of the policy set",
-				Computed:            true,
-			},
-			"is_proxy": schema.BoolAttribute{
-				MarkdownDescription: "Flag which indicates if the policy set service is of type 'Proxy Sequence' or 'Allowed Protocols'",
+			"default": schema.BoolAttribute{
+				MarkdownDescription: "Indicates if this rule is the default one",
 				Computed:            true,
 			},
 			"rank": schema.Int64Attribute{
-				MarkdownDescription: "The rank (priority) in relation to other policy sets. Lower rank is higher priority.",
-				Computed:            true,
-			},
-			"service_name": schema.StringAttribute{
-				MarkdownDescription: "Policy set service identifier. 'Allowed Protocols' or 'Server Sequence'.",
+				MarkdownDescription: "The rank (priority) in relation to other rules. Lower rank is higher priority.",
 				Computed:            true,
 			},
 			"state": schema.StringAttribute{
-				MarkdownDescription: "The state that the policy set is in. A disabled policy set cannot be matched.",
+				MarkdownDescription: "The state that the rule is in. A disabled rule cannot be matched.",
 				Computed:            true,
 			},
 			"condition_type": schema.StringAttribute{
@@ -109,11 +105,27 @@ func (d *NetworkAccessPolicySetDataSource) Schema(ctx context.Context, req datas
 				MarkdownDescription: "Equality operator",
 				Computed:            true,
 			},
+			"identity_source_name": schema.StringAttribute{
+				MarkdownDescription: "Identity source name from the identity stores",
+				Computed:            true,
+			},
+			"if_auth_fail": schema.StringAttribute{
+				MarkdownDescription: "Action to perform when authentication fails such as Bad credentials, disabled user and so on",
+				Computed:            true,
+			},
+			"if_process_fail": schema.StringAttribute{
+				MarkdownDescription: "Action to perform when ISE is uanble to access the identity database",
+				Computed:            true,
+			},
+			"if_user_not_found": schema.StringAttribute{
+				MarkdownDescription: "Action to perform when user is not found in any of identity stores",
+				Computed:            true,
+			},
 		},
 	}
 }
 
-func (d *NetworkAccessPolicySetDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
+func (d *NetworkAccessAuthenticationRuleDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -121,8 +133,8 @@ func (d *NetworkAccessPolicySetDataSource) Configure(_ context.Context, req data
 	d.client = req.ProviderData.(*IseProviderData).Client
 }
 
-func (d *NetworkAccessPolicySetDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var config NetworkAccessPolicySet
+func (d *NetworkAccessAuthenticationRuleDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var config NetworkAccessAuthenticationRule
 
 	// Read config
 	diags := req.Config.Get(ctx, &config)

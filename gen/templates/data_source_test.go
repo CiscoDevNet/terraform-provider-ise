@@ -210,6 +210,11 @@ func testAccDataSourceIse{{camelCase .Name}}Config() string {
 	config += `
 		data "ise_{{snakeCase .Name}}" "test" {
 			id = ise_{{snakeCase $name}}.test.id
+			{{- range  .Attributes}}
+			{{- if .Reference}}
+			{{.TfName}} = {{if .TestValue}}{{.TestValue}}{{else}}{{if eq .Type "String"}}"{{.Example}}"{{else if eq .Type "StringList"}}["{{.Example}}"]{{else}}{{.Example}}{{end}}{{end}}
+			{{- end}}
+			{{- end}}
 		}
 	`
 	return config

@@ -38,6 +38,10 @@ type CertificateAuthenticationProfile struct {
 	UsernameFrom              types.String `tfsdk:"username_from"`
 }
 
+func (data CertificateAuthenticationProfile) getPath() string {
+	return "/ers/config/certificateprofile"
+}
+
 func (data CertificateAuthenticationProfile) toBody(ctx context.Context, state CertificateAuthenticationProfile) string {
 	body := ""
 	if !data.Name.IsNull() {

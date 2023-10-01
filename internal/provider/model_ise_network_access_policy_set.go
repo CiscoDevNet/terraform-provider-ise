@@ -44,6 +44,10 @@ type NetworkAccessPolicySet struct {
 	ConditionOperator        types.String `tfsdk:"condition_operator"`
 }
 
+func (data NetworkAccessPolicySet) getPath() string {
+	return "/api/v1/policy/network-access/policy-set"
+}
+
 func (data NetworkAccessPolicySet) toBody(ctx context.Context, state NetworkAccessPolicySet) string {
 	body := ""
 	if !data.Name.IsNull() {

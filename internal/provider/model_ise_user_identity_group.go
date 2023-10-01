@@ -34,6 +34,10 @@ type UserIdentityGroup struct {
 	ParentUserIdentityGroupId types.String `tfsdk:"parent_user_identity_group_id"`
 }
 
+func (data UserIdentityGroup) getPath() string {
+	return "/ers/config/identitygroup"
+}
+
 func (data UserIdentityGroup) toBody(ctx context.Context, state UserIdentityGroup) string {
 	body := ""
 	if !data.Name.IsNull() {

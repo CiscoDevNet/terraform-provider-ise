@@ -36,6 +36,10 @@ type TrustSecSecurityGroup struct {
 	IsReadOnly      types.Bool   `tfsdk:"is_read_only"`
 }
 
+func (data TrustSecSecurityGroup) getPath() string {
+	return "/ers/config/sgt"
+}
+
 func (data TrustSecSecurityGroup) toBody(ctx context.Context, state TrustSecSecurityGroup) string {
 	body := ""
 	if !data.Name.IsNull() {

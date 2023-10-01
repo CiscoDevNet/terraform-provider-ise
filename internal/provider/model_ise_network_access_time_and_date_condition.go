@@ -45,6 +45,10 @@ type NetworkAccessTimeAndDateCondition struct {
 	ExceptionEndTime   types.String `tfsdk:"exception_end_time"`
 }
 
+func (data NetworkAccessTimeAndDateCondition) getPath() string {
+	return "/api/v1/policy/network-access/time-condition"
+}
+
 func (data NetworkAccessTimeAndDateCondition) toBody(ctx context.Context, state NetworkAccessTimeAndDateCondition) string {
 	body := ""
 	if !data.Name.IsNull() {

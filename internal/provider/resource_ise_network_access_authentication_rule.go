@@ -38,25 +38,25 @@ import (
 )
 
 // Ensure provider defined types fully satisfy framework interfaces
-var _ resource.Resource = &NetworkAccessPolicySetResource{}
-var _ resource.ResourceWithImportState = &NetworkAccessPolicySetResource{}
+var _ resource.Resource = &NetworkAccessAuthenticationRuleResource{}
+var _ resource.ResourceWithImportState = &NetworkAccessAuthenticationRuleResource{}
 
-func NewNetworkAccessPolicySetResource() resource.Resource {
-	return &NetworkAccessPolicySetResource{}
+func NewNetworkAccessAuthenticationRuleResource() resource.Resource {
+	return &NetworkAccessAuthenticationRuleResource{}
 }
 
-type NetworkAccessPolicySetResource struct {
+type NetworkAccessAuthenticationRuleResource struct {
 	client *ise.Client
 }
 
-func (r *NetworkAccessPolicySetResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_network_access_policy_set"
+func (r *NetworkAccessAuthenticationRuleResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_network_access_authentication_rule"
 }
 
-func (r *NetworkAccessPolicySetResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *NetworkAccessAuthenticationRuleResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage a Network Access Policy Set.").String,
+		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage a Network Access Authentication Rule.").String,
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -66,28 +66,24 @@ func (r *NetworkAccessPolicySetResource) Schema(ctx context.Context, req resourc
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Given name for the policy set, [Valid characters are alphanumerics, underscore, hyphen, space, period, parentheses]").String,
-				Required:            true,
-			},
-			"description": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The description of the policy set").String,
+			"policy_set_id": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Policy set ID").String,
 				Optional:            true,
 			},
-			"is_proxy": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Flag which indicates if the policy set service is of type 'Proxy Sequence' or 'Allowed Protocols'").String,
+			"name": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Rule name, [Valid characters are alphanumerics, underscore, hyphen, space, period, parentheses]").String,
+				Required:            true,
+			},
+			"default": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Indicates if this rule is the default one").String,
 				Optional:            true,
 			},
 			"rank": schema.Int64Attribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The rank (priority) in relation to other policy sets. Lower rank is higher priority.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("The rank (priority) in relation to other rules. Lower rank is higher priority.").String,
 				Optional:            true,
 			},
-			"service_name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Policy set service identifier. 'Allowed Protocols' or 'Server Sequence'.").String,
-				Required:            true,
-			},
 			"state": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The state that the policy set is in. A disabled policy set cannot be matched.").AddStringEnumDescription("disabled", "enabled", "monitor").String,
+				MarkdownDescription: helpers.NewAttributeDescription("The state that the rule is in. A disabled rule cannot be matched.").AddStringEnumDescription("disabled", "enabled", "monitor").String,
 				Optional:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("disabled", "enabled", "monitor"),
@@ -127,11 +123,36 @@ func (r *NetworkAccessPolicySetResource) Schema(ctx context.Context, req resourc
 					stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
 				},
 			},
+			"identity_source_name": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Identity source name from the identity stores").String,
+				Optional:            true,
+			},
+			"if_auth_fail": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Action to perform when authentication fails such as Bad credentials, disabled user and so on").AddStringEnumDescription("REJECT", "DROP", "CONTINUE").String,
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("REJECT", "DROP", "CONTINUE"),
+				},
+			},
+			"if_process_fail": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Action to perform when ISE is uanble to access the identity database").AddStringEnumDescription("REJECT", "DROP", "CONTINUE").String,
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("REJECT", "DROP", "CONTINUE"),
+				},
+			},
+			"if_user_not_found": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Action to perform when user is not found in any of identity stores").AddStringEnumDescription("REJECT", "DROP", "CONTINUE").String,
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("REJECT", "DROP", "CONTINUE"),
+				},
+			},
 		},
 	}
 }
 
-func (r *NetworkAccessPolicySetResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+func (r *NetworkAccessAuthenticationRuleResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -139,8 +160,8 @@ func (r *NetworkAccessPolicySetResource) Configure(_ context.Context, req resour
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-func (r *NetworkAccessPolicySetResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan NetworkAccessPolicySet
+func (r *NetworkAccessAuthenticationRuleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan NetworkAccessAuthenticationRule
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -152,13 +173,13 @@ func (r *NetworkAccessPolicySetResource) Create(ctx context.Context, req resourc
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
 
 	// Create object
-	body := plan.toBody(ctx, NetworkAccessPolicySet{})
+	body := plan.toBody(ctx, NetworkAccessAuthenticationRule{})
 	res, _, err := r.client.Post(plan.getPath(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
 		return
 	}
-	plan.Id = types.StringValue(res.Get("response.id").String())
+	plan.Id = types.StringValue(res.Get("response.rule.id").String())
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -166,8 +187,8 @@ func (r *NetworkAccessPolicySetResource) Create(ctx context.Context, req resourc
 	resp.Diagnostics.Append(diags...)
 }
 
-func (r *NetworkAccessPolicySetResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state NetworkAccessPolicySet
+func (r *NetworkAccessAuthenticationRuleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state NetworkAccessAuthenticationRule
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -195,8 +216,8 @@ func (r *NetworkAccessPolicySetResource) Read(ctx context.Context, req resource.
 	resp.Diagnostics.Append(diags...)
 }
 
-func (r *NetworkAccessPolicySetResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan, state NetworkAccessPolicySet
+func (r *NetworkAccessAuthenticationRuleResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var plan, state NetworkAccessAuthenticationRule
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -226,8 +247,8 @@ func (r *NetworkAccessPolicySetResource) Update(ctx context.Context, req resourc
 	resp.Diagnostics.Append(diags...)
 }
 
-func (r *NetworkAccessPolicySetResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state NetworkAccessPolicySet
+func (r *NetworkAccessAuthenticationRuleResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state NetworkAccessAuthenticationRule
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -252,6 +273,6 @@ func (r *NetworkAccessPolicySetResource) Delete(ctx context.Context, req resourc
 	resp.State.RemoveResource(ctx)
 }
 
-func (r *NetworkAccessPolicySetResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *NetworkAccessAuthenticationRuleResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }

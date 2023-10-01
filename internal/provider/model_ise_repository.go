@@ -38,6 +38,10 @@ type Repository struct {
 	EnablePki  types.Bool   `tfsdk:"enable_pki"`
 }
 
+func (data Repository) getPath() string {
+	return "/api/v1/repository"
+}
+
 func (data Repository) toBody(ctx context.Context, state Repository) string {
 	body := ""
 	if !data.Name.IsNull() {

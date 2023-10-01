@@ -35,6 +35,10 @@ type NetworkAccessDictionary struct {
 	DictionaryAttrType types.String `tfsdk:"dictionary_attr_type"`
 }
 
+func (data NetworkAccessDictionary) getPath() string {
+	return "/api/v1/policy/network-access/dictionaries"
+}
+
 func (data NetworkAccessDictionary) toBody(ctx context.Context, state NetworkAccessDictionary) string {
 	body := ""
 	if !data.Name.IsNull() {

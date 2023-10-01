@@ -144,7 +144,7 @@ func (r *NetworkAccessTimeAndDateConditionResource) Create(ctx context.Context, 
 
 	// Create object
 	body := plan.toBody(ctx, NetworkAccessTimeAndDateCondition{})
-	res, _, err := r.client.Post("/api/v1/policy/network-access/time-condition", body)
+	res, _, err := r.client.Post(plan.getPath(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
 		return
@@ -169,7 +169,7 @@ func (r *NetworkAccessTimeAndDateConditionResource) Read(ctx context.Context, re
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
-	res, err := r.client.Get("/api/v1/policy/network-access/time-condition" + "/" + state.Id.ValueString())
+	res, err := r.client.Get(state.getPath() + "/" + state.Id.ValueString())
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
@@ -205,7 +205,7 @@ func (r *NetworkAccessTimeAndDateConditionResource) Update(ctx context.Context, 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
-	res, err := r.client.Put("/api/v1/policy/network-access/time-condition"+"/"+plan.Id.ValueString(), body)
+	res, err := r.client.Put(plan.getPath()+"/"+plan.Id.ValueString(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -229,7 +229,7 @@ func (r *NetworkAccessTimeAndDateConditionResource) Delete(ctx context.Context, 
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
 
-	res, err := r.client.Delete("/api/v1/policy/network-access/time-condition" + "/" + state.Id.ValueString())
+	res, err := r.client.Delete(state.getPath() + "/" + state.Id.ValueString())
 	if err != nil && strings.Contains(err.Error(), "StatusCode 405") {
 		// silently ignore if DELETE method not implemented
 		tflog.Debug(ctx, fmt.Sprintf("%s: Cannot be deleted due to REST method missing", state.Id.ValueString()))

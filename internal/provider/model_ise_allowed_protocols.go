@@ -108,6 +108,10 @@ type AllowedProtocols struct {
 	Allow5g                                    types.Bool   `tfsdk:"allow_5g"`
 }
 
+func (data AllowedProtocols) getPath() string {
+	return "/ers/config/allowedprotocols"
+}
+
 func (data AllowedProtocols) toBody(ctx context.Context, state AllowedProtocols) string {
 	body := ""
 	if !data.Name.IsNull() {

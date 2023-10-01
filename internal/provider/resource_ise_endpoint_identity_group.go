@@ -109,7 +109,7 @@ func (r *EndpointIdentityGroupResource) Create(ctx context.Context, req resource
 
 	// Create object
 	body := plan.toBody(ctx, EndpointIdentityGroup{})
-	res, location, err := r.client.Post("/ers/config/endpointgroup", body)
+	res, location, err := r.client.Post(plan.getPath(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
 		return
@@ -135,7 +135,7 @@ func (r *EndpointIdentityGroupResource) Read(ctx context.Context, req resource.R
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
-	res, err := r.client.Get("/ers/config/endpointgroup" + "/" + state.Id.ValueString())
+	res, err := r.client.Get(state.getPath() + "/" + state.Id.ValueString())
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
@@ -171,7 +171,7 @@ func (r *EndpointIdentityGroupResource) Update(ctx context.Context, req resource
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
-	res, err := r.client.Put("/ers/config/endpointgroup"+"/"+plan.Id.ValueString(), body)
+	res, err := r.client.Put(plan.getPath()+"/"+plan.Id.ValueString(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -195,7 +195,7 @@ func (r *EndpointIdentityGroupResource) Delete(ctx context.Context, req resource
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
 
-	res, err := r.client.Delete("/ers/config/endpointgroup" + "/" + state.Id.ValueString())
+	res, err := r.client.Delete(state.getPath() + "/" + state.Id.ValueString())
 	if err != nil && strings.Contains(err.Error(), "StatusCode 405") {
 		// silently ignore if DELETE method not implemented
 		tflog.Debug(ctx, fmt.Sprintf("%s: Cannot be deleted due to REST method missing", state.Id.ValueString()))

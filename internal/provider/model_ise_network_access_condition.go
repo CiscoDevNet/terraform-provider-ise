@@ -66,6 +66,10 @@ type NetworkAccessConditionChildrenChildren struct {
 	Operator        types.String `tfsdk:"operator"`
 }
 
+func (data NetworkAccessCondition) getPath() string {
+	return "/api/v1/policy/network-access/condition"
+}
+
 func (data NetworkAccessCondition) toBody(ctx context.Context, state NetworkAccessCondition) string {
 	body := ""
 	if !data.Name.IsNull() {
