@@ -1,0 +1,277 @@
+---
+name: Network Device
+rest_endpoint: /ers/config/networkdevice
+doc_category: Administration
+attributes:
+  - model_name: name
+    data_path: [NetworkDevice]
+    type: String
+    mandatory: true
+    description: The name of the network device
+    example: Device1
+  - model_name: description
+    data_path: [NetworkDevice]
+    type: String
+    description: Description
+    example: My device
+  - model_name: enableKeyWrap
+    data_path: [NetworkDevice, authenticationSettings]
+    tf_name: authentication_enable_key_wrap
+    type: Bool
+    description: Enable key wrap
+    example: true
+  - model_name: keyEncryptionKey
+    data_path: [NetworkDevice, authenticationSettings]
+    tf_name: authentication_encryption_key
+    type: String
+    description: Encryption key
+    example: cisco123cisco123
+  - model_name: keyInputFormat
+    data_path: [NetworkDevice, authenticationSettings]
+    tf_name: authentication_encryption_key_format
+    type: String
+    enum_values: [ASCII, HEXADECIMAL]
+    description: Key input format
+    example: ASCII
+  - model_name: messageAuthenticatorCodeKey
+    data_path: [NetworkDevice, authenticationSettings]
+    tf_name: authentication_message_authenticator_code_key
+    type: String
+    description: Message authenticator code key
+    example: cisco123cisco1235678
+  - model_name: networkProtocol
+    data_path: [NetworkDevice, authenticationSettings]
+    tf_name: authentication_network_protocol
+    type: String
+    enum_values: [RADIUS, TACACS_PLUS]
+    description: Network protocol
+    example: RADIUS
+  - model_name: radiusSharedSecret
+    data_path: [NetworkDevice, authenticationSettings]
+    tf_name: authentication_radius_shared_secret
+    type: String
+    description: RADIUS shared secret
+    example: cisco123
+  - model_name: enableMultiSecret
+    data_path: [NetworkDevice, authenticationSettings]
+    tf_name: authentication_enable_multi_secret
+    type: Bool
+    description: Enable multiple RADIUS shared secrets
+    example: true
+  - model_name: secondRadiusSharedSecret
+    data_path: [NetworkDevice, authenticationSettings]
+    tf_name: authentication_second_radius_shared_secret
+    type: String
+    description: Second RADIUS shared secret
+    example: cisco12345
+  - model_name: dtlsRequired
+    data_path: [NetworkDevice, authenticationSettings]
+    tf_name: authentication_dtls_required
+    type: Bool
+    description: Enforce use of DTLS
+    example: true
+  - model_name: coaPort
+    data_path: [NetworkDevice]
+    type: Int64
+    description: CoA port
+    example: 12345
+  - model_name: dtlsDnsName
+    data_path: [NetworkDevice]
+    type: String
+    description: This value is used to verify the client identity contained in the X.509 RADIUS/DTLS client certificate
+    example: cisco.com
+  - model_name: NetworkDeviceIPList
+    data_path: [NetworkDevice]
+    tf_name: ips
+    type: List
+    mandatory: true
+    description: List of IP subnets
+    attributes:
+      - model_name: ipaddress
+        type: String
+        id: true
+        description: It can be either single ip address or ip range address
+        example: 2.3.4.5
+      - model_name: ipaddressExclude
+        type: String
+        description: It can be either single ip address or ip range address
+        example: 5.6.7.8
+        exclude_test: true
+      - model_name: mask
+        type: String
+        description: Subnet mask length
+        example: 32
+  - model_name: NetworkDeviceGroupList
+    tf_name: network_device_groups
+    data_path: [NetworkDevice]
+    type: StringList
+    description: List of network device groups, e.g. `Device Type#All Device Types#ACCESS`
+    example: Device Type#All Device Types#ACCESS
+    exclude_test: true
+  - model_name: modelName
+    data_path: [NetworkDevice]
+    type: String
+    description: Model name
+    example: Unknown
+  - model_name: softwareVersion
+    data_path: [NetworkDevice]
+    type: String
+    description: Software version
+    example: Unknown
+  - model_name: profileName
+    data_path: [NetworkDevice]
+    type: String
+    description: Profile name
+    example: Cisco
+  - model_name: linkTrapQuery
+    data_path: [NetworkDevice, snmpsettings]
+    tf_name: snmp_link_trap_query
+    type: Bool
+    description: SNMP link Trap Query
+    example: true
+  - model_name: macTrapQuery
+    data_path: [NetworkDevice, snmpsettings]
+    tf_name: snmp_mac_trap_query
+    type: Bool
+    description: SNMP MAC Trap Query
+    example: true
+  - model_name: originatingPolicyServicesNode
+    data_path: [NetworkDevice, snmpsettings]
+    tf_name: snmp_originating_policy_service_node
+    type: String
+    description: Originating Policy Services Node
+    example: PSN1
+    exclude_test: true
+  - model_name: pollingInterval
+    data_path: [NetworkDevice, snmpsettings]
+    tf_name: snmp_polling_interval
+    type: Int64
+    min_int: 600
+    max_int: 86400
+    description: SNMP Polling Interval in seconds
+    example: 1200
+  - model_name: roCommunity
+    data_path: [NetworkDevice, snmpsettings]
+    tf_name: snmp_ro_community
+    type: String
+    description: SNMP RO Community
+    example: rocom
+  - model_name: version
+    data_path: [NetworkDevice, snmpsettings]
+    tf_name: snmp_version
+    type: String
+    enum_values: [ONE, TWO_C, THREE]
+    description: SNMP version
+    example: TWO_C
+  - model_name: connectModeOptions
+    data_path: [NetworkDevice, tacacsSettings]
+    tf_name: tacacs_connect_mode_options
+    type: String
+    enum_values: ["OFF", "ON_LEGACY", "ON_DRAFT_COMPLIANT"]
+    description: Connect mode options
+    example: OFF
+  - model_name: sharedSecret
+    data_path: [NetworkDevice, tacacsSettings]
+    tf_name: tacacs_shared_secret
+    type: String
+    description: Shared secret
+    example: cisco123
+  - model_name: sgaDeviceId
+    data_path: [NetworkDevice, trustsecsettings, deviceAuthenticationSettings]
+    tf_name: trustsec_device_id
+    type: String
+    description: TrustSec device ID
+    example: device123
+  - model_name: sgaDevicePassword
+    data_path: [NetworkDevice, trustsecsettings, deviceAuthenticationSettings]
+    tf_name: trustsec_device_password
+    type: String
+    description: TrustSec device password
+    example: cisco123
+  - model_name: restApiUsername
+    data_path: [NetworkDevice, trustsecsettings, deviceAuthenticationSettings]
+    tf_name: trustsec_rest_api_username
+    type: String
+    description: REST API username
+    example: user123
+  - model_name: restApiPassword
+    data_path: [NetworkDevice, trustsecsettings, deviceAuthenticationSettings]
+    tf_name: trustsec_rest_api_password
+    type: String
+    description: REST API password
+    write_only: true
+    example: Cisco123
+  - model_name: enableModePassword
+    data_path: [NetworkDevice, trustsecsettings, deviceConfigurationDeployment]
+    tf_name: trustsec_enable_mode_password
+    type: String
+    description: Enable mode password
+    example: cisco123
+  - model_name: execModePassword
+    data_path: [NetworkDevice, trustsecsettings, deviceConfigurationDeployment]
+    tf_name: trustsec_exec_mode_password
+    type: String
+    description: EXEC mode password
+    example: cisco123
+  - model_name: execModeUsername
+    data_path: [NetworkDevice, trustsecsettings, deviceConfigurationDeployment]
+    tf_name: trustsec_exec_mode_username
+    type: String
+    description: EXEC mode username
+    example: user1
+  - model_name: includeWhenDeployingSGTUpdates
+    data_path: [NetworkDevice, trustsecsettings, deviceConfigurationDeployment]
+    tf_name: trustsec_include_when_deploying_sgt_updates
+    type: Bool
+    description: Include this device when deploying Security Group Tag Mapping Updates
+    example: true
+  - model_name: downlaodEnvironmentDataEveryXSeconds
+    data_path: [NetworkDevice, trustsecsettings, sgaNotificationAndUpdates]
+    tf_name: trustsec_download_enviroment_data_every_x_seconds
+    type: Int64
+    description: Download environment data every X seconds
+    example: 1000
+  - model_name: downlaodPeerAuthorizationPolicyEveryXSeconds
+    data_path: [NetworkDevice, trustsecsettings, sgaNotificationAndUpdates]
+    tf_name: trustsec_download_peer_authorization_policy_every_x_seconds
+    type: Int64
+    description: Download peer authorization policy every X seconds
+    example: 1000
+  - model_name: downloadSGACLListsEveryXSeconds
+    data_path: [NetworkDevice, trustsecsettings, sgaNotificationAndUpdates]
+    tf_name: trustsec_download_sgacl_lists_every_x_seconds
+    type: Int64
+    description: Download SGACL lists every X seconds
+    example: 1000
+  - model_name: otherSGADevicesToTrustThisDevice
+    data_path: [NetworkDevice, trustsecsettings, sgaNotificationAndUpdates]
+    tf_name: trustsec_other_sga_devices_to_trust_this_device
+    type: Bool
+    description: Other TrustSec devices to trust this device
+    example: true
+  - model_name: reAuthenticationEveryXSeconds
+    data_path: [NetworkDevice, trustsecsettings, sgaNotificationAndUpdates]
+    tf_name: trustsec_re_authentication_every_x_seconds
+    type: Int64
+    description: Re-authenticate every X seconds
+    example: 1000
+  - model_name: sendConfigurationToDevice
+    data_path: [NetworkDevice, trustsecsettings, sgaNotificationAndUpdates]
+    tf_name: trustsec_send_configuration_to_device
+    type: Bool
+    description: Send configuration to device
+    example: true
+  - model_name: sendConfigurationToDeviceUsing
+    data_path: [NetworkDevice, trustsecsettings, sgaNotificationAndUpdates]
+    tf_name: trustsec_send_configuration_to_device_using
+    type: String
+    enum_values: [DISABLE_ALL, ENABLE_USING_CLI, ENABLE_USING_COA]
+    description: Send configuration to device using
+    example: ENABLE_USING_COA
+  - model_name: coaSourceHost
+    data_path: [NetworkDevice, trustsecsettings, sgaNotificationAndUpdates]
+    tf_name: trustsec_coa_source_host
+    type: String
+    description: CoA source host
+    example: PSN1
+    exclude_test: true
