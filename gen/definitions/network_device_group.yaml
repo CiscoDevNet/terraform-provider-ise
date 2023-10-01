@@ -1,0 +1,23 @@
+---
+name: Network Device Group
+rest_endpoint: /ers/config/networkdevicegroup
+doc_category: Administration
+attributes:
+  - model_name: name
+    data_path: [NetworkDeviceGroup]
+    type: String
+    mandatory: true
+    description: The name of the network device group including its hierarchy, e.g. `Device Type#All Device Types#ACCESS`.
+    example: Device Type#All Device Types#Group1
+  - model_name: description
+    data_path: [NetworkDeviceGroup]
+    type: String
+    description: Description
+    example: My network device group
+  - model_name: othername
+    tf_name: root_group
+    data_path: [NetworkDeviceGroup]
+    type: String
+    mandatory: true
+    description: The name of the root device group.
+    example: Device Type
