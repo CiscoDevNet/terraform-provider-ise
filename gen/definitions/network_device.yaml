@@ -218,7 +218,7 @@ attributes:
     tf_name: trustsec_exec_mode_username
     type: String
     description: EXEC mode username
-    example: user1
+    example: user456
   - model_name: includeWhenDeployingSGTUpdates
     data_path: [NetworkDevice, trustsecsettings, deviceConfigurationDeployment]
     tf_name: trustsec_include_when_deploying_sgt_updates

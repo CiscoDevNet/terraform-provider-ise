@@ -58,7 +58,7 @@ func TestAccIseNetworkDevice(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_device.test", "trustsec_rest_api_username", "user123"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_device.test", "trustsec_enable_mode_password", "cisco123"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_device.test", "trustsec_exec_mode_password", "cisco123"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_device.test", "trustsec_exec_mode_username", "user1"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_device.test", "trustsec_exec_mode_username", "user456"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_device.test", "trustsec_include_when_deploying_sgt_updates", "true"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_device.test", "trustsec_download_enviroment_data_every_x_seconds", "1000"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_device.test", "trustsec_download_peer_authorization_policy_every_x_seconds", "1000"))
@@ -135,7 +135,7 @@ func testAccIseNetworkDeviceConfig_all() string {
 	config += `	trustsec_rest_api_password = "Cisco123"` + "\n"
 	config += `	trustsec_enable_mode_password = "cisco123"` + "\n"
 	config += `	trustsec_exec_mode_password = "cisco123"` + "\n"
-	config += `	trustsec_exec_mode_username = "user1"` + "\n"
+	config += `	trustsec_exec_mode_username = "user456"` + "\n"
 	config += `	trustsec_include_when_deploying_sgt_updates = true` + "\n"
 	config += `	trustsec_download_enviroment_data_every_x_seconds = 1000` + "\n"
 	config += `	trustsec_download_peer_authorization_policy_every_x_seconds = 1000` + "\n"

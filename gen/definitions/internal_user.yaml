@@ -8,7 +8,7 @@ attributes:
     type: String
     mandatory: true
     description: The name of the internal user
-    example: User1
+    example: UserTF
   - model_name: password
     data_path: [InternalUser]
     type: String
@@ -32,7 +32,7 @@ attributes:
     test_tags: [ISE32]
     type: String
     description: The Account Name Alias will be used to send email notifications about password expiration. This field is only supported from ISE 3.2.
-    example: User1
+    example: User 1
   - model_name: enablePassword
     data_path: [InternalUser]
     write_only: true

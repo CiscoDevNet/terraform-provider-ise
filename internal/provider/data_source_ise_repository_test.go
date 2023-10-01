@@ -31,7 +31,7 @@ func TestAccDataSourceIseRepository(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_repository.test", "protocol", "SFTP"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_repository.test", "path", "/dir"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_repository.test", "server_name", "server1"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_repository.test", "user_name", "user1"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_repository.test", "user_name", "user9"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_repository.test", "enable_pki", "false"))
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -51,7 +51,7 @@ func testAccDataSourceIseRepositoryConfig() string {
 	config += `	protocol = "SFTP"` + "\n"
 	config += `	path = "/dir"` + "\n"
 	config += `	server_name = "server1"` + "\n"
-	config += `	user_name = "user1"` + "\n"
+	config += `	user_name = "user9"` + "\n"
 	config += `	password = "cisco123"` + "\n"
 	config += `	enable_pki = false` + "\n"
 	config += `}` + "\n"

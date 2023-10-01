@@ -25,7 +25,7 @@ attributes:
   - model_name: userName
     type: String
     description: User name
-    example: user1
+    example: user9
   - model_name: password
     type: String
     write_only: true
