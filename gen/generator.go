@@ -96,6 +96,11 @@ type YamlConfig struct {
 	Name              string                `yaml:"name"`
 	Model             string                `yaml:"model"`
 	RestEndpoint      string                `yaml:"rest_endpoint"`
+	GetNoId           bool                  `yaml:"get_no_id"`
+	NoDelete          bool                  `yaml:"no_delete"`
+	PostUpdate        bool                  `yaml:"post_update"`
+	RootList          bool                  `yaml:"root_list"`
+	NoReadPrefix      bool                  `yaml:"no_read_prefix"`
 	IdPath            string                `yaml:"id_path"`
 	MinimumVersion    string                `yaml:"minimum_version"`
 	DsDescription     string                `yaml:"ds_description"`

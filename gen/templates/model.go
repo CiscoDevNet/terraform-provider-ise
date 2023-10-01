@@ -32,7 +32,7 @@ import (
 	"github.com/tidwall/sjson"
 )
 
-{{- $openApi := false}}{{if not (isErs .RestEndpoint)}}{{$openApi = true}}{{end}}
+{{- $openApi := false}}{{if and (not (isErs .RestEndpoint)) (not .NoReadPrefix)}}{{$openApi = true}}{{end}}
 
 {{- $name := camelCase .Name}}
 type {{camelCase .Name}} struct {
@@ -140,7 +140,11 @@ func (data {{camelCase .Name}}) getPath() string {
 }
 
 func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .Name}}) string {
+	{{- if .RootList}}
+	body := "[]"
+	{{- else}}
 	body := ""
+	{{- end}}
 	{{- range .Attributes}}
 	{{- if .Value}}
 	body, _ = sjson.Set(body, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if eq .Type "String"}}"{{end}}{{.Value}}{{if eq .Type "String"}}"{{end}})
@@ -227,7 +231,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 			{{- end}}
 			{{- end}}
 			{{- end}}
-			body, _ = sjson.SetRaw(body, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}.-1", itemBody)
+			body, _ = sjson.SetRaw(body, "{{range .DataPath}}{{.}}.{{end}}{{if .ModelName}}{{.ModelName}}.{{end}}-1", itemBody)
 		}
 	}
 	{{- end}}
@@ -253,7 +257,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 		data.{{toGoName .TfName}} = types.ListNull(types.StringType)
 	}
 	{{- else if or (eq .Type "List") (eq .Type "Set")}}
-	if value := res.Get("{{if $openApi}}response.{{end}}{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() {
+	if value := res{{if .ModelName}}.Get("{{if $openApi}}response.{{end}}{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"){{end}}; value.Exists() {
 		data.{{toGoName .TfName}} = make([]{{$name}}{{toGoName .TfName}}, 0)
 		value.ForEach(func(k, v gjson.Result) bool {
 			item := {{$name}}{{toGoName .TfName}}{}
@@ -358,7 +362,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 		keyValues := [...]string{ {{range .Attributes}}{{if .Id}}{{if eq .Type "Int64"}}strconv.FormatInt(data.{{$list}}[i].{{toGoName .TfName}}.ValueInt64(), 10), {{else if eq .Type "Bool"}}strconv.FormatBool(data.{{$list}}[i].{{toGoName .TfName}}.ValueBool()), {{else}}data.{{$list}}[i].{{toGoName .TfName}}.Value{{.Type}}(), {{end}}{{end}}{{end}} }
 
 		var r gjson.Result
-		res.Get("{{if $openApi}}response.{{end}}{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").ForEach(
+		res.{{if .ModelName}}Get("{{if $openApi}}response.{{end}}{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").{{end}}ForEach(
 			func(_, v gjson.Result) bool {
 				found := false
 				for ik := range keys {

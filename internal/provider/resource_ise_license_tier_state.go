@@ -38,25 +38,25 @@ import (
 )
 
 // Ensure provider defined types fully satisfy framework interfaces
-var _ resource.Resource = &NetworkAccessDictionaryResource{}
-var _ resource.ResourceWithImportState = &NetworkAccessDictionaryResource{}
+var _ resource.Resource = &LicenseTierStateResource{}
+var _ resource.ResourceWithImportState = &LicenseTierStateResource{}
 
-func NewNetworkAccessDictionaryResource() resource.Resource {
-	return &NetworkAccessDictionaryResource{}
+func NewLicenseTierStateResource() resource.Resource {
+	return &LicenseTierStateResource{}
 }
 
-type NetworkAccessDictionaryResource struct {
+type LicenseTierStateResource struct {
 	client *ise.Client
 }
 
-func (r *NetworkAccessDictionaryResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_network_access_dictionary"
+func (r *LicenseTierStateResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_license_tier_state"
 }
 
-func (r *NetworkAccessDictionaryResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *LicenseTierStateResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage a Network Access Dictionary.").String,
+		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage a License Tier State.").String,
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -66,30 +66,33 @@ func (r *NetworkAccessDictionaryResource) Schema(ctx context.Context, req resour
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The dictionary name").String,
+			"licenses": schema.ListNestedAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("List of licenses").String,
 				Optional:            true,
-			},
-			"description": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The description of the dictionary").String,
-				Optional:            true,
-			},
-			"version": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The version of the dictionary").String,
-				Required:            true,
-			},
-			"dictionary_attr_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The dictionary attribute type").AddStringEnumDescription("ENTITY_ATTR", "MSG_ATTR", "PIP_ATTR").String,
-				Required:            true,
-				Validators: []validator.String{
-					stringvalidator.OneOf("ENTITY_ATTR", "MSG_ATTR", "PIP_ATTR"),
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("License name").AddStringEnumDescription("ESSENTIAL", "ADVANTAGE", "PREMIER", "DEVICEADMIN", "VM").String,
+							Optional:            true,
+							Validators: []validator.String{
+								stringvalidator.OneOf("ESSENTIAL", "ADVANTAGE", "PREMIER", "DEVICEADMIN", "VM"),
+							},
+						},
+						"status": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("License status").AddStringEnumDescription("ENABLED", "DISABLED").String,
+							Optional:            true,
+							Validators: []validator.String{
+								stringvalidator.OneOf("ENABLED", "DISABLED"),
+							},
+						},
+					},
 				},
 			},
 		},
 	}
 }
 
-func (r *NetworkAccessDictionaryResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+func (r *LicenseTierStateResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -97,8 +100,8 @@ func (r *NetworkAccessDictionaryResource) Configure(_ context.Context, req resou
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-func (r *NetworkAccessDictionaryResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan NetworkAccessDictionary
+func (r *LicenseTierStateResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan LicenseTierState
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -110,13 +113,13 @@ func (r *NetworkAccessDictionaryResource) Create(ctx context.Context, req resour
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
 
 	// Create object
-	body := plan.toBody(ctx, NetworkAccessDictionary{})
+	body := plan.toBody(ctx, LicenseTierState{})
 	res, _, err := r.client.Post(plan.getPath(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
 		return
 	}
-	plan.Id = types.StringValue(fmt.Sprint(plan.Name.ValueString()))
+	plan.Id = types.StringValue(res.Get("version").String())
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -124,8 +127,8 @@ func (r *NetworkAccessDictionaryResource) Create(ctx context.Context, req resour
 	resp.Diagnostics.Append(diags...)
 }
 
-func (r *NetworkAccessDictionaryResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state NetworkAccessDictionary
+func (r *LicenseTierStateResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state LicenseTierState
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -136,7 +139,7 @@ func (r *NetworkAccessDictionaryResource) Read(ctx context.Context, req resource
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
-	res, err := r.client.Get(state.getPath() + "/" + state.Id.ValueString())
+	res, err := r.client.Get(state.getPath())
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
@@ -153,8 +156,8 @@ func (r *NetworkAccessDictionaryResource) Read(ctx context.Context, req resource
 	resp.Diagnostics.Append(diags...)
 }
 
-func (r *NetworkAccessDictionaryResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan, state NetworkAccessDictionary
+func (r *LicenseTierStateResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var plan, state LicenseTierState
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -173,7 +176,7 @@ func (r *NetworkAccessDictionaryResource) Update(ctx context.Context, req resour
 
 	body := plan.toBody(ctx, state)
 
-	res, err := r.client.Put(plan.getPath()+"/"+plan.Id.ValueString(), body)
+	res, _, err := r.client.Post(plan.getPath(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -185,8 +188,8 @@ func (r *NetworkAccessDictionaryResource) Update(ctx context.Context, req resour
 	resp.Diagnostics.Append(diags...)
 }
 
-func (r *NetworkAccessDictionaryResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state NetworkAccessDictionary
+func (r *LicenseTierStateResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state LicenseTierState
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -196,17 +199,12 @@ func (r *NetworkAccessDictionaryResource) Delete(ctx context.Context, req resour
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath() + "/" + state.Id.ValueString())
-	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
-		return
-	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Delete finished successfully", state.Id.ValueString()))
 
 	resp.State.RemoveResource(ctx)
 }
 
-func (r *NetworkAccessDictionaryResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *LicenseTierStateResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }

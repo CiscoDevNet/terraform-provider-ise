@@ -502,6 +502,7 @@ func (r *AllowedProtocolsResource) Update(ctx context.Context, req resource.Upda
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
+
 	res, err := r.client.Put(plan.getPath()+"/"+plan.Id.ValueString(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
@@ -525,12 +526,8 @@ func (r *AllowedProtocolsResource) Delete(ctx context.Context, req resource.Dele
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-
 	res, err := r.client.Delete(state.getPath() + "/" + state.Id.ValueString())
-	if err != nil && strings.Contains(err.Error(), "StatusCode 405") {
-		// silently ignore if DELETE method not implemented
-		tflog.Debug(ctx, fmt.Sprintf("%s: Cannot be deleted due to REST method missing", state.Id.ValueString()))
-	} else if err != nil {
+	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
 	}

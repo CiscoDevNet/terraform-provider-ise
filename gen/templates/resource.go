@@ -430,7 +430,7 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
-	res, err := r.client.Get(state.getPath() + "/" + state.Id.ValueString())
+	res, err := r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + state.Id.ValueString(){{end}})
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
@@ -466,7 +466,11 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	body := plan.toBody(ctx, state)
+	{{if .PostUpdate}}
+	res, _, err := r.client.Post(plan.getPath(), body)
+	{{- else}}
 	res, err := r.client.Put(plan.getPath() + "/" + plan.Id.ValueString(), body)
+	{{- end}}
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -490,14 +494,13 @@ func (r *{{camelCase .Name}}Resource) Delete(ctx context.Context, req resource.D
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
 
+	{{- if not .NoDelete}}
 	res, err := r.client.Delete(state.getPath() + "/" + state.Id.ValueString())
-	if err != nil && strings.Contains(err.Error(), "StatusCode 405") {
-		// silently ignore if DELETE method not implemented
-		tflog.Debug(ctx, fmt.Sprintf("%s: Cannot be deleted due to REST method missing", state.Id.ValueString()))
-	} else if err != nil {
+	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
 	}
+	{{- end}}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Delete finished successfully", state.Id.ValueString()))
 

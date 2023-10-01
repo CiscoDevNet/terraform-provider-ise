@@ -1,0 +1,27 @@
+---
+name: License Tier State
+rest_endpoint: /api/v1/license/system/tier-state
+get_no_id: true
+no_delete: true
+post_update: true
+root_list: true
+no_read_prefix: true
+id_path: version
+skip_minimum_test: true
+doc_category: Administration
+attributes:
+  - tf_name: licenses
+    type: List
+    description: List of licenses
+    attributes:
+      - model_name: name
+        type: String
+        id: true
+        enum_values: [ESSENTIAL, ADVANTAGE, PREMIER, DEVICEADMIN, VM]
+        description: License name
+        example: ESSENTIAL
+      - model_name: status
+        type: String
+        enum_values: [ENABLED, DISABLED]
+        description: License status
+        example: ENABLED
