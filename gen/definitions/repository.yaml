@@ -1,7 +1,6 @@
 ---
 name: Repository
 rest_endpoint: /api/v1/repository
-open_api: true
 skip_minimum_test: true
 doc_category: Administration
 attributes:

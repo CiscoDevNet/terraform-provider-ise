@@ -32,7 +32,7 @@ import (
 	"github.com/tidwall/sjson"
 )
 
-{{- $openApi := false}}{{if .OpenApi}}{{$openApi = true}}{{end}}
+{{- $openApi := false}}{{if not (isErs .RestEndpoint)}}{{$openApi = true}}{{end}}
 
 {{- $name := camelCase .Name}}
 type {{camelCase .Name}} struct {

@@ -96,7 +96,6 @@ type YamlConfig struct {
 	Name              string                `yaml:"name"`
 	Model             string                `yaml:"model"`
 	RestEndpoint      string                `yaml:"rest_endpoint"`
-	OpenApi           bool                  `yaml:"open_api"`
 	IdPath            string                `yaml:"id_path"`
 	MinimumVersion    string                `yaml:"minimum_version"`
 	DsDescription     string                `yaml:"ds_description"`
@@ -219,6 +218,14 @@ func HasReference(attributes []YamlConfigAttribute) bool {
 	return false
 }
 
+// Templating helper function to return true if ERS API endpoint
+func IsErs(endpoint string) bool {
+	if strings.HasPrefix(endpoint, "/ers") {
+		return true
+	}
+	return false
+}
+
 // Map of templating functions
 var functions = template.FuncMap{
 	"toGoName":     ToGoName,
@@ -229,6 +236,7 @@ var functions = template.FuncMap{
 	"path":         BuildPath,
 	"hasId":        HasId,
 	"hasReference": HasReference,
+	"isErs":        IsErs,
 }
 
 func augmentAttribute(attr *YamlConfigAttribute) {

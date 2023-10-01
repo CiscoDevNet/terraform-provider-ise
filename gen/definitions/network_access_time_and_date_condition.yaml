@@ -1,7 +1,6 @@
 ---
 name: Network Access Time And Date Condition
 rest_endpoint: /api/v1/policy/network-access/time-condition
-open_api: true
 skip_minimum_test: true # Bug in PUT, description not updated
 id_path: response.id
 doc_category: Network Access
