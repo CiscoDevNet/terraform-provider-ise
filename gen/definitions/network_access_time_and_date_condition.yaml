@@ -1,0 +1,76 @@
+---
+name: Network Access Time And Date Condition
+rest_endpoint: /api/v1/policy/network-access/time-condition
+open_api: true
+skip_minimum_test: true # Bug in PUT, description not updated
+id_path: response.id
+doc_category: Network Access
+attributes:
+  - model_name: name
+    type: String
+    mandatory: true
+    description: Condition name
+    example: Cond1
+  - model_name: description
+    type: String
+    description: Condition description
+    example: My description
+  - model_name: conditionType
+    type: String
+    value: TimeAndDateCondition
+  - model_name: isNegate
+    type: Bool
+    description: Indicates whereas this condition is in negate mode
+    example: false
+  - model_name: weekDays
+    description: Defines for which days this condition will be matched. List of weekdays - `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday`, `Saturday`, `Sunday`. Default - List of all week days.
+    type: StringList
+    example: Monday
+  - model_name: weekDaysException
+    description: Defines for which days this condition will NOT be matched. List of weekdays - `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday`, `Saturday`, `Sunday`.
+    type: StringList
+    example: Tuesday
+  - model_name: startDate
+    data_path: [datesRange]
+    type: String
+    description: Start date
+    example: "2022-05-06"
+  - model_name: endDate
+    data_path: [datesRange]
+    type: String
+    description: End date
+    example: "2022-05-10"
+  - model_name: startDate
+    data_path: [datesRangeException]
+    tf_name: exception_start_date
+    type: String
+    description: Exception start date
+    example: "2022-06-06"
+  - model_name: endDate
+    data_path: [datesRangeException]
+    tf_name: exception_end_date
+    type: String
+    description: Exception end date
+    example: "2022-06-10"
+  - model_name: startTime
+    data_path: [hoursRange]
+    type: String
+    description: Start time
+    example: "08:00"
+  - model_name: endTime
+    data_path: [hoursRange]
+    type: String
+    description: End time
+    example: "15:00"
+  - model_name: startTime
+    data_path: [hoursRangeException]
+    tf_name: exception_start_time
+    type: String
+    description: Exception start time
+    example: "20:00"
+  - model_name: endTime
+    data_path: [hoursRangeException]
+    tf_name: exception_end_time
+    type: String
+    description: Exception end time
+    example: "22:00"
