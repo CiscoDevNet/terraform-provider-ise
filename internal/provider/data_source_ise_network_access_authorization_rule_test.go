@@ -54,11 +54,7 @@ func TestAccDataSourceIseNetworkAccessAuthorizationRule(t *testing.T) {
 const testAccDataSourceIseNetworkAccessAuthorizationRulePrerequisitesConfig = `
 resource "ise_network_access_policy_set" "test" {
   name                      = "PolicySet1"
-  description               = "My description"
-  is_proxy                  = false
-  rank                      = 0
   service_name              = "Default Network Access"
-  state                     = "enabled"
   condition_type            = "ConditionAttributes"
   condition_is_negate       = false
   condition_attribute_name  = "Location"
