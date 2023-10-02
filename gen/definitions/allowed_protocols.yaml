@@ -65,42 +65,42 @@ attributes:
     mandatory: true
     description: Allow EAP TLS
     example: true
-    minimum_test_value: false
+    minimum_test_value: "false"
   - model_name: allowEapTtls
     data_path: [AllowedProtocols]
     type: Bool
     mandatory: true
     description: Allow EAP TTLS
     example: true
-    minimum_test_value: false
+    minimum_test_value: "false"
   - model_name: allowEapFast
     data_path: [AllowedProtocols]
     type: Bool
     mandatory: true
     description: Allow EAP Fast
     example: true
-    minimum_test_value: false
+    minimum_test_value: "false"
   - model_name: allowPeap
     data_path: [AllowedProtocols]
     type: Bool
     mandatory: true
     description: Allow PEAP
     example: true
-    minimum_test_value: false
+    minimum_test_value: "false"
   - model_name: allowTeap
     data_path: [AllowedProtocols]
     type: Bool
     mandatory: true
     description: Allow TEAP
     example: true
-    minimum_test_value: false
+    minimum_test_value: "false"
   - model_name: allowPreferredEapProtocol
     data_path: [AllowedProtocols]
     type: Bool
     mandatory: true
     description: Allow preferred EAP protocol
     example: true
-    minimum_test_value: false
+    minimum_test_value: "false"
   - model_name: preferredEapProtocol
     data_path: [AllowedProtocols]
     type: String
@@ -501,4 +501,4 @@ attributes:
     description: Allow 5G. This field is only supported from ISE 3.2.
     test_tags: [ISE32]
     example: true
-    minimum_test_value: true
+    minimum_test_value: "true"
