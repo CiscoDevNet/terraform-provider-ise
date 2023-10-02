@@ -142,15 +142,18 @@ func testAccIseAllowedProtocolsConfig_minimum() string {
 	config += `	allow_ms_chap_v2 = true` + "\n"
 	config += `	allow_eap_md5 = true` + "\n"
 	config += `	allow_leap = true` + "\n"
-	config += `	allow_eap_tls = true` + "\n"
-	config += `	allow_eap_ttls = true` + "\n"
-	config += `	allow_eap_fast = true` + "\n"
-	config += `	allow_peap = true` + "\n"
-	config += `	allow_teap = true` + "\n"
-	config += `	allow_preferred_eap_protocol = true` + "\n"
+	config += `	allow_eap_tls = false` + "\n"
+	config += `	allow_eap_ttls = false` + "\n"
+	config += `	allow_eap_fast = false` + "\n"
+	config += `	allow_peap = false` + "\n"
+	config += `	allow_teap = false` + "\n"
+	config += `	allow_preferred_eap_protocol = false` + "\n"
 	config += `	eap_tls_l_bit = true` + "\n"
 	config += `	allow_weak_ciphers_for_eap = true` + "\n"
 	config += `	require_message_auth = true` + "\n"
+	if os.Getenv("ISE32") != "" {
+		config += `	allow_5g = true` + "\n"
+	}
 	config += `}` + "\n"
 	return config
 }
