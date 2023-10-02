@@ -95,11 +95,15 @@ func (r *NetworkAccessAuthenticationRuleResource) Schema(ctx context.Context, re
 				},
 			},
 			"condition_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", "LibraryConditionAndBlock", "LibraryConditionAttributes", "LibraryConditionOrBlock", "TimeAndDateCondition").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", "LibraryConditionAndBlock", "LibraryConditionAttributes", "LibraryConditionOrBlock", "TimeAndDateCondition"),
+					stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference"),
 				},
+			},
+			"condition_id": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("UUID for condition").String,
+				Optional:            true,
 			},
 			"condition_is_negate": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Indicates whereas this condition is in negate mode").String,
@@ -134,21 +138,21 @@ func (r *NetworkAccessAuthenticationRuleResource) Schema(ctx context.Context, re
 			},
 			"if_auth_fail": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Action to perform when authentication fails such as Bad credentials, disabled user and so on").AddStringEnumDescription("REJECT", "DROP", "CONTINUE").String,
-				Optional:            true,
+				Required:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("REJECT", "DROP", "CONTINUE"),
 				},
 			},
 			"if_process_fail": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Action to perform when ISE is uanble to access the identity database").AddStringEnumDescription("REJECT", "DROP", "CONTINUE").String,
-				Optional:            true,
+				Required:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("REJECT", "DROP", "CONTINUE"),
 				},
 			},
 			"if_user_not_found": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Action to perform when user is not found in any of identity stores").AddStringEnumDescription("REJECT", "DROP", "CONTINUE").String,
-				Optional:            true,
+				Required:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("REJECT", "DROP", "CONTINUE"),
 				},

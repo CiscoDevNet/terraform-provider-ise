@@ -21,6 +21,7 @@ package provider
 
 //template:begin imports
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -47,6 +48,11 @@ func TestAccIseNetworkAccessAuthenticationRule(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authentication_rule.test", "if_user_not_found", "REJECT"))
 
 	var steps []resource.TestStep
+	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
+		steps = append(steps, resource.TestStep{
+			Config: testAccIseNetworkAccessAuthenticationRulePrerequisitesConfig + testAccIseNetworkAccessAuthenticationRuleConfig_minimum(),
+		})
+	}
 	steps = append(steps, resource.TestStep{
 		Config: testAccIseNetworkAccessAuthenticationRulePrerequisitesConfig + testAccIseNetworkAccessAuthenticationRuleConfig_all(),
 		Check:  resource.ComposeTestCheckFunc(checks...),
@@ -73,6 +79,15 @@ resource "ise_network_access_policy_set" "test" {
   condition_dictionary_name = "DEVICE"
   condition_operator        = "equals"
 }
+resource "ise_network_access_condition" "test" {
+  name            = "Cond1"
+  condition_type  = "LibraryConditionAttributes"
+  attribute_name  = "NAS-Port-Type"
+  attribute_value = "Wireless - IEEE 802.11"
+  dictionary_name = "Radius"
+  operator        = "equals"
+}
+
 `
 
 //template:end testPrerequisites
@@ -82,6 +97,11 @@ func testAccIseNetworkAccessAuthenticationRuleConfig_minimum() string {
 	config := `resource "ise_network_access_authentication_rule" "test" {` + "\n"
 	config += `	policy_set_id = ise_network_access_policy_set.test.id` + "\n"
 	config += `	name = "Rule1"` + "\n"
+	config += `	condition_type = "ConditionReference"` + "\n"
+	config += `	condition_id = ise_network_access_condition.test.id` + "\n"
+	config += `	if_auth_fail = "REJECT"` + "\n"
+	config += `	if_process_fail = "DROP"` + "\n"
+	config += `	if_user_not_found = "REJECT"` + "\n"
 	config += `}` + "\n"
 	return config
 }

@@ -37,6 +37,12 @@ resource "ise_network_access_authentication_rule" "example" {
 
 ### Required
 
+- `if_auth_fail` (String) Action to perform when authentication fails such as Bad credentials, disabled user and so on
+  - Choices: `REJECT`, `DROP`, `CONTINUE`
+- `if_process_fail` (String) Action to perform when ISE is uanble to access the identity database
+  - Choices: `REJECT`, `DROP`, `CONTINUE`
+- `if_user_not_found` (String) Action to perform when user is not found in any of identity stores
+  - Choices: `REJECT`, `DROP`, `CONTINUE`
 - `name` (String) Rule name, [Valid characters are alphanumerics, underscore, hyphen, space, period, parentheses]
 - `policy_set_id` (String) Policy set ID
 
@@ -46,19 +52,14 @@ resource "ise_network_access_authentication_rule" "example" {
 - `condition_attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
 - `condition_dictionary_name` (String) Dictionary name
 - `condition_dictionary_value` (String) Dictionary value
+- `condition_id` (String) UUID for condition
 - `condition_is_negate` (Boolean) Indicates whereas this condition is in negate mode
 - `condition_operator` (String) Equality operator
   - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
-  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`, `LibraryConditionAndBlock`, `LibraryConditionAttributes`, `LibraryConditionOrBlock`, `TimeAndDateCondition`
+  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
 - `default` (Boolean) Indicates if this rule is the default one
 - `identity_source_name` (String) Identity source name from the identity stores
-- `if_auth_fail` (String) Action to perform when authentication fails such as Bad credentials, disabled user and so on
-  - Choices: `REJECT`, `DROP`, `CONTINUE`
-- `if_process_fail` (String) Action to perform when ISE is uanble to access the identity database
-  - Choices: `REJECT`, `DROP`, `CONTINUE`
-- `if_user_not_found` (String) Action to perform when user is not found in any of identity stores
-  - Choices: `REJECT`, `DROP`, `CONTINUE`
 - `rank` (Number) The rank (priority) in relation to other rules. Lower rank is higher priority.
 - `state` (String) The state that the rule is in. A disabled rule cannot be matched.
   - Choices: `disabled`, `enabled`, `monitor`

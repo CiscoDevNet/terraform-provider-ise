@@ -2,7 +2,6 @@
 name: Network Access Authentication Rule
 rest_endpoint: /api/v1/policy/network-access/policy-set/%v/authentication
 id_path: response.rule.id
-skip_minimum_test: true
 doc_category: Policy
 attributes:
   - tf_name: policy_set_id
@@ -36,9 +35,18 @@ attributes:
   - model_name: conditionType
     data_path: [rule, condition]
     type: String
-    enum_values: [ConditionAndBlock, ConditionAttributes, ConditionOrBlock, ConditionReference, LibraryConditionAndBlock, LibraryConditionAttributes, LibraryConditionOrBlock, TimeAndDateCondition]
+    enum_values: [ConditionAndBlock, ConditionAttributes, ConditionOrBlock, ConditionReference]
     description: Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
     example: ConditionAttributes
+    minimum_test_value: '"ConditionReference"'
+  - model_name: id
+    data_path: [rule, condition]
+    tf_name: condition_id
+    type: String
+    description: UUID for condition
+    example: 12345678-f0e7-456b-a2d1-876543320123
+    exclude_test: true
+    minimum_test_value: ise_network_access_condition.test.id
   - model_name: isNegate
     data_path: [rule, condition]
     tf_name: condition_is_negate
@@ -84,16 +92,19 @@ attributes:
   - model_name: ifAuthFail
     type: String
     enum_values: [REJECT, DROP , CONTINUE]
+    mandatory: true
     description: Action to perform when authentication fails such as Bad credentials, disabled user and so on
     example: REJECT
   - model_name: ifProcessFail
     type: String
     enum_values: [REJECT, DROP , CONTINUE]
+    mandatory: true
     description: Action to perform when ISE is uanble to access the identity database
     example: DROP
   - model_name: ifUserNotFound
     type: String
     enum_values: [REJECT, DROP , CONTINUE]
+    mandatory: true
     description: Action to perform when user is not found in any of identity stores
     example: REJECT
 test_prerequisites: |
@@ -106,4 +117,12 @@ test_prerequisites: |
     condition_attribute_value = "All Locations"
     condition_dictionary_name = "DEVICE"
     condition_operator        = "equals"
+  }
+  resource "ise_network_access_condition" "test" {
+    name            = "Cond1"
+    condition_type  = "LibraryConditionAttributes"
+    attribute_name  = "NAS-Port-Type"
+    attribute_value = "Wireless - IEEE 802.11"
+    dictionary_name = "Radius"
+    operator        = "equals"
   }
