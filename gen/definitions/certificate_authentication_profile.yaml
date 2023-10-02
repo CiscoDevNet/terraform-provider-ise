@@ -2,7 +2,7 @@
 name: Certificate Authentication Profile
 rest_endpoint: /ers/config/certificateprofile
 doc_category: Administration
-test_tags: [CERT_PROFILE]
+test_tags: [CERT_PROFILE] # excluded by default as cert auth profiles cannot be deleted via API
 attributes:
   - model_name: name
     data_path: [CertificateProfile]
