@@ -1,4 +1,4 @@
-module github.com/netascode/terraform-provider-ise
+module github.com/CiscoDevNet/terraform-provider-ise
 
 go 1.19
 
