@@ -21,6 +21,7 @@ package provider
 
 //template:begin imports
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -46,6 +47,11 @@ func TestAccIseNetworkAccessTimeAndDateCondition(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_time_and_date_condition.test", "exception_end_time", "22:00"))
 
 	var steps []resource.TestStep
+	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
+		steps = append(steps, resource.TestStep{
+			Config: testAccIseNetworkAccessTimeAndDateConditionConfig_minimum(),
+		})
+	}
 	steps = append(steps, resource.TestStep{
 		Config: testAccIseNetworkAccessTimeAndDateConditionConfig_all(),
 		Check:  resource.ComposeTestCheckFunc(checks...),
@@ -71,6 +77,7 @@ func TestAccIseNetworkAccessTimeAndDateCondition(t *testing.T) {
 func testAccIseNetworkAccessTimeAndDateConditionConfig_minimum() string {
 	config := `resource "ise_network_access_time_and_date_condition" "test" {` + "\n"
 	config += `	name = "Cond1"` + "\n"
+	config += `	description = "My description"` + "\n"
 	config += `}` + "\n"
 	return config
 }

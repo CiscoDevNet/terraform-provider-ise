@@ -151,28 +151,28 @@ const testAccIse{{camelCase .Name}}PrerequisitesConfig = `
 func testAccIse{{camelCase .Name}}Config_minimum() string {
 	config := `resource "ise_{{snakeCase $name}}" "test" {` + "\n"
 	{{- range  .Attributes}}
-	{{- if or .Id .Reference .Mandatory}}
+	{{- if or .Id .Reference .Mandatory .MinimumTestValue}}
 	{{- if or (eq .Type "List") (eq .Type "Set")}}
 	{{- if len .TestTags}}
 	if {{range $i, $e := .TestTags}}{{if $i}} || {{end}}os.Getenv("{{$e}}") != ""{{end}} {
 	{{- end}}
 	config += `	{{.TfName}} = [{` + "\n"
 		{{- range  .Attributes}}
-		{{- if or .Id .Reference .Mandatory}}
+		{{- if or .Id .Reference .Mandatory .MinimumTestValue}}
 		{{- if or (eq .Type "List") (eq .Type "Set")}}
 		{{- if len .TestTags}}
 	if {{range $i, $e := .TestTags}}{{if $i}} || {{end}}os.Getenv("{{$e}}") != ""{{end}} {
 		{{- end}}
 	config += `	  {{.TfName}} = [{` + "\n"
 			{{- range  .Attributes}}
-			{{- if or .Id .Reference .Mandatory}}
+			{{- if or .Id .Reference .Mandatory .MinimumTestValue}}
 			{{- if or (eq .Type "List") (eq .Type "Set")}}
 			{{- if len .TestTags}}
 	if {{range $i, $e := .TestTags}}{{if $i}} || {{end}}os.Getenv("{{$e}}") != ""{{end}} {
 			{{- end}}
 	config += `      {{.TfName}} = [{` + "\n"
 				{{- range  .Attributes}}
-				{{- if or .Id .Reference .Mandatory}}
+				{{- if or .Id .Reference .Mandatory .MinimumTestValue}}
 				{{- if len .TestTags}}
 	if {{range $i, $e := .TestTags}}{{if $i}} || {{end}}os.Getenv("{{$e}}") != ""{{end}} {
 		config += `			{{.TfName}} = {{if .MinimumTestValue}}{{.MinimumTestValue}}{{else if .TestValue}}{{.TestValue}}{{else}}{{if eq .Type "String"}}"{{.Example}}"{{else if eq .Type "StringList"}}["{{.Example}}"]{{else}}{{.Example}}{{end}}{{end}}` + "\n"
