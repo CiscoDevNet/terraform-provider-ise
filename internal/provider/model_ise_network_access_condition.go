@@ -49,6 +49,7 @@ type NetworkAccessConditionChildren struct {
 	Name            types.String                             `tfsdk:"name"`
 	Description     types.String                             `tfsdk:"description"`
 	ConditionType   types.String                             `tfsdk:"condition_type"`
+	Id              types.String                             `tfsdk:"id"`
 	IsNegate        types.Bool                               `tfsdk:"is_negate"`
 	AttributeName   types.String                             `tfsdk:"attribute_name"`
 	AttributeValue  types.String                             `tfsdk:"attribute_value"`
@@ -62,6 +63,7 @@ type NetworkAccessConditionChildrenChildren struct {
 	Name            types.String `tfsdk:"name"`
 	Description     types.String `tfsdk:"description"`
 	ConditionType   types.String `tfsdk:"condition_type"`
+	Id              types.String `tfsdk:"id"`
 	IsNegate        types.Bool   `tfsdk:"is_negate"`
 	AttributeName   types.String `tfsdk:"attribute_name"`
 	AttributeValue  types.String `tfsdk:"attribute_value"`
@@ -122,6 +124,9 @@ func (data NetworkAccessCondition) toBody(ctx context.Context, state NetworkAcce
 			if !item.ConditionType.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "conditionType", item.ConditionType.ValueString())
 			}
+			if !item.Id.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
+			}
 			if !item.IsNegate.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "isNegate", item.IsNegate.ValueBool())
 			}
@@ -152,6 +157,9 @@ func (data NetworkAccessCondition) toBody(ctx context.Context, state NetworkAcce
 					}
 					if !childItem.ConditionType.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "conditionType", childItem.ConditionType.ValueString())
+					}
+					if !childItem.Id.IsNull() {
+						itemChildBody, _ = sjson.Set(itemChildBody, "id", childItem.Id.ValueString())
 					}
 					if !childItem.IsNegate.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "isNegate", childItem.IsNegate.ValueBool())
@@ -248,6 +256,11 @@ func (data *NetworkAccessCondition) fromBody(ctx context.Context, res gjson.Resu
 			} else {
 				item.ConditionType = types.StringNull()
 			}
+			if cValue := v.Get("id"); cValue.Exists() {
+				item.Id = types.StringValue(cValue.String())
+			} else {
+				item.Id = types.StringNull()
+			}
 			if cValue := v.Get("isNegate"); cValue.Exists() {
 				item.IsNegate = types.BoolValue(cValue.Bool())
 			} else {
@@ -296,6 +309,11 @@ func (data *NetworkAccessCondition) fromBody(ctx context.Context, res gjson.Resu
 						cItem.ConditionType = types.StringValue(ccValue.String())
 					} else {
 						cItem.ConditionType = types.StringNull()
+					}
+					if ccValue := cv.Get("id"); ccValue.Exists() {
+						cItem.Id = types.StringValue(ccValue.String())
+					} else {
+						cItem.Id = types.StringNull()
 					}
 					if ccValue := cv.Get("isNegate"); ccValue.Exists() {
 						cItem.IsNegate = types.BoolValue(ccValue.Bool())
@@ -424,6 +442,11 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 		} else {
 			data.Children[i].ConditionType = types.StringNull()
 		}
+		if value := r.Get("id"); value.Exists() && !data.Children[i].Id.IsNull() {
+			data.Children[i].Id = types.StringValue(value.String())
+		} else {
+			data.Children[i].Id = types.StringNull()
+		}
 		if value := r.Get("isNegate"); value.Exists() && !data.Children[i].IsNegate.IsNull() {
 			data.Children[i].IsNegate = types.BoolValue(value.Bool())
 		} else {
@@ -491,6 +514,11 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 				data.Children[i].Children[ci].ConditionType = types.StringValue(value.String())
 			} else {
 				data.Children[i].Children[ci].ConditionType = types.StringNull()
+			}
+			if value := cr.Get("id"); value.Exists() && !data.Children[i].Children[ci].Id.IsNull() {
+				data.Children[i].Children[ci].Id = types.StringValue(value.String())
+			} else {
+				data.Children[i].Children[ci].Id = types.StringNull()
 			}
 			if value := cr.Get("isNegate"); value.Exists() && !data.Children[i].Children[ci].IsNegate.IsNull() {
 				data.Children[i].Children[ci].IsNegate = types.BoolValue(value.Bool())

@@ -73,17 +73,17 @@ func (r *NetworkAccessConditionResource) Schema(ctx context.Context, req resourc
 			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Condition name").String,
-				Optional:            true,
+				Required:            true,
 			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Condition description").String,
 				Optional:            true,
 			},
 			"condition_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", "LibraryConditionAndBlock", "LibraryConditionAttributes", "LibraryConditionOrBlock", "TimeAndDateCondition").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.").AddStringEnumDescription("LibraryConditionAndBlock", "LibraryConditionAttributes", "LibraryConditionOrBlock").String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", "LibraryConditionAndBlock", "LibraryConditionAttributes", "LibraryConditionOrBlock", "TimeAndDateCondition"),
+					stringvalidator.OneOf("LibraryConditionAndBlock", "LibraryConditionAttributes", "LibraryConditionOrBlock"),
 				},
 			},
 			"is_negate": schema.BoolAttribute{
@@ -127,11 +127,15 @@ func (r *NetworkAccessConditionResource) Schema(ctx context.Context, req resourc
 							Optional:            true,
 						},
 						"condition_type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", "LibraryConditionAndBlock", "LibraryConditionAttributes", "LibraryConditionOrBlock", "TimeAndDateCondition").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference").String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", "LibraryConditionAndBlock", "LibraryConditionAttributes", "LibraryConditionOrBlock", "TimeAndDateCondition"),
+								stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference"),
 							},
+						},
+						"id": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("UUID for condition").String,
+							Optional:            true,
 						},
 						"is_negate": schema.BoolAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Indicates whereas this condition is in negate mode").String,
@@ -174,11 +178,15 @@ func (r *NetworkAccessConditionResource) Schema(ctx context.Context, req resourc
 										Optional:            true,
 									},
 									"condition_type": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", "LibraryConditionAndBlock", "LibraryConditionAttributes", "LibraryConditionOrBlock", "TimeAndDateCondition").String,
+										MarkdownDescription: helpers.NewAttributeDescription("Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference").String,
 										Required:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", "LibraryConditionAndBlock", "LibraryConditionAttributes", "LibraryConditionOrBlock", "TimeAndDateCondition"),
+											stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference"),
 										},
+									},
+									"id": schema.StringAttribute{
+										MarkdownDescription: helpers.NewAttributeDescription("UUID for condition").String,
+										Optional:            true,
 									},
 									"is_negate": schema.BoolAttribute{
 										MarkdownDescription: helpers.NewAttributeDescription("Indicates whereas this condition is in negate mode").String,

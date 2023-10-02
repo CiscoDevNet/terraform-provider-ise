@@ -50,6 +50,7 @@ Read-Only:
 - `description` (String) Condition description
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
+- `id` (String) UUID for condition
 - `is_negate` (Boolean) Indicates whereas this condition is in negate mode
 - `name` (String) Condition name
 - `operator` (String) Equality operator
@@ -65,6 +66,7 @@ Read-Only:
 - `description` (String) Condition description
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
+- `id` (String) UUID for condition
 - `is_negate` (Boolean) Indicates whereas this condition is in negate mode
 - `name` (String) Condition name
 - `operator` (String) Equality operator

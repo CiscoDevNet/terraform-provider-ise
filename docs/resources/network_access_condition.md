@@ -31,7 +31,8 @@ resource "ise_network_access_condition" "example" {
 ### Required
 
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
-  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`, `LibraryConditionAndBlock`, `LibraryConditionAttributes`, `LibraryConditionOrBlock`, `TimeAndDateCondition`
+  - Choices: `LibraryConditionAndBlock`, `LibraryConditionAttributes`, `LibraryConditionOrBlock`
+- `name` (String) Condition name
 
 ### Optional
 
@@ -42,7 +43,6 @@ resource "ise_network_access_condition" "example" {
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
 - `is_negate` (Boolean) Indicates whereas this condition is in negate mode
-- `name` (String) Condition name
 - `operator` (String) Equality operator
   - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`
 
@@ -56,7 +56,7 @@ resource "ise_network_access_condition" "example" {
 Required:
 
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
-  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`, `LibraryConditionAndBlock`, `LibraryConditionAttributes`, `LibraryConditionOrBlock`, `TimeAndDateCondition`
+  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
 - `name` (String) Condition name
 
 Optional:
@@ -67,6 +67,7 @@ Optional:
 - `description` (String) Condition description
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
+- `id` (String) UUID for condition
 - `is_negate` (Boolean) Indicates whereas this condition is in negate mode
 - `operator` (String) Equality operator
   - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`
@@ -77,7 +78,7 @@ Optional:
 Required:
 
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
-  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`, `LibraryConditionAndBlock`, `LibraryConditionAttributes`, `LibraryConditionOrBlock`, `TimeAndDateCondition`
+  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
 - `name` (String) Condition name
 
 Optional:
@@ -87,6 +88,7 @@ Optional:
 - `description` (String) Condition description
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
+- `id` (String) UUID for condition
 - `is_negate` (Boolean) Indicates whereas this condition is in negate mode
 - `operator` (String) Equality operator
   - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`

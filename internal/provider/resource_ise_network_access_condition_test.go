@@ -21,6 +21,7 @@ package provider
 
 //template:begin imports
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -41,6 +42,11 @@ func TestAccIseNetworkAccessCondition(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_condition.test", "operator", "equals"))
 
 	var steps []resource.TestStep
+	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
+		steps = append(steps, resource.TestStep{
+			Config: testAccIseNetworkAccessConditionConfig_minimum(),
+		})
+	}
 	steps = append(steps, resource.TestStep{
 		Config: testAccIseNetworkAccessConditionConfig_all(),
 		Check:  resource.ComposeTestCheckFunc(checks...),
@@ -65,7 +71,12 @@ func TestAccIseNetworkAccessCondition(t *testing.T) {
 //template:begin testAccConfigMinimal
 func testAccIseNetworkAccessConditionConfig_minimum() string {
 	config := `resource "ise_network_access_condition" "test" {` + "\n"
+	config += `	name = "Cond1"` + "\n"
 	config += `	condition_type = "LibraryConditionAttributes"` + "\n"
+	config += `	attribute_name = "EapAuthentication"` + "\n"
+	config += `	attribute_value = "EAP-TLS"` + "\n"
+	config += `	dictionary_name = "Network Access"` + "\n"
+	config += `	operator = "equals"` + "\n"
 	config += `}` + "\n"
 	return config
 }

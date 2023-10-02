@@ -115,6 +115,10 @@ func (d *NetworkAccessConditionDataSource) Schema(ctx context.Context, req datas
 							MarkdownDescription: "Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.",
 							Computed:            true,
 						},
+						"id": schema.StringAttribute{
+							MarkdownDescription: "UUID for condition",
+							Computed:            true,
+						},
 						"is_negate": schema.BoolAttribute{
 							MarkdownDescription: "Indicates whereas this condition is in negate mode",
 							Computed:            true,
@@ -154,6 +158,10 @@ func (d *NetworkAccessConditionDataSource) Schema(ctx context.Context, req datas
 									},
 									"condition_type": schema.StringAttribute{
 										MarkdownDescription: "Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.",
+										Computed:            true,
+									},
+									"id": schema.StringAttribute{
+										MarkdownDescription: "UUID for condition",
 										Computed:            true,
 									},
 									"is_negate": schema.BoolAttribute{
