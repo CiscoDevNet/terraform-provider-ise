@@ -20,12 +20,15 @@
 
 package provider
 
+//template:begin imports
 import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+//template:end imports
 
+//template:begin testAcc
 func TestAccIse{{camelCase .Name}}(t *testing.T) {
 	{{- if len .TestTags}}
 	if {{range $i, $e := .TestTags}}{{if $i}} && {{end}}os.Getenv("{{$e}}") == ""{{end}} {
@@ -134,13 +137,17 @@ func TestAccIse{{camelCase .Name}}(t *testing.T) {
 		Steps: steps,
 	})
 }
+//template:end testAcc
 
+//template:begin testPrerequisites
 {{- if .TestPrerequisites}}
 const testAccIse{{camelCase .Name}}PrerequisitesConfig = `
 {{.TestPrerequisites}}
 `
 {{- end}}
+//template:end testPrerequisites
 
+//template:begin testAccConfigMinimal
 func testAccIse{{camelCase .Name}}Config_minimum() string {
 	config := `resource "ise_{{snakeCase $name}}" "test" {` + "\n"
 	{{- range  .Attributes}}
@@ -223,7 +230,9 @@ func testAccIse{{camelCase .Name}}Config_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+//template:end testAccConfigMinimal
 
+//template:begin testAccConfigAll
 func testAccIse{{camelCase .Name}}Config_all() string {
 	config := `resource "ise_{{snakeCase $name}}" "test" {` + "\n"
 	{{- range  .Attributes}}
@@ -306,3 +315,4 @@ func testAccIse{{camelCase .Name}}Config_all() string {
 	config += `}` + "\n"
 	return config
 }
+//template:end testAccConfigAll

@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"os"
 	"testing"
@@ -26,6 +27,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+//template:end imports
+
+//template:begin testAcc
 func TestAccIseEndpointIdentityGroup(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("ise_endpoint_identity_group.test", "name", "Group1"))
@@ -54,6 +58,12 @@ func TestAccIseEndpointIdentityGroup(t *testing.T) {
 	})
 }
 
+//template:end testAcc
+
+//template:begin testPrerequisites
+//template:end testPrerequisites
+
+//template:begin testAccConfigMinimal
 func testAccIseEndpointIdentityGroupConfig_minimum() string {
 	config := `resource "ise_endpoint_identity_group" "test" {` + "\n"
 	config += `	name = "Group1"` + "\n"
@@ -61,6 +71,9 @@ func testAccIseEndpointIdentityGroupConfig_minimum() string {
 	return config
 }
 
+//template:end testAccConfigMinimal
+
+//template:begin testAccConfigAll
 func testAccIseEndpointIdentityGroupConfig_all() string {
 	config := `resource "ise_endpoint_identity_group" "test" {` + "\n"
 	config += `	name = "Group1"` + "\n"
@@ -69,3 +82,5 @@ func testAccIseEndpointIdentityGroupConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
+
+//template:end testAccConfigAll

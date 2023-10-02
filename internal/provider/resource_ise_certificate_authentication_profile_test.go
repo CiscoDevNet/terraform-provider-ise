@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"os"
 	"testing"
@@ -26,6 +27,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+//template:end imports
+
+//template:begin testAcc
 func TestAccIseCertificateAuthenticationProfile(t *testing.T) {
 	if os.Getenv("CERT_PROFILE") == "" {
 		t.Skip("skipping test, set environment variable CERT_PROFILE")
@@ -61,6 +65,12 @@ func TestAccIseCertificateAuthenticationProfile(t *testing.T) {
 	})
 }
 
+//template:end testAcc
+
+//template:begin testPrerequisites
+//template:end testPrerequisites
+
+//template:begin testAccConfigMinimal
 func testAccIseCertificateAuthenticationProfileConfig_minimum() string {
 	config := `resource "ise_certificate_authentication_profile" "test" {` + "\n"
 	config += `	name = "CertProf1"` + "\n"
@@ -68,6 +78,9 @@ func testAccIseCertificateAuthenticationProfileConfig_minimum() string {
 	return config
 }
 
+//template:end testAccConfigMinimal
+
+//template:begin testAccConfigAll
 func testAccIseCertificateAuthenticationProfileConfig_all() string {
 	config := `resource "ise_certificate_authentication_profile" "test" {` + "\n"
 	config += `	name = "CertProf1"` + "\n"
@@ -80,3 +93,5 @@ func testAccIseCertificateAuthenticationProfileConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
+
+//template:end testAccConfigAll

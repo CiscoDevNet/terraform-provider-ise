@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"os"
 	"testing"
@@ -26,6 +27,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+//template:end imports
+
+//template:begin testAcc
 func TestAccIseNetworkAccessDictionary(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_dictionary.test", "name", "Dict1"))
@@ -55,6 +59,12 @@ func TestAccIseNetworkAccessDictionary(t *testing.T) {
 	})
 }
 
+//template:end testAcc
+
+//template:begin testPrerequisites
+//template:end testPrerequisites
+
+//template:begin testAccConfigMinimal
 func testAccIseNetworkAccessDictionaryConfig_minimum() string {
 	config := `resource "ise_network_access_dictionary" "test" {` + "\n"
 	config += `	name = "Dict1"` + "\n"
@@ -64,6 +74,9 @@ func testAccIseNetworkAccessDictionaryConfig_minimum() string {
 	return config
 }
 
+//template:end testAccConfigMinimal
+
+//template:begin testAccConfigAll
 func testAccIseNetworkAccessDictionaryConfig_all() string {
 	config := `resource "ise_network_access_dictionary" "test" {` + "\n"
 	config += `	name = "Dict1"` + "\n"
@@ -73,3 +86,5 @@ func testAccIseNetworkAccessDictionaryConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
+
+//template:end testAccConfigAll

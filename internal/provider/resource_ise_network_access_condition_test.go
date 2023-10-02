@@ -19,12 +19,16 @@
 
 package provider
 
+//template:begin imports
 import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+//template:end imports
+
+//template:begin testAcc
 func TestAccIseNetworkAccessCondition(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_condition.test", "name", "Cond1"))
@@ -53,6 +57,12 @@ func TestAccIseNetworkAccessCondition(t *testing.T) {
 	})
 }
 
+//template:end testAcc
+
+//template:begin testPrerequisites
+//template:end testPrerequisites
+
+//template:begin testAccConfigMinimal
 func testAccIseNetworkAccessConditionConfig_minimum() string {
 	config := `resource "ise_network_access_condition" "test" {` + "\n"
 	config += `	condition_type = "LibraryConditionAttributes"` + "\n"
@@ -60,6 +70,9 @@ func testAccIseNetworkAccessConditionConfig_minimum() string {
 	return config
 }
 
+//template:end testAccConfigMinimal
+
+//template:begin testAccConfigAll
 func testAccIseNetworkAccessConditionConfig_all() string {
 	config := `resource "ise_network_access_condition" "test" {` + "\n"
 	config += `	name = "Cond1"` + "\n"
@@ -73,3 +86,5 @@ func testAccIseNetworkAccessConditionConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
+
+//template:end testAccConfigAll

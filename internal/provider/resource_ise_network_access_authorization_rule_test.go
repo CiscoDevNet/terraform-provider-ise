@@ -19,12 +19,16 @@
 
 package provider
 
+//template:begin imports
 import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+//template:end imports
+
+//template:begin testAcc
 func TestAccIseNetworkAccessAuthorizationRule(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_rule.test", "name", "Rule1"))
@@ -53,6 +57,9 @@ func TestAccIseNetworkAccessAuthorizationRule(t *testing.T) {
 	})
 }
 
+//template:end testAcc
+
+//template:begin testPrerequisites
 const testAccIseNetworkAccessAuthorizationRulePrerequisitesConfig = `
 resource "ise_network_access_policy_set" "test" {
   name                      = "PolicySet1"
@@ -66,6 +73,9 @@ resource "ise_network_access_policy_set" "test" {
 }
 `
 
+//template:end testPrerequisites
+
+//template:begin testAccConfigMinimal
 func testAccIseNetworkAccessAuthorizationRuleConfig_minimum() string {
 	config := `resource "ise_network_access_authorization_rule" "test" {` + "\n"
 	config += `	policy_set_id = ise_network_access_policy_set.test.id` + "\n"
@@ -74,6 +84,9 @@ func testAccIseNetworkAccessAuthorizationRuleConfig_minimum() string {
 	return config
 }
 
+//template:end testAccConfigMinimal
+
+//template:begin testAccConfigAll
 func testAccIseNetworkAccessAuthorizationRuleConfig_all() string {
 	config := `resource "ise_network_access_authorization_rule" "test" {` + "\n"
 	config += `	policy_set_id = ise_network_access_policy_set.test.id` + "\n"
@@ -92,3 +105,5 @@ func testAccIseNetworkAccessAuthorizationRuleConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
+
+//template:end testAccConfigAll

@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"os"
 	"testing"
@@ -26,6 +27,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+//template:end imports
+
+//template:begin testAcc
 func TestAccIseNetworkDeviceGroup(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_device_group.test", "name", "Device Type#All Device Types#Group1"))
@@ -54,6 +58,12 @@ func TestAccIseNetworkDeviceGroup(t *testing.T) {
 	})
 }
 
+//template:end testAcc
+
+//template:begin testPrerequisites
+//template:end testPrerequisites
+
+//template:begin testAccConfigMinimal
 func testAccIseNetworkDeviceGroupConfig_minimum() string {
 	config := `resource "ise_network_device_group" "test" {` + "\n"
 	config += `	name = "Device Type#All Device Types#Group1"` + "\n"
@@ -62,6 +72,9 @@ func testAccIseNetworkDeviceGroupConfig_minimum() string {
 	return config
 }
 
+//template:end testAccConfigMinimal
+
+//template:begin testAccConfigAll
 func testAccIseNetworkDeviceGroupConfig_all() string {
 	config := `resource "ise_network_device_group" "test" {` + "\n"
 	config += `	name = "Device Type#All Device Types#Group1"` + "\n"
@@ -70,3 +83,5 @@ func testAccIseNetworkDeviceGroupConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
+
+//template:end testAccConfigAll

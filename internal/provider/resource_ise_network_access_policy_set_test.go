@@ -19,12 +19,16 @@
 
 package provider
 
+//template:begin imports
 import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+//template:end imports
+
+//template:begin testAcc
 func TestAccIseNetworkAccessPolicySet(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_policy_set.test", "name", "PolicySet1"))
@@ -57,6 +61,12 @@ func TestAccIseNetworkAccessPolicySet(t *testing.T) {
 	})
 }
 
+//template:end testAcc
+
+//template:begin testPrerequisites
+//template:end testPrerequisites
+
+//template:begin testAccConfigMinimal
 func testAccIseNetworkAccessPolicySetConfig_minimum() string {
 	config := `resource "ise_network_access_policy_set" "test" {` + "\n"
 	config += `	name = "PolicySet1"` + "\n"
@@ -65,6 +75,9 @@ func testAccIseNetworkAccessPolicySetConfig_minimum() string {
 	return config
 }
 
+//template:end testAccConfigMinimal
+
+//template:begin testAccConfigAll
 func testAccIseNetworkAccessPolicySetConfig_all() string {
 	config := `resource "ise_network_access_policy_set" "test" {` + "\n"
 	config += `	name = "PolicySet1"` + "\n"
@@ -82,3 +95,5 @@ func testAccIseNetworkAccessPolicySetConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
+
+//template:end testAccConfigAll

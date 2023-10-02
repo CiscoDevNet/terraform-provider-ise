@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"os"
 	"testing"
@@ -26,6 +27,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+//template:end imports
+
+//template:begin testAcc
 func TestAccIseUserIdentityGroup(t *testing.T) {
 	if os.Getenv("ISE32") == "" {
 		t.Skip("skipping test, set environment variable ISE32")
@@ -51,6 +55,12 @@ func TestAccIseUserIdentityGroup(t *testing.T) {
 	})
 }
 
+//template:end testAcc
+
+//template:begin testPrerequisites
+//template:end testPrerequisites
+
+//template:begin testAccConfigMinimal
 func testAccIseUserIdentityGroupConfig_minimum() string {
 	config := `resource "ise_user_identity_group" "test" {` + "\n"
 	config += `	name = "Group1"` + "\n"
@@ -58,6 +68,9 @@ func testAccIseUserIdentityGroupConfig_minimum() string {
 	return config
 }
 
+//template:end testAccConfigMinimal
+
+//template:begin testAccConfigAll
 func testAccIseUserIdentityGroupConfig_all() string {
 	config := `resource "ise_user_identity_group" "test" {` + "\n"
 	config += `	name = "Group1"` + "\n"
@@ -65,3 +78,5 @@ func testAccIseUserIdentityGroupConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
+
+//template:end testAccConfigAll

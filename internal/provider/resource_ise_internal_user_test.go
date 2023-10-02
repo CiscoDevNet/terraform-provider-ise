@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"os"
 	"testing"
@@ -26,6 +27,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+//template:end imports
+
+//template:begin testAcc
 func TestAccIseInternalUser(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("ise_internal_user.test", "name", "UserTF"))
@@ -65,6 +69,12 @@ func TestAccIseInternalUser(t *testing.T) {
 	})
 }
 
+//template:end testAcc
+
+//template:begin testPrerequisites
+//template:end testPrerequisites
+
+//template:begin testAccConfigMinimal
 func testAccIseInternalUserConfig_minimum() string {
 	config := `resource "ise_internal_user" "test" {` + "\n"
 	config += `	name = "UserTF"` + "\n"
@@ -73,6 +83,9 @@ func testAccIseInternalUserConfig_minimum() string {
 	return config
 }
 
+//template:end testAccConfigMinimal
+
+//template:begin testAccConfigAll
 func testAccIseInternalUserConfig_all() string {
 	config := `resource "ise_internal_user" "test" {` + "\n"
 	config += `	name = "UserTF"` + "\n"
@@ -94,3 +107,5 @@ func testAccIseInternalUserConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
+
+//template:end testAccConfigAll

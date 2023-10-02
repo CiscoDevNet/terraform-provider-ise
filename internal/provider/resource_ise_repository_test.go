@@ -19,12 +19,16 @@
 
 package provider
 
+//template:begin imports
 import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+//template:end imports
+
+//template:begin testAcc
 func TestAccIseRepository(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("ise_repository.test", "name", "repo1"))
@@ -51,6 +55,12 @@ func TestAccIseRepository(t *testing.T) {
 	})
 }
 
+//template:end testAcc
+
+//template:begin testPrerequisites
+//template:end testPrerequisites
+
+//template:begin testAccConfigMinimal
 func testAccIseRepositoryConfig_minimum() string {
 	config := `resource "ise_repository" "test" {` + "\n"
 	config += `	name = "repo1"` + "\n"
@@ -58,6 +68,9 @@ func testAccIseRepositoryConfig_minimum() string {
 	return config
 }
 
+//template:end testAccConfigMinimal
+
+//template:begin testAccConfigAll
 func testAccIseRepositoryConfig_all() string {
 	config := `resource "ise_repository" "test" {` + "\n"
 	config += `	name = "repo1"` + "\n"
@@ -70,3 +83,5 @@ func testAccIseRepositoryConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
+
+//template:end testAccConfigAll

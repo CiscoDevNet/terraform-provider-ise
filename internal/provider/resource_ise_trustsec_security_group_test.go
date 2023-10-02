@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"os"
 	"testing"
@@ -26,6 +27,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+//template:end imports
+
+//template:begin testAcc
 func TestAccIseTrustSecSecurityGroup(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("ise_trustsec_security_group.test", "name", "SGT1234"))
@@ -55,6 +59,12 @@ func TestAccIseTrustSecSecurityGroup(t *testing.T) {
 	})
 }
 
+//template:end testAcc
+
+//template:begin testPrerequisites
+//template:end testPrerequisites
+
+//template:begin testAccConfigMinimal
 func testAccIseTrustSecSecurityGroupConfig_minimum() string {
 	config := `resource "ise_trustsec_security_group" "test" {` + "\n"
 	config += `	name = "SGT1234"` + "\n"
@@ -63,6 +73,9 @@ func testAccIseTrustSecSecurityGroupConfig_minimum() string {
 	return config
 }
 
+//template:end testAccConfigMinimal
+
+//template:begin testAccConfigAll
 func testAccIseTrustSecSecurityGroupConfig_all() string {
 	config := `resource "ise_trustsec_security_group" "test" {` + "\n"
 	config += `	name = "SGT1234"` + "\n"
@@ -73,3 +86,5 @@ func testAccIseTrustSecSecurityGroupConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
+
+//template:end testAccConfigAll
