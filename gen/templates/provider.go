@@ -20,6 +20,7 @@
 
 package provider
 
+//template:begin provider
 import (
 	"context"
 	"os"
@@ -263,3 +264,4 @@ func New(version string) func() provider.Provider {
 		}
 	}
 }
+//template:end provider
