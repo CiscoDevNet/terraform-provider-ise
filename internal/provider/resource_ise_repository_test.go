@@ -21,6 +21,7 @@ package provider
 
 //template:begin imports
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -39,6 +40,11 @@ func TestAccIseRepository(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_repository.test", "enable_pki", "false"))
 
 	var steps []resource.TestStep
+	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
+		steps = append(steps, resource.TestStep{
+			Config: testAccIseRepositoryConfig_minimum(),
+		})
+	}
 	steps = append(steps, resource.TestStep{
 		Config: testAccIseRepositoryConfig_all(),
 		Check:  resource.ComposeTestCheckFunc(checks...),
@@ -64,6 +70,8 @@ func TestAccIseRepository(t *testing.T) {
 func testAccIseRepositoryConfig_minimum() string {
 	config := `resource "ise_repository" "test" {` + "\n"
 	config += `	name = "repo1"` + "\n"
+	config += `	protocol = "DISK"` + "\n"
+	config += `	path = "/dir"` + "\n"
 	config += `}` + "\n"
 	return config
 }

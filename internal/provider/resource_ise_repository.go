@@ -77,14 +77,14 @@ func (r *RepositoryResource) Schema(ctx context.Context, req resource.SchemaRequ
 			},
 			"protocol": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Protocol").AddStringEnumDescription("CDROM", "DISK", "FTP", "HTTP", "HTTPS", "NFS", "SFTP", "TFTP").String,
-				Optional:            true,
+				Required:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("CDROM", "DISK", "FTP", "HTTP", "HTTPS", "NFS", "SFTP", "TFTP"),
 				},
 			},
 			"path": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Path should always start with \"/\" and can contain alphanumeric, underscore, hyphen and dot characters.").String,
-				Optional:            true,
+				Required:            true,
 			},
 			"server_name": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Name of the server").String,

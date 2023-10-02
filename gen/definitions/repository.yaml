@@ -1,7 +1,6 @@
 ---
 name: Repository
 rest_endpoint: /api/v1/repository
-skip_minimum_test: true
 doc_category: Administration
 attributes:
   - model_name: name
@@ -12,10 +11,13 @@ attributes:
   - model_name: protocol
     type: String
     enum_values: [CDROM, DISK, FTP, HTTP, HTTPS, NFS, SFTP, TFTP]
+    mandatory: true
     description: Protocol
     example: SFTP
+    minimum_test_value: '"DISK"'
   - model_name: path
     type: String
+    mandatory: true
     description: 'Path should always start with \"/\" and can contain alphanumeric, underscore, hyphen and dot characters.'
     example: /dir
   - model_name: serverName

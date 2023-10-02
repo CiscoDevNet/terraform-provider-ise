@@ -49,5 +49,6 @@ attribute:
   default_value: any(str(), int(), bool(), required=False)
   value: any(str(), int(), bool(), required=False)
   test_value: str(required=False)
+  minimum_test_value: str(required=False)
   test_tags: list(str(), required=False)
   attributes: list(include('attribute'), required=False)

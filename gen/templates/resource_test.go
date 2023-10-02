@@ -175,10 +175,10 @@ func testAccIse{{camelCase .Name}}Config_minimum() string {
 				{{- if or .Id .Reference .Mandatory}}
 				{{- if len .TestTags}}
 	if {{range $i, $e := .TestTags}}{{if $i}} || {{end}}os.Getenv("{{$e}}") != ""{{end}} {
-		config += `			{{.TfName}} = {{if .TestValue}}{{.TestValue}}{{else}}{{if eq .Type "String"}}"{{.Example}}"{{else if eq .Type "StringList"}}["{{.Example}}"]{{else}}{{.Example}}{{end}}{{end}}` + "\n"
+		config += `			{{.TfName}} = {{if .MinimumTestValue}}{{.MinimumTestValue}}{{else if .TestValue}}{{.TestValue}}{{else}}{{if eq .Type "String"}}"{{.Example}}"{{else if eq .Type "StringList"}}["{{.Example}}"]{{else}}{{.Example}}{{end}}{{end}}` + "\n"
 	}
 				{{- else}}
-	config += `			{{.TfName}} = {{if .TestValue}}{{.TestValue}}{{else}}{{if eq .Type "String"}}"{{.Example}}"{{else if eq .Type "StringList"}}["{{.Example}}"]{{else}}{{.Example}}{{end}}{{end}}` + "\n"
+	config += `			{{.TfName}} = {{if .MinimumTestValue}}{{.MinimumTestValue}}{{else if .TestValue}}{{.TestValue}}{{else}}{{if eq .Type "String"}}"{{.Example}}"{{else if eq .Type "StringList"}}["{{.Example}}"]{{else}}{{.Example}}{{end}}{{end}}` + "\n"
 				{{- end}}
 				{{- end}}
 				{{- end}}
@@ -189,10 +189,10 @@ func testAccIse{{camelCase .Name}}Config_minimum() string {
 			{{- else}}
 			{{- if len .TestTags}}
 	if {{range $i, $e := .TestTags}}{{if $i}} || {{end}}os.Getenv("{{$e}}") != ""{{end}} {
-		config += `		{{.TfName}} = {{if .TestValue}}{{.TestValue}}{{else}}{{if eq .Type "String"}}"{{.Example}}"{{else if eq .Type "StringList"}}["{{.Example}}"]{{else}}{{.Example}}{{end}}{{end}}` + "\n"
+		config += `		{{.TfName}} = {{if .MinimumTestValue}}{{.MinimumTestValue}}{{else if .TestValue}}{{.TestValue}}{{else}}{{if eq .Type "String"}}"{{.Example}}"{{else if eq .Type "StringList"}}["{{.Example}}"]{{else}}{{.Example}}{{end}}{{end}}` + "\n"
 	}
 			{{- else}}
-	config += `		{{.TfName}} = {{if .TestValue}}{{.TestValue}}{{else}}{{if eq .Type "String"}}"{{.Example}}"{{else if eq .Type "StringList"}}["{{.Example}}"]{{else}}{{.Example}}{{end}}{{end}}` + "\n"
+	config += `		{{.TfName}} = {{if .MinimumTestValue}}{{.MinimumTestValue}}{{else if .TestValue}}{{.TestValue}}{{else}}{{if eq .Type "String"}}"{{.Example}}"{{else if eq .Type "StringList"}}["{{.Example}}"]{{else}}{{.Example}}{{end}}{{end}}` + "\n"
 			{{- end}}
 			{{- end}}
 			{{- end}}
@@ -204,10 +204,10 @@ func testAccIse{{camelCase .Name}}Config_minimum() string {
 		{{- else}}
 		{{- if len .TestTags}}
 	if {{range $i, $e := .TestTags}}{{if $i}} || {{end}}os.Getenv("{{$e}}") != ""{{end}} {
-		config += `	  {{.TfName}} = {{if .TestValue}}{{.TestValue}}{{else}}{{if eq .Type "String"}}"{{.Example}}"{{else if eq .Type "StringList"}}["{{.Example}}"]{{else}}{{.Example}}{{end}}{{end}}` + "\n"
+		config += `	  {{.TfName}} = {{if .MinimumTestValue}}{{.MinimumTestValue}}{{else if .TestValue}}{{.TestValue}}{{else}}{{if eq .Type "String"}}"{{.Example}}"{{else if eq .Type "StringList"}}["{{.Example}}"]{{else}}{{.Example}}{{end}}{{end}}` + "\n"
 	}
 			{{- else}}
-	config += `	  {{.TfName}} = {{if .TestValue}}{{.TestValue}}{{else}}{{if eq .Type "String"}}"{{.Example}}"{{else if eq .Type "StringList"}}["{{.Example}}"]{{else}}{{.Example}}{{end}}{{end}}` + "\n"
+	config += `	  {{.TfName}} = {{if .MinimumTestValue}}{{.MinimumTestValue}}{{else if .TestValue}}{{.TestValue}}{{else}}{{if eq .Type "String"}}"{{.Example}}"{{else if eq .Type "StringList"}}["{{.Example}}"]{{else}}{{.Example}}{{end}}{{end}}` + "\n"
 		{{- end}}
 		{{- end}}
 		{{- end}}
@@ -219,10 +219,10 @@ func testAccIse{{camelCase .Name}}Config_minimum() string {
 	{{- else}}
 	{{- if len .TestTags}}
 	if {{range $i, $e := .TestTags}}{{if $i}} || {{end}}os.Getenv("{{$e}}") != ""{{end}} {
-		config += `	{{.TfName}} = {{if .TestValue}}{{.TestValue}}{{else}}{{if eq .Type "String"}}"{{.Example}}"{{else if eq .Type "StringList"}}["{{.Example}}"]{{else}}{{.Example}}{{end}}{{end}}` + "\n"
+		config += `	{{.TfName}} = {{if .MinimumTestValue}}{{.MinimumTestValue}}{{else if .TestValue}}{{.TestValue}}{{else}}{{if eq .Type "String"}}"{{.Example}}"{{else if eq .Type "StringList"}}["{{.Example}}"]{{else}}{{.Example}}{{end}}{{end}}` + "\n"
 	}
 	{{- else}}
-	config += `	{{.TfName}} = {{if .TestValue}}{{.TestValue}}{{else}}{{if eq .Type "String"}}"{{.Example}}"{{else if eq .Type "StringList"}}["{{.Example}}"]{{else}}{{.Example}}{{end}}{{end}}` + "\n"
+	config += `	{{.TfName}} = {{if .MinimumTestValue}}{{.MinimumTestValue}}{{else if .TestValue}}{{.TestValue}}{{else}}{{if eq .Type "String"}}"{{.Example}}"{{else if eq .Type "StringList"}}["{{.Example}}"]{{else}}{{.Example}}{{end}}{{end}}` + "\n"
 	{{- end}}
 	{{- end}}
 	{{- end}}

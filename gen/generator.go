@@ -146,6 +146,7 @@ type YamlConfigAttribute struct {
 	DefaultValue     string                `yaml:"default_value"`
 	Value            string                `yaml:"value"`
 	TestValue        string                `yaml:"test_value"`
+	MinimumTestValue string                `yaml:"minimum_test_value"`
 	TestTags         []string              `yaml:"test_tags"`
 	Attributes       []YamlConfigAttribute `yaml:"attributes"`
 }

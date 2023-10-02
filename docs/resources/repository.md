@@ -30,14 +30,14 @@ resource "ise_repository" "example" {
 ### Required
 
 - `name` (String) Repository name should be less than 80 characters and can contain alphanumeric, underscore, hyphen and dot characters.
+- `path` (String) Path should always start with "/" and can contain alphanumeric, underscore, hyphen and dot characters.
+- `protocol` (String) Protocol
+  - Choices: `CDROM`, `DISK`, `FTP`, `HTTP`, `HTTPS`, `NFS`, `SFTP`, `TFTP`
 
 ### Optional
 
 - `enable_pki` (Boolean) Enable PKI
 - `password` (String) Password can contain alphanumeric and/or special characters.
-- `path` (String) Path should always start with "/" and can contain alphanumeric, underscore, hyphen and dot characters.
-- `protocol` (String) Protocol
-  - Choices: `CDROM`, `DISK`, `FTP`, `HTTP`, `HTTPS`, `NFS`, `SFTP`, `TFTP`
 - `server_name` (String) Name of the server
 - `user_name` (String) User name
 
