@@ -1,0 +1,214 @@
+---
+name: Authorization Profile
+rest_endpoint: /ers/config/authorizationprofile
+res_description: This resource can manage an authorization profiles policy element.
+ds_description: This data source can read an authorization profiles policy element.
+doc_category: Policy
+attributes:
+  - model_name: name
+    data_path: [AuthorizationProfile]
+    type: String
+    mandatory: true
+    description: The name of the authorization profile
+    example: AuthzProfile1
+  - model_name: description
+    data_path: [AuthorizationProfile]
+    type: String
+    description: Description
+    example: My Authorization Profile
+  - model_name: nameID
+    tf_name: name_id
+    data_path: [AuthorizationProfile,vlan]
+    type: String
+    description: Vlan name
+    example: VLAN10
+    mandatory: true
+  - model_name: tagID
+    tf_name: tag_id
+    data_path: [AuthorizationProfile,vlan]
+    type: Int64
+    min_int: 0
+    max_int: 31
+    description: Valid range is 0-31
+    example: 0
+    mandatory: true
+  - model_name: WebRedirectionType
+    data_path: [AuthorizationProfile,webRedirection]
+    type: String
+    enum_values: [CentralizedWebAuth, HotSpot, NativeSupplicanProvisioning, ClientProvisioning]
+    description: "Value MUST be one of the following: `CentralizedWebAuth`, `HotSpot`, `NativeSupplicanProvisioning`, `ClientProvisioning`. The WebRedirectionType must fit the portalName"
+    mandatory: true
+    example: CentralizedWebAuth
+  - model_name: acl
+    data_path: [AuthorizationProfile,webRedirection]
+    tf_name: web_redirection_acl
+    type: String
+    mandatory: true
+    example: TEST_ACL
+  - model_name: portalName
+    data_path: [AuthorizationProfile,webRedirection]
+    type: String
+    mandatory: true
+    description: A portal that exist in the DB and fits the WebRedirectionType
+    example: Sponsored Guest Portal (default)
+  - model_name: staticIPHostNameFQDN
+    data_path: [AuthorizationProfile,webRedirection]
+    tf_name: static_ip_host_name_fqdn
+    type: String
+    description: A portal that exist in the DB and fits the WebRedirectionType
+    exclude_test: true
+  - model_name: displayCertificatesRenewalMessages
+    data_path: [AuthorizationProfile,webRedirection]
+    type: Bool
+    description: The displayCertificatesRenewalMessages is mandatory when `WebRedirectionType` value is `CentralizedWebAuth`. For all other `WebRedirectionType` values the field must be ignored
+    example: true
+  - model_name: accessType
+    data_path: [AuthorizationProfile]
+    type: String
+    enum_values: [ACCESS_ACCEPT, ACCESS_REJECT]
+    description: "Allowed Values: `ACCESS_ACCEPT`, `ACCESS_REJECT`"
+    example: ACCESS_ACCEPT
+  - model_name: authzProfileType
+    data_path: [AuthorizationProfile]
+    type: String
+    enum_values: [SWITCH, TRUSTSEC, TACACS]
+    description: "Allowed Values: `SWITCH`, `TRUSTSEC`, `TACACS`. `SWITCH` is used for Standard Authorization Profiles. only `SWITCH` is supported."
+    example: SWITCH
+  - model_name: profileName
+    data_path: [AuthorizationProfile]
+    type: String
+    description: "Value needs to be an existing Network Device Profile"
+    example: Cisco
+  - model_name: airespaceACL
+    tf_name: airespace_acl
+    data_path: [AuthorizationProfile]
+    type: String
+    exclude_test: true
+  - model_name: acl
+    data_path: [AuthorizationProfile]
+    type: String
+    exclude_test: true
+  - model_name: daclName
+    data_path: [AuthorizationProfile]
+    type: String
+    exclude_test: true
+  - model_name: autoSmartPort
+    data_path: [AuthorizationProfile]
+    type: String
+    exclude_test: true
+  - model_name: interfaceTemplate
+    data_path: [AuthorizationProfile]
+    type: String
+    exclude_test: true
+  - model_name: ipv6ACLFilter
+    tf_name: ipv6_acl_filter
+    data_path: [AuthorizationProfile]
+    type: String
+    exclude_test: true
+  - model_name: avcProfile
+    data_path: [AuthorizationProfile]
+    type: String
+    exclude_test: true
+  - model_name: asaVpn
+    data_path: [AuthorizationProfile]
+    type: String
+  - model_name: uniqueIdentifier
+    data_path: [AuthorizationProfile]
+    type: String
+  - model_name: trackMovement
+    data_path: [AuthorizationProfile]
+    type: Bool
+    example: false
+  - model_name: serviceTemplate
+    data_path: [AuthorizationProfile]
+    type: Bool
+    example: false
+  - model_name: easywiredSessionCandidate
+    data_path: [AuthorizationProfile]
+    type: Bool
+    example: false
+  - model_name: voiceDomainPermission
+    data_path: [AuthorizationProfile]
+    type: Bool
+    example: false
+    exclude_test: true
+  - model_name: neat
+    data_path: [AuthorizationProfile]
+    type: Bool
+    example: false
+    exclude_test: true
+  - model_name: webAuth
+    data_path: [AuthorizationProfile]
+    type: Bool
+    example: false
+    exclude_test: true
+  - model_name: macSecPolicy
+    data_path: [AuthorizationProfile]
+    type: String
+    enum_values: [MUST_SECURE, MUST_NOT_SECURE, SHOULD_SECURE]
+    description: "Allowed Values: `MUST_SECURE`, `MUST_NOT_SECURE`, `SHOULD_SECURE`"
+    example: MUST_SECURE
+    exclude_test: true
+  - model_name: connectivity
+    data_path: [AuthorizationProfile,reauth]
+    type: String
+    enum_values: [DEFAULT, RADIUS_REQUEST]
+    description: "Allowed Values: `DEFAULT`, `RADIUS_REQUEST`"
+    mandatory: true
+    example: DEFAULT
+  - model_name: timer
+    data_path: [AuthorizationProfile,reauth]
+    type: Int64
+    min_int: 1
+    max_int: 65535
+    description: Valid range is 1-65535
+    example: 1
+    mandatory: true
+  - model_name: advancedAttributes
+    data_path: [AuthorizationProfile]
+    type: List
+    example: false
+    attributes:
+      - model_name: AdvancedAttributeValueType
+        tf_name: attribute_1_value_type
+        data_path: [leftHandSideDictionaryAttribue]
+        type: String
+        enum_values: [AdvancedDictionaryAttribute, AttributeValue]
+        id: true
+        example: AdvancedDictionaryAttribute
+      - model_name: dictionaryName
+        data_path: [leftHandSideDictionaryAttribue]
+        type: String
+        mandatory: true
+        description: Dictionary name
+        example: Cisco
+      - model_name: attributeName
+        data_path: [leftHandSideDictionaryAttribue]
+        type: String
+        mandatory: true
+        description: Attribute name
+        example: cisco-av-pair
+      - model_name: AdvancedAttributeValueType
+        tf_name: attribute_2_value_type
+        data_path: [rightHandSideAttribueValue]
+        type: String
+        enum_values: [AdvancedDictionaryAttribute, AttributeValue]
+        mandatory: true
+        example: AttributeValue
+      - model_name: value
+        data_path: [rightHandSideAttribueValue]
+        type: String
+        mandatory: true
+        description: Attribute value
+        example: set_nadprofile_vlan=true,vlan=TEST,tag=1
+  - model_name: ipv6DaclName
+    data_path: [AuthorizationProfile]
+    type: String
+    example: false
+    exclude_test: true
+  - model_name: airespaceIPv6ACL
+    tf_name: airespace_ipv6_acl
+    data_path: [AuthorizationProfile]
+    type: String
+    example: false
+    exclude_test: true
