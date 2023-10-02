@@ -2,7 +2,6 @@
 name: Network Access Authorization Rule
 rest_endpoint: /api/v1/policy/network-access/policy-set/%v/authorization
 id_path: response.rule.id
-skip_minimum_test: true
 doc_category: Policy
 attributes:
   - tf_name: policy_set_id
@@ -90,6 +89,7 @@ attributes:
     type: StringList
     description: The authorization profile(s)
     example: PermitAccess
+    minimum_test_value: '["PermitAccess"]'
   - model_name: securityGroup
     type: String
     description: Security group used in authorization policies

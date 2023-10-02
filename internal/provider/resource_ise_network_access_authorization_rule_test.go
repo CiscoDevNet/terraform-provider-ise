@@ -21,6 +21,7 @@ package provider
 
 //template:begin imports
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -45,6 +46,11 @@ func TestAccIseNetworkAccessAuthorizationRule(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_rule.test", "security_group", "BYOD"))
 
 	var steps []resource.TestStep
+	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
+		steps = append(steps, resource.TestStep{
+			Config: testAccIseNetworkAccessAuthorizationRulePrerequisitesConfig + testAccIseNetworkAccessAuthorizationRuleConfig_minimum(),
+		})
+	}
 	steps = append(steps, resource.TestStep{
 		Config: testAccIseNetworkAccessAuthorizationRulePrerequisitesConfig + testAccIseNetworkAccessAuthorizationRuleConfig_all(),
 		Check:  resource.ComposeTestCheckFunc(checks...),
@@ -91,6 +97,7 @@ func testAccIseNetworkAccessAuthorizationRuleConfig_minimum() string {
 	config += `	name = "Rule1"` + "\n"
 	config += `	condition_type = "ConditionReference"` + "\n"
 	config += `	condition_id = ise_network_access_condition.test.id` + "\n"
+	config += `	profile = ["PermitAccess"]` + "\n"
 	config += `}` + "\n"
 	return config
 }
