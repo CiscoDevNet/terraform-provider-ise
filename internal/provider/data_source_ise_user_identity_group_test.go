@@ -37,6 +37,7 @@ func TestAccDataSourceIseUserIdentityGroup(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_user_identity_group.test", "name", "Group1"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_user_identity_group.test", "description", "My endpoint identity group"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_user_identity_group.test", "parent", "NAC Group:NAC:IdentityGroups:User Identity Groups"))
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
@@ -59,6 +60,7 @@ func testAccDataSourceIseUserIdentityGroupConfig() string {
 	config := `resource "ise_user_identity_group" "test" {` + "\n"
 	config += `	name = "Group1"` + "\n"
 	config += `	description = "My endpoint identity group"` + "\n"
+	config += `	parent = "NAC Group:NAC:IdentityGroups:User Identity Groups"` + "\n"
 	config += `}` + "\n"
 
 	config += `

@@ -32,10 +32,10 @@ import (
 
 //template:begin types
 type UserIdentityGroup struct {
-	Id                        types.String `tfsdk:"id"`
-	Name                      types.String `tfsdk:"name"`
-	Description               types.String `tfsdk:"description"`
-	ParentUserIdentityGroupId types.String `tfsdk:"parent_user_identity_group_id"`
+	Id          types.String `tfsdk:"id"`
+	Name        types.String `tfsdk:"name"`
+	Description types.String `tfsdk:"description"`
+	Parent      types.String `tfsdk:"parent"`
 }
 
 //template:end types
@@ -56,8 +56,8 @@ func (data UserIdentityGroup) toBody(ctx context.Context, state UserIdentityGrou
 	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "IdentityGroup.description", data.Description.ValueString())
 	}
-	if !data.ParentUserIdentityGroupId.IsNull() {
-		body, _ = sjson.Set(body, "IdentityGroup.parentId", data.ParentUserIdentityGroupId.ValueString())
+	if !data.Parent.IsNull() {
+		body, _ = sjson.Set(body, "IdentityGroup.parent", data.Parent.ValueString())
 	}
 	return body
 }
@@ -76,10 +76,10 @@ func (data *UserIdentityGroup) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("IdentityGroup.parentId"); value.Exists() {
-		data.ParentUserIdentityGroupId = types.StringValue(value.String())
+	if value := res.Get("IdentityGroup.parent"); value.Exists() {
+		data.Parent = types.StringValue(value.String())
 	} else {
-		data.ParentUserIdentityGroupId = types.StringNull()
+		data.Parent = types.StringNull()
 	}
 }
 
@@ -97,10 +97,10 @@ func (data *UserIdentityGroup) updateFromBody(ctx context.Context, res gjson.Res
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("IdentityGroup.parentId"); value.Exists() && !data.ParentUserIdentityGroupId.IsNull() {
-		data.ParentUserIdentityGroupId = types.StringValue(value.String())
+	if value := res.Get("IdentityGroup.parent"); value.Exists() && !data.Parent.IsNull() {
+		data.Parent = types.StringValue(value.String())
 	} else {
-		data.ParentUserIdentityGroupId = types.StringNull()
+		data.Parent = types.StringNull()
 	}
 }
 

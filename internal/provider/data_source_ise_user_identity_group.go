@@ -70,8 +70,8 @@ func (d *UserIdentityGroupDataSource) Schema(ctx context.Context, req datasource
 				MarkdownDescription: "Description",
 				Computed:            true,
 			},
-			"parent_user_identity_group_id": schema.StringAttribute{
-				MarkdownDescription: "Parent user identity group ID",
+			"parent": schema.StringAttribute{
+				MarkdownDescription: "Parent user identity group, e.g. `NAC Group:NAC:IdentityGroups:User Identity Groups`",
 				Computed:            true,
 			},
 		},

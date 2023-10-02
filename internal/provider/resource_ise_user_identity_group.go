@@ -77,8 +77,8 @@ func (r *UserIdentityGroupResource) Schema(ctx context.Context, req resource.Sch
 				MarkdownDescription: helpers.NewAttributeDescription("Description").String,
 				Optional:            true,
 			},
-			"parent_user_identity_group_id": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Parent user identity group ID").String,
+			"parent": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Parent user identity group, e.g. `NAC Group:NAC:IdentityGroups:User Identity Groups`").String,
 				Optional:            true,
 			},
 		},

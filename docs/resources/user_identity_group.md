@@ -16,6 +16,7 @@ This resource can manage an User Identity Group.
 resource "ise_user_identity_group" "example" {
   name        = "Group1"
   description = "My endpoint identity group"
+  parent      = "NAC Group:NAC:IdentityGroups:User Identity Groups"
 }
 ```
 
@@ -29,7 +30,7 @@ resource "ise_user_identity_group" "example" {
 ### Optional
 
 - `description` (String) Description
-- `parent_user_identity_group_id` (String) Parent user identity group ID
+- `parent` (String) Parent user identity group, e.g. `NAC Group:NAC:IdentityGroups:User Identity Groups`
 
 ### Read-Only
 

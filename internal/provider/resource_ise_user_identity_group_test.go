@@ -37,8 +37,14 @@ func TestAccIseUserIdentityGroup(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("ise_user_identity_group.test", "name", "Group1"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_user_identity_group.test", "description", "My endpoint identity group"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_user_identity_group.test", "parent", "NAC Group:NAC:IdentityGroups:User Identity Groups"))
 
 	var steps []resource.TestStep
+	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
+		steps = append(steps, resource.TestStep{
+			Config: testAccIseUserIdentityGroupConfig_minimum(),
+		})
+	}
 	steps = append(steps, resource.TestStep{
 		Config: testAccIseUserIdentityGroupConfig_all(),
 		Check:  resource.ComposeTestCheckFunc(checks...),
@@ -75,6 +81,7 @@ func testAccIseUserIdentityGroupConfig_all() string {
 	config := `resource "ise_user_identity_group" "test" {` + "\n"
 	config += `	name = "Group1"` + "\n"
 	config += `	description = "My endpoint identity group"` + "\n"
+	config += `	parent = "NAC Group:NAC:IdentityGroups:User Identity Groups"` + "\n"
 	config += `}` + "\n"
 	return config
 }

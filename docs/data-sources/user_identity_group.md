@@ -29,4 +29,4 @@ data "ise_user_identity_group" "example" {
 
 - `description` (String) Description
 - `name` (String) The name of the user identity group
-- `parent_user_identity_group_id` (String) Parent user identity group ID
+- `parent` (String) Parent user identity group, e.g. `NAC Group:NAC:IdentityGroups:User Identity Groups`
