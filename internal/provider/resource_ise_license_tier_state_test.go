@@ -20,6 +20,7 @@
 package provider
 
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -31,6 +32,11 @@ func TestAccIseLicenseTierState(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_license_tier_state.test", "licenses.0.status", "ENABLED"))
 
 	var steps []resource.TestStep
+	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
+		steps = append(steps, resource.TestStep{
+			Config: testAccIseLicenseTierStateConfig_minimum(),
+		})
+	}
 	steps = append(steps, resource.TestStep{
 		Config: testAccIseLicenseTierStateConfig_all(),
 		Check:  resource.ComposeTestCheckFunc(checks...),
@@ -49,6 +55,10 @@ func TestAccIseLicenseTierState(t *testing.T) {
 
 func testAccIseLicenseTierStateConfig_minimum() string {
 	config := `resource "ise_license_tier_state" "test" {` + "\n"
+	config += `	licenses = [{` + "\n"
+	config += `	  name = "ESSENTIAL"` + "\n"
+	config += `	  status = "ENABLED"` + "\n"
+	config += `	}]` + "\n"
 	config += `}` + "\n"
 	return config
 }

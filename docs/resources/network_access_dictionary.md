@@ -28,12 +28,12 @@ resource "ise_network_access_dictionary" "example" {
 
 - `dictionary_attr_type` (String) The dictionary attribute type
   - Choices: `ENTITY_ATTR`, `MSG_ATTR`, `PIP_ATTR`
+- `name` (String) The dictionary name
 - `version` (String) The version of the dictionary
 
 ### Optional
 
 - `description` (String) The description of the dictionary
-- `name` (String) The dictionary name
 
 ### Read-Only
 

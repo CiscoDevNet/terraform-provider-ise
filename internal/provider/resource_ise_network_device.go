@@ -132,7 +132,7 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 					Attributes: map[string]schema.Attribute{
 						"ipaddress": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("It can be either single ip address or ip range address").String,
-							Optional:            true,
+							Required:            true,
 						},
 						"ipaddress_exclude": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("It can be either single ip address or ip range address").String,

@@ -36,6 +36,7 @@ resource "ise_network_access_authorization_rule" "example" {
 ### Required
 
 - `name` (String) Rule name, [Valid characters are alphanumerics, underscore, hyphen, space, period, parentheses]
+- `policy_set_id` (String) Policy set ID
 
 ### Optional
 
@@ -49,7 +50,6 @@ resource "ise_network_access_authorization_rule" "example" {
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
   - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`, `LibraryConditionAndBlock`, `LibraryConditionAttributes`, `LibraryConditionOrBlock`, `TimeAndDateCondition`
 - `default` (Boolean) Indicates if this rule is the default one
-- `policy_set_id` (String) Policy set ID
 - `profile` (List of String) The authorization profile(s)
 - `rank` (Number) The rank (priority) in relation to other rules. Lower rank is higher priority.
 - `security_group` (String) Security group used in authorization policies

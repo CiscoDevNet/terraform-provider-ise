@@ -57,6 +57,7 @@ Required:
 
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
   - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`, `LibraryConditionAndBlock`, `LibraryConditionAttributes`, `LibraryConditionOrBlock`, `TimeAndDateCondition`
+- `name` (String) Condition name
 
 Optional:
 
@@ -67,7 +68,6 @@ Optional:
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
 - `is_negate` (Boolean) Indicates whereas this condition is in negate mode
-- `name` (String) Condition name
 - `operator` (String) Equality operator
   - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`
 
@@ -78,6 +78,7 @@ Required:
 
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
   - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`, `LibraryConditionAndBlock`, `LibraryConditionAttributes`, `LibraryConditionOrBlock`, `TimeAndDateCondition`
+- `name` (String) Condition name
 
 Optional:
 
@@ -87,7 +88,6 @@ Optional:
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
 - `is_negate` (Boolean) Indicates whereas this condition is in negate mode
-- `name` (String) Condition name
 - `operator` (String) Equality operator
   - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`
 

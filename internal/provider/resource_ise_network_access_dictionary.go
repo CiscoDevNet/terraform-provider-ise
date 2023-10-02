@@ -68,7 +68,7 @@ func (r *NetworkAccessDictionaryResource) Schema(ctx context.Context, req resour
 			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("The dictionary name").String,
-				Optional:            true,
+				Required:            true,
 			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("The description of the dictionary").String,

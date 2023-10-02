@@ -125,9 +125,12 @@ resource "ise_network_device" "example" {
 <a id="nestedatt--ips"></a>
 ### Nested Schema for `ips`
 
-Optional:
+Required:
 
 - `ipaddress` (String) It can be either single ip address or ip range address
+
+Optional:
+
 - `ipaddress_exclude` (String) It can be either single ip address or ip range address
 - `mask` (String) Subnet mask length
 

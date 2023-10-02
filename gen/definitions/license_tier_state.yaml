@@ -7,11 +7,11 @@ post_update: true
 root_list: true
 no_read_prefix: true
 id_path: version
-skip_minimum_test: true
 doc_category: Administration
 attributes:
   - tf_name: licenses
     type: List
+    mandatory: true
     description: List of licenses
     attributes:
       - model_name: name
@@ -21,6 +21,7 @@ attributes:
         description: License name
         example: ESSENTIAL
       - model_name: status
+        mandatory: true
         type: String
         enum_values: [ENABLED, DISABLED]
         description: License status

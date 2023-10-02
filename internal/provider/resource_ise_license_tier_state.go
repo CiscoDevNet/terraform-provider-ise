@@ -68,19 +68,19 @@ func (r *LicenseTierStateResource) Schema(ctx context.Context, req resource.Sche
 			},
 			"licenses": schema.ListNestedAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("List of licenses").String,
-				Optional:            true,
+				Required:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("License name").AddStringEnumDescription("ESSENTIAL", "ADVANTAGE", "PREMIER", "DEVICEADMIN", "VM").String,
-							Optional:            true,
+							Required:            true,
 							Validators: []validator.String{
 								stringvalidator.OneOf("ESSENTIAL", "ADVANTAGE", "PREMIER", "DEVICEADMIN", "VM"),
 							},
 						},
 						"status": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("License status").AddStringEnumDescription("ENABLED", "DISABLED").String,
-							Optional:            true,
+							Required:            true,
 							Validators: []validator.String{
 								stringvalidator.OneOf("ENABLED", "DISABLED"),
 							},

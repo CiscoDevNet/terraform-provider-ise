@@ -92,7 +92,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 				{{- if eq .Type "StringList"}}
 				ElementType:         types.StringType,
 				{{- end}}
-				{{- if .Mandatory}}
+				{{- if or .Id .Reference .Mandatory}}
 				Required:            true,
 				{{- else}}
 				Optional:            true,
@@ -152,7 +152,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 							{{- if eq .Type "StringList"}}
 							ElementType:         types.StringType,
 							{{- end}}
-							{{- if .Mandatory}}
+							{{- if or .Id .Reference .Mandatory}}
 							Required:            true,
 							{{- else}}
 							Optional:            true,
@@ -212,7 +212,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 										{{- if eq .Type "StringList"}}
 										ElementType:         types.StringType,
 										{{- end}}
-										{{- if .Mandatory}}
+										{{- if or .Id .Reference .Mandatory}}
 										Required:            true,
 										{{- else}}
 										Optional:            true,
@@ -272,7 +272,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 													{{- if eq .Type "StringList"}}
 													ElementType:         types.StringType,
 													{{- end}}
-													{{- if .Mandatory}}
+													{{- if or .Id .Reference .Mandatory}}
 													Required:            true,
 													{{- else}}
 													Optional:            true,

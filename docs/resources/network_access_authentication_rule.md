@@ -38,6 +38,7 @@ resource "ise_network_access_authentication_rule" "example" {
 ### Required
 
 - `name` (String) Rule name, [Valid characters are alphanumerics, underscore, hyphen, space, period, parentheses]
+- `policy_set_id` (String) Policy set ID
 
 ### Optional
 
@@ -58,7 +59,6 @@ resource "ise_network_access_authentication_rule" "example" {
   - Choices: `REJECT`, `DROP`, `CONTINUE`
 - `if_user_not_found` (String) Action to perform when user is not found in any of identity stores
   - Choices: `REJECT`, `DROP`, `CONTINUE`
-- `policy_set_id` (String) Policy set ID
 - `rank` (Number) The rank (priority) in relation to other rules. Lower rank is higher priority.
 - `state` (String) The state that the rule is in. A disabled rule cannot be matched.
   - Choices: `disabled`, `enabled`, `monitor`
