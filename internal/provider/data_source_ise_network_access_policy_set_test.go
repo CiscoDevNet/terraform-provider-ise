@@ -48,7 +48,7 @@ func TestAccDataSourceIseNetworkAccessPolicySet(t *testing.T) {
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceIseNetworkAccessPolicySetConfig(),
+				Config: testAccDataSourceIseNetworkAccessPolicySetPrerequisitesConfig + testAccDataSourceIseNetworkAccessPolicySetConfig(),
 				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
@@ -58,6 +58,17 @@ func TestAccDataSourceIseNetworkAccessPolicySet(t *testing.T) {
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
+const testAccDataSourceIseNetworkAccessPolicySetPrerequisitesConfig = `
+resource "ise_network_access_condition" "test" {
+  name            = "Cond1"
+  condition_type  = "LibraryConditionAttributes"
+  attribute_name  = "NAS-Port-Type"
+  attribute_value = "Wireless - IEEE 802.11"
+  dictionary_name = "Radius"
+  operator        = "equals"
+}
+`
+
 //template:end testPrerequisites
 
 //template:begin testAccDataSourceConfig

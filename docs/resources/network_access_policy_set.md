@@ -34,6 +34,8 @@ resource "ise_network_access_policy_set" "example" {
 
 ### Required
 
+- `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
+  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`, `LibraryConditionAndBlock`, `LibraryConditionAttributes`, `LibraryConditionOrBlock`, `TimeAndDateCondition`
 - `name` (String) Given name for the policy set, [Valid characters are alphanumerics, underscore, hyphen, space, period, parentheses]
 - `service_name` (String) Policy set service identifier. 'Allowed Protocols' or 'Server Sequence'.
 
@@ -43,11 +45,10 @@ resource "ise_network_access_policy_set" "example" {
 - `condition_attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
 - `condition_dictionary_name` (String) Dictionary name
 - `condition_dictionary_value` (String) Dictionary value
+- `condition_id` (String) UUID for condition
 - `condition_is_negate` (Boolean) Indicates whereas this condition is in negate mode
 - `condition_operator` (String) Equality operator
   - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`
-- `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
-  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`, `LibraryConditionAndBlock`, `LibraryConditionAttributes`, `LibraryConditionOrBlock`, `TimeAndDateCondition`
 - `description` (String) The description of the policy set
 - `is_proxy` (Boolean) Flag which indicates if the policy set service is of type 'Proxy Sequence' or 'Allowed Protocols'
 - `rank` (Number) The rank (priority) in relation to other policy sets. Lower rank is higher priority.

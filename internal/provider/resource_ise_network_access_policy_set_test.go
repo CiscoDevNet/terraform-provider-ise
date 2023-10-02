@@ -21,6 +21,7 @@ package provider
 
 //template:begin imports
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -45,8 +46,13 @@ func TestAccIseNetworkAccessPolicySet(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_policy_set.test", "condition_operator", "equals"))
 
 	var steps []resource.TestStep
+	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
+		steps = append(steps, resource.TestStep{
+			Config: testAccIseNetworkAccessPolicySetPrerequisitesConfig + testAccIseNetworkAccessPolicySetConfig_minimum(),
+		})
+	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccIseNetworkAccessPolicySetConfig_all(),
+		Config: testAccIseNetworkAccessPolicySetPrerequisitesConfig + testAccIseNetworkAccessPolicySetConfig_all(),
 		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
@@ -64,6 +70,17 @@ func TestAccIseNetworkAccessPolicySet(t *testing.T) {
 //template:end testAcc
 
 //template:begin testPrerequisites
+const testAccIseNetworkAccessPolicySetPrerequisitesConfig = `
+resource "ise_network_access_condition" "test" {
+  name            = "Cond1"
+  condition_type  = "LibraryConditionAttributes"
+  attribute_name  = "NAS-Port-Type"
+  attribute_value = "Wireless - IEEE 802.11"
+  dictionary_name = "Radius"
+  operator        = "equals"
+}
+`
+
 //template:end testPrerequisites
 
 //template:begin testAccConfigMinimal
@@ -71,6 +88,8 @@ func testAccIseNetworkAccessPolicySetConfig_minimum() string {
 	config := `resource "ise_network_access_policy_set" "test" {` + "\n"
 	config += `	name = "PolicySet1"` + "\n"
 	config += `	service_name = "Default Network Access"` + "\n"
+	config += `	condition_type = "ConditionReference"` + "\n"
+	config += `	condition_id = ise_network_access_condition.test.id` + "\n"
 	config += `}` + "\n"
 	return config
 }

@@ -100,10 +100,14 @@ func (r *NetworkAccessPolicySetResource) Schema(ctx context.Context, req resourc
 			},
 			"condition_type": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", "LibraryConditionAndBlock", "LibraryConditionAttributes", "LibraryConditionOrBlock", "TimeAndDateCondition").String,
-				Optional:            true,
+				Required:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", "LibraryConditionAndBlock", "LibraryConditionAttributes", "LibraryConditionOrBlock", "TimeAndDateCondition"),
 				},
+			},
+			"condition_id": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("UUID for condition").String,
+				Optional:            true,
 			},
 			"condition_is_negate": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Indicates whereas this condition is in negate mode").String,

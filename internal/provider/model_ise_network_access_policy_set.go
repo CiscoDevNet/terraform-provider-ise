@@ -40,6 +40,7 @@ type NetworkAccessPolicySet struct {
 	ServiceName              types.String `tfsdk:"service_name"`
 	State                    types.String `tfsdk:"state"`
 	ConditionType            types.String `tfsdk:"condition_type"`
+	ConditionId              types.String `tfsdk:"condition_id"`
 	ConditionIsNegate        types.Bool   `tfsdk:"condition_is_negate"`
 	ConditionAttributeName   types.String `tfsdk:"condition_attribute_name"`
 	ConditionAttributeValue  types.String `tfsdk:"condition_attribute_value"`
@@ -80,6 +81,9 @@ func (data NetworkAccessPolicySet) toBody(ctx context.Context, state NetworkAcce
 	}
 	if !data.ConditionType.IsNull() {
 		body, _ = sjson.Set(body, "condition.conditionType", data.ConditionType.ValueString())
+	}
+	if !data.ConditionId.IsNull() {
+		body, _ = sjson.Set(body, "condition.id", data.ConditionId.ValueString())
 	}
 	if !data.ConditionIsNegate.IsNull() {
 		body, _ = sjson.Set(body, "condition.isNegate", data.ConditionIsNegate.ValueBool())
@@ -140,6 +144,11 @@ func (data *NetworkAccessPolicySet) fromBody(ctx context.Context, res gjson.Resu
 		data.ConditionType = types.StringValue(value.String())
 	} else {
 		data.ConditionType = types.StringNull()
+	}
+	if value := res.Get("response.condition.id"); value.Exists() {
+		data.ConditionId = types.StringValue(value.String())
+	} else {
+		data.ConditionId = types.StringNull()
 	}
 	if value := res.Get("response.condition.isNegate"); value.Exists() {
 		data.ConditionIsNegate = types.BoolValue(value.Bool())
@@ -211,6 +220,11 @@ func (data *NetworkAccessPolicySet) updateFromBody(ctx context.Context, res gjso
 		data.ConditionType = types.StringValue(value.String())
 	} else {
 		data.ConditionType = types.StringNull()
+	}
+	if value := res.Get("response.condition.id"); value.Exists() && !data.ConditionId.IsNull() {
+		data.ConditionId = types.StringValue(value.String())
+	} else {
+		data.ConditionId = types.StringNull()
 	}
 	if value := res.Get("response.condition.isNegate"); value.Exists() && !data.ConditionIsNegate.IsNull() {
 		data.ConditionIsNegate = types.BoolValue(value.Bool())
