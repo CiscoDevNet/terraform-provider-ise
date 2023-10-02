@@ -19,12 +19,16 @@
 
 package provider
 
+//template:begin imports
 import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+//template:end imports
+
+//template:begin testAccDataSource
 func TestAccDataSourceIseNetworkAccessDictionary(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_dictionary.test", "name", "Dict1"))
@@ -43,6 +47,12 @@ func TestAccDataSourceIseNetworkAccessDictionary(t *testing.T) {
 	})
 }
 
+//template:end testAccDataSource
+
+//template:begin testPrerequisites
+//template:end testPrerequisites
+
+//template:begin testAccDataSourceConfig
 func testAccDataSourceIseNetworkAccessDictionaryConfig() string {
 	config := `resource "ise_network_access_dictionary" "test" {` + "\n"
 	config += `	name = "Dict1"` + "\n"
@@ -58,3 +68,5 @@ func testAccDataSourceIseNetworkAccessDictionaryConfig() string {
 	`
 	return config
 }
+
+//template:end testAccDataSourceConfig

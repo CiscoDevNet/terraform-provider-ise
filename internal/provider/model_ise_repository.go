@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"context"
 
@@ -27,6 +28,9 @@ import (
 	"github.com/tidwall/sjson"
 )
 
+//template:end imports
+
+//template:begin types
 type Repository struct {
 	Id         types.String `tfsdk:"id"`
 	Name       types.String `tfsdk:"name"`
@@ -38,10 +42,16 @@ type Repository struct {
 	EnablePki  types.Bool   `tfsdk:"enable_pki"`
 }
 
+//template:end types
+
+//template:begin getPath
 func (data Repository) getPath() string {
 	return "/api/v1/repository"
 }
 
+//template:end getPath
+
+//template:begin toBody
 func (data Repository) toBody(ctx context.Context, state Repository) string {
 	body := ""
 	if !data.Name.IsNull() {
@@ -68,6 +78,9 @@ func (data Repository) toBody(ctx context.Context, state Repository) string {
 	return body
 }
 
+//template:end toBody
+
+//template:begin fromBody
 func (data *Repository) fromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("response.name"); value.Exists() {
 		data.Name = types.StringValue(value.String())
@@ -101,6 +114,9 @@ func (data *Repository) fromBody(ctx context.Context, res gjson.Result) {
 	}
 }
 
+//template:end fromBody
+
+//template:begin updateFromBody
 func (data *Repository) updateFromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("response.name"); value.Exists() && !data.Name.IsNull() {
 		data.Name = types.StringValue(value.String())
@@ -133,3 +149,5 @@ func (data *Repository) updateFromBody(ctx context.Context, res gjson.Result) {
 		data.EnablePki = types.BoolNull()
 	}
 }
+
+//template:end updateFromBody

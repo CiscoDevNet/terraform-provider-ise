@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"context"
 
@@ -27,6 +28,9 @@ import (
 	"github.com/tidwall/sjson"
 )
 
+//template:end imports
+
+//template:begin types
 type NetworkDeviceGroup struct {
 	Id          types.String `tfsdk:"id"`
 	Name        types.String `tfsdk:"name"`
@@ -34,10 +38,16 @@ type NetworkDeviceGroup struct {
 	RootGroup   types.String `tfsdk:"root_group"`
 }
 
+//template:end types
+
+//template:begin getPath
 func (data NetworkDeviceGroup) getPath() string {
 	return "/ers/config/networkdevicegroup"
 }
 
+//template:end getPath
+
+//template:begin toBody
 func (data NetworkDeviceGroup) toBody(ctx context.Context, state NetworkDeviceGroup) string {
 	body := ""
 	if !data.Name.IsNull() {
@@ -52,6 +62,9 @@ func (data NetworkDeviceGroup) toBody(ctx context.Context, state NetworkDeviceGr
 	return body
 }
 
+//template:end toBody
+
+//template:begin fromBody
 func (data *NetworkDeviceGroup) fromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("NetworkDeviceGroup.name"); value.Exists() {
 		data.Name = types.StringValue(value.String())
@@ -70,6 +83,9 @@ func (data *NetworkDeviceGroup) fromBody(ctx context.Context, res gjson.Result) 
 	}
 }
 
+//template:end fromBody
+
+//template:begin updateFromBody
 func (data *NetworkDeviceGroup) updateFromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("NetworkDeviceGroup.name"); value.Exists() && !data.Name.IsNull() {
 		data.Name = types.StringValue(value.String())
@@ -87,3 +103,5 @@ func (data *NetworkDeviceGroup) updateFromBody(ctx context.Context, res gjson.Re
 		data.RootGroup = types.StringNull()
 	}
 }
+
+//template:end updateFromBody

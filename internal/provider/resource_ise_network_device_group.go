@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"context"
 	"fmt"
@@ -34,6 +35,10 @@ import (
 	"github.com/netascode/go-ise"
 	"github.com/netascode/terraform-provider-ise/internal/provider/helpers"
 )
+
+//template:end imports
+
+//template:begin model
 
 // Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &NetworkDeviceGroupResource{}
@@ -88,6 +93,9 @@ func (r *NetworkDeviceGroupResource) Configure(_ context.Context, req resource.C
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
+//template:end model
+
+//template:begin create
 func (r *NetworkDeviceGroupResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan NetworkDeviceGroup
 
@@ -116,6 +124,9 @@ func (r *NetworkDeviceGroupResource) Create(ctx context.Context, req resource.Cr
 	resp.Diagnostics.Append(diags...)
 }
 
+//template:end create
+
+//template:begin read
 func (r *NetworkDeviceGroupResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state NetworkDeviceGroup
 
@@ -145,6 +156,9 @@ func (r *NetworkDeviceGroupResource) Read(ctx context.Context, req resource.Read
 	resp.Diagnostics.Append(diags...)
 }
 
+//template:end read
+
+//template:begin update
 func (r *NetworkDeviceGroupResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state NetworkDeviceGroup
 
@@ -177,6 +191,9 @@ func (r *NetworkDeviceGroupResource) Update(ctx context.Context, req resource.Up
 	resp.Diagnostics.Append(diags...)
 }
 
+//template:end update
+
+//template:begin delete
 func (r *NetworkDeviceGroupResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	var state NetworkDeviceGroup
 
@@ -199,6 +216,11 @@ func (r *NetworkDeviceGroupResource) Delete(ctx context.Context, req resource.De
 	resp.State.RemoveResource(ctx)
 }
 
+//template:end delete
+
+//template:begin import
 func (r *NetworkDeviceGroupResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
+
+//template:end import

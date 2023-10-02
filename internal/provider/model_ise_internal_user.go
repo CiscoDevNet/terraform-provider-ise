@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"context"
 
@@ -27,6 +28,9 @@ import (
 	"github.com/tidwall/sjson"
 )
 
+//template:end imports
+
+//template:begin types
 type InternalUser struct {
 	Id                   types.String `tfsdk:"id"`
 	Name                 types.String `tfsdk:"name"`
@@ -43,10 +47,16 @@ type InternalUser struct {
 	Description          types.String `tfsdk:"description"`
 }
 
+//template:end types
+
+//template:begin getPath
 func (data InternalUser) getPath() string {
 	return "/ers/config/internaluser"
 }
 
+//template:end getPath
+
+//template:begin toBody
 func (data InternalUser) toBody(ctx context.Context, state InternalUser) string {
 	body := ""
 	if !data.Name.IsNull() {
@@ -88,6 +98,9 @@ func (data InternalUser) toBody(ctx context.Context, state InternalUser) string 
 	return body
 }
 
+//template:end toBody
+
+//template:begin fromBody
 func (data *InternalUser) fromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("InternalUser.name"); value.Exists() {
 		data.Name = types.StringValue(value.String())
@@ -141,6 +154,9 @@ func (data *InternalUser) fromBody(ctx context.Context, res gjson.Result) {
 	}
 }
 
+//template:end fromBody
+
+//template:begin updateFromBody
 func (data *InternalUser) updateFromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("InternalUser.name"); value.Exists() && !data.Name.IsNull() {
 		data.Name = types.StringValue(value.String())
@@ -193,3 +209,5 @@ func (data *InternalUser) updateFromBody(ctx context.Context, res gjson.Result) 
 		data.Description = types.StringNull()
 	}
 }
+
+//template:end updateFromBody

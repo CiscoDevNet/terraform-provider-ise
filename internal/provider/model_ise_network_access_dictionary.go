@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"context"
 
@@ -27,6 +28,9 @@ import (
 	"github.com/tidwall/sjson"
 )
 
+//template:end imports
+
+//template:begin types
 type NetworkAccessDictionary struct {
 	Id                 types.String `tfsdk:"id"`
 	Name               types.String `tfsdk:"name"`
@@ -35,10 +39,16 @@ type NetworkAccessDictionary struct {
 	DictionaryAttrType types.String `tfsdk:"dictionary_attr_type"`
 }
 
+//template:end types
+
+//template:begin getPath
 func (data NetworkAccessDictionary) getPath() string {
 	return "/api/v1/policy/network-access/dictionaries"
 }
 
+//template:end getPath
+
+//template:begin toBody
 func (data NetworkAccessDictionary) toBody(ctx context.Context, state NetworkAccessDictionary) string {
 	body := ""
 	if !data.Name.IsNull() {
@@ -56,6 +66,9 @@ func (data NetworkAccessDictionary) toBody(ctx context.Context, state NetworkAcc
 	return body
 }
 
+//template:end toBody
+
+//template:begin fromBody
 func (data *NetworkAccessDictionary) fromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("response.name"); value.Exists() {
 		data.Name = types.StringValue(value.String())
@@ -79,6 +92,9 @@ func (data *NetworkAccessDictionary) fromBody(ctx context.Context, res gjson.Res
 	}
 }
 
+//template:end fromBody
+
+//template:begin updateFromBody
 func (data *NetworkAccessDictionary) updateFromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("response.name"); value.Exists() && !data.Name.IsNull() {
 		data.Name = types.StringValue(value.String())
@@ -101,3 +117,5 @@ func (data *NetworkAccessDictionary) updateFromBody(ctx context.Context, res gjs
 		data.DictionaryAttrType = types.StringNull()
 	}
 }
+
+//template:end updateFromBody

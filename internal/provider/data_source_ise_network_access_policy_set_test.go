@@ -19,12 +19,16 @@
 
 package provider
 
+//template:begin imports
 import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+//template:end imports
+
+//template:begin testAccDataSource
 func TestAccDataSourceIseNetworkAccessPolicySet(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_policy_set.test", "name", "PolicySet1"))
@@ -51,6 +55,12 @@ func TestAccDataSourceIseNetworkAccessPolicySet(t *testing.T) {
 	})
 }
 
+//template:end testAccDataSource
+
+//template:begin testPrerequisites
+//template:end testPrerequisites
+
+//template:begin testAccDataSourceConfig
 func testAccDataSourceIseNetworkAccessPolicySetConfig() string {
 	config := `resource "ise_network_access_policy_set" "test" {` + "\n"
 	config += `	name = "PolicySet1"` + "\n"
@@ -74,3 +84,5 @@ func testAccDataSourceIseNetworkAccessPolicySetConfig() string {
 	`
 	return config
 }
+
+//template:end testAccDataSourceConfig

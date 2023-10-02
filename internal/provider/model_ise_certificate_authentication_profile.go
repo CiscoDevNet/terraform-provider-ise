@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"context"
 
@@ -27,6 +28,9 @@ import (
 	"github.com/tidwall/sjson"
 )
 
+//template:end imports
+
+//template:begin types
 type CertificateAuthenticationProfile struct {
 	Id                        types.String `tfsdk:"id"`
 	Name                      types.String `tfsdk:"name"`
@@ -38,10 +42,16 @@ type CertificateAuthenticationProfile struct {
 	UsernameFrom              types.String `tfsdk:"username_from"`
 }
 
+//template:end types
+
+//template:begin getPath
 func (data CertificateAuthenticationProfile) getPath() string {
 	return "/ers/config/certificateprofile"
 }
 
+//template:end getPath
+
+//template:begin toBody
 func (data CertificateAuthenticationProfile) toBody(ctx context.Context, state CertificateAuthenticationProfile) string {
 	body := ""
 	if !data.Name.IsNull() {
@@ -68,6 +78,9 @@ func (data CertificateAuthenticationProfile) toBody(ctx context.Context, state C
 	return body
 }
 
+//template:end toBody
+
+//template:begin fromBody
 func (data *CertificateAuthenticationProfile) fromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("CertificateProfile.name"); value.Exists() {
 		data.Name = types.StringValue(value.String())
@@ -106,6 +119,9 @@ func (data *CertificateAuthenticationProfile) fromBody(ctx context.Context, res 
 	}
 }
 
+//template:end fromBody
+
+//template:begin updateFromBody
 func (data *CertificateAuthenticationProfile) updateFromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("CertificateProfile.name"); value.Exists() && !data.Name.IsNull() {
 		data.Name = types.StringValue(value.String())
@@ -143,3 +159,5 @@ func (data *CertificateAuthenticationProfile) updateFromBody(ctx context.Context
 		data.UsernameFrom = types.StringNull()
 	}
 }
+
+//template:end updateFromBody

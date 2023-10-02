@@ -20,6 +20,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"context"
 	"fmt"
@@ -31,9 +32,11 @@ import (
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+//template:end imports
 
 {{- $openApi := false}}{{if and (not (isErs .RestEndpoint)) (not .NoReadPrefix)}}{{$openApi = true}}{{end}}
 
+//template:begin types
 {{- $name := camelCase .Name}}
 type {{camelCase .Name}} struct {
 	Id types.String `tfsdk:"id"`
@@ -130,7 +133,9 @@ type {{$name}}{{$childName}}{{$childChildName}}{{toGoName .TfName}} struct {
 {{- end}}
 {{- end}}
 {{ end}}
+//template:end types
 
+//template:begin getPath
 func (data {{camelCase .Name}}) getPath() string {
 	{{- if hasReference .Attributes}}
 		return fmt.Sprintf("{{.RestEndpoint}}"{{range .Attributes}}{{if .Reference}}, data.{{toGoName .TfName}}.Value{{.Type}}(){{end}}{{end}})
@@ -138,7 +143,9 @@ func (data {{camelCase .Name}}) getPath() string {
 		return "{{.RestEndpoint}}"
 	{{- end}}
 }
+//template:end getPath
 
+//template:begin toBody
 func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .Name}}) string {
 	{{- if .RootList}}
 	body := "[]"
@@ -239,7 +246,9 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 	{{- end}}
 	return body
 }
+//template:end toBody
 
+//template:begin fromBody
 func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result) {
 	{{- range .Attributes}}
 	{{- if and (not .TfOnly) (not .Value) (not .WriteOnly) (not .Reference)}}
@@ -339,7 +348,9 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 	{{- end}}
 	{{- end}}
 }
+//template:end fromBody
 
+//template:begin updateFromBody
 func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.Result) {
 	{{- range .Attributes}}
 	{{- if and (not .TfOnly) (not .Value) (not .WriteOnly) (not .Reference)}}
@@ -492,3 +503,4 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 	{{- end}}
 	{{- end}}
 }
+//template:end updateFromBody

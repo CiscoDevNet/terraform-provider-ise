@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"context"
 	"fmt"
@@ -28,6 +29,9 @@ import (
 	"github.com/tidwall/sjson"
 )
 
+//template:end imports
+
+//template:begin types
 type NetworkAccessAuthenticationRule struct {
 	Id                       types.String `tfsdk:"id"`
 	PolicySetId              types.String `tfsdk:"policy_set_id"`
@@ -48,10 +52,16 @@ type NetworkAccessAuthenticationRule struct {
 	IfUserNotFound           types.String `tfsdk:"if_user_not_found"`
 }
 
+//template:end types
+
+//template:begin getPath
 func (data NetworkAccessAuthenticationRule) getPath() string {
 	return fmt.Sprintf("/api/v1/policy/network-access/policy-set/%v/authentication", data.PolicySetId.ValueString())
 }
 
+//template:end getPath
+
+//template:begin toBody
 func (data NetworkAccessAuthenticationRule) toBody(ctx context.Context, state NetworkAccessAuthenticationRule) string {
 	body := ""
 	if !data.Name.IsNull() {
@@ -102,6 +112,9 @@ func (data NetworkAccessAuthenticationRule) toBody(ctx context.Context, state Ne
 	return body
 }
 
+//template:end toBody
+
+//template:begin fromBody
 func (data *NetworkAccessAuthenticationRule) fromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("response.rule.name"); value.Exists() {
 		data.Name = types.StringValue(value.String())
@@ -180,6 +193,9 @@ func (data *NetworkAccessAuthenticationRule) fromBody(ctx context.Context, res g
 	}
 }
 
+//template:end fromBody
+
+//template:begin updateFromBody
 func (data *NetworkAccessAuthenticationRule) updateFromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("response.rule.name"); value.Exists() && !data.Name.IsNull() {
 		data.Name = types.StringValue(value.String())
@@ -257,3 +273,5 @@ func (data *NetworkAccessAuthenticationRule) updateFromBody(ctx context.Context,
 		data.IfUserNotFound = types.StringNull()
 	}
 }
+
+//template:end updateFromBody

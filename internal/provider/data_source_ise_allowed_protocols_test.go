@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"os"
 	"testing"
@@ -26,6 +27,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+//template:end imports
+
+//template:begin testAccDataSource
 func TestAccDataSourceIseAllowedProtocols(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_allowed_protocols.test", "name", "Protocols1"))
@@ -116,6 +120,12 @@ func TestAccDataSourceIseAllowedProtocols(t *testing.T) {
 	})
 }
 
+//template:end testAccDataSource
+
+//template:begin testPrerequisites
+//template:end testPrerequisites
+
+//template:begin testAccDataSourceConfig
 func testAccDataSourceIseAllowedProtocolsConfig() string {
 	config := `resource "ise_allowed_protocols" "test" {` + "\n"
 	config += `	name = "Protocols1"` + "\n"
@@ -204,3 +214,5 @@ func testAccDataSourceIseAllowedProtocolsConfig() string {
 	`
 	return config
 }
+
+//template:end testAccDataSourceConfig

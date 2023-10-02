@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"context"
 
@@ -27,6 +28,9 @@ import (
 	"github.com/tidwall/sjson"
 )
 
+//template:end imports
+
+//template:begin types
 type AllowedProtocols struct {
 	Id                                         types.String `tfsdk:"id"`
 	Name                                       types.String `tfsdk:"name"`
@@ -108,10 +112,16 @@ type AllowedProtocols struct {
 	Allow5g                                    types.Bool   `tfsdk:"allow_5g"`
 }
 
+//template:end types
+
+//template:begin getPath
 func (data AllowedProtocols) getPath() string {
 	return "/ers/config/allowedprotocols"
 }
 
+//template:end getPath
+
+//template:begin toBody
 func (data AllowedProtocols) toBody(ctx context.Context, state AllowedProtocols) string {
 	body := ""
 	if !data.Name.IsNull() {
@@ -348,6 +358,9 @@ func (data AllowedProtocols) toBody(ctx context.Context, state AllowedProtocols)
 	return body
 }
 
+//template:end toBody
+
+//template:begin fromBody
 func (data *AllowedProtocols) fromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("AllowedProtocols.name"); value.Exists() {
 		data.Name = types.StringValue(value.String())
@@ -731,6 +744,9 @@ func (data *AllowedProtocols) fromBody(ctx context.Context, res gjson.Result) {
 	}
 }
 
+//template:end fromBody
+
+//template:begin updateFromBody
 func (data *AllowedProtocols) updateFromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("AllowedProtocols.name"); value.Exists() && !data.Name.IsNull() {
 		data.Name = types.StringValue(value.String())
@@ -1113,3 +1129,5 @@ func (data *AllowedProtocols) updateFromBody(ctx context.Context, res gjson.Resu
 		data.Allow5g = types.BoolNull()
 	}
 }
+
+//template:end updateFromBody

@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"context"
 
@@ -28,6 +29,9 @@ import (
 	"github.com/tidwall/sjson"
 )
 
+//template:end imports
+
+//template:begin types
 type NetworkAccessTimeAndDateCondition struct {
 	Id                 types.String `tfsdk:"id"`
 	Name               types.String `tfsdk:"name"`
@@ -45,10 +49,16 @@ type NetworkAccessTimeAndDateCondition struct {
 	ExceptionEndTime   types.String `tfsdk:"exception_end_time"`
 }
 
+//template:end types
+
+//template:begin getPath
 func (data NetworkAccessTimeAndDateCondition) getPath() string {
 	return "/api/v1/policy/network-access/time-condition"
 }
 
+//template:end getPath
+
+//template:begin toBody
 func (data NetworkAccessTimeAndDateCondition) toBody(ctx context.Context, state NetworkAccessTimeAndDateCondition) string {
 	body := ""
 	if !data.Name.IsNull() {
@@ -98,6 +108,9 @@ func (data NetworkAccessTimeAndDateCondition) toBody(ctx context.Context, state 
 	return body
 }
 
+//template:end toBody
+
+//template:begin fromBody
 func (data *NetworkAccessTimeAndDateCondition) fromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("response.name"); value.Exists() {
 		data.Name = types.StringValue(value.String())
@@ -166,6 +179,9 @@ func (data *NetworkAccessTimeAndDateCondition) fromBody(ctx context.Context, res
 	}
 }
 
+//template:end fromBody
+
+//template:begin updateFromBody
 func (data *NetworkAccessTimeAndDateCondition) updateFromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("response.name"); value.Exists() && !data.Name.IsNull() {
 		data.Name = types.StringValue(value.String())
@@ -233,3 +249,5 @@ func (data *NetworkAccessTimeAndDateCondition) updateFromBody(ctx context.Contex
 		data.ExceptionEndTime = types.StringNull()
 	}
 }
+
+//template:end updateFromBody

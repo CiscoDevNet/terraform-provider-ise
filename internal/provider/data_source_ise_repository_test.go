@@ -19,12 +19,16 @@
 
 package provider
 
+//template:begin imports
 import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+//template:end imports
+
+//template:begin testAccDataSource
 func TestAccDataSourceIseRepository(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_repository.test", "name", "repo1"))
@@ -45,6 +49,12 @@ func TestAccDataSourceIseRepository(t *testing.T) {
 	})
 }
 
+//template:end testAccDataSource
+
+//template:begin testPrerequisites
+//template:end testPrerequisites
+
+//template:begin testAccDataSourceConfig
 func testAccDataSourceIseRepositoryConfig() string {
 	config := `resource "ise_repository" "test" {` + "\n"
 	config += `	name = "repo1"` + "\n"
@@ -63,3 +73,5 @@ func testAccDataSourceIseRepositoryConfig() string {
 	`
 	return config
 }
+
+//template:end testAccDataSourceConfig

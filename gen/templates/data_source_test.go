@@ -20,12 +20,15 @@
 
 package provider
 
+//template:begin imports
 import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+//template:end imports
 
+//template:begin testAccDataSource
 func TestAccDataSourceIse{{camelCase .Name}}(t *testing.T) {
 	{{- if len .TestTags}}
 	if {{range $i, $e := .TestTags}}{{if $i}} && {{end}}os.Getenv("{{$e}}") == ""{{end}} {
@@ -119,13 +122,17 @@ func TestAccDataSourceIse{{camelCase .Name}}(t *testing.T) {
 		},
 	})
 }
+//template:end testAccDataSource
 
+//template:begin testPrerequisites
 {{- if .TestPrerequisites}}
 const testAccDataSourceIse{{camelCase .Name}}PrerequisitesConfig = `
 {{.TestPrerequisites}}
 `
 {{- end}}
+//template:end testPrerequisites
 
+//template:begin testAccDataSourceConfig
 func testAccDataSourceIse{{camelCase .Name}}Config() string {
 	config := `resource "ise_{{snakeCase $name}}" "test" {` + "\n"
 	{{- range  .Attributes}}
@@ -219,3 +226,4 @@ func testAccDataSourceIse{{camelCase .Name}}Config() string {
 	`
 	return config
 }
+//template:end testAccDataSourceConfig

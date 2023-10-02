@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"context"
 	"fmt"
@@ -36,6 +37,10 @@ import (
 	"github.com/netascode/go-ise"
 	"github.com/netascode/terraform-provider-ise/internal/provider/helpers"
 )
+
+//template:end imports
+
+//template:begin model
 
 // Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &NetworkAccessAuthenticationRuleResource{}
@@ -160,6 +165,9 @@ func (r *NetworkAccessAuthenticationRuleResource) Configure(_ context.Context, r
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
+//template:end model
+
+//template:begin create
 func (r *NetworkAccessAuthenticationRuleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan NetworkAccessAuthenticationRule
 
@@ -187,6 +195,9 @@ func (r *NetworkAccessAuthenticationRuleResource) Create(ctx context.Context, re
 	resp.Diagnostics.Append(diags...)
 }
 
+//template:end create
+
+//template:begin read
 func (r *NetworkAccessAuthenticationRuleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state NetworkAccessAuthenticationRule
 
@@ -216,6 +227,9 @@ func (r *NetworkAccessAuthenticationRuleResource) Read(ctx context.Context, req 
 	resp.Diagnostics.Append(diags...)
 }
 
+//template:end read
+
+//template:begin update
 func (r *NetworkAccessAuthenticationRuleResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state NetworkAccessAuthenticationRule
 
@@ -248,6 +262,9 @@ func (r *NetworkAccessAuthenticationRuleResource) Update(ctx context.Context, re
 	resp.Diagnostics.Append(diags...)
 }
 
+//template:end update
+
+//template:begin delete
 func (r *NetworkAccessAuthenticationRuleResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	var state NetworkAccessAuthenticationRule
 
@@ -270,6 +287,11 @@ func (r *NetworkAccessAuthenticationRuleResource) Delete(ctx context.Context, re
 	resp.State.RemoveResource(ctx)
 }
 
+//template:end delete
+
+//template:begin import
 func (r *NetworkAccessAuthenticationRuleResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
+
+//template:end import

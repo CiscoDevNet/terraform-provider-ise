@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"context"
 
@@ -27,6 +28,9 @@ import (
 	"github.com/tidwall/sjson"
 )
 
+//template:end imports
+
+//template:begin types
 type TrustSecSecurityGroup struct {
 	Id              types.String `tfsdk:"id"`
 	Name            types.String `tfsdk:"name"`
@@ -36,10 +40,16 @@ type TrustSecSecurityGroup struct {
 	IsReadOnly      types.Bool   `tfsdk:"is_read_only"`
 }
 
+//template:end types
+
+//template:begin getPath
 func (data TrustSecSecurityGroup) getPath() string {
 	return "/ers/config/sgt"
 }
 
+//template:end getPath
+
+//template:begin toBody
 func (data TrustSecSecurityGroup) toBody(ctx context.Context, state TrustSecSecurityGroup) string {
 	body := ""
 	if !data.Name.IsNull() {
@@ -60,6 +70,9 @@ func (data TrustSecSecurityGroup) toBody(ctx context.Context, state TrustSecSecu
 	return body
 }
 
+//template:end toBody
+
+//template:begin fromBody
 func (data *TrustSecSecurityGroup) fromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("Sgt.name"); value.Exists() {
 		data.Name = types.StringValue(value.String())
@@ -83,6 +96,9 @@ func (data *TrustSecSecurityGroup) fromBody(ctx context.Context, res gjson.Resul
 	}
 }
 
+//template:end fromBody
+
+//template:begin updateFromBody
 func (data *TrustSecSecurityGroup) updateFromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("Sgt.name"); value.Exists() && !data.Name.IsNull() {
 		data.Name = types.StringValue(value.String())
@@ -105,3 +121,5 @@ func (data *TrustSecSecurityGroup) updateFromBody(ctx context.Context, res gjson
 		data.PropogateToApic = types.BoolNull()
 	}
 }
+
+//template:end updateFromBody

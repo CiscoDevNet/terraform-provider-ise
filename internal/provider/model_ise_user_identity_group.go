@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"context"
 
@@ -27,6 +28,9 @@ import (
 	"github.com/tidwall/sjson"
 )
 
+//template:end imports
+
+//template:begin types
 type UserIdentityGroup struct {
 	Id                        types.String `tfsdk:"id"`
 	Name                      types.String `tfsdk:"name"`
@@ -34,10 +38,16 @@ type UserIdentityGroup struct {
 	ParentUserIdentityGroupId types.String `tfsdk:"parent_user_identity_group_id"`
 }
 
+//template:end types
+
+//template:begin getPath
 func (data UserIdentityGroup) getPath() string {
 	return "/ers/config/identitygroup"
 }
 
+//template:end getPath
+
+//template:begin toBody
 func (data UserIdentityGroup) toBody(ctx context.Context, state UserIdentityGroup) string {
 	body := ""
 	if !data.Name.IsNull() {
@@ -52,6 +62,9 @@ func (data UserIdentityGroup) toBody(ctx context.Context, state UserIdentityGrou
 	return body
 }
 
+//template:end toBody
+
+//template:begin fromBody
 func (data *UserIdentityGroup) fromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("IdentityGroup.name"); value.Exists() {
 		data.Name = types.StringValue(value.String())
@@ -70,6 +83,9 @@ func (data *UserIdentityGroup) fromBody(ctx context.Context, res gjson.Result) {
 	}
 }
 
+//template:end fromBody
+
+//template:begin updateFromBody
 func (data *UserIdentityGroup) updateFromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("IdentityGroup.name"); value.Exists() && !data.Name.IsNull() {
 		data.Name = types.StringValue(value.String())
@@ -87,3 +103,5 @@ func (data *UserIdentityGroup) updateFromBody(ctx context.Context, res gjson.Res
 		data.ParentUserIdentityGroupId = types.StringNull()
 	}
 }
+
+//template:end updateFromBody

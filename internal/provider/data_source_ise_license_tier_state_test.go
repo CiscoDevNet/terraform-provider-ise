@@ -19,12 +19,16 @@
 
 package provider
 
+//template:begin imports
 import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+//template:end imports
+
+//template:begin testAccDataSource
 func TestAccDataSourceIseLicenseTierState(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_license_tier_state.test", "licenses.0.name", "ESSENTIAL"))
@@ -41,6 +45,12 @@ func TestAccDataSourceIseLicenseTierState(t *testing.T) {
 	})
 }
 
+//template:end testAccDataSource
+
+//template:begin testPrerequisites
+//template:end testPrerequisites
+
+//template:begin testAccDataSourceConfig
 func testAccDataSourceIseLicenseTierStateConfig() string {
 	config := `resource "ise_license_tier_state" "test" {` + "\n"
 	config += `	licenses = [{` + "\n"
@@ -56,3 +66,5 @@ func testAccDataSourceIseLicenseTierStateConfig() string {
 	`
 	return config
 }
+
+//template:end testAccDataSourceConfig

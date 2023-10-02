@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"context"
 
@@ -27,6 +28,9 @@ import (
 	"github.com/tidwall/sjson"
 )
 
+//template:end imports
+
+//template:begin types
 type LicenseTierState struct {
 	Id       types.String               `tfsdk:"id"`
 	Licenses []LicenseTierStateLicenses `tfsdk:"licenses"`
@@ -37,10 +41,16 @@ type LicenseTierStateLicenses struct {
 	Status types.String `tfsdk:"status"`
 }
 
+//template:end types
+
+//template:begin getPath
 func (data LicenseTierState) getPath() string {
 	return "/api/v1/license/system/tier-state"
 }
 
+//template:end getPath
+
+//template:begin toBody
 func (data LicenseTierState) toBody(ctx context.Context, state LicenseTierState) string {
 	body := "[]"
 	if len(data.Licenses) > 0 {
@@ -59,6 +69,9 @@ func (data LicenseTierState) toBody(ctx context.Context, state LicenseTierState)
 	return body
 }
 
+//template:end toBody
+
+//template:begin fromBody
 func (data *LicenseTierState) fromBody(ctx context.Context, res gjson.Result) {
 	if value := res; value.Exists() {
 		data.Licenses = make([]LicenseTierStateLicenses, 0)
@@ -80,6 +93,9 @@ func (data *LicenseTierState) fromBody(ctx context.Context, res gjson.Result) {
 	}
 }
 
+//template:end fromBody
+
+//template:begin updateFromBody
 func (data *LicenseTierState) updateFromBody(ctx context.Context, res gjson.Result) {
 	for i := range data.Licenses {
 		keys := [...]string{"name"}
@@ -116,3 +132,5 @@ func (data *LicenseTierState) updateFromBody(ctx context.Context, res gjson.Resu
 		}
 	}
 }
+
+//template:end updateFromBody

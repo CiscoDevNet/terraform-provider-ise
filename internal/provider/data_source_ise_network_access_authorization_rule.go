@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"context"
 	"fmt"
@@ -29,6 +30,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
 )
+
+//template:end imports
+
+//template:begin model
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
@@ -127,6 +132,9 @@ func (d *NetworkAccessAuthorizationRuleDataSource) Configure(_ context.Context, 
 	d.client = req.ProviderData.(*IseProviderData).Client
 }
 
+//template:end model
+
+//template:begin read
 func (d *NetworkAccessAuthorizationRuleDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var config NetworkAccessAuthorizationRule
 
@@ -152,3 +160,5 @@ func (d *NetworkAccessAuthorizationRuleDataSource) Read(ctx context.Context, req
 	diags = resp.State.Set(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 }
+
+//template:end read

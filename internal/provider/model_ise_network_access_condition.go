@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"context"
 
@@ -27,6 +28,9 @@ import (
 	"github.com/tidwall/sjson"
 )
 
+//template:end imports
+
+//template:begin types
 type NetworkAccessCondition struct {
 	Id              types.String                     `tfsdk:"id"`
 	Name            types.String                     `tfsdk:"name"`
@@ -66,10 +70,16 @@ type NetworkAccessConditionChildrenChildren struct {
 	Operator        types.String `tfsdk:"operator"`
 }
 
+//template:end types
+
+//template:begin getPath
 func (data NetworkAccessCondition) getPath() string {
 	return "/api/v1/policy/network-access/condition"
 }
 
+//template:end getPath
+
+//template:begin toBody
 func (data NetworkAccessCondition) toBody(ctx context.Context, state NetworkAccessCondition) string {
 	body := ""
 	if !data.Name.IsNull() {
@@ -170,6 +180,9 @@ func (data NetworkAccessCondition) toBody(ctx context.Context, state NetworkAcce
 	return body
 }
 
+//template:end toBody
+
+//template:begin fromBody
 func (data *NetworkAccessCondition) fromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("response.name"); value.Exists() {
 		data.Name = types.StringValue(value.String())
@@ -324,6 +337,9 @@ func (data *NetworkAccessCondition) fromBody(ctx context.Context, res gjson.Resu
 	}
 }
 
+//template:end fromBody
+
+//template:begin updateFromBody
 func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("response.name"); value.Exists() && !data.Name.IsNull() {
 		data.Name = types.StringValue(value.String())
@@ -509,3 +525,5 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 		}
 	}
 }
+
+//template:end updateFromBody

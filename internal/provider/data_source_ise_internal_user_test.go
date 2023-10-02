@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"os"
 	"testing"
@@ -26,6 +27,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+//template:end imports
+
+//template:begin testAccDataSource
 func TestAccDataSourceIseInternalUser(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_internal_user.test", "name", "UserTF"))
@@ -54,6 +58,12 @@ func TestAccDataSourceIseInternalUser(t *testing.T) {
 	})
 }
 
+//template:end testAccDataSource
+
+//template:begin testPrerequisites
+//template:end testPrerequisites
+
+//template:begin testAccDataSourceConfig
 func testAccDataSourceIseInternalUserConfig() string {
 	config := `resource "ise_internal_user" "test" {` + "\n"
 	config += `	name = "UserTF"` + "\n"
@@ -81,3 +91,5 @@ func testAccDataSourceIseInternalUserConfig() string {
 	`
 	return config
 }
+
+//template:end testAccDataSourceConfig

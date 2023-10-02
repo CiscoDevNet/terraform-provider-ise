@@ -19,6 +19,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"context"
 
@@ -28,6 +29,9 @@ import (
 	"github.com/tidwall/sjson"
 )
 
+//template:end imports
+
+//template:begin types
 type NetworkDevice struct {
 	Id                                                   types.String       `tfsdk:"id"`
 	Name                                                 types.String       `tfsdk:"name"`
@@ -80,10 +84,16 @@ type NetworkDeviceIps struct {
 	Mask             types.String `tfsdk:"mask"`
 }
 
+//template:end types
+
+//template:begin getPath
 func (data NetworkDevice) getPath() string {
 	return "/ers/config/networkdevice"
 }
 
+//template:end getPath
+
+//template:begin toBody
 func (data NetworkDevice) toBody(ctx context.Context, state NetworkDevice) string {
 	body := ""
 	if !data.Name.IsNull() {
@@ -230,6 +240,9 @@ func (data NetworkDevice) toBody(ctx context.Context, state NetworkDevice) strin
 	return body
 }
 
+//template:end toBody
+
+//template:begin fromBody
 func (data *NetworkDevice) fromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("NetworkDevice.name"); value.Exists() {
 		data.Name = types.StringValue(value.String())
@@ -456,6 +469,9 @@ func (data *NetworkDevice) fromBody(ctx context.Context, res gjson.Result) {
 	}
 }
 
+//template:end fromBody
+
+//template:begin updateFromBody
 func (data *NetworkDevice) updateFromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("NetworkDevice.name"); value.Exists() && !data.Name.IsNull() {
 		data.Name = types.StringValue(value.String())
@@ -697,3 +713,5 @@ func (data *NetworkDevice) updateFromBody(ctx context.Context, res gjson.Result)
 		data.TrustsecCoaSourceHost = types.StringNull()
 	}
 }
+
+//template:end updateFromBody

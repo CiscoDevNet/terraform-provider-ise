@@ -19,12 +19,16 @@
 
 package provider
 
+//template:begin imports
 import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+//template:end imports
+
+//template:begin testAccDataSource
 func TestAccDataSourceIseNetworkAccessCondition(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_condition.test", "name", "Cond1"))
@@ -47,6 +51,12 @@ func TestAccDataSourceIseNetworkAccessCondition(t *testing.T) {
 	})
 }
 
+//template:end testAccDataSource
+
+//template:begin testPrerequisites
+//template:end testPrerequisites
+
+//template:begin testAccDataSourceConfig
 func testAccDataSourceIseNetworkAccessConditionConfig() string {
 	config := `resource "ise_network_access_condition" "test" {` + "\n"
 	config += `	name = "Cond1"` + "\n"
@@ -66,3 +76,5 @@ func testAccDataSourceIseNetworkAccessConditionConfig() string {
 	`
 	return config
 }
+
+//template:end testAccDataSourceConfig

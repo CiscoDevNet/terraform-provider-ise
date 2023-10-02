@@ -20,6 +20,7 @@
 
 package provider
 
+//template:begin imports
 import (
 	"context"
 	"fmt"
@@ -33,6 +34,9 @@ import (
 	"github.com/netascode/go-ise"
 	"github.com/netascode/terraform-provider-ise/internal/provider/helpers"
 )
+//template:end imports
+
+//template:begin model
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
@@ -139,7 +143,9 @@ func (d *{{camelCase .Name}}DataSource) Configure(_ context.Context, req datasou
 
 	d.client = req.ProviderData.(*IseProviderData).Client
 }
+//template:end model
 
+//template:begin read
 func (d *{{camelCase .Name}}DataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var config {{camelCase .Name}}
 
@@ -165,3 +171,4 @@ func (d *{{camelCase .Name}}DataSource) Read(ctx context.Context, req datasource
 	diags = resp.State.Set(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 }
+//template:end read

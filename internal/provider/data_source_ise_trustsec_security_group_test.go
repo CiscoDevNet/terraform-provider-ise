@@ -19,12 +19,16 @@
 
 package provider
 
+//template:begin imports
 import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+//template:end imports
+
+//template:begin testAccDataSource
 func TestAccDataSourceIseTrustSecSecurityGroup(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_trustsec_security_group.test", "name", "SGT1234"))
@@ -43,6 +47,12 @@ func TestAccDataSourceIseTrustSecSecurityGroup(t *testing.T) {
 	})
 }
 
+//template:end testAccDataSource
+
+//template:begin testPrerequisites
+//template:end testPrerequisites
+
+//template:begin testAccDataSourceConfig
 func testAccDataSourceIseTrustSecSecurityGroupConfig() string {
 	config := `resource "ise_trustsec_security_group" "test" {` + "\n"
 	config += `	name = "SGT1234"` + "\n"
@@ -59,3 +69,5 @@ func testAccDataSourceIseTrustSecSecurityGroupConfig() string {
 	`
 	return config
 }
+
+//template:end testAccDataSourceConfig
