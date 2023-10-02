@@ -69,6 +69,15 @@ resource "ise_network_access_policy_set" "test" {
   condition_dictionary_name = "DEVICE"
   condition_operator        = "equals"
 }
+resource "ise_network_access_condition" "test" {
+  name            = "Cond1"
+  condition_type  = "LibraryConditionAttributes"
+  attribute_name  = "NAS-Port-Type"
+  attribute_value = "Wireless - IEEE 802.11"
+  dictionary_name = "Radius"
+  operator        = "equals"
+}
+
 `
 
 //template:end testPrerequisites

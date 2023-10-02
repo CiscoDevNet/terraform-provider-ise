@@ -71,6 +71,15 @@ resource "ise_network_access_policy_set" "test" {
   condition_dictionary_name = "DEVICE"
   condition_operator        = "equals"
 }
+resource "ise_network_access_condition" "test" {
+  name            = "Cond1"
+  condition_type  = "LibraryConditionAttributes"
+  attribute_name  = "NAS-Port-Type"
+  attribute_value = "Wireless - IEEE 802.11"
+  dictionary_name = "Radius"
+  operator        = "equals"
+}
+
 `
 
 //template:end testPrerequisites
@@ -80,6 +89,8 @@ func testAccIseNetworkAccessAuthorizationRuleConfig_minimum() string {
 	config := `resource "ise_network_access_authorization_rule" "test" {` + "\n"
 	config += `	policy_set_id = ise_network_access_policy_set.test.id` + "\n"
 	config += `	name = "Rule1"` + "\n"
+	config += `	condition_type = "ConditionReference"` + "\n"
+	config += `	condition_id = ise_network_access_condition.test.id` + "\n"
 	config += `}` + "\n"
 	return config
 }

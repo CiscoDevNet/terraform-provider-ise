@@ -36,9 +36,18 @@ attributes:
   - model_name: conditionType
     data_path: [rule, condition]
     type: String
-    enum_values: [ConditionAndBlock, ConditionAttributes, ConditionOrBlock, ConditionReference, LibraryConditionAndBlock, LibraryConditionAttributes, LibraryConditionOrBlock, TimeAndDateCondition]
+    enum_values: [ConditionAndBlock, ConditionAttributes, ConditionOrBlock, ConditionReference]
     description: Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
     example: ConditionAttributes
+    minimum_test_value: '"ConditionReference"'
+  - model_name: id
+    data_path: [rule, condition]
+    tf_name: condition_id
+    type: String
+    description: UUID for condition
+    example: 12345678-f0e7-456b-a2d1-876543320123
+    exclude_test: true
+    minimum_test_value: ise_network_access_condition.test.id
   - model_name: isNegate
     data_path: [rule, condition]
     tf_name: condition_is_negate
@@ -95,4 +104,12 @@ test_prerequisites: |
     condition_attribute_value = "All Locations"
     condition_dictionary_name = "DEVICE"
     condition_operator        = "equals"
+  }
+  resource "ise_network_access_condition" "test" {
+    name            = "Cond1"
+    condition_type  = "LibraryConditionAttributes"
+    attribute_name  = "NAS-Port-Type"
+    attribute_value = "Wireless - IEEE 802.11"
+    dictionary_name = "Radius"
+    operator        = "equals"
   }

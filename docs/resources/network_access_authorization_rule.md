@@ -44,11 +44,12 @@ resource "ise_network_access_authorization_rule" "example" {
 - `condition_attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
 - `condition_dictionary_name` (String) Dictionary name
 - `condition_dictionary_value` (String) Dictionary value
+- `condition_id` (String) UUID for condition
 - `condition_is_negate` (Boolean) Indicates whereas this condition is in negate mode
 - `condition_operator` (String) Equality operator
   - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
-  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`, `LibraryConditionAndBlock`, `LibraryConditionAttributes`, `LibraryConditionOrBlock`, `TimeAndDateCondition`
+  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
 - `default` (Boolean) Indicates if this rule is the default one
 - `profile` (List of String) The authorization profile(s)
 - `rank` (Number) The rank (priority) in relation to other rules. Lower rank is higher priority.
