@@ -95,7 +95,6 @@ var templates = []t{
 
 type YamlConfig struct {
 	Name              string                `yaml:"name"`
-	Model             string                `yaml:"model"`
 	RestEndpoint      string                `yaml:"rest_endpoint"`
 	GetNoId           bool                  `yaml:"get_no_id"`
 	NoDelete          bool                  `yaml:"no_delete"`
@@ -118,22 +117,17 @@ type YamlConfigAttribute struct {
 	ModelName        string                `yaml:"model_name"`
 	TfName           string                `yaml:"tf_name"`
 	Type             string                `yaml:"type"`
-	ModelTypeString  bool                  `yaml:"model_type_string"`
 	DataPath         []string              `yaml:"data_path"`
-	Keys             []string              `yaml:"keys"`
 	Id               bool                  `yaml:"id"`
 	Reference        bool                  `yaml:"reference"`
 	Mandatory        bool                  `yaml:"mandatory"`
 	WriteOnly        bool                  `yaml:"write_only"`
 	WriteChangesOnly bool                  `yaml:"write_changes_only"`
-	TfOnly           bool                  `yaml:"tf_only"`
 	ExcludeTest      bool                  `yaml:"exclude_test"`
 	ExcludeExample   bool                  `yaml:"exclude_example"`
-	ExcludeIgnore    bool                  `yaml:"exclude_ignore"`
 	Description      string                `yaml:"description"`
 	Example          string                `yaml:"example"`
 	EnumValues       []string              `yaml:"enum_values"`
-	IgnoreEnum       bool                  `yaml:"ignore_enum"`
 	MinList          int64                 `yaml:"min_list"`
 	MaxList          int64                 `yaml:"max_list"`
 	MinInt           int64                 `yaml:"min_int"`
