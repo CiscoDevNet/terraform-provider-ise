@@ -30,7 +30,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -80,33 +82,43 @@ func (r *CertificateAuthenticationProfileResource) Schema(ctx context.Context, r
 				Optional:            true,
 			},
 			"allowed_as_user_name": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Allow as username").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Allow as username").AddDefaultValueDescription("false").String,
 				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 			"external_identity_store_name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Referred IDStore name for the Certificate Profile or `[not applicable]` in case no identity store is chosen").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Referred IDStore name for the Certificate Profile or `[not applicable]` in case no identity store is chosen").AddDefaultValueDescription("[not applicable]").String,
 				Optional:            true,
+				Computed:            true,
+				Default:             stringdefault.StaticString("[not applicable]"),
 			},
 			"certificate_attribute_name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Attribute name of the Certificate Profile - used only when CERTIFICATE is chosen in `username_from`.").AddStringEnumDescription("SUBJECT_COMMON_NAME", "SUBJECT_ALTERNATIVE_NAME", "SUBJECT_SERIAL_NUMBER", "SUBJECT", "SUBJECT_ALTERNATIVE_NAME_OTHER_NAME", "SUBJECT_ALTERNATIVE_NAME_EMAIL", "SUBJECT_ALTERNATIVE_NAME_DNS").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Attribute name of the Certificate Profile - used only when CERTIFICATE is chosen in `username_from`.").AddStringEnumDescription("SUBJECT_COMMON_NAME", "SUBJECT_ALTERNATIVE_NAME", "SUBJECT_SERIAL_NUMBER", "SUBJECT", "SUBJECT_ALTERNATIVE_NAME_OTHER_NAME", "SUBJECT_ALTERNATIVE_NAME_EMAIL", "SUBJECT_ALTERNATIVE_NAME_DNS").AddDefaultValueDescription("SUBJECT_COMMON_NAME").String,
 				Optional:            true,
+				Computed:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("SUBJECT_COMMON_NAME", "SUBJECT_ALTERNATIVE_NAME", "SUBJECT_SERIAL_NUMBER", "SUBJECT", "SUBJECT_ALTERNATIVE_NAME_OTHER_NAME", "SUBJECT_ALTERNATIVE_NAME_EMAIL", "SUBJECT_ALTERNATIVE_NAME_DNS"),
 				},
+				Default: stringdefault.StaticString("SUBJECT_COMMON_NAME"),
 			},
 			"match_mode": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Match mode of the Certificate Profile. Allowed values: NEVER, RESOLVE_IDENTITY_AMBIGUITY, BINARY_COMPARISON").AddStringEnumDescription("NEVER", "RESOLVE_IDENTITY_AMBIGUITY", "BINARY_COMPARISON").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Match mode of the Certificate Profile. Allowed values: NEVER, RESOLVE_IDENTITY_AMBIGUITY, BINARY_COMPARISON").AddStringEnumDescription("NEVER", "RESOLVE_IDENTITY_AMBIGUITY", "BINARY_COMPARISON").AddDefaultValueDescription("NEVER").String,
 				Optional:            true,
+				Computed:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("NEVER", "RESOLVE_IDENTITY_AMBIGUITY", "BINARY_COMPARISON"),
 				},
+				Default: stringdefault.StaticString("NEVER"),
 			},
 			"username_from": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The attribute in the certificate where the user name should be taken from. Allowed values: `CERTIFICATE` (for a specific attribute as defined in certificateAttributeName), `UPN` (for using any Subject or Alternative Name Attributes in the Certificate - an option only in AD)").AddStringEnumDescription("CERTIFICATE", "UPN").String,
+				MarkdownDescription: helpers.NewAttributeDescription("The attribute in the certificate where the user name should be taken from. Allowed values: `CERTIFICATE` (for a specific attribute as defined in certificateAttributeName), `UPN` (for using any Subject or Alternative Name Attributes in the Certificate - an option only in AD)").AddStringEnumDescription("CERTIFICATE", "UPN").AddDefaultValueDescription("CERTIFICATE").String,
 				Optional:            true,
+				Computed:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("CERTIFICATE", "UPN"),
 				},
+				Default: stringdefault.StaticString("CERTIFICATE"),
 			},
 		},
 	}
@@ -232,11 +244,6 @@ func (r *CertificateAuthenticationProfileResource) Delete(ctx context.Context, r
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath() + "/" + state.Id.ValueString())
-	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
-		return
-	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Delete finished successfully", state.Id.ValueString()))
 

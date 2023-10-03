@@ -95,27 +95,27 @@ func (data *CertificateAuthenticationProfile) fromBody(ctx context.Context, res 
 	if value := res.Get("CertificateProfile.allowedAsUserName"); value.Exists() {
 		data.AllowedAsUserName = types.BoolValue(value.Bool())
 	} else {
-		data.AllowedAsUserName = types.BoolNull()
+		data.AllowedAsUserName = types.BoolValue(false)
 	}
 	if value := res.Get("CertificateProfile.externalIdentityStoreName"); value.Exists() {
 		data.ExternalIdentityStoreName = types.StringValue(value.String())
 	} else {
-		data.ExternalIdentityStoreName = types.StringNull()
+		data.ExternalIdentityStoreName = types.StringValue("[not applicable]")
 	}
 	if value := res.Get("CertificateProfile.certificateAttributeName"); value.Exists() {
 		data.CertificateAttributeName = types.StringValue(value.String())
 	} else {
-		data.CertificateAttributeName = types.StringNull()
+		data.CertificateAttributeName = types.StringValue("SUBJECT_COMMON_NAME")
 	}
 	if value := res.Get("CertificateProfile.matchMode"); value.Exists() {
 		data.MatchMode = types.StringValue(value.String())
 	} else {
-		data.MatchMode = types.StringNull()
+		data.MatchMode = types.StringValue("NEVER")
 	}
 	if value := res.Get("CertificateProfile.usernameFrom"); value.Exists() {
 		data.UsernameFrom = types.StringValue(value.String())
 	} else {
-		data.UsernameFrom = types.StringNull()
+		data.UsernameFrom = types.StringValue("CERTIFICATE")
 	}
 }
 
@@ -135,27 +135,27 @@ func (data *CertificateAuthenticationProfile) updateFromBody(ctx context.Context
 	}
 	if value := res.Get("CertificateProfile.allowedAsUserName"); value.Exists() && !data.AllowedAsUserName.IsNull() {
 		data.AllowedAsUserName = types.BoolValue(value.Bool())
-	} else {
+	} else if data.AllowedAsUserName.ValueBool() != false {
 		data.AllowedAsUserName = types.BoolNull()
 	}
 	if value := res.Get("CertificateProfile.externalIdentityStoreName"); value.Exists() && !data.ExternalIdentityStoreName.IsNull() {
 		data.ExternalIdentityStoreName = types.StringValue(value.String())
-	} else {
+	} else if data.ExternalIdentityStoreName.ValueString() != "[not applicable]" {
 		data.ExternalIdentityStoreName = types.StringNull()
 	}
 	if value := res.Get("CertificateProfile.certificateAttributeName"); value.Exists() && !data.CertificateAttributeName.IsNull() {
 		data.CertificateAttributeName = types.StringValue(value.String())
-	} else {
+	} else if data.CertificateAttributeName.ValueString() != "SUBJECT_COMMON_NAME" {
 		data.CertificateAttributeName = types.StringNull()
 	}
 	if value := res.Get("CertificateProfile.matchMode"); value.Exists() && !data.MatchMode.IsNull() {
 		data.MatchMode = types.StringValue(value.String())
-	} else {
+	} else if data.MatchMode.ValueString() != "NEVER" {
 		data.MatchMode = types.StringNull()
 	}
 	if value := res.Get("CertificateProfile.usernameFrom"); value.Exists() && !data.UsernameFrom.IsNull() {
 		data.UsernameFrom = types.StringValue(value.String())
-	} else {
+	} else if data.UsernameFrom.ValueString() != "CERTIFICATE" {
 		data.UsernameFrom = types.StringNull()
 	}
 }

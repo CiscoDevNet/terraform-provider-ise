@@ -34,14 +34,19 @@ resource "ise_certificate_authentication_profile" "example" {
 ### Optional
 
 - `allowed_as_user_name` (Boolean) Allow as username
+  - Default value: `false`
 - `certificate_attribute_name` (String) Attribute name of the Certificate Profile - used only when CERTIFICATE is chosen in `username_from`.
   - Choices: `SUBJECT_COMMON_NAME`, `SUBJECT_ALTERNATIVE_NAME`, `SUBJECT_SERIAL_NUMBER`, `SUBJECT`, `SUBJECT_ALTERNATIVE_NAME_OTHER_NAME`, `SUBJECT_ALTERNATIVE_NAME_EMAIL`, `SUBJECT_ALTERNATIVE_NAME_DNS`
+  - Default value: `SUBJECT_COMMON_NAME`
 - `description` (String) Description
 - `external_identity_store_name` (String) Referred IDStore name for the Certificate Profile or `[not applicable]` in case no identity store is chosen
+  - Default value: `[not applicable]`
 - `match_mode` (String) Match mode of the Certificate Profile. Allowed values: NEVER, RESOLVE_IDENTITY_AMBIGUITY, BINARY_COMPARISON
   - Choices: `NEVER`, `RESOLVE_IDENTITY_AMBIGUITY`, `BINARY_COMPARISON`
+  - Default value: `NEVER`
 - `username_from` (String) The attribute in the certificate where the user name should be taken from. Allowed values: `CERTIFICATE` (for a specific attribute as defined in certificateAttributeName), `UPN` (for using any Subject or Alternative Name Attributes in the Certificate - an option only in AD)
   - Choices: `CERTIFICATE`, `UPN`
+  - Default value: `CERTIFICATE`
 
 ### Read-Only
 
