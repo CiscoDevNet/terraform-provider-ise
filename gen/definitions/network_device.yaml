@@ -74,6 +74,7 @@ attributes:
     data_path: [NetworkDevice]
     type: Int64
     description: CoA port
+    default_value: 1700
     example: 12345
   - model_name: dtlsDnsName
     data_path: [NetworkDevice]
@@ -122,6 +123,7 @@ attributes:
     data_path: [NetworkDevice]
     type: String
     description: Profile name
+    default_value: Cisco
     example: Cisco
   - model_name: linkTrapQuery
     data_path: [NetworkDevice, snmpsettings]

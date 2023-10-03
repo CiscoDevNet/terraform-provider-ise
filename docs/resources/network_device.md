@@ -83,11 +83,13 @@ resource "ise_network_device" "example" {
 - `authentication_radius_shared_secret` (String) RADIUS shared secret
 - `authentication_second_radius_shared_secret` (String) Second RADIUS shared secret
 - `coa_port` (Number) CoA port
+  - Default value: `1700`
 - `description` (String) Description
 - `dtls_dns_name` (String) This value is used to verify the client identity contained in the X.509 RADIUS/DTLS client certificate
 - `model_name` (String) Model name
 - `network_device_groups` (List of String) List of network device groups, e.g. `Device Type#All Device Types#ACCESS`
 - `profile_name` (String) Profile name
+  - Default value: `Cisco`
 - `snmp_link_trap_query` (Boolean) SNMP link Trap Query
 - `snmp_mac_trap_query` (Boolean) SNMP MAC Trap Query
 - `snmp_originating_policy_service_node` (String) Originating Policy Services Node

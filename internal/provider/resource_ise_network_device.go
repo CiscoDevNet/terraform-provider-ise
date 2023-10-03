@@ -31,7 +31,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -123,8 +125,10 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional:            true,
 			},
 			"coa_port": schema.Int64Attribute{
-				MarkdownDescription: helpers.NewAttributeDescription("CoA port").String,
+				MarkdownDescription: helpers.NewAttributeDescription("CoA port").AddDefaultValueDescription("1700").String,
 				Optional:            true,
+				Computed:            true,
+				Default:             int64default.StaticInt64(1700),
 			},
 			"dtls_dns_name": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("This value is used to verify the client identity contained in the X.509 RADIUS/DTLS client certificate").String,
@@ -164,8 +168,10 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional:            true,
 			},
 			"profile_name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Profile name").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Profile name").AddDefaultValueDescription("Cisco").String,
 				Optional:            true,
+				Computed:            true,
+				Default:             stringdefault.StaticString("Cisco"),
 			},
 			"snmp_link_trap_query": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("SNMP link Trap Query").String,

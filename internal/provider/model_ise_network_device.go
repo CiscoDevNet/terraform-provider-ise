@@ -302,7 +302,7 @@ func (data *NetworkDevice) fromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("NetworkDevice.coaPort"); value.Exists() {
 		data.CoaPort = types.Int64Value(value.Int())
 	} else {
-		data.CoaPort = types.Int64Null()
+		data.CoaPort = types.Int64Value(1700)
 	}
 	if value := res.Get("NetworkDevice.dtlsDnsName"); value.Exists() {
 		data.DtlsDnsName = types.StringValue(value.String())
@@ -350,7 +350,7 @@ func (data *NetworkDevice) fromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("NetworkDevice.profileName"); value.Exists() {
 		data.ProfileName = types.StringValue(value.String())
 	} else {
-		data.ProfileName = types.StringNull()
+		data.ProfileName = types.StringValue("Cisco")
 	}
 	if value := res.Get("NetworkDevice.snmpsettings.linkTrapQuery"); value.Exists() {
 		data.SnmpLinkTrapQuery = types.BoolValue(value.Bool())
@@ -530,7 +530,7 @@ func (data *NetworkDevice) updateFromBody(ctx context.Context, res gjson.Result)
 	}
 	if value := res.Get("NetworkDevice.coaPort"); value.Exists() && !data.CoaPort.IsNull() {
 		data.CoaPort = types.Int64Value(value.Int())
-	} else {
+	} else if data.CoaPort.ValueInt64() != 1700 {
 		data.CoaPort = types.Int64Null()
 	}
 	if value := res.Get("NetworkDevice.dtlsDnsName"); value.Exists() && !data.DtlsDnsName.IsNull() {
@@ -594,7 +594,7 @@ func (data *NetworkDevice) updateFromBody(ctx context.Context, res gjson.Result)
 	}
 	if value := res.Get("NetworkDevice.profileName"); value.Exists() && !data.ProfileName.IsNull() {
 		data.ProfileName = types.StringValue(value.String())
-	} else {
+	} else if data.ProfileName.ValueString() != "Cisco" {
 		data.ProfileName = types.StringNull()
 	}
 	if value := res.Get("NetworkDevice.snmpsettings.linkTrapQuery"); value.Exists() && !data.SnmpLinkTrapQuery.IsNull() {
