@@ -14,33 +14,44 @@ This resource can manage an authorization profiles policy element.
 
 ```terraform
 resource "ise_authorization_profile" "example" {
-  name                                  = "AuthzProfile1"
-  description                           = "My Authorization Profile"
-  name_id                               = "VLAN10"
-  tag_id                                = 0
-  web_redirection_type                  = "CentralizedWebAuth"
-  web_redirection_acl                   = "TEST_ACL"
-  portal_name                           = "Sponsored Guest Portal (default)"
-  display_certificates_renewal_messages = true
-  access_type                           = "ACCESS_ACCEPT"
-  authz_profile_type                    = "SWITCH"
-  profile_name                          = "Cisco"
-  asa_vpn                               = ""
-  unique_identifier                     = ""
-  track_movement                        = false
-  service_template                      = false
-  easywired_session_candidate           = false
-  connectivity                          = "DEFAULT"
-  timer                                 = 1
+  name                                                  = "AuthzProfile1"
+  description                                           = "My Authorization Profile"
+  vlan_name_id                                          = "VLAN10"
+  vlan_tag_id                                           = 0
+  web_redirection_type                                  = "CentralizedWebAuth"
+  web_redirection_acl                                   = "TEST_ACL"
+  web_redirection_portal_name                           = "Sponsored Guest Portal (default)"
+  web_redirection_static_ip_host_name_fqdn              = "1.2.3.4"
+  web_redirection_display_certificates_renewal_messages = true
+  access_type                                           = "ACCESS_ACCEPT"
+  profile_name                                          = "Cisco"
+  airespace_acl                                         = "ACL1"
+  acl                                                   = "ACL1"
+  auto_smart_port                                       = "PROFILE1"
+  interface_template                                    = "TEMP1"
+  ipv6_acl_filter                                       = "ACL1"
+  avc_profile                                           = "PROF1"
+  asa_vpn                                               = "1"
+  unique_identifier                                     = "ID1234"
+  track_movement                                        = false
+  service_template                                      = false
+  easywired_session_candidate                           = false
+  voice_domain_permission                               = false
+  neat                                                  = false
+  web_auth                                              = false
+  mac_sec_policy                                        = "MUST_SECURE"
+  reauthentication_connectivity                         = "DEFAULT"
+  reauthentication_timer                                = 1
   advanced_attributes = [
     {
-      attribute_1_value_type = "AdvancedDictionaryAttribute"
-      dictionary_name        = "Cisco"
-      attribute_name         = "cisco-av-pair"
-      attribute_2_value_type = "AttributeValue"
-      value                  = "set_nadprofile_vlan=true,vlan=TEST,tag=1"
+      attribute_1_value_type      = "AdvancedDictionaryAttribute"
+      attribute_1_dictionary_name = "Cisco"
+      attribute_1_name            = "cisco-av-pair"
+      attribute_2_value_type      = "AttributeValue"
+      attribute_2_value           = "set_nadprofile_vlan=true,vlan=TEST,tag=1"
     }
   ]
+  airespace_ipv6_acl = "ACL1"
 }
 ```
 
@@ -49,49 +60,55 @@ resource "ise_authorization_profile" "example" {
 
 ### Required
 
-- `connectivity` (String) Allowed Values: `DEFAULT`, `RADIUS_REQUEST`
-  - Choices: `DEFAULT`, `RADIUS_REQUEST`
 - `name` (String) The name of the authorization profile
-- `name_id` (String) Vlan name
-- `portal_name` (String) A portal that exist in the DB and fits the WebRedirectionType
-- `tag_id` (Number) Valid range is 0-31
-  - Range: `0`-`31`
-- `timer` (Number) Valid range is 1-65535
-  - Range: `1`-`65535`
-- `web_redirection_acl` (String)
-- `web_redirection_type` (String) Value MUST be one of the following: `CentralizedWebAuth`, `HotSpot`, `NativeSupplicanProvisioning`, `ClientProvisioning`. The WebRedirectionType must fit the portalName
-  - Choices: `CentralizedWebAuth`, `HotSpot`, `NativeSupplicanProvisioning`, `ClientProvisioning`
 
 ### Optional
 
-- `access_type` (String) Allowed Values: `ACCESS_ACCEPT`, `ACCESS_REJECT`
+- `access_type` (String) Access type
   - Choices: `ACCESS_ACCEPT`, `ACCESS_REJECT`
-- `acl` (String)
-- `advanced_attributes` (Attributes List) (see [below for nested schema](#nestedatt--advanced_attributes))
-- `airespace_acl` (String)
-- `airespace_ipv6_acl` (String)
-- `asa_vpn` (String)
-- `authz_profile_type` (String) Allowed Values: `SWITCH`, `TRUSTSEC`, `TACACS`. `SWITCH` is used for Standard Authorization Profiles. only `SWITCH` is supported.
-  - Choices: `SWITCH`, `TRUSTSEC`, `TACACS`
-- `auto_smart_port` (String)
-- `avc_profile` (String)
-- `dacl_name` (String)
+  - Default value: `ACCESS_ACCEPT`
+- `acl` (String) ACL
+- `advanced_attributes` (Attributes List) List of advanced attributes (see [below for nested schema](#nestedatt--advanced_attributes))
+- `airespace_acl` (String) Airespace ACL
+- `airespace_ipv6_acl` (String) Airespace IPv6 ACL
+- `asa_vpn` (String) ASA VPN
+- `auto_smart_port` (String) Auto smart port
+- `avc_profile` (String) AVC profile
+- `dacl_name` (String) DACL name
 - `description` (String) Description
-- `display_certificates_renewal_messages` (Boolean) The displayCertificatesRenewalMessages is mandatory when `WebRedirectionType` value is `CentralizedWebAuth`. For all other `WebRedirectionType` values the field must be ignored
-- `easywired_session_candidate` (Boolean)
-- `interface_template` (String)
-- `ipv6_acl_filter` (String)
-- `ipv6_dacl_name` (String)
-- `mac_sec_policy` (String) Allowed Values: `MUST_SECURE`, `MUST_NOT_SECURE`, `SHOULD_SECURE`
+- `easywired_session_candidate` (Boolean) Easy wired session candidate
+  - Default value: `false`
+- `interface_template` (String) Interface template
+- `ipv6_acl_filter` (String) IPv6 ACL
+- `ipv6_dacl_name` (String) IPv6 DACL name
+- `mac_sec_policy` (String) MacSec policy
   - Choices: `MUST_SECURE`, `MUST_NOT_SECURE`, `SHOULD_SECURE`
-- `neat` (Boolean)
+- `neat` (Boolean) NEAT
+  - Default value: `false`
 - `profile_name` (String) Value needs to be an existing Network Device Profile
-- `service_template` (Boolean)
-- `static_ip_host_name_fqdn` (String) A portal that exist in the DB and fits the WebRedirectionType
-- `track_movement` (Boolean)
-- `unique_identifier` (String)
-- `voice_domain_permission` (Boolean)
-- `web_auth` (Boolean)
+  - Default value: `Cisco`
+- `reauthentication_connectivity` (String) Maintain Connectivity During Reauthentication
+  - Choices: `DEFAULT`, `RADIUS_REQUEST`
+- `reauthentication_timer` (Number) Reauthentication timer
+  - Range: `1`-`65535`
+- `service_template` (Boolean) Service template
+  - Default value: `false`
+- `track_movement` (Boolean) Track movement
+  - Default value: `false`
+- `unique_identifier` (String) Unique identifier
+- `vlan_name_id` (String) Vlan name or ID
+- `vlan_tag_id` (Number) Vlan tag ID
+  - Range: `0`-`31`
+- `voice_domain_permission` (Boolean) Voice domain permission
+  - Default value: `false`
+- `web_auth` (Boolean) Web authentication (local)
+  - Default value: `false`
+- `web_redirection_acl` (String) Web redirection ACL
+- `web_redirection_display_certificates_renewal_messages` (Boolean) This attribute is mandatory when `web_redirection_type` value is `CentralizedWebAuth`. For all other `web_redirection_type` values the field must be ignored.
+- `web_redirection_portal_name` (String) A portal that exist in the DB and fits the `web_redirection_type`
+- `web_redirection_static_ip_host_name_fqdn` (String) IP, hostname or FQDN
+- `web_redirection_type` (String) This type must fit the `web_redirection_portal_name`
+  - Choices: `CentralizedWebAuth`, `HotSpot`, `NativeSupplicanProvisioning`, `ClientProvisioning`
 
 ### Read-Only
 
@@ -102,11 +119,13 @@ resource "ise_authorization_profile" "example" {
 
 Required:
 
-- `attribute_1_value_type` (String) - Choices: `AdvancedDictionaryAttribute`, `AttributeValue`
-- `attribute_2_value_type` (String) - Choices: `AdvancedDictionaryAttribute`, `AttributeValue`
-- `attribute_name` (String) Attribute name
-- `dictionary_name` (String) Dictionary name
-- `value` (String) Attribute value
+- `attribute_1_dictionary_name` (String) Dictionary name
+- `attribute_1_name` (String) Attribute name
+- `attribute_1_value_type` (String) Advanced attribute value type
+  - Choices: `AdvancedDictionaryAttribute`, `AttributeValue`
+- `attribute_2_value` (String) Attribute value
+- `attribute_2_value_type` (String) Advanced attribute value type
+  - Choices: `AdvancedDictionaryAttribute`, `AttributeValue`
 
 ## Import
 

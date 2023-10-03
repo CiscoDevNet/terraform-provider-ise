@@ -27,47 +27,46 @@ data "ise_authorization_profile" "example" {
 
 ### Read-Only
 
-- `access_type` (String) Allowed Values: `ACCESS_ACCEPT`, `ACCESS_REJECT`
-- `acl` (String)
-- `advanced_attributes` (Attributes List) (see [below for nested schema](#nestedatt--advanced_attributes))
-- `airespace_acl` (String)
-- `airespace_ipv6_acl` (String)
-- `asa_vpn` (String)
-- `authz_profile_type` (String) Allowed Values: `SWITCH`, `TRUSTSEC`, `TACACS`. `SWITCH` is used for Standard Authorization Profiles. only `SWITCH` is supported.
-- `auto_smart_port` (String)
-- `avc_profile` (String)
-- `connectivity` (String) Allowed Values: `DEFAULT`, `RADIUS_REQUEST`
-- `dacl_name` (String)
+- `access_type` (String) Access type
+- `acl` (String) ACL
+- `advanced_attributes` (Attributes List) List of advanced attributes (see [below for nested schema](#nestedatt--advanced_attributes))
+- `airespace_acl` (String) Airespace ACL
+- `airespace_ipv6_acl` (String) Airespace IPv6 ACL
+- `asa_vpn` (String) ASA VPN
+- `auto_smart_port` (String) Auto smart port
+- `avc_profile` (String) AVC profile
+- `dacl_name` (String) DACL name
 - `description` (String) Description
-- `display_certificates_renewal_messages` (Boolean) The displayCertificatesRenewalMessages is mandatory when `WebRedirectionType` value is `CentralizedWebAuth`. For all other `WebRedirectionType` values the field must be ignored
-- `easywired_session_candidate` (Boolean)
-- `interface_template` (String)
-- `ipv6_acl_filter` (String)
-- `ipv6_dacl_name` (String)
-- `mac_sec_policy` (String) Allowed Values: `MUST_SECURE`, `MUST_NOT_SECURE`, `SHOULD_SECURE`
+- `easywired_session_candidate` (Boolean) Easy wired session candidate
+- `interface_template` (String) Interface template
+- `ipv6_acl_filter` (String) IPv6 ACL
+- `ipv6_dacl_name` (String) IPv6 DACL name
+- `mac_sec_policy` (String) MacSec policy
 - `name` (String) The name of the authorization profile
-- `name_id` (String) Vlan name
-- `neat` (Boolean)
-- `portal_name` (String) A portal that exist in the DB and fits the WebRedirectionType
+- `neat` (Boolean) NEAT
 - `profile_name` (String) Value needs to be an existing Network Device Profile
-- `service_template` (Boolean)
-- `static_ip_host_name_fqdn` (String) A portal that exist in the DB and fits the WebRedirectionType
-- `tag_id` (Number) Valid range is 0-31
-- `timer` (Number) Valid range is 1-65535
-- `track_movement` (Boolean)
-- `unique_identifier` (String)
-- `voice_domain_permission` (Boolean)
-- `web_auth` (Boolean)
-- `web_redirection_acl` (String)
-- `web_redirection_type` (String) Value MUST be one of the following: `CentralizedWebAuth`, `HotSpot`, `NativeSupplicanProvisioning`, `ClientProvisioning`. The WebRedirectionType must fit the portalName
+- `reauthentication_connectivity` (String) Maintain Connectivity During Reauthentication
+- `reauthentication_timer` (Number) Reauthentication timer
+- `service_template` (Boolean) Service template
+- `track_movement` (Boolean) Track movement
+- `unique_identifier` (String) Unique identifier
+- `vlan_name_id` (String) Vlan name or ID
+- `vlan_tag_id` (Number) Vlan tag ID
+- `voice_domain_permission` (Boolean) Voice domain permission
+- `web_auth` (Boolean) Web authentication (local)
+- `web_redirection_acl` (String) Web redirection ACL
+- `web_redirection_display_certificates_renewal_messages` (Boolean) This attribute is mandatory when `web_redirection_type` value is `CentralizedWebAuth`. For all other `web_redirection_type` values the field must be ignored.
+- `web_redirection_portal_name` (String) A portal that exist in the DB and fits the `web_redirection_type`
+- `web_redirection_static_ip_host_name_fqdn` (String) IP, hostname or FQDN
+- `web_redirection_type` (String) This type must fit the `web_redirection_portal_name`
 
 <a id="nestedatt--advanced_attributes"></a>
 ### Nested Schema for `advanced_attributes`
 
 Read-Only:
 
-- `attribute_1_value_type` (String)
-- `attribute_2_value_type` (String)
-- `attribute_name` (String) Attribute name
-- `dictionary_name` (String) Dictionary name
-- `value` (String) Attribute value
+- `attribute_1_dictionary_name` (String) Dictionary name
+- `attribute_1_name` (String) Attribute name
+- `attribute_1_value_type` (String) Advanced attribute value type
+- `attribute_2_value` (String) Attribute value
+- `attribute_2_value_type` (String) Advanced attribute value type

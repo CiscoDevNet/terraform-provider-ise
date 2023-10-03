@@ -31,7 +31,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -80,167 +82,176 @@ func (r *AuthorizationProfileResource) Schema(ctx context.Context, req resource.
 				MarkdownDescription: helpers.NewAttributeDescription("Description").String,
 				Optional:            true,
 			},
-			"name_id": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Vlan name").String,
-				Required:            true,
+			"vlan_name_id": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Vlan name or ID").String,
+				Optional:            true,
 			},
-			"tag_id": schema.Int64Attribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Valid range is 0-31").AddIntegerRangeDescription(0, 31).String,
-				Required:            true,
+			"vlan_tag_id": schema.Int64Attribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Vlan tag ID").AddIntegerRangeDescription(0, 31).String,
+				Optional:            true,
 				Validators: []validator.Int64{
 					int64validator.Between(0, 31),
 				},
 			},
 			"web_redirection_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Value MUST be one of the following: `CentralizedWebAuth`, `HotSpot`, `NativeSupplicanProvisioning`, `ClientProvisioning`. The WebRedirectionType must fit the portalName").AddStringEnumDescription("CentralizedWebAuth", "HotSpot", "NativeSupplicanProvisioning", "ClientProvisioning").String,
-				Required:            true,
+				MarkdownDescription: helpers.NewAttributeDescription("This type must fit the `web_redirection_portal_name`").AddStringEnumDescription("CentralizedWebAuth", "HotSpot", "NativeSupplicanProvisioning", "ClientProvisioning").String,
+				Optional:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("CentralizedWebAuth", "HotSpot", "NativeSupplicanProvisioning", "ClientProvisioning"),
 				},
 			},
 			"web_redirection_acl": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("").String,
-				Required:            true,
-			},
-			"portal_name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("A portal that exist in the DB and fits the WebRedirectionType").String,
-				Required:            true,
-			},
-			"static_ip_host_name_fqdn": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("A portal that exist in the DB and fits the WebRedirectionType").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Web redirection ACL").String,
 				Optional:            true,
 			},
-			"display_certificates_renewal_messages": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The displayCertificatesRenewalMessages is mandatory when `WebRedirectionType` value is `CentralizedWebAuth`. For all other `WebRedirectionType` values the field must be ignored").String,
+			"web_redirection_portal_name": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("A portal that exist in the DB and fits the `web_redirection_type`").String,
+				Optional:            true,
+			},
+			"web_redirection_static_ip_host_name_fqdn": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("IP, hostname or FQDN").String,
+				Optional:            true,
+			},
+			"web_redirection_display_certificates_renewal_messages": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("This attribute is mandatory when `web_redirection_type` value is `CentralizedWebAuth`. For all other `web_redirection_type` values the field must be ignored.").String,
 				Optional:            true,
 			},
 			"access_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Allowed Values: `ACCESS_ACCEPT`, `ACCESS_REJECT`").AddStringEnumDescription("ACCESS_ACCEPT", "ACCESS_REJECT").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Access type").AddStringEnumDescription("ACCESS_ACCEPT", "ACCESS_REJECT").AddDefaultValueDescription("ACCESS_ACCEPT").String,
 				Optional:            true,
+				Computed:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("ACCESS_ACCEPT", "ACCESS_REJECT"),
 				},
-			},
-			"authz_profile_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Allowed Values: `SWITCH`, `TRUSTSEC`, `TACACS`. `SWITCH` is used for Standard Authorization Profiles. only `SWITCH` is supported.").AddStringEnumDescription("SWITCH", "TRUSTSEC", "TACACS").String,
-				Optional:            true,
-				Validators: []validator.String{
-					stringvalidator.OneOf("SWITCH", "TRUSTSEC", "TACACS"),
-				},
+				Default: stringdefault.StaticString("ACCESS_ACCEPT"),
 			},
 			"profile_name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Value needs to be an existing Network Device Profile").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Value needs to be an existing Network Device Profile").AddDefaultValueDescription("Cisco").String,
 				Optional:            true,
+				Computed:            true,
+				Default:             stringdefault.StaticString("Cisco"),
 			},
 			"airespace_acl": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Airespace ACL").String,
 				Optional:            true,
 			},
 			"acl": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("").String,
+				MarkdownDescription: helpers.NewAttributeDescription("ACL").String,
 				Optional:            true,
 			},
 			"dacl_name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("").String,
+				MarkdownDescription: helpers.NewAttributeDescription("DACL name").String,
 				Optional:            true,
 			},
 			"auto_smart_port": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Auto smart port").String,
 				Optional:            true,
 			},
 			"interface_template": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Interface template").String,
 				Optional:            true,
 			},
 			"ipv6_acl_filter": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("").String,
+				MarkdownDescription: helpers.NewAttributeDescription("IPv6 ACL").String,
 				Optional:            true,
 			},
 			"avc_profile": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("").String,
+				MarkdownDescription: helpers.NewAttributeDescription("AVC profile").String,
 				Optional:            true,
 			},
 			"asa_vpn": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("").String,
+				MarkdownDescription: helpers.NewAttributeDescription("ASA VPN").String,
 				Optional:            true,
 			},
 			"unique_identifier": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Unique identifier").String,
 				Optional:            true,
 			},
 			"track_movement": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Track movement").AddDefaultValueDescription("false").String,
 				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 			"service_template": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Service template").AddDefaultValueDescription("false").String,
 				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 			"easywired_session_candidate": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Easy wired session candidate").AddDefaultValueDescription("false").String,
 				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 			"voice_domain_permission": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Voice domain permission").AddDefaultValueDescription("false").String,
 				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 			"neat": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("").String,
+				MarkdownDescription: helpers.NewAttributeDescription("NEAT").AddDefaultValueDescription("false").String,
 				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 			"web_auth": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Web authentication (local)").AddDefaultValueDescription("false").String,
 				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 			"mac_sec_policy": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Allowed Values: `MUST_SECURE`, `MUST_NOT_SECURE`, `SHOULD_SECURE`").AddStringEnumDescription("MUST_SECURE", "MUST_NOT_SECURE", "SHOULD_SECURE").String,
+				MarkdownDescription: helpers.NewAttributeDescription("MacSec policy").AddStringEnumDescription("MUST_SECURE", "MUST_NOT_SECURE", "SHOULD_SECURE").String,
 				Optional:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("MUST_SECURE", "MUST_NOT_SECURE", "SHOULD_SECURE"),
 				},
 			},
-			"connectivity": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Allowed Values: `DEFAULT`, `RADIUS_REQUEST`").AddStringEnumDescription("DEFAULT", "RADIUS_REQUEST").String,
-				Required:            true,
+			"reauthentication_connectivity": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Maintain Connectivity During Reauthentication").AddStringEnumDescription("DEFAULT", "RADIUS_REQUEST").String,
+				Optional:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("DEFAULT", "RADIUS_REQUEST"),
 				},
 			},
-			"timer": schema.Int64Attribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Valid range is 1-65535").AddIntegerRangeDescription(1, 65535).String,
-				Required:            true,
+			"reauthentication_timer": schema.Int64Attribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Reauthentication timer").AddIntegerRangeDescription(1, 65535).String,
+				Optional:            true,
 				Validators: []validator.Int64{
 					int64validator.Between(1, 65535),
 				},
 			},
 			"advanced_attributes": schema.ListNestedAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("").String,
+				MarkdownDescription: helpers.NewAttributeDescription("List of advanced attributes").String,
 				Optional:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"attribute_1_value_type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("").AddStringEnumDescription("AdvancedDictionaryAttribute", "AttributeValue").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Advanced attribute value type").AddStringEnumDescription("AdvancedDictionaryAttribute", "AttributeValue").String,
 							Required:            true,
 							Validators: []validator.String{
 								stringvalidator.OneOf("AdvancedDictionaryAttribute", "AttributeValue"),
 							},
 						},
-						"dictionary_name": schema.StringAttribute{
+						"attribute_1_dictionary_name": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Dictionary name").String,
 							Required:            true,
 						},
-						"attribute_name": schema.StringAttribute{
+						"attribute_1_name": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Attribute name").String,
 							Required:            true,
 						},
 						"attribute_2_value_type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("").AddStringEnumDescription("AdvancedDictionaryAttribute", "AttributeValue").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Advanced attribute value type").AddStringEnumDescription("AdvancedDictionaryAttribute", "AttributeValue").String,
 							Required:            true,
 							Validators: []validator.String{
 								stringvalidator.OneOf("AdvancedDictionaryAttribute", "AttributeValue"),
 							},
 						},
-						"value": schema.StringAttribute{
+						"attribute_2_value": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Attribute value").String,
 							Required:            true,
 						},
@@ -248,11 +259,11 @@ func (r *AuthorizationProfileResource) Schema(ctx context.Context, req resource.
 				},
 			},
 			"ipv6_dacl_name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("").String,
+				MarkdownDescription: helpers.NewAttributeDescription("IPv6 DACL name").String,
 				Optional:            true,
 			},
 			"airespace_ipv6_acl": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Airespace IPv6 ACL").String,
 				Optional:            true,
 			},
 		},

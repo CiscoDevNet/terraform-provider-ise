@@ -70,40 +70,36 @@ func (d *AuthorizationProfileDataSource) Schema(ctx context.Context, req datasou
 				MarkdownDescription: "Description",
 				Computed:            true,
 			},
-			"name_id": schema.StringAttribute{
-				MarkdownDescription: "Vlan name",
+			"vlan_name_id": schema.StringAttribute{
+				MarkdownDescription: "Vlan name or ID",
 				Computed:            true,
 			},
-			"tag_id": schema.Int64Attribute{
-				MarkdownDescription: "Valid range is 0-31",
+			"vlan_tag_id": schema.Int64Attribute{
+				MarkdownDescription: "Vlan tag ID",
 				Computed:            true,
 			},
 			"web_redirection_type": schema.StringAttribute{
-				MarkdownDescription: "Value MUST be one of the following: `CentralizedWebAuth`, `HotSpot`, `NativeSupplicanProvisioning`, `ClientProvisioning`. The WebRedirectionType must fit the portalName",
+				MarkdownDescription: "This type must fit the `web_redirection_portal_name`",
 				Computed:            true,
 			},
 			"web_redirection_acl": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "Web redirection ACL",
 				Computed:            true,
 			},
-			"portal_name": schema.StringAttribute{
-				MarkdownDescription: "A portal that exist in the DB and fits the WebRedirectionType",
+			"web_redirection_portal_name": schema.StringAttribute{
+				MarkdownDescription: "A portal that exist in the DB and fits the `web_redirection_type`",
 				Computed:            true,
 			},
-			"static_ip_host_name_fqdn": schema.StringAttribute{
-				MarkdownDescription: "A portal that exist in the DB and fits the WebRedirectionType",
+			"web_redirection_static_ip_host_name_fqdn": schema.StringAttribute{
+				MarkdownDescription: "IP, hostname or FQDN",
 				Computed:            true,
 			},
-			"display_certificates_renewal_messages": schema.BoolAttribute{
-				MarkdownDescription: "The displayCertificatesRenewalMessages is mandatory when `WebRedirectionType` value is `CentralizedWebAuth`. For all other `WebRedirectionType` values the field must be ignored",
+			"web_redirection_display_certificates_renewal_messages": schema.BoolAttribute{
+				MarkdownDescription: "This attribute is mandatory when `web_redirection_type` value is `CentralizedWebAuth`. For all other `web_redirection_type` values the field must be ignored.",
 				Computed:            true,
 			},
 			"access_type": schema.StringAttribute{
-				MarkdownDescription: "Allowed Values: `ACCESS_ACCEPT`, `ACCESS_REJECT`",
-				Computed:            true,
-			},
-			"authz_profile_type": schema.StringAttribute{
-				MarkdownDescription: "Allowed Values: `SWITCH`, `TRUSTSEC`, `TACACS`. `SWITCH` is used for Standard Authorization Profiles. only `SWITCH` is supported.",
+				MarkdownDescription: "Access type",
 				Computed:            true,
 			},
 			"profile_name": schema.StringAttribute{
@@ -111,99 +107,99 @@ func (d *AuthorizationProfileDataSource) Schema(ctx context.Context, req datasou
 				Computed:            true,
 			},
 			"airespace_acl": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "Airespace ACL",
 				Computed:            true,
 			},
 			"acl": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "ACL",
 				Computed:            true,
 			},
 			"dacl_name": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "DACL name",
 				Computed:            true,
 			},
 			"auto_smart_port": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "Auto smart port",
 				Computed:            true,
 			},
 			"interface_template": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "Interface template",
 				Computed:            true,
 			},
 			"ipv6_acl_filter": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "IPv6 ACL",
 				Computed:            true,
 			},
 			"avc_profile": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "AVC profile",
 				Computed:            true,
 			},
 			"asa_vpn": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "ASA VPN",
 				Computed:            true,
 			},
 			"unique_identifier": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "Unique identifier",
 				Computed:            true,
 			},
 			"track_movement": schema.BoolAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "Track movement",
 				Computed:            true,
 			},
 			"service_template": schema.BoolAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "Service template",
 				Computed:            true,
 			},
 			"easywired_session_candidate": schema.BoolAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "Easy wired session candidate",
 				Computed:            true,
 			},
 			"voice_domain_permission": schema.BoolAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "Voice domain permission",
 				Computed:            true,
 			},
 			"neat": schema.BoolAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "NEAT",
 				Computed:            true,
 			},
 			"web_auth": schema.BoolAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "Web authentication (local)",
 				Computed:            true,
 			},
 			"mac_sec_policy": schema.StringAttribute{
-				MarkdownDescription: "Allowed Values: `MUST_SECURE`, `MUST_NOT_SECURE`, `SHOULD_SECURE`",
+				MarkdownDescription: "MacSec policy",
 				Computed:            true,
 			},
-			"connectivity": schema.StringAttribute{
-				MarkdownDescription: "Allowed Values: `DEFAULT`, `RADIUS_REQUEST`",
+			"reauthentication_connectivity": schema.StringAttribute{
+				MarkdownDescription: "Maintain Connectivity During Reauthentication",
 				Computed:            true,
 			},
-			"timer": schema.Int64Attribute{
-				MarkdownDescription: "Valid range is 1-65535",
+			"reauthentication_timer": schema.Int64Attribute{
+				MarkdownDescription: "Reauthentication timer",
 				Computed:            true,
 			},
 			"advanced_attributes": schema.ListNestedAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "List of advanced attributes",
 				Computed:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"attribute_1_value_type": schema.StringAttribute{
-							MarkdownDescription: "",
+							MarkdownDescription: "Advanced attribute value type",
 							Computed:            true,
 						},
-						"dictionary_name": schema.StringAttribute{
+						"attribute_1_dictionary_name": schema.StringAttribute{
 							MarkdownDescription: "Dictionary name",
 							Computed:            true,
 						},
-						"attribute_name": schema.StringAttribute{
+						"attribute_1_name": schema.StringAttribute{
 							MarkdownDescription: "Attribute name",
 							Computed:            true,
 						},
 						"attribute_2_value_type": schema.StringAttribute{
-							MarkdownDescription: "",
+							MarkdownDescription: "Advanced attribute value type",
 							Computed:            true,
 						},
-						"value": schema.StringAttribute{
+						"attribute_2_value": schema.StringAttribute{
 							MarkdownDescription: "Attribute value",
 							Computed:            true,
 						},
@@ -211,11 +207,11 @@ func (d *AuthorizationProfileDataSource) Schema(ctx context.Context, req datasou
 				},
 			},
 			"ipv6_dacl_name": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "IPv6 DACL name",
 				Computed:            true,
 			},
 			"airespace_ipv6_acl": schema.StringAttribute{
-				MarkdownDescription: "",
+				MarkdownDescription: "Airespace IPv6 ACL",
 				Computed:            true,
 			},
 		},

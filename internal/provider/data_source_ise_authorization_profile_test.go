@@ -33,27 +33,38 @@ func TestAccDataSourceIseAuthorizationProfile(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "name", "AuthzProfile1"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "description", "My Authorization Profile"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "name_id", "VLAN10"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "tag_id", "0"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "vlan_name_id", "VLAN10"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "vlan_tag_id", "0"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "web_redirection_type", "CentralizedWebAuth"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "web_redirection_acl", "TEST_ACL"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "portal_name", "Sponsored Guest Portal (default)"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "display_certificates_renewal_messages", "true"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "web_redirection_portal_name", "Sponsored Guest Portal (default)"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "web_redirection_static_ip_host_name_fqdn", "1.2.3.4"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "web_redirection_display_certificates_renewal_messages", "true"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "access_type", "ACCESS_ACCEPT"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "authz_profile_type", "SWITCH"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "profile_name", "Cisco"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "asa_vpn", ""))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "unique_identifier", ""))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "airespace_acl", "ACL1"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "acl", "ACL1"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "auto_smart_port", "PROFILE1"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "interface_template", "TEMP1"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "ipv6_acl_filter", "ACL1"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "avc_profile", "PROF1"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "asa_vpn", "1"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "unique_identifier", "ID1234"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "track_movement", "false"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "service_template", "false"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "easywired_session_candidate", "false"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "connectivity", "DEFAULT"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "timer", "1"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "voice_domain_permission", "false"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "neat", "false"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "web_auth", "false"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "mac_sec_policy", "MUST_SECURE"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "reauthentication_connectivity", "DEFAULT"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "reauthentication_timer", "1"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "advanced_attributes.0.attribute_1_value_type", "AdvancedDictionaryAttribute"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "advanced_attributes.0.dictionary_name", "Cisco"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "advanced_attributes.0.attribute_name", "cisco-av-pair"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "advanced_attributes.0.attribute_1_dictionary_name", "Cisco"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "advanced_attributes.0.attribute_1_name", "cisco-av-pair"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "advanced_attributes.0.attribute_2_value_type", "AttributeValue"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "advanced_attributes.0.value", "set_nadprofile_vlan=true,vlan=TEST,tag=1"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "advanced_attributes.0.attribute_2_value", "set_nadprofile_vlan=true,vlan=TEST,tag=1"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_authorization_profile.test", "airespace_ipv6_acl", "ACL1"))
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
@@ -76,29 +87,40 @@ func testAccDataSourceIseAuthorizationProfileConfig() string {
 	config := `resource "ise_authorization_profile" "test" {` + "\n"
 	config += `	name = "AuthzProfile1"` + "\n"
 	config += `	description = "My Authorization Profile"` + "\n"
-	config += `	name_id = "VLAN10"` + "\n"
-	config += `	tag_id = 0` + "\n"
+	config += `	vlan_name_id = "VLAN10"` + "\n"
+	config += `	vlan_tag_id = 0` + "\n"
 	config += `	web_redirection_type = "CentralizedWebAuth"` + "\n"
 	config += `	web_redirection_acl = "TEST_ACL"` + "\n"
-	config += `	portal_name = "Sponsored Guest Portal (default)"` + "\n"
-	config += `	display_certificates_renewal_messages = true` + "\n"
+	config += `	web_redirection_portal_name = "Sponsored Guest Portal (default)"` + "\n"
+	config += `	web_redirection_static_ip_host_name_fqdn = "1.2.3.4"` + "\n"
+	config += `	web_redirection_display_certificates_renewal_messages = true` + "\n"
 	config += `	access_type = "ACCESS_ACCEPT"` + "\n"
-	config += `	authz_profile_type = "SWITCH"` + "\n"
 	config += `	profile_name = "Cisco"` + "\n"
-	config += `	asa_vpn = ""` + "\n"
-	config += `	unique_identifier = ""` + "\n"
+	config += `	airespace_acl = "ACL1"` + "\n"
+	config += `	acl = "ACL1"` + "\n"
+	config += `	auto_smart_port = "PROFILE1"` + "\n"
+	config += `	interface_template = "TEMP1"` + "\n"
+	config += `	ipv6_acl_filter = "ACL1"` + "\n"
+	config += `	avc_profile = "PROF1"` + "\n"
+	config += `	asa_vpn = "1"` + "\n"
+	config += `	unique_identifier = "ID1234"` + "\n"
 	config += `	track_movement = false` + "\n"
 	config += `	service_template = false` + "\n"
 	config += `	easywired_session_candidate = false` + "\n"
-	config += `	connectivity = "DEFAULT"` + "\n"
-	config += `	timer = 1` + "\n"
+	config += `	voice_domain_permission = false` + "\n"
+	config += `	neat = false` + "\n"
+	config += `	web_auth = false` + "\n"
+	config += `	mac_sec_policy = "MUST_SECURE"` + "\n"
+	config += `	reauthentication_connectivity = "DEFAULT"` + "\n"
+	config += `	reauthentication_timer = 1` + "\n"
 	config += `	advanced_attributes = [{` + "\n"
 	config += `	  attribute_1_value_type = "AdvancedDictionaryAttribute"` + "\n"
-	config += `	  dictionary_name = "Cisco"` + "\n"
-	config += `	  attribute_name = "cisco-av-pair"` + "\n"
+	config += `	  attribute_1_dictionary_name = "Cisco"` + "\n"
+	config += `	  attribute_1_name = "cisco-av-pair"` + "\n"
 	config += `	  attribute_2_value_type = "AttributeValue"` + "\n"
-	config += `	  value = "set_nadprofile_vlan=true,vlan=TEST,tag=1"` + "\n"
+	config += `	  attribute_2_value = "set_nadprofile_vlan=true,vlan=TEST,tag=1"` + "\n"
 	config += `	}]` + "\n"
+	config += `	airespace_ipv6_acl = "ACL1"` + "\n"
 	config += `}` + "\n"
 
 	config += `
