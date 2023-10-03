@@ -74,6 +74,9 @@ func (r *NetworkAccessAuthorizationRuleResource) Schema(ctx context.Context, req
 			"policy_set_id": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Policy set ID").String,
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Rule name, [Valid characters are alphanumerics, underscore, hyphen, space, period, parentheses]").String,

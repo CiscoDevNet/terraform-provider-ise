@@ -74,6 +74,9 @@ func (r *NetworkAccessDictionaryResource) Schema(ctx context.Context, req resour
 			"name": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("The dictionary name").String,
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("The description of the dictionary").String,

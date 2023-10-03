@@ -74,6 +74,9 @@ func (r *RepositoryResource) Schema(ctx context.Context, req resource.SchemaRequ
 			"name": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Repository name should be less than 80 characters and can contain alphanumeric, underscore, hyphen and dot characters.").String,
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"protocol": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Protocol").AddStringEnumDescription("CDROM", "DISK", "FTP", "HTTP", "HTTPS", "NFS", "SFTP", "TFTP").String,
