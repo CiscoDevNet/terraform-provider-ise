@@ -41,6 +41,7 @@ resource "ise_internal_user" "example" {
 
 - `account_name_alias` (String) The Account Name Alias will be used to send email notifications about password expiration. This field is only supported from ISE 3.2.
 - `change_password` (Boolean) Requires the user to change the password
+  - Default value: `true`
 - `description` (String) Description
 - `email` (String) Email address
 - `enable_password` (String) This field is added in ISE 2.0 to support TACACS+
@@ -48,7 +49,9 @@ resource "ise_internal_user" "example" {
 - `first_name` (String) First name of the internal user
 - `last_name` (String) Last name of the internal user
 - `password_id_store` (String) The ID store where the internal user's password is kept
+  - Default value: `Internal Users`
 - `password_never_expires` (Boolean) Set to `true` to indicate the user password never expires. This will not apply to Users who are also ISE Admins. This field is only supported from ISE 3.2.
+  - Default value: `false`
 
 ### Read-Only
 

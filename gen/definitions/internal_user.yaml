@@ -21,6 +21,7 @@ attributes:
     data_path: [InternalUser]
     type: Bool
     description: Requires the user to change the password
+    default_value: true
     example: true
   - model_name: email
     data_path: [InternalUser]
@@ -49,6 +50,7 @@ attributes:
     test_tags: [ISE32]
     type: Bool
     description: Set to `true` to indicate the user password never expires. This will not apply to Users who are also ISE Admins. This field is only supported from ISE 3.2.
+    default_value: false
     example: false
   - model_name: firstName
     data_path: [InternalUser]
@@ -65,12 +67,14 @@ attributes:
     tf_name: password_id_store
     type: String
     description: The ID store where the internal user's password is kept
-    example: "Internal Users"
+    default_value: Internal Users
+    example: Internal Users
   # - model_name: expiryDateEnabled
   #   data_path: [InternalUser]
   #   tf_name: expiry_date_enabled
   #   type: Bool
   #   description: Enable a password expiry date
+  #   default_value: false
   #   example: false
   # - model_name: expiryDate
   #   data_path: [InternalUser]

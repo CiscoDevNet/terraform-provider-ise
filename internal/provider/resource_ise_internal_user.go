@@ -29,7 +29,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -78,8 +80,10 @@ func (r *InternalUserResource) Schema(ctx context.Context, req resource.SchemaRe
 				Required:            true,
 			},
 			"change_password": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Requires the user to change the password").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Requires the user to change the password").AddDefaultValueDescription("true").String,
 				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(true),
 			},
 			"email": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Email address").String,
@@ -98,8 +102,10 @@ func (r *InternalUserResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:            true,
 			},
 			"password_never_expires": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Set to `true` to indicate the user password never expires. This will not apply to Users who are also ISE Admins. This field is only supported from ISE 3.2.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Set to `true` to indicate the user password never expires. This will not apply to Users who are also ISE Admins. This field is only supported from ISE 3.2.").AddDefaultValueDescription("false").String,
 				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 			"first_name": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("First name of the internal user").String,
@@ -110,8 +116,10 @@ func (r *InternalUserResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:            true,
 			},
 			"password_id_store": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The ID store where the internal user's password is kept").String,
+				MarkdownDescription: helpers.NewAttributeDescription("The ID store where the internal user's password is kept").AddDefaultValueDescription("Internal Users").String,
 				Optional:            true,
+				Computed:            true,
+				Default:             stringdefault.StaticString("Internal Users"),
 			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Description").String,
