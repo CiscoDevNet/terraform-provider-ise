@@ -32,6 +32,7 @@ attributes:
     write_only: true
     type: Bool
     description: Read-only
+    default_value: false
     example: false
   # - model_name: defaultSGACLs
   #   data_path: [Sgt]
