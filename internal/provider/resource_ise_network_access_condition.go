@@ -120,7 +120,7 @@ func (r *NetworkAccessConditionResource) Schema(ctx context.Context, req resourc
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Condition name").String,
-							Required:            true,
+							Optional:            true,
 						},
 						"description": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Condition description").String,
@@ -171,7 +171,7 @@ func (r *NetworkAccessConditionResource) Schema(ctx context.Context, req resourc
 								Attributes: map[string]schema.Attribute{
 									"name": schema.StringAttribute{
 										MarkdownDescription: helpers.NewAttributeDescription("Condition name").String,
-										Required:            true,
+										Optional:            true,
 									},
 									"description": schema.StringAttribute{
 										MarkdownDescription: helpers.NewAttributeDescription("Condition description").String,

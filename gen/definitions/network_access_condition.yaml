@@ -56,7 +56,6 @@ attributes:
     attributes:
       - model_name: name
         type: String
-        id: true
         description: Condition name
         example: Cond1
       - model_name: description
@@ -107,7 +106,6 @@ attributes:
         attributes:
           - model_name: name
             type: String
-            id: true
             description: Condition name
             example: Cond1
           - model_name: description
