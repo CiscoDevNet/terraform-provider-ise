@@ -1,4 +1,4 @@
-## 0.1.1 (unreleased)
+## 0.1.1
 
 - Fix issue with nested conditions using `ise_network_access_condition` resource
 
