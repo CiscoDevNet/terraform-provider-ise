@@ -406,7 +406,7 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 		data.Operator = types.StringNull()
 	}
 	for i := range data.Children {
-		keys := [...]string{"name", "description", "conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator", "children"}
+		keys := [...]string{"name", "description", "conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
 		keyValues := [...]string{data.Children[i].Name.ValueString(), data.Children[i].Description.ValueString(), data.Children[i].ConditionType.ValueString(), data.Children[i].Id.ValueString(), strconv.FormatBool(data.Children[i].IsNegate.ValueBool()), data.Children[i].AttributeName.ValueString(), data.Children[i].AttributeValue.ValueString(), data.Children[i].DictionaryName.ValueString(), data.Children[i].DictionaryValue.ValueString(), data.Children[i].Operator.ValueString()}
 
 		var r gjson.Result
