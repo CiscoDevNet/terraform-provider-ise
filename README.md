@@ -2,6 +2,18 @@
 
 # Terraform Provider ISE
 
+The ISE provider provides resources to interact with a Cisco ISE (Identity Service Engine) instance. It communicates with ISE via the REST API.
+
+This provider uses both, the ERS and Open API. Instructions on how to enable API access can be found here: <https://developer.cisco.com/docs/identity-services-engine/latest/#!cisco-ise-api-framework>
+
+All resources and data sources have been tested with the following releases.
+
+| Platform | Version |
+| -------- | ------- |
+| ISE      | 3.2     |
+
+Documentation: <https://registry.terraform.io/providers/CiscoDevNet/ise/latest>
+
 ## Requirements
 
 - [Terraform](https://www.terraform.io/downloads.html) >= 1.0
