@@ -114,6 +114,46 @@ func (d *NetworkAccessAuthenticationRuleDataSource) Schema(ctx context.Context, 
 				MarkdownDescription: "Equality operator",
 				Computed:            true,
 			},
+			"children": schema.ListNestedAttribute{
+				MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `ConditionAttributes` or `ConditionReference`.",
+				Computed:            true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"condition_type": schema.StringAttribute{
+							MarkdownDescription: "Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.",
+							Computed:            true,
+						},
+						"condition_id": schema.StringAttribute{
+							MarkdownDescription: "UUID for condition",
+							Computed:            true,
+						},
+						"condition_is_negate": schema.BoolAttribute{
+							MarkdownDescription: "Indicates whereas this condition is in negate mode",
+							Computed:            true,
+						},
+						"condition_attribute_name": schema.StringAttribute{
+							MarkdownDescription: "Dictionary attribute name",
+							Computed:            true,
+						},
+						"condition_attribute_value": schema.StringAttribute{
+							MarkdownDescription: "Attribute value for condition. Value type is specified in dictionary object.",
+							Computed:            true,
+						},
+						"condition_dictionary_name": schema.StringAttribute{
+							MarkdownDescription: "Dictionary name",
+							Computed:            true,
+						},
+						"condition_dictionary_value": schema.StringAttribute{
+							MarkdownDescription: "Dictionary value",
+							Computed:            true,
+						},
+						"condition_operator": schema.StringAttribute{
+							MarkdownDescription: "Equality operator",
+							Computed:            true,
+						},
+					},
+				},
+			},
 			"identity_source_name": schema.StringAttribute{
 				MarkdownDescription: "Identity source name from the identity stores",
 				Computed:            true,

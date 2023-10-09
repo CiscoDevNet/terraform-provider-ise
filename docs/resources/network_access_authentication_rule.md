@@ -48,6 +48,7 @@ resource "ise_network_access_authentication_rule" "example" {
 
 ### Optional
 
+- `children` (Attributes List) List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `ConditionAttributes` or `ConditionReference`. (see [below for nested schema](#nestedatt--children))
 - `condition_attribute_name` (String) Dictionary attribute name
 - `condition_attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
 - `condition_dictionary_name` (String) Dictionary name
@@ -67,6 +68,25 @@ resource "ise_network_access_authentication_rule" "example" {
 ### Read-Only
 
 - `id` (String) The id of the object
+
+<a id="nestedatt--children"></a>
+### Nested Schema for `children`
+
+Required:
+
+- `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
+  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
+
+Optional:
+
+- `condition_attribute_name` (String) Dictionary attribute name
+- `condition_attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
+- `condition_dictionary_name` (String) Dictionary name
+- `condition_dictionary_value` (String) Dictionary value
+- `condition_id` (String) UUID for condition
+- `condition_is_negate` (Boolean) Indicates whereas this condition is in negate mode
+- `condition_operator` (String) Equality operator
+  - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`
 
 ## Import
 

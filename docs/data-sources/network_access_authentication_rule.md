@@ -29,6 +29,7 @@ data "ise_network_access_authentication_rule" "example" {
 
 ### Read-Only
 
+- `children` (Attributes List) List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `ConditionAttributes` or `ConditionReference`. (see [below for nested schema](#nestedatt--children))
 - `condition_attribute_name` (String) Dictionary attribute name
 - `condition_attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
 - `condition_dictionary_name` (String) Dictionary name
@@ -45,3 +46,17 @@ data "ise_network_access_authentication_rule" "example" {
 - `name` (String) Rule name, [Valid characters are alphanumerics, underscore, hyphen, space, period, parentheses]
 - `rank` (Number) The rank (priority) in relation to other rules. Lower rank is higher priority.
 - `state` (String) The state that the rule is in. A disabled rule cannot be matched.
+
+<a id="nestedatt--children"></a>
+### Nested Schema for `children`
+
+Read-Only:
+
+- `condition_attribute_name` (String) Dictionary attribute name
+- `condition_attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
+- `condition_dictionary_name` (String) Dictionary name
+- `condition_dictionary_value` (String) Dictionary value
+- `condition_id` (String) UUID for condition
+- `condition_is_negate` (Boolean) Indicates whereas this condition is in negate mode
+- `condition_operator` (String) Equality operator
+- `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.

@@ -23,6 +23,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
@@ -33,12 +34,28 @@ import (
 
 //template:begin types
 type NetworkAccessAuthenticationRule struct {
-	Id                       types.String `tfsdk:"id"`
-	PolicySetId              types.String `tfsdk:"policy_set_id"`
-	Name                     types.String `tfsdk:"name"`
-	Default                  types.Bool   `tfsdk:"default"`
-	Rank                     types.Int64  `tfsdk:"rank"`
-	State                    types.String `tfsdk:"state"`
+	Id                       types.String                              `tfsdk:"id"`
+	PolicySetId              types.String                              `tfsdk:"policy_set_id"`
+	Name                     types.String                              `tfsdk:"name"`
+	Default                  types.Bool                                `tfsdk:"default"`
+	Rank                     types.Int64                               `tfsdk:"rank"`
+	State                    types.String                              `tfsdk:"state"`
+	ConditionType            types.String                              `tfsdk:"condition_type"`
+	ConditionId              types.String                              `tfsdk:"condition_id"`
+	ConditionIsNegate        types.Bool                                `tfsdk:"condition_is_negate"`
+	ConditionAttributeName   types.String                              `tfsdk:"condition_attribute_name"`
+	ConditionAttributeValue  types.String                              `tfsdk:"condition_attribute_value"`
+	ConditionDictionaryName  types.String                              `tfsdk:"condition_dictionary_name"`
+	ConditionDictionaryValue types.String                              `tfsdk:"condition_dictionary_value"`
+	ConditionOperator        types.String                              `tfsdk:"condition_operator"`
+	Children                 []NetworkAccessAuthenticationRuleChildren `tfsdk:"children"`
+	IdentitySourceName       types.String                              `tfsdk:"identity_source_name"`
+	IfAuthFail               types.String                              `tfsdk:"if_auth_fail"`
+	IfProcessFail            types.String                              `tfsdk:"if_process_fail"`
+	IfUserNotFound           types.String                              `tfsdk:"if_user_not_found"`
+}
+
+type NetworkAccessAuthenticationRuleChildren struct {
 	ConditionType            types.String `tfsdk:"condition_type"`
 	ConditionId              types.String `tfsdk:"condition_id"`
 	ConditionIsNegate        types.Bool   `tfsdk:"condition_is_negate"`
@@ -47,10 +64,6 @@ type NetworkAccessAuthenticationRule struct {
 	ConditionDictionaryName  types.String `tfsdk:"condition_dictionary_name"`
 	ConditionDictionaryValue types.String `tfsdk:"condition_dictionary_value"`
 	ConditionOperator        types.String `tfsdk:"condition_operator"`
-	IdentitySourceName       types.String `tfsdk:"identity_source_name"`
-	IfAuthFail               types.String `tfsdk:"if_auth_fail"`
-	IfProcessFail            types.String `tfsdk:"if_process_fail"`
-	IfUserNotFound           types.String `tfsdk:"if_user_not_found"`
 }
 
 //template:end types
@@ -100,6 +113,37 @@ func (data NetworkAccessAuthenticationRule) toBody(ctx context.Context, state Ne
 	}
 	if !data.ConditionOperator.IsNull() {
 		body, _ = sjson.Set(body, "rule.condition.operator", data.ConditionOperator.ValueString())
+	}
+	if len(data.Children) > 0 {
+		body, _ = sjson.Set(body, "rule.condition.children", []interface{}{})
+		for _, item := range data.Children {
+			itemBody := ""
+			if !item.ConditionType.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "conditionType", item.ConditionType.ValueString())
+			}
+			if !item.ConditionId.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "id", item.ConditionId.ValueString())
+			}
+			if !item.ConditionIsNegate.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "isNegate", item.ConditionIsNegate.ValueBool())
+			}
+			if !item.ConditionAttributeName.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "attributeName", item.ConditionAttributeName.ValueString())
+			}
+			if !item.ConditionAttributeValue.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "attributeValue", item.ConditionAttributeValue.ValueString())
+			}
+			if !item.ConditionDictionaryName.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "dictionaryName", item.ConditionDictionaryName.ValueString())
+			}
+			if !item.ConditionDictionaryValue.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "dictionaryValue", item.ConditionDictionaryValue.ValueString())
+			}
+			if !item.ConditionOperator.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "operator", item.ConditionOperator.ValueString())
+			}
+			body, _ = sjson.SetRaw(body, "rule.condition.children.-1", itemBody)
+		}
 	}
 	if !data.IdentitySourceName.IsNull() {
 		body, _ = sjson.Set(body, "identitySourceName", data.IdentitySourceName.ValueString())
@@ -179,6 +223,54 @@ func (data *NetworkAccessAuthenticationRule) fromBody(ctx context.Context, res g
 		data.ConditionOperator = types.StringValue(value.String())
 	} else {
 		data.ConditionOperator = types.StringNull()
+	}
+	if value := res.Get("response.rule.condition.children"); value.Exists() {
+		data.Children = make([]NetworkAccessAuthenticationRuleChildren, 0)
+		value.ForEach(func(k, v gjson.Result) bool {
+			item := NetworkAccessAuthenticationRuleChildren{}
+			if cValue := v.Get("conditionType"); cValue.Exists() {
+				item.ConditionType = types.StringValue(cValue.String())
+			} else {
+				item.ConditionType = types.StringNull()
+			}
+			if cValue := v.Get("id"); cValue.Exists() {
+				item.ConditionId = types.StringValue(cValue.String())
+			} else {
+				item.ConditionId = types.StringNull()
+			}
+			if cValue := v.Get("isNegate"); cValue.Exists() {
+				item.ConditionIsNegate = types.BoolValue(cValue.Bool())
+			} else {
+				item.ConditionIsNegate = types.BoolNull()
+			}
+			if cValue := v.Get("attributeName"); cValue.Exists() {
+				item.ConditionAttributeName = types.StringValue(cValue.String())
+			} else {
+				item.ConditionAttributeName = types.StringNull()
+			}
+			if cValue := v.Get("attributeValue"); cValue.Exists() {
+				item.ConditionAttributeValue = types.StringValue(cValue.String())
+			} else {
+				item.ConditionAttributeValue = types.StringNull()
+			}
+			if cValue := v.Get("dictionaryName"); cValue.Exists() {
+				item.ConditionDictionaryName = types.StringValue(cValue.String())
+			} else {
+				item.ConditionDictionaryName = types.StringNull()
+			}
+			if cValue := v.Get("dictionaryValue"); cValue.Exists() {
+				item.ConditionDictionaryValue = types.StringValue(cValue.String())
+			} else {
+				item.ConditionDictionaryValue = types.StringNull()
+			}
+			if cValue := v.Get("operator"); cValue.Exists() {
+				item.ConditionOperator = types.StringValue(cValue.String())
+			} else {
+				item.ConditionOperator = types.StringNull()
+			}
+			data.Children = append(data.Children, item)
+			return true
+		})
 	}
 	if value := res.Get("response.identitySourceName"); value.Exists() {
 		data.IdentitySourceName = types.StringValue(value.String())
@@ -265,6 +357,70 @@ func (data *NetworkAccessAuthenticationRule) updateFromBody(ctx context.Context,
 		data.ConditionOperator = types.StringValue(value.String())
 	} else {
 		data.ConditionOperator = types.StringNull()
+	}
+	for i := range data.Children {
+		keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
+		keyValues := [...]string{data.Children[i].ConditionType.ValueString(), data.Children[i].ConditionId.ValueString(), strconv.FormatBool(data.Children[i].ConditionIsNegate.ValueBool()), data.Children[i].ConditionAttributeName.ValueString(), data.Children[i].ConditionAttributeValue.ValueString(), data.Children[i].ConditionDictionaryName.ValueString(), data.Children[i].ConditionDictionaryValue.ValueString(), data.Children[i].ConditionOperator.ValueString()}
+
+		var r gjson.Result
+		res.Get("response.rule.condition.children").ForEach(
+			func(_, v gjson.Result) bool {
+				found := false
+				for ik := range keys {
+					if v.Get(keys[ik]).String() == keyValues[ik] {
+						found = true
+						continue
+					}
+					found = false
+					break
+				}
+				if found {
+					r = v
+					return false
+				}
+				return true
+			},
+		)
+		if value := r.Get("conditionType"); value.Exists() && !data.Children[i].ConditionType.IsNull() {
+			data.Children[i].ConditionType = types.StringValue(value.String())
+		} else {
+			data.Children[i].ConditionType = types.StringNull()
+		}
+		if value := r.Get("id"); value.Exists() && !data.Children[i].ConditionId.IsNull() {
+			data.Children[i].ConditionId = types.StringValue(value.String())
+		} else {
+			data.Children[i].ConditionId = types.StringNull()
+		}
+		if value := r.Get("isNegate"); value.Exists() && !data.Children[i].ConditionIsNegate.IsNull() {
+			data.Children[i].ConditionIsNegate = types.BoolValue(value.Bool())
+		} else {
+			data.Children[i].ConditionIsNegate = types.BoolNull()
+		}
+		if value := r.Get("attributeName"); value.Exists() && !data.Children[i].ConditionAttributeName.IsNull() {
+			data.Children[i].ConditionAttributeName = types.StringValue(value.String())
+		} else {
+			data.Children[i].ConditionAttributeName = types.StringNull()
+		}
+		if value := r.Get("attributeValue"); value.Exists() && !data.Children[i].ConditionAttributeValue.IsNull() {
+			data.Children[i].ConditionAttributeValue = types.StringValue(value.String())
+		} else {
+			data.Children[i].ConditionAttributeValue = types.StringNull()
+		}
+		if value := r.Get("dictionaryName"); value.Exists() && !data.Children[i].ConditionDictionaryName.IsNull() {
+			data.Children[i].ConditionDictionaryName = types.StringValue(value.String())
+		} else {
+			data.Children[i].ConditionDictionaryName = types.StringNull()
+		}
+		if value := r.Get("dictionaryValue"); value.Exists() && !data.Children[i].ConditionDictionaryValue.IsNull() {
+			data.Children[i].ConditionDictionaryValue = types.StringValue(value.String())
+		} else {
+			data.Children[i].ConditionDictionaryValue = types.StringNull()
+		}
+		if value := r.Get("operator"); value.Exists() && !data.Children[i].ConditionOperator.IsNull() {
+			data.Children[i].ConditionOperator = types.StringValue(value.String())
+		} else {
+			data.Children[i].ConditionOperator = types.StringNull()
+		}
 	}
 	if value := res.Get("response.identitySourceName"); value.Exists() && !data.IdentitySourceName.IsNull() {
 		data.IdentitySourceName = types.StringValue(value.String())
