@@ -35,7 +35,7 @@ attributes:
     data_path: [condition]
     mandatory: true
     type: String
-    enum_values: [ConditionAndBlock, ConditionAttributes, ConditionOrBlock, ConditionReference, LibraryConditionAndBlock, LibraryConditionAttributes, LibraryConditionOrBlock, TimeAndDateCondition]
+    enum_values: [ConditionAndBlock, ConditionAttributes, ConditionOrBlock, ConditionReference]
     description: Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
     example: ConditionAttributes
     minimum_test_value: '"ConditionReference"'
@@ -87,14 +87,14 @@ attributes:
     example: equals
   - model_name: children
     type: List
-    description: List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `LibraryConditionAndBlock` or `LibraryConditionOrBlock`.
+    description: List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `ConditionAttributes` or `ConditionReference`.
     exclude_test: true
     data_path: [condition]
     attributes:
       - model_name: conditionType
         mandatory: true
         type: String
-        enum_values: [ConditionAndBlock, ConditionAttributes, ConditionOrBlock, ConditionReference, LibraryConditionAndBlock, LibraryConditionAttributes, LibraryConditionOrBlock, TimeAndDateCondition]
+        enum_values: [ConditionAndBlock, ConditionAttributes, ConditionOrBlock, ConditionReference]
         description: Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
         example: ConditionAttributes
         minimum_test_value: '"ConditionReference"'
@@ -139,14 +139,14 @@ attributes:
         example: equals
       - model_name: children
         type: List
-        description: List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `LibraryConditionAndBlock` or `LibraryConditionOrBlock`.
+        description: List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `ConditionAttributes` or `ConditionReference`.
         exclude_test: true
         #data_path: [condition,children]
         attributes:
           - model_name: conditionType
             mandatory: true
             type: String
-            enum_values: [ConditionAndBlock, ConditionAttributes, ConditionOrBlock, ConditionReference, LibraryConditionAndBlock, LibraryConditionAttributes, LibraryConditionOrBlock, TimeAndDateCondition]
+            enum_values: [ConditionAndBlock, ConditionAttributes, ConditionOrBlock, ConditionReference]
             description: Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
             example: ConditionAttributes
             minimum_test_value: '"ConditionReference"'
