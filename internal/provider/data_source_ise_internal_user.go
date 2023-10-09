@@ -102,8 +102,24 @@ func (d *InternalUserDataSource) Schema(ctx context.Context, req datasource.Sche
 				MarkdownDescription: "Last name of the internal user",
 				Computed:            true,
 			},
+			"identity_groups": schema.StringAttribute{
+				MarkdownDescription: "CSV of identity group IDs.",
+				Computed:            true,
+			},
+			"custom_attributes": schema.StringAttribute{
+				MarkdownDescription: "Key value map",
+				Computed:            true,
+			},
 			"password_id_store": schema.StringAttribute{
 				MarkdownDescription: "The ID store where the internal user's password is kept",
+				Computed:            true,
+			},
+			"expiry_date_enabled": schema.BoolAttribute{
+				MarkdownDescription: "Enable a password expiry date",
+				Computed:            true,
+			},
+			"expiry_date": schema.StringAttribute{
+				MarkdownDescription: "Password expiry date. It's format is = 'YYYY-MM-DD'",
 				Computed:            true,
 			},
 			"description": schema.StringAttribute{

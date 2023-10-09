@@ -99,7 +99,7 @@ func (r *InternalUserResource) Schema(ctx context.Context, req resource.SchemaRe
 			},
 			"enabled": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Whether the user is enabled/disabled").String,
-				Optional:            true,
+				Required:            true,
 			},
 			"password_never_expires": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Set to `true` to indicate the user password never expires. This will not apply to Users who are also ISE Admins. This field is only supported from ISE 3.2.").AddDefaultValueDescription("false").String,
@@ -115,11 +115,29 @@ func (r *InternalUserResource) Schema(ctx context.Context, req resource.SchemaRe
 				MarkdownDescription: helpers.NewAttributeDescription("Last name of the internal user").String,
 				Optional:            true,
 			},
+			"identity_groups": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("CSV of identity group IDs.").String,
+				Optional:            true,
+			},
+			"custom_attributes": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Key value map").String,
+				Optional:            true,
+			},
 			"password_id_store": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("The ID store where the internal user's password is kept").AddDefaultValueDescription("Internal Users").String,
 				Optional:            true,
 				Computed:            true,
 				Default:             stringdefault.StaticString("Internal Users"),
+			},
+			"expiry_date_enabled": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Enable a password expiry date").AddDefaultValueDescription("false").String,
+				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(false),
+			},
+			"expiry_date": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Password expiry date. It's format is = 'YYYY-MM-DD'").String,
+				Optional:            true,
 			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Description").String,
