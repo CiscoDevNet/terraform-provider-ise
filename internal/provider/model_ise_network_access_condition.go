@@ -480,7 +480,7 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 		}
 		for ci := range data.Children[i].Children {
 			keys := [...]string{"name", "description", "conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
-			keyValues := [...]string{data.Children[i].Name.ValueString(), data.Children[i].Description.ValueString(), data.Children[i].ConditionType.ValueString(), data.Children[i].Id.ValueString(), strconv.FormatBool(data.Children[i].IsNegate.ValueBool()), data.Children[i].AttributeName.ValueString(), data.Children[i].AttributeValue.ValueString(), data.Children[i].DictionaryName.ValueString(), data.Children[i].DictionaryValue.ValueString(), data.Children[i].Operator.ValueString()}
+			keyValues := [...]string{data.Children[i].Children[ci].Name.ValueString(), data.Children[i].Children[ci].Description.ValueString(), data.Children[i].Children[ci].ConditionType.ValueString(), data.Children[i].Children[ci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].IsNegate.ValueBool()), data.Children[i].Children[ci].AttributeName.ValueString(), data.Children[i].Children[ci].AttributeValue.ValueString(), data.Children[i].Children[ci].DictionaryName.ValueString(), data.Children[i].Children[ci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Operator.ValueString()}
 
 			var cr gjson.Result
 			r.Get("children").ForEach(
