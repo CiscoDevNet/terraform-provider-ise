@@ -98,8 +98,16 @@ func (d *AuthorizationProfileDataSource) Schema(ctx context.Context, req datasou
 				MarkdownDescription: "This attribute is mandatory when `web_redirection_type` value is `CentralizedWebAuth`. For all other `web_redirection_type` values the field must be ignored.",
 				Computed:            true,
 			},
+			"agentless_posture": schema.BoolAttribute{
+				MarkdownDescription: "Agentless Posture.",
+				Computed:            true,
+			},
 			"access_type": schema.StringAttribute{
-				MarkdownDescription: "Access type",
+				MarkdownDescription: "Allowed Values: `ACCESS_ACCEPT`, `ACCESS_REJECT`",
+				Computed:            true,
+			},
+			"authz_profile_type": schema.StringAttribute{
+				MarkdownDescription: "Allowed Values: `SWITCH`, `TRUSTSEC`, `TACACS`. `SWITCH` is used for Standard Authorization Profiles. only `SWITCH` is supported.",
 				Computed:            true,
 			},
 			"profile_name": schema.StringAttribute{

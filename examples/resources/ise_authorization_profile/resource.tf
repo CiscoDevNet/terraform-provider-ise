@@ -8,7 +8,9 @@ resource "ise_authorization_profile" "example" {
   web_redirection_portal_name                           = "Sponsored Guest Portal (default)"
   web_redirection_static_ip_host_name_fqdn              = "1.2.3.4"
   web_redirection_display_certificates_renewal_messages = true
+  agentless_posture                                     = false
   access_type                                           = "ACCESS_ACCEPT"
+  authz_profile_type                                    = "SWITCH"
   profile_name                                          = "Cisco"
   airespace_acl                                         = "ACL1"
   acl                                                   = "ACL1"

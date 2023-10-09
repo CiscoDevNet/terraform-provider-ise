@@ -60,17 +60,24 @@ attributes:
     type: Bool
     description: This attribute is mandatory when `web_redirection_type` value is `CentralizedWebAuth`. For all other `web_redirection_type` values the field must be ignored.
     example: true
+  - model_name: agentlessPosture
+    data_path: [AuthorizationProfile]
+    type: Bool
+    description: Agentless Posture.
+    example: false
   - model_name: accessType
     data_path: [AuthorizationProfile]
     type: String
     enum_values: [ACCESS_ACCEPT, ACCESS_REJECT]
-    description: Access type
+    description: "Allowed Values: `ACCESS_ACCEPT`, `ACCESS_REJECT`"
     default_value: ACCESS_ACCEPT
     example: ACCESS_ACCEPT
   - model_name: authzProfileType
     data_path: [AuthorizationProfile]
+    description: "Allowed Values: `SWITCH`, `TRUSTSEC`, `TACACS`. `SWITCH` is used for Standard Authorization Profiles. only `SWITCH` is supported."
     type: String
-    value: SWITCH
+    example: SWITCH
+    tf_name: authz_profile_type
   - model_name: profileName
     data_path: [AuthorizationProfile]
     type: String

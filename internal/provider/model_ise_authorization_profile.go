@@ -42,7 +42,9 @@ type AuthorizationProfile struct {
 	WebRedirectionPortalName                         types.String                             `tfsdk:"web_redirection_portal_name"`
 	WebRedirectionStaticIpHostNameFqdn               types.String                             `tfsdk:"web_redirection_static_ip_host_name_fqdn"`
 	WebRedirectionDisplayCertificatesRenewalMessages types.Bool                               `tfsdk:"web_redirection_display_certificates_renewal_messages"`
+	AgentlessPosture                                 types.Bool                               `tfsdk:"agentless_posture"`
 	AccessType                                       types.String                             `tfsdk:"access_type"`
+	AuthzProfileType                                 types.String                             `tfsdk:"authz_profile_type"`
 	ProfileName                                      types.String                             `tfsdk:"profile_name"`
 	AirespaceAcl                                     types.String                             `tfsdk:"airespace_acl"`
 	Acl                                              types.String                             `tfsdk:"acl"`
@@ -114,10 +116,15 @@ func (data AuthorizationProfile) toBody(ctx context.Context, state Authorization
 	if !data.WebRedirectionDisplayCertificatesRenewalMessages.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.webRedirection.displayCertificatesRenewalMessages", data.WebRedirectionDisplayCertificatesRenewalMessages.ValueBool())
 	}
+	if !data.AgentlessPosture.IsNull() {
+		body, _ = sjson.Set(body, "AuthorizationProfile.agentlessPosture", data.AgentlessPosture.ValueBool())
+	}
 	if !data.AccessType.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.accessType", data.AccessType.ValueString())
 	}
-	body, _ = sjson.Set(body, "AuthorizationProfile.authzProfileType", "SWITCH")
+	if !data.AuthzProfileType.IsNull() {
+		body, _ = sjson.Set(body, "AuthorizationProfile.authzProfileType", data.AuthzProfileType.ValueString())
+	}
 	if !data.ProfileName.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.profileName", data.ProfileName.ValueString())
 	}
@@ -255,10 +262,20 @@ func (data *AuthorizationProfile) fromBody(ctx context.Context, res gjson.Result
 	} else {
 		data.WebRedirectionDisplayCertificatesRenewalMessages = types.BoolNull()
 	}
+	if value := res.Get("AuthorizationProfile.agentlessPosture"); value.Exists() {
+		data.AgentlessPosture = types.BoolValue(value.Bool())
+	} else {
+		data.AgentlessPosture = types.BoolNull()
+	}
 	if value := res.Get("AuthorizationProfile.accessType"); value.Exists() {
 		data.AccessType = types.StringValue(value.String())
 	} else {
 		data.AccessType = types.StringValue("ACCESS_ACCEPT")
+	}
+	if value := res.Get("AuthorizationProfile.authzProfileType"); value.Exists() {
+		data.AuthzProfileType = types.StringValue(value.String())
+	} else {
+		data.AuthzProfileType = types.StringNull()
 	}
 	if value := res.Get("AuthorizationProfile.profileName"); value.Exists() {
 		data.ProfileName = types.StringValue(value.String())
@@ -449,10 +466,20 @@ func (data *AuthorizationProfile) updateFromBody(ctx context.Context, res gjson.
 	} else {
 		data.WebRedirectionDisplayCertificatesRenewalMessages = types.BoolNull()
 	}
+	if value := res.Get("AuthorizationProfile.agentlessPosture"); value.Exists() && !data.AgentlessPosture.IsNull() {
+		data.AgentlessPosture = types.BoolValue(value.Bool())
+	} else {
+		data.AgentlessPosture = types.BoolNull()
+	}
 	if value := res.Get("AuthorizationProfile.accessType"); value.Exists() && !data.AccessType.IsNull() {
 		data.AccessType = types.StringValue(value.String())
 	} else if data.AccessType.ValueString() != "ACCESS_ACCEPT" {
 		data.AccessType = types.StringNull()
+	}
+	if value := res.Get("AuthorizationProfile.authzProfileType"); value.Exists() && !data.AuthzProfileType.IsNull() {
+		data.AuthzProfileType = types.StringValue(value.String())
+	} else {
+		data.AuthzProfileType = types.StringNull()
 	}
 	if value := res.Get("AuthorizationProfile.profileName"); value.Exists() && !data.ProfileName.IsNull() {
 		data.ProfileName = types.StringValue(value.String())

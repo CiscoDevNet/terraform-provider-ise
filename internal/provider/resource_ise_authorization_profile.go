@@ -116,14 +116,22 @@ func (r *AuthorizationProfileResource) Schema(ctx context.Context, req resource.
 				MarkdownDescription: helpers.NewAttributeDescription("This attribute is mandatory when `web_redirection_type` value is `CentralizedWebAuth`. For all other `web_redirection_type` values the field must be ignored.").String,
 				Optional:            true,
 			},
+			"agentless_posture": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Agentless Posture.").String,
+				Optional:            true,
+			},
 			"access_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Access type").AddStringEnumDescription("ACCESS_ACCEPT", "ACCESS_REJECT").AddDefaultValueDescription("ACCESS_ACCEPT").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Allowed Values: `ACCESS_ACCEPT`, `ACCESS_REJECT`").AddStringEnumDescription("ACCESS_ACCEPT", "ACCESS_REJECT").AddDefaultValueDescription("ACCESS_ACCEPT").String,
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("ACCESS_ACCEPT", "ACCESS_REJECT"),
 				},
 				Default: stringdefault.StaticString("ACCESS_ACCEPT"),
+			},
+			"authz_profile_type": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Allowed Values: `SWITCH`, `TRUSTSEC`, `TACACS`. `SWITCH` is used for Standard Authorization Profiles. only `SWITCH` is supported.").String,
+				Optional:            true,
 			},
 			"profile_name": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Value needs to be an existing Network Device Profile").AddDefaultValueDescription("Cisco").String,

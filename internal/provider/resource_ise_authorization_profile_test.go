@@ -41,7 +41,9 @@ func TestAccIseAuthorizationProfile(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "web_redirection_portal_name", "Sponsored Guest Portal (default)"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "web_redirection_static_ip_host_name_fqdn", "1.2.3.4"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "web_redirection_display_certificates_renewal_messages", "true"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "agentless_posture", "false"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "access_type", "ACCESS_ACCEPT"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "authz_profile_type", "SWITCH"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "profile_name", "Cisco"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "airespace_acl", "ACL1"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "acl", "ACL1"))
@@ -116,7 +118,9 @@ func testAccIseAuthorizationProfileConfig_all() string {
 	config += `	web_redirection_portal_name = "Sponsored Guest Portal (default)"` + "\n"
 	config += `	web_redirection_static_ip_host_name_fqdn = "1.2.3.4"` + "\n"
 	config += `	web_redirection_display_certificates_renewal_messages = true` + "\n"
+	config += `	agentless_posture = false` + "\n"
 	config += `	access_type = "ACCESS_ACCEPT"` + "\n"
+	config += `	authz_profile_type = "SWITCH"` + "\n"
 	config += `	profile_name = "Cisco"` + "\n"
 	config += `	airespace_acl = "ACL1"` + "\n"
 	config += `	acl = "ACL1"` + "\n"
