@@ -1,0 +1,37 @@
+---
+name: TrustSec Security Group ACL
+rest_endpoint: /ers/config/sgacl
+doc_category: TrustSec
+skip_minimum_test: true
+attributes:
+  - model_name: name
+    data_path: [Sgacl]
+    type: String
+    mandatory: true
+    description: The name of the security group ACL
+    example: ACL1
+  - model_name: description
+    data_path: [Sgacl]
+    type: String
+    description: Description
+    example: SG ACL 1
+  - model_name: aclcontent
+    tf_name: acl_content
+    data_path: [Sgacl]
+    type: String
+    description: Content of ACL
+    example: "Permit IP"
+  - model_name: ipVersion
+    data_path: [Sgacl]
+    type: String
+    enum_values: [IPV4,IPV6,IP_AGNOSTIC]
+    default_value: "IPV4"
+    example: "IPV4"
+    description: "Allowed values: `IPV4`, `IPV6`, `IP_AGNOSTIC`"
+  - model_name: readOnly
+    data_path: [Sgacl]
+    write_only: true
+    type: Bool
+    description: Read-only
+    default_value: false
+    example: false
