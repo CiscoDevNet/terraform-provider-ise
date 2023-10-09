@@ -79,6 +79,7 @@ resource "ise_network_access_condition" "test" {
   dictionary_name = "Radius"
   operator        = "equals"
 }
+
 `
 
 //template:end testPrerequisites
