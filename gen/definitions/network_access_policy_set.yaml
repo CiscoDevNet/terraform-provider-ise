@@ -103,7 +103,6 @@ attributes:
         type: String
         description: UUID for condition
         example: 12345678-f0e7-456b-a2d1-876543320123
-        exclude_test: true
         minimum_test_value: ise_network_access_condition.test.id
       - model_name: isNegate
         tf_name: condition_is_negate
@@ -130,7 +129,6 @@ attributes:
         type: String
         description: Dictionary value
         example: abc
-        exclude_test: true
       - model_name: operator
         tf_name: condition_operator
         type: String
@@ -140,8 +138,6 @@ attributes:
       - model_name: children
         type: List
         description: List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `ConditionAttributes` or `ConditionReference`.
-        exclude_test: true
-        #data_path: [condition,children]
         attributes:
           - model_name: conditionType
             mandatory: true
@@ -155,7 +151,6 @@ attributes:
             type: String
             description: UUID for condition
             example: 12345678-f0e7-456b-a2d1-876543320123
-            exclude_test: true
             minimum_test_value: ise_network_access_condition.test.id
           - model_name: isNegate
             tf_name: condition_is_negate
@@ -182,7 +177,6 @@ attributes:
             type: String
             description: Dictionary value
             example: abc
-            exclude_test: true
           - model_name: operator
             tf_name: condition_operator
             type: String
