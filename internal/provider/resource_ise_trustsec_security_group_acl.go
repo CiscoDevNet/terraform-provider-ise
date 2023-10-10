@@ -83,10 +83,10 @@ func (r *TrustSecSecurityGroupACLResource) Schema(ctx context.Context, req resou
 			},
 			"acl_content": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Content of ACL").String,
-				Optional:            true,
+				Required:            true,
 			},
 			"ip_version": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Allowed values: `IPV4`, `IPV6`, `IP_AGNOSTIC`").AddStringEnumDescription("IPV4", "IPV6", "IP_AGNOSTIC").AddDefaultValueDescription("IPV4").String,
+				MarkdownDescription: helpers.NewAttributeDescription("IP Version").AddStringEnumDescription("IPV4", "IPV6", "IP_AGNOSTIC").AddDefaultValueDescription("IPV4").String,
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{

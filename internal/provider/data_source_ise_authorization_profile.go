@@ -103,7 +103,7 @@ func (d *AuthorizationProfileDataSource) Schema(ctx context.Context, req datasou
 				Computed:            true,
 			},
 			"access_type": schema.StringAttribute{
-				MarkdownDescription: "Allowed Values: `ACCESS_ACCEPT`, `ACCESS_REJECT`",
+				MarkdownDescription: "Access type",
 				Computed:            true,
 			},
 			"profile_name": schema.StringAttribute{

@@ -14,7 +14,7 @@ attributes:
     data_path: [EgressMatrixCell]
     type: String
     enum_values: [NONE,DENY_IP,PERMIT_IP]
-    description: "Allowed values: `NONE`, `DENY_IP`, `PERMIT_IP`. Can be used only if sgacls not specified."
+    description: "Can be used only if sgacls not specified."
     example: "PERMIT_IP"
     default_value: "NONE"
     exclude_test: true
@@ -24,7 +24,7 @@ attributes:
     enum_values: [DISABLED,ENABLED,MONITOR]
     default_value: "DISABLED"
     example: "ENABLED"
-    description: "Allowed values: `DISABLED`, `ENABLED`, `MONITOR`"
+    description: "Matrix Cell Status"
   - model_name: sgacls
     data_path: [EgressMatrixCell]
     tf_name: sgacls
@@ -32,17 +32,20 @@ attributes:
     type: StringList
     test_value: "[ise_trustsec_security_group_acl.test.id]"
     description: List of TrustSec Security Groups ACLs
+    example: "26b76b10-66e6-11ee-9cc1-9eb2a3ecc82a,9d64dcd0-6384-11ee-9cc1-9eb2a3ecc82a"
   - model_name: sourceSgtId
     data_path: [EgressMatrixCell]
     type: String
     mandatory: true
     test_value: ise_trustsec_security_group.test.id
     description: Source Trustsec Security Group ID
+    example: "93c66ed0-8c01-11e6-996c-525400b48521"
   - model_name: destinationSgtId
     data_path: [EgressMatrixCell]
     type: String
     mandatory: true
     test_value: ise_trustsec_security_group.test.id
+    example: "93e1bf00-8c01-11e6-996c-525400b48521"
     description: Destination Trustsec Security Group ID
 test_prerequisites: |
   resource "ise_trustsec_security_group" "test" {

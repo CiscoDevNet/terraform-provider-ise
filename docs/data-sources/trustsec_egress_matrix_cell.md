@@ -27,9 +27,9 @@ data "ise_trustsec_egress_matrix_cell" "example" {
 
 ### Read-Only
 
-- `default_rule` (String) Allowed values: `NONE`, `DENY_IP`, `PERMIT_IP`. Can be used only if sgacls not specified.
+- `default_rule` (String) Can be used only if sgacls not specified.
 - `description` (String) Description
 - `destination_sgt_id` (String) Destination Trustsec Security Group ID
-- `matrix_cell_status` (String) Allowed values: `DISABLED`, `ENABLED`, `MONITOR`
+- `matrix_cell_status` (String) Matrix Cell Status
 - `sgacls` (List of String) List of TrustSec Security Groups ACLs
 - `source_sgt_id` (String) Source Trustsec Security Group ID

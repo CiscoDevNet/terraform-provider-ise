@@ -121,7 +121,7 @@ func (r *AuthorizationProfileResource) Schema(ctx context.Context, req resource.
 				Optional:            true,
 			},
 			"access_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Allowed Values: `ACCESS_ACCEPT`, `ACCESS_REJECT`").AddStringEnumDescription("ACCESS_ACCEPT", "ACCESS_REJECT").AddDefaultValueDescription("ACCESS_ACCEPT").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Access type").AddStringEnumDescription("ACCESS_ACCEPT", "ACCESS_REJECT").AddDefaultValueDescription("ACCESS_ACCEPT").String,
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{

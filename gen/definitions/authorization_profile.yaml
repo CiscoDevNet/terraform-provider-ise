@@ -69,7 +69,7 @@ attributes:
     data_path: [AuthorizationProfile]
     type: String
     enum_values: [ACCESS_ACCEPT, ACCESS_REJECT]
-    description: "Allowed Values: `ACCESS_ACCEPT`, `ACCESS_REJECT`"
+    description: Access type
     default_value: ACCESS_ACCEPT
     example: ACCESS_ACCEPT
   - model_name: authzProfileType

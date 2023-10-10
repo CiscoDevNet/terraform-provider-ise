@@ -99,7 +99,7 @@ func (r *InternalUserResource) Schema(ctx context.Context, req resource.SchemaRe
 			},
 			"enabled": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Whether the user is enabled/disabled").String,
-				Required:            true,
+				Optional:            true,
 			},
 			"password_never_expires": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Set to `true` to indicate the user password never expires. This will not apply to Users who are also ISE Admins. This field is only supported from ISE 3.2.").AddDefaultValueDescription("false").String,
@@ -116,7 +116,7 @@ func (r *InternalUserResource) Schema(ctx context.Context, req resource.SchemaRe
 				Optional:            true,
 			},
 			"identity_groups": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("CSV of identity group IDs.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Comma separated list of identity group IDs.").String,
 				Optional:            true,
 			},
 			"custom_attributes": schema.StringAttribute{

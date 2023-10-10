@@ -68,11 +68,11 @@ func (d *TrustSecEgressMatrixCellDataSource) Schema(ctx context.Context, req dat
 				Computed:            true,
 			},
 			"default_rule": schema.StringAttribute{
-				MarkdownDescription: "Allowed values: `NONE`, `DENY_IP`, `PERMIT_IP`. Can be used only if sgacls not specified.",
+				MarkdownDescription: "Can be used only if sgacls not specified.",
 				Computed:            true,
 			},
 			"matrix_cell_status": schema.StringAttribute{
-				MarkdownDescription: "Allowed values: `DISABLED`, `ENABLED`, `MONITOR`",
+				MarkdownDescription: "Matrix Cell Status",
 				Computed:            true,
 			},
 			"sgacls": schema.ListAttribute{

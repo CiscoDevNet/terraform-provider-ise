@@ -77,7 +77,7 @@ func (r *TrustSecEgressMatrixCellResource) Schema(ctx context.Context, req resou
 				Optional:            true,
 			},
 			"default_rule": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Allowed values: `NONE`, `DENY_IP`, `PERMIT_IP`. Can be used only if sgacls not specified.").AddStringEnumDescription("NONE", "DENY_IP", "PERMIT_IP").AddDefaultValueDescription("NONE").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Can be used only if sgacls not specified.").AddStringEnumDescription("NONE", "DENY_IP", "PERMIT_IP").AddDefaultValueDescription("NONE").String,
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
@@ -86,7 +86,7 @@ func (r *TrustSecEgressMatrixCellResource) Schema(ctx context.Context, req resou
 				Default: stringdefault.StaticString("NONE"),
 			},
 			"matrix_cell_status": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Allowed values: `DISABLED`, `ENABLED`, `MONITOR`").AddStringEnumDescription("DISABLED", "ENABLED", "MONITOR").AddDefaultValueDescription("DISABLED").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Matrix Cell Status").AddStringEnumDescription("DISABLED", "ENABLED", "MONITOR").AddDefaultValueDescription("DISABLED").String,
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{

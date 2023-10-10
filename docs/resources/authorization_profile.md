@@ -65,7 +65,7 @@ resource "ise_authorization_profile" "example" {
 
 ### Optional
 
-- `access_type` (String) Allowed Values: `ACCESS_ACCEPT`, `ACCESS_REJECT`
+- `access_type` (String) Access type
   - Choices: `ACCESS_ACCEPT`, `ACCESS_REJECT`
   - Default value: `ACCESS_ACCEPT`
 - `acl` (String) ACL

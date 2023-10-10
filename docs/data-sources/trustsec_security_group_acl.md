@@ -29,6 +29,6 @@ data "ise_trustsec_security_group_acl" "example" {
 
 - `acl_content` (String) Content of ACL
 - `description` (String) Description
-- `ip_version` (String) Allowed values: `IPV4`, `IPV6`, `IP_AGNOSTIC`
+- `ip_version` (String) IP Version
 - `name` (String) The name of the security group ACL
 - `read_only` (Boolean) Read-only

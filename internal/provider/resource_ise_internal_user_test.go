@@ -80,7 +80,6 @@ func testAccIseInternalUserConfig_minimum() string {
 	config := `resource "ise_internal_user" "test" {` + "\n"
 	config += `	name = "UserTF"` + "\n"
 	config += `	password = "Cisco123"` + "\n"
-	config += `	enabled = true` + "\n"
 	config += `}` + "\n"
 	return config
 }

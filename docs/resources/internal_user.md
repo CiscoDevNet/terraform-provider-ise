@@ -35,7 +35,6 @@ resource "ise_internal_user" "example" {
 
 ### Required
 
-- `enabled` (Boolean) Whether the user is enabled/disabled
 - `name` (String) The name of the internal user
 - `password` (String) The password of the internal user
 
@@ -48,11 +47,12 @@ resource "ise_internal_user" "example" {
 - `description` (String) Description
 - `email` (String) Email address
 - `enable_password` (String) This field is added in ISE 2.0 to support TACACS+
+- `enabled` (Boolean) Whether the user is enabled/disabled
 - `expiry_date` (String) Password expiry date. It's format is = 'YYYY-MM-DD'
 - `expiry_date_enabled` (Boolean) Enable a password expiry date
   - Default value: `false`
 - `first_name` (String) First name of the internal user
-- `identity_groups` (String) CSV of identity group IDs.
+- `identity_groups` (String) Comma separated list of identity group IDs.
 - `last_name` (String) Last name of the internal user
 - `password_id_store` (String) The ID store where the internal user's password is kept
   - Default value: `Internal Users`

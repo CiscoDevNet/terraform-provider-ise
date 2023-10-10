@@ -75,7 +75,7 @@ func (d *TrustSecSecurityGroupACLDataSource) Schema(ctx context.Context, req dat
 				Computed:            true,
 			},
 			"ip_version": schema.StringAttribute{
-				MarkdownDescription: "Allowed values: `IPV4`, `IPV6`, `IP_AGNOSTIC`",
+				MarkdownDescription: "IP Version",
 				Computed:            true,
 			},
 			"read_only": schema.BoolAttribute{

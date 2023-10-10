@@ -45,7 +45,6 @@ attributes:
     type: Bool
     description: Whether the user is enabled/disabled
     example: true
-    mandatory: true
   - model_name: passwordNeverExpires
     data_path: [InternalUser]
     test_tags: [ISE32]
@@ -66,7 +65,7 @@ attributes:
   - model_name: identityGroups
     data_path: [InternalUser]
     type: String
-    description: CSV of identity group IDs.
+    description: Comma separated list of identity group IDs.
     example: "d68f6180-66a2-11ee-9cc1-9eb2a3ecc82a"
     exclude_test: true
   - model_name: customAttributes

@@ -16,9 +16,9 @@ This resource can manage a TrustSec Egress Matrix Cell.
 resource "ise_trustsec_egress_matrix_cell" "example" {
   description        = "EgressMatrixCell Description"
   matrix_cell_status = "ENABLED"
-  sgacls             = [""]
-  source_sgt_id      = ""
-  destination_sgt_id = ""
+  sgacls             = ["26b76b10-66e6-11ee-9cc1-9eb2a3ecc82a,9d64dcd0-6384-11ee-9cc1-9eb2a3ecc82a"]
+  source_sgt_id      = "93c66ed0-8c01-11e6-996c-525400b48521"
+  destination_sgt_id = "93e1bf00-8c01-11e6-996c-525400b48521"
 }
 ```
 
@@ -33,11 +33,11 @@ resource "ise_trustsec_egress_matrix_cell" "example" {
 
 ### Optional
 
-- `default_rule` (String) Allowed values: `NONE`, `DENY_IP`, `PERMIT_IP`. Can be used only if sgacls not specified.
+- `default_rule` (String) Can be used only if sgacls not specified.
   - Choices: `NONE`, `DENY_IP`, `PERMIT_IP`
   - Default value: `NONE`
 - `description` (String) Description
-- `matrix_cell_status` (String) Allowed values: `DISABLED`, `ENABLED`, `MONITOR`
+- `matrix_cell_status` (String) Matrix Cell Status
   - Choices: `DISABLED`, `ENABLED`, `MONITOR`
   - Default value: `DISABLED`
 

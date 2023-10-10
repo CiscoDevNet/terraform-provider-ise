@@ -103,7 +103,7 @@ func (d *InternalUserDataSource) Schema(ctx context.Context, req datasource.Sche
 				Computed:            true,
 			},
 			"identity_groups": schema.StringAttribute{
-				MarkdownDescription: "CSV of identity group IDs.",
+				MarkdownDescription: "Comma separated list of identity group IDs.",
 				Computed:            true,
 			},
 			"custom_attributes": schema.StringAttribute{

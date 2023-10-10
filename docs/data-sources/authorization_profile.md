@@ -27,7 +27,7 @@ data "ise_authorization_profile" "example" {
 
 ### Read-Only
 
-- `access_type` (String) Allowed Values: `ACCESS_ACCEPT`, `ACCESS_REJECT`
+- `access_type` (String) Access type
 - `acl` (String) ACL
 - `advanced_attributes` (Attributes List) List of advanced attributes (see [below for nested schema](#nestedatt--advanced_attributes))
 - `agentless_posture` (Boolean) Agentless Posture.

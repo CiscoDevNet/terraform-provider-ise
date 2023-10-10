@@ -21,6 +21,7 @@ package provider
 
 //template:begin imports
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -37,6 +38,11 @@ func TestAccIseTrustSecSecurityGroupACL(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_trustsec_security_group_acl.test", "ip_version", "IPV4"))
 
 	var steps []resource.TestStep
+	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
+		steps = append(steps, resource.TestStep{
+			Config: testAccIseTrustSecSecurityGroupACLConfig_minimum(),
+		})
+	}
 	steps = append(steps, resource.TestStep{
 		Config: testAccIseTrustSecSecurityGroupACLConfig_all(),
 		Check:  resource.ComposeTestCheckFunc(checks...),
@@ -62,6 +68,7 @@ func TestAccIseTrustSecSecurityGroupACL(t *testing.T) {
 func testAccIseTrustSecSecurityGroupACLConfig_minimum() string {
 	config := `resource "ise_trustsec_security_group_acl" "test" {` + "\n"
 	config += `	name = "ACL1"` + "\n"
+	config += `	acl_content = "Permit IP"` + "\n"
 	config += `}` + "\n"
 	return config
 }
