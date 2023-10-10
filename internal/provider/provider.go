@@ -257,7 +257,9 @@ func (p *IseProvider) Resources(ctx context.Context) []func() resource.Resource 
 		NewNetworkDeviceResource,
 		NewNetworkDeviceGroupResource,
 		NewRepositoryResource,
+		NewTrustSecEgressMatrixCellResource,
 		NewTrustSecSecurityGroupResource,
+		NewTrustSecSecurityGroupACLResource,
 		NewUserIdentityGroupResource,
 	}
 }
@@ -279,7 +281,9 @@ func (p *IseProvider) DataSources(ctx context.Context) []func() datasource.DataS
 		NewNetworkDeviceDataSource,
 		NewNetworkDeviceGroupDataSource,
 		NewRepositoryDataSource,
+		NewTrustSecEgressMatrixCellDataSource,
 		NewTrustSecSecurityGroupDataSource,
+		NewTrustSecSecurityGroupACLDataSource,
 		NewUserIdentityGroupDataSource,
 	}
 }

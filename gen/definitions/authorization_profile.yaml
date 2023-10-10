@@ -60,6 +60,11 @@ attributes:
     type: Bool
     description: This attribute is mandatory when `web_redirection_type` value is `CentralizedWebAuth`. For all other `web_redirection_type` values the field must be ignored.
     example: true
+  - model_name: agentlessPosture
+    data_path: [AuthorizationProfile]
+    type: Bool
+    description: Agentless Posture.
+    example: false
   - model_name: accessType
     data_path: [AuthorizationProfile]
     type: String

@@ -26,6 +26,7 @@ import (
 	"strings"
 
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -33,6 +34,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
@@ -43,25 +45,25 @@ import (
 //template:begin model
 
 // Ensure provider defined types fully satisfy framework interfaces
-var _ resource.Resource = &InternalUserResource{}
-var _ resource.ResourceWithImportState = &InternalUserResource{}
+var _ resource.Resource = &TrustSecSecurityGroupACLResource{}
+var _ resource.ResourceWithImportState = &TrustSecSecurityGroupACLResource{}
 
-func NewInternalUserResource() resource.Resource {
-	return &InternalUserResource{}
+func NewTrustSecSecurityGroupACLResource() resource.Resource {
+	return &TrustSecSecurityGroupACLResource{}
 }
 
-type InternalUserResource struct {
+type TrustSecSecurityGroupACLResource struct {
 	client *ise.Client
 }
 
-func (r *InternalUserResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_internal_user"
+func (r *TrustSecSecurityGroupACLResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_trustsec_security_group_acl"
 }
 
-func (r *InternalUserResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *TrustSecSecurityGroupACLResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage an Internal User.").String,
+		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage a TrustSec Security Group ACL.").String,
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -72,82 +74,37 @@ func (r *InternalUserResource) Schema(ctx context.Context, req resource.SchemaRe
 				},
 			},
 			"name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The name of the internal user").String,
+				MarkdownDescription: helpers.NewAttributeDescription("The name of the security group ACL").String,
 				Required:            true,
-			},
-			"password": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The password of the internal user").String,
-				Required:            true,
-			},
-			"change_password": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Requires the user to change the password").AddDefaultValueDescription("true").String,
-				Optional:            true,
-				Computed:            true,
-				Default:             booldefault.StaticBool(true),
-			},
-			"email": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Email address").String,
-				Optional:            true,
-			},
-			"account_name_alias": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The Account Name Alias will be used to send email notifications about password expiration. This field is only supported from ISE 3.2.").String,
-				Optional:            true,
-			},
-			"enable_password": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("This field is added in ISE 2.0 to support TACACS+").String,
-				Optional:            true,
-			},
-			"enabled": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Whether the user is enabled/disabled").String,
-				Optional:            true,
-			},
-			"password_never_expires": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Set to `true` to indicate the user password never expires. This will not apply to Users who are also ISE Admins. This field is only supported from ISE 3.2.").AddDefaultValueDescription("false").String,
-				Optional:            true,
-				Computed:            true,
-				Default:             booldefault.StaticBool(false),
-			},
-			"first_name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("First name of the internal user").String,
-				Optional:            true,
-			},
-			"last_name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Last name of the internal user").String,
-				Optional:            true,
-			},
-			"identity_groups": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Comma separated list of identity group IDs.").String,
-				Optional:            true,
-			},
-			"custom_attributes": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Key value map").String,
-				Optional:            true,
-			},
-			"password_id_store": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The ID store where the internal user's password is kept").AddDefaultValueDescription("Internal Users").String,
-				Optional:            true,
-				Computed:            true,
-				Default:             stringdefault.StaticString("Internal Users"),
-			},
-			"expiry_date_enabled": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Enable a password expiry date").AddDefaultValueDescription("false").String,
-				Optional:            true,
-				Computed:            true,
-				Default:             booldefault.StaticBool(false),
-			},
-			"expiry_date": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Password expiry date. It's format is = 'YYYY-MM-DD'").String,
-				Optional:            true,
 			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Description").String,
 				Optional:            true,
 			},
+			"acl_content": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Content of ACL").String,
+				Required:            true,
+			},
+			"ip_version": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("IP Version").AddStringEnumDescription("IPV4", "IPV6", "IP_AGNOSTIC").AddDefaultValueDescription("IPV4").String,
+				Optional:            true,
+				Computed:            true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("IPV4", "IPV6", "IP_AGNOSTIC"),
+				},
+				Default: stringdefault.StaticString("IPV4"),
+			},
+			"read_only": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Read-only").AddDefaultValueDescription("false").String,
+				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(false),
+			},
 		},
 	}
 }
 
-func (r *InternalUserResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+func (r *TrustSecSecurityGroupACLResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -158,8 +115,8 @@ func (r *InternalUserResource) Configure(_ context.Context, req resource.Configu
 //template:end model
 
 //template:begin create
-func (r *InternalUserResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan InternalUser
+func (r *TrustSecSecurityGroupACLResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan TrustSecSecurityGroupACL
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -171,7 +128,7 @@ func (r *InternalUserResource) Create(ctx context.Context, req resource.CreateRe
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
 
 	// Create object
-	body := plan.toBody(ctx, InternalUser{})
+	body := plan.toBody(ctx, TrustSecSecurityGroupACL{})
 	res, location, err := r.client.Post(plan.getPath(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
@@ -189,8 +146,8 @@ func (r *InternalUserResource) Create(ctx context.Context, req resource.CreateRe
 //template:end create
 
 //template:begin read
-func (r *InternalUserResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state InternalUser
+func (r *TrustSecSecurityGroupACLResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state TrustSecSecurityGroupACL
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -221,8 +178,8 @@ func (r *InternalUserResource) Read(ctx context.Context, req resource.ReadReques
 //template:end read
 
 //template:begin update
-func (r *InternalUserResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan, state InternalUser
+func (r *TrustSecSecurityGroupACLResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var plan, state TrustSecSecurityGroupACL
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -256,8 +213,8 @@ func (r *InternalUserResource) Update(ctx context.Context, req resource.UpdateRe
 //template:end update
 
 //template:begin delete
-func (r *InternalUserResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state InternalUser
+func (r *TrustSecSecurityGroupACLResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state TrustSecSecurityGroupACL
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -281,7 +238,7 @@ func (r *InternalUserResource) Delete(ctx context.Context, req resource.DeleteRe
 //template:end delete
 
 //template:begin import
-func (r *InternalUserResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *TrustSecSecurityGroupACLResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 

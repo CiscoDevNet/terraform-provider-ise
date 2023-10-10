@@ -42,6 +42,7 @@ type AuthorizationProfile struct {
 	WebRedirectionPortalName                         types.String                             `tfsdk:"web_redirection_portal_name"`
 	WebRedirectionStaticIpHostNameFqdn               types.String                             `tfsdk:"web_redirection_static_ip_host_name_fqdn"`
 	WebRedirectionDisplayCertificatesRenewalMessages types.Bool                               `tfsdk:"web_redirection_display_certificates_renewal_messages"`
+	AgentlessPosture                                 types.Bool                               `tfsdk:"agentless_posture"`
 	AccessType                                       types.String                             `tfsdk:"access_type"`
 	ProfileName                                      types.String                             `tfsdk:"profile_name"`
 	AirespaceAcl                                     types.String                             `tfsdk:"airespace_acl"`
@@ -113,6 +114,9 @@ func (data AuthorizationProfile) toBody(ctx context.Context, state Authorization
 	}
 	if !data.WebRedirectionDisplayCertificatesRenewalMessages.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.webRedirection.displayCertificatesRenewalMessages", data.WebRedirectionDisplayCertificatesRenewalMessages.ValueBool())
+	}
+	if !data.AgentlessPosture.IsNull() {
+		body, _ = sjson.Set(body, "AuthorizationProfile.agentlessPosture", data.AgentlessPosture.ValueBool())
 	}
 	if !data.AccessType.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.accessType", data.AccessType.ValueString())
@@ -254,6 +258,11 @@ func (data *AuthorizationProfile) fromBody(ctx context.Context, res gjson.Result
 		data.WebRedirectionDisplayCertificatesRenewalMessages = types.BoolValue(value.Bool())
 	} else {
 		data.WebRedirectionDisplayCertificatesRenewalMessages = types.BoolNull()
+	}
+	if value := res.Get("AuthorizationProfile.agentlessPosture"); value.Exists() {
+		data.AgentlessPosture = types.BoolValue(value.Bool())
+	} else {
+		data.AgentlessPosture = types.BoolNull()
 	}
 	if value := res.Get("AuthorizationProfile.accessType"); value.Exists() {
 		data.AccessType = types.StringValue(value.String())
@@ -448,6 +457,11 @@ func (data *AuthorizationProfile) updateFromBody(ctx context.Context, res gjson.
 		data.WebRedirectionDisplayCertificatesRenewalMessages = types.BoolValue(value.Bool())
 	} else {
 		data.WebRedirectionDisplayCertificatesRenewalMessages = types.BoolNull()
+	}
+	if value := res.Get("AuthorizationProfile.agentlessPosture"); value.Exists() && !data.AgentlessPosture.IsNull() {
+		data.AgentlessPosture = types.BoolValue(value.Bool())
+	} else {
+		data.AgentlessPosture = types.BoolNull()
 	}
 	if value := res.Get("AuthorizationProfile.accessType"); value.Exists() && !data.AccessType.IsNull() {
 		data.AccessType = types.StringValue(value.String())

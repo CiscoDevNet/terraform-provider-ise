@@ -116,6 +116,10 @@ func (r *AuthorizationProfileResource) Schema(ctx context.Context, req resource.
 				MarkdownDescription: helpers.NewAttributeDescription("This attribute is mandatory when `web_redirection_type` value is `CentralizedWebAuth`. For all other `web_redirection_type` values the field must be ignored.").String,
 				Optional:            true,
 			},
+			"agentless_posture": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Agentless Posture.").String,
+				Optional:            true,
+			},
 			"access_type": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Access type").AddStringEnumDescription("ACCESS_ACCEPT", "ACCESS_REJECT").AddDefaultValueDescription("ACCESS_ACCEPT").String,
 				Optional:            true,

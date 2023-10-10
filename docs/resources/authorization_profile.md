@@ -23,6 +23,7 @@ resource "ise_authorization_profile" "example" {
   web_redirection_portal_name                           = "Sponsored Guest Portal (default)"
   web_redirection_static_ip_host_name_fqdn              = "1.2.3.4"
   web_redirection_display_certificates_renewal_messages = true
+  agentless_posture                                     = false
   access_type                                           = "ACCESS_ACCEPT"
   profile_name                                          = "Cisco"
   airespace_acl                                         = "ACL1"
@@ -69,6 +70,7 @@ resource "ise_authorization_profile" "example" {
   - Default value: `ACCESS_ACCEPT`
 - `acl` (String) ACL
 - `advanced_attributes` (Attributes List) List of advanced attributes (see [below for nested schema](#nestedatt--advanced_attributes))
+- `agentless_posture` (Boolean) Agentless Posture.
 - `airespace_acl` (String) Airespace ACL
 - `airespace_ipv6_acl` (String) Airespace IPv6 ACL
 - `asa_vpn` (String) ASA VPN

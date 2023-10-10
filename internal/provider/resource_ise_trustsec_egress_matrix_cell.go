@@ -26,13 +26,14 @@ import (
 	"strings"
 
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
@@ -43,25 +44,25 @@ import (
 //template:begin model
 
 // Ensure provider defined types fully satisfy framework interfaces
-var _ resource.Resource = &InternalUserResource{}
-var _ resource.ResourceWithImportState = &InternalUserResource{}
+var _ resource.Resource = &TrustSecEgressMatrixCellResource{}
+var _ resource.ResourceWithImportState = &TrustSecEgressMatrixCellResource{}
 
-func NewInternalUserResource() resource.Resource {
-	return &InternalUserResource{}
+func NewTrustSecEgressMatrixCellResource() resource.Resource {
+	return &TrustSecEgressMatrixCellResource{}
 }
 
-type InternalUserResource struct {
+type TrustSecEgressMatrixCellResource struct {
 	client *ise.Client
 }
 
-func (r *InternalUserResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_internal_user"
+func (r *TrustSecEgressMatrixCellResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_trustsec_egress_matrix_cell"
 }
 
-func (r *InternalUserResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *TrustSecEgressMatrixCellResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage an Internal User.").String,
+		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage a TrustSec Egress Matrix Cell.").String,
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -71,83 +72,46 @@ func (r *InternalUserResource) Schema(ctx context.Context, req resource.SchemaRe
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The name of the internal user").String,
-				Required:            true,
-			},
-			"password": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The password of the internal user").String,
-				Required:            true,
-			},
-			"change_password": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Requires the user to change the password").AddDefaultValueDescription("true").String,
-				Optional:            true,
-				Computed:            true,
-				Default:             booldefault.StaticBool(true),
-			},
-			"email": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Email address").String,
-				Optional:            true,
-			},
-			"account_name_alias": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The Account Name Alias will be used to send email notifications about password expiration. This field is only supported from ISE 3.2.").String,
-				Optional:            true,
-			},
-			"enable_password": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("This field is added in ISE 2.0 to support TACACS+").String,
-				Optional:            true,
-			},
-			"enabled": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Whether the user is enabled/disabled").String,
-				Optional:            true,
-			},
-			"password_never_expires": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Set to `true` to indicate the user password never expires. This will not apply to Users who are also ISE Admins. This field is only supported from ISE 3.2.").AddDefaultValueDescription("false").String,
-				Optional:            true,
-				Computed:            true,
-				Default:             booldefault.StaticBool(false),
-			},
-			"first_name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("First name of the internal user").String,
-				Optional:            true,
-			},
-			"last_name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Last name of the internal user").String,
-				Optional:            true,
-			},
-			"identity_groups": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Comma separated list of identity group IDs.").String,
-				Optional:            true,
-			},
-			"custom_attributes": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Key value map").String,
-				Optional:            true,
-			},
-			"password_id_store": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The ID store where the internal user's password is kept").AddDefaultValueDescription("Internal Users").String,
-				Optional:            true,
-				Computed:            true,
-				Default:             stringdefault.StaticString("Internal Users"),
-			},
-			"expiry_date_enabled": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Enable a password expiry date").AddDefaultValueDescription("false").String,
-				Optional:            true,
-				Computed:            true,
-				Default:             booldefault.StaticBool(false),
-			},
-			"expiry_date": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Password expiry date. It's format is = 'YYYY-MM-DD'").String,
-				Optional:            true,
-			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Description").String,
 				Optional:            true,
+			},
+			"default_rule": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Can be used only if sgacls not specified.").AddStringEnumDescription("NONE", "DENY_IP", "PERMIT_IP").AddDefaultValueDescription("NONE").String,
+				Optional:            true,
+				Computed:            true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("NONE", "DENY_IP", "PERMIT_IP"),
+				},
+				Default: stringdefault.StaticString("NONE"),
+			},
+			"matrix_cell_status": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Matrix Cell Status").AddStringEnumDescription("DISABLED", "ENABLED", "MONITOR").AddDefaultValueDescription("DISABLED").String,
+				Optional:            true,
+				Computed:            true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("DISABLED", "ENABLED", "MONITOR"),
+				},
+				Default: stringdefault.StaticString("DISABLED"),
+			},
+			"sgacls": schema.ListAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("List of TrustSec Security Groups ACLs").String,
+				ElementType:         types.StringType,
+				Required:            true,
+			},
+			"source_sgt_id": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Source Trustsec Security Group ID").String,
+				Required:            true,
+			},
+			"destination_sgt_id": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Destination Trustsec Security Group ID").String,
+				Required:            true,
 			},
 		},
 	}
 }
 
-func (r *InternalUserResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+func (r *TrustSecEgressMatrixCellResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -158,8 +122,8 @@ func (r *InternalUserResource) Configure(_ context.Context, req resource.Configu
 //template:end model
 
 //template:begin create
-func (r *InternalUserResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan InternalUser
+func (r *TrustSecEgressMatrixCellResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan TrustSecEgressMatrixCell
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -171,7 +135,7 @@ func (r *InternalUserResource) Create(ctx context.Context, req resource.CreateRe
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
 
 	// Create object
-	body := plan.toBody(ctx, InternalUser{})
+	body := plan.toBody(ctx, TrustSecEgressMatrixCell{})
 	res, location, err := r.client.Post(plan.getPath(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
@@ -189,8 +153,8 @@ func (r *InternalUserResource) Create(ctx context.Context, req resource.CreateRe
 //template:end create
 
 //template:begin read
-func (r *InternalUserResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state InternalUser
+func (r *TrustSecEgressMatrixCellResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state TrustSecEgressMatrixCell
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -221,8 +185,8 @@ func (r *InternalUserResource) Read(ctx context.Context, req resource.ReadReques
 //template:end read
 
 //template:begin update
-func (r *InternalUserResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan, state InternalUser
+func (r *TrustSecEgressMatrixCellResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var plan, state TrustSecEgressMatrixCell
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -256,8 +220,8 @@ func (r *InternalUserResource) Update(ctx context.Context, req resource.UpdateRe
 //template:end update
 
 //template:begin delete
-func (r *InternalUserResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state InternalUser
+func (r *TrustSecEgressMatrixCellResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state TrustSecEgressMatrixCell
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -281,7 +245,7 @@ func (r *InternalUserResource) Delete(ctx context.Context, req resource.DeleteRe
 //template:end delete
 
 //template:begin import
-func (r *InternalUserResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *TrustSecEgressMatrixCellResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 

@@ -43,7 +43,11 @@ type InternalUser struct {
 	PasswordNeverExpires types.Bool   `tfsdk:"password_never_expires"`
 	FirstName            types.String `tfsdk:"first_name"`
 	LastName             types.String `tfsdk:"last_name"`
+	IdentityGroups       types.String `tfsdk:"identity_groups"`
+	CustomAttributes     types.String `tfsdk:"custom_attributes"`
 	PasswordIdStore      types.String `tfsdk:"password_id_store"`
+	ExpiryDateEnabled    types.Bool   `tfsdk:"expiry_date_enabled"`
+	ExpiryDate           types.String `tfsdk:"expiry_date"`
 	Description          types.String `tfsdk:"description"`
 }
 
@@ -89,8 +93,20 @@ func (data InternalUser) toBody(ctx context.Context, state InternalUser) string 
 	if !data.LastName.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.lastName", data.LastName.ValueString())
 	}
+	if !data.IdentityGroups.IsNull() {
+		body, _ = sjson.Set(body, "InternalUser.identityGroups", data.IdentityGroups.ValueString())
+	}
+	if !data.CustomAttributes.IsNull() {
+		body, _ = sjson.Set(body, "InternalUser.customAttributes", data.CustomAttributes.ValueString())
+	}
 	if !data.PasswordIdStore.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.passwordIDStore", data.PasswordIdStore.ValueString())
+	}
+	if !data.ExpiryDateEnabled.IsNull() {
+		body, _ = sjson.Set(body, "InternalUser.expiryDateEnabled", data.ExpiryDateEnabled.ValueBool())
+	}
+	if !data.ExpiryDate.IsNull() {
+		body, _ = sjson.Set(body, "InternalUser.expiryDate", data.ExpiryDate.ValueString())
 	}
 	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.description", data.Description.ValueString())
@@ -142,10 +158,30 @@ func (data *InternalUser) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.LastName = types.StringNull()
 	}
+	if value := res.Get("InternalUser.identityGroups"); value.Exists() {
+		data.IdentityGroups = types.StringValue(value.String())
+	} else {
+		data.IdentityGroups = types.StringNull()
+	}
+	if value := res.Get("InternalUser.customAttributes"); value.Exists() {
+		data.CustomAttributes = types.StringValue(value.String())
+	} else {
+		data.CustomAttributes = types.StringNull()
+	}
 	if value := res.Get("InternalUser.passwordIDStore"); value.Exists() {
 		data.PasswordIdStore = types.StringValue(value.String())
 	} else {
 		data.PasswordIdStore = types.StringValue("Internal Users")
+	}
+	if value := res.Get("InternalUser.expiryDateEnabled"); value.Exists() {
+		data.ExpiryDateEnabled = types.BoolValue(value.Bool())
+	} else {
+		data.ExpiryDateEnabled = types.BoolValue(false)
+	}
+	if value := res.Get("InternalUser.expiryDate"); value.Exists() {
+		data.ExpiryDate = types.StringValue(value.String())
+	} else {
+		data.ExpiryDate = types.StringNull()
 	}
 	if value := res.Get("InternalUser.description"); value.Exists() {
 		data.Description = types.StringValue(value.String())
@@ -198,10 +234,30 @@ func (data *InternalUser) updateFromBody(ctx context.Context, res gjson.Result) 
 	} else {
 		data.LastName = types.StringNull()
 	}
+	if value := res.Get("InternalUser.identityGroups"); value.Exists() && !data.IdentityGroups.IsNull() {
+		data.IdentityGroups = types.StringValue(value.String())
+	} else {
+		data.IdentityGroups = types.StringNull()
+	}
+	if value := res.Get("InternalUser.customAttributes"); value.Exists() && !data.CustomAttributes.IsNull() {
+		data.CustomAttributes = types.StringValue(value.String())
+	} else {
+		data.CustomAttributes = types.StringNull()
+	}
 	if value := res.Get("InternalUser.passwordIDStore"); value.Exists() && !data.PasswordIdStore.IsNull() {
 		data.PasswordIdStore = types.StringValue(value.String())
 	} else if data.PasswordIdStore.ValueString() != "Internal Users" {
 		data.PasswordIdStore = types.StringNull()
+	}
+	if value := res.Get("InternalUser.expiryDateEnabled"); value.Exists() && !data.ExpiryDateEnabled.IsNull() {
+		data.ExpiryDateEnabled = types.BoolValue(value.Bool())
+	} else if data.ExpiryDateEnabled.ValueBool() != false {
+		data.ExpiryDateEnabled = types.BoolNull()
+	}
+	if value := res.Get("InternalUser.expiryDate"); value.Exists() && !data.ExpiryDate.IsNull() {
+		data.ExpiryDate = types.StringValue(value.String())
+	} else {
+		data.ExpiryDate = types.StringNull()
 	}
 	if value := res.Get("InternalUser.description"); value.Exists() && !data.Description.IsNull() {
 		data.Description = types.StringValue(value.String())

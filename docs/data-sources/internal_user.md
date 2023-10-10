@@ -29,11 +29,15 @@ data "ise_internal_user" "example" {
 
 - `account_name_alias` (String) The Account Name Alias will be used to send email notifications about password expiration. This field is only supported from ISE 3.2.
 - `change_password` (Boolean) Requires the user to change the password
+- `custom_attributes` (String) Key value map
 - `description` (String) Description
 - `email` (String) Email address
 - `enable_password` (String) This field is added in ISE 2.0 to support TACACS+
 - `enabled` (Boolean) Whether the user is enabled/disabled
+- `expiry_date` (String) Password expiry date. It's format is = 'YYYY-MM-DD'
+- `expiry_date_enabled` (Boolean) Enable a password expiry date
 - `first_name` (String) First name of the internal user
+- `identity_groups` (String) Comma separated list of identity group IDs.
 - `last_name` (String) Last name of the internal user
 - `name` (String) The name of the internal user
 - `password` (String) The password of the internal user
