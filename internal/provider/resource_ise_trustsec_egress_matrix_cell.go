@@ -77,7 +77,7 @@ func (r *TrustSecEgressMatrixCellResource) Schema(ctx context.Context, req resou
 				Optional:            true,
 			},
 			"default_rule": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Allowed values: `NONE`, `DENY_IP`, `PERMIT_IP`").AddStringEnumDescription("NONE", "DENY_IP", "PERMIT_IP").AddDefaultValueDescription("NONE").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Allowed values: `NONE`, `DENY_IP`, `PERMIT_IP`. Can be used only if sgacls not specified.").AddStringEnumDescription("NONE", "DENY_IP", "PERMIT_IP").AddDefaultValueDescription("NONE").String,
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{

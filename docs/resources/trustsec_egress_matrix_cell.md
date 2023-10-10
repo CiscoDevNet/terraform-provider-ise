@@ -33,7 +33,7 @@ resource "ise_trustsec_egress_matrix_cell" "example" {
 
 ### Optional
 
-- `default_rule` (String) Allowed values: `NONE`, `DENY_IP`, `PERMIT_IP`
+- `default_rule` (String) Allowed values: `NONE`, `DENY_IP`, `PERMIT_IP`. Can be used only if sgacls not specified.
   - Choices: `NONE`, `DENY_IP`, `PERMIT_IP`
   - Default value: `NONE`
 - `description` (String) Description
