@@ -10,6 +10,5 @@ resource "ise_internal_user" "example" {
   first_name             = "John"
   last_name              = "Doe"
   password_id_store      = "Internal Users"
-  expiry_date_enabled    = false
   description            = "My first Terraform user"
 }

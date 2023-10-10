@@ -80,25 +80,23 @@ attributes:
     description: The ID store where the internal user's password is kept
     default_value: Internal Users
     example: Internal Users
-  - model_name: expiryDateEnabled
-    data_path: [InternalUser]
-    tf_name: expiry_date_enabled
-    type: Bool
-    description: Enable a password expiry date
-    default_value: false
-    example: false
-  - model_name: expiryDate
-    data_path: [InternalUser]
-    tf_name: expiry_date
-    type: String
-    description: Password expiry date. It's format is = 'YYYY-MM-DD'
-    example: "2024-12-11"
-    exclude_test: true
+    # expiryDate works with PUT but fails with POST
+  # - model_name: expiryDateEnabled
+  #   data_path: [InternalUser]
+  #   tf_name: expiry_date_enabled
+  #   type: Bool
+  #   description: Enable a password expiry date
+  #   default_value: false
+  #   example: false
+  # - model_name: expiryDate
+  #   data_path: [InternalUser]
+  #   tf_name: expiry_date
+  #   type: String
+  #   description: Password expiry date. It's format is = 'YYYY-MM-DD'
+  #   example: "2024-12-11"
+  #   exclude_test: true
   - model_name: description
     data_path: [InternalUser]
     type: String
     description: Description
     example: My first Terraform user
-
-
-

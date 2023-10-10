@@ -129,16 +129,6 @@ func (r *InternalUserResource) Schema(ctx context.Context, req resource.SchemaRe
 				Computed:            true,
 				Default:             stringdefault.StaticString("Internal Users"),
 			},
-			"expiry_date_enabled": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Enable a password expiry date").AddDefaultValueDescription("false").String,
-				Optional:            true,
-				Computed:            true,
-				Default:             booldefault.StaticBool(false),
-			},
-			"expiry_date": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Password expiry date. It's format is = 'YYYY-MM-DD'").String,
-				Optional:            true,
-			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Description").String,
 				Optional:            true,

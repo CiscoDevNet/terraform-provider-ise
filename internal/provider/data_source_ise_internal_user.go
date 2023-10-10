@@ -114,14 +114,6 @@ func (d *InternalUserDataSource) Schema(ctx context.Context, req datasource.Sche
 				MarkdownDescription: "The ID store where the internal user's password is kept",
 				Computed:            true,
 			},
-			"expiry_date_enabled": schema.BoolAttribute{
-				MarkdownDescription: "Enable a password expiry date",
-				Computed:            true,
-			},
-			"expiry_date": schema.StringAttribute{
-				MarkdownDescription: "Password expiry date. It's format is = 'YYYY-MM-DD'",
-				Computed:            true,
-			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: "Description",
 				Computed:            true,

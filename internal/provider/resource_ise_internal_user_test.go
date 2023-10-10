@@ -45,7 +45,6 @@ func TestAccIseInternalUser(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_internal_user.test", "first_name", "John"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_internal_user.test", "last_name", "Doe"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_internal_user.test", "password_id_store", "Internal Users"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_internal_user.test", "expiry_date_enabled", "false"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_internal_user.test", "description", "My first Terraform user"))
 
 	var steps []resource.TestStep
@@ -104,7 +103,6 @@ func testAccIseInternalUserConfig_all() string {
 	config += `	first_name = "John"` + "\n"
 	config += `	last_name = "Doe"` + "\n"
 	config += `	password_id_store = "Internal Users"` + "\n"
-	config += `	expiry_date_enabled = false` + "\n"
 	config += `	description = "My first Terraform user"` + "\n"
 	config += `}` + "\n"
 	return config
