@@ -106,10 +106,6 @@ func (d *AuthorizationProfileDataSource) Schema(ctx context.Context, req datasou
 				MarkdownDescription: "Allowed Values: `ACCESS_ACCEPT`, `ACCESS_REJECT`",
 				Computed:            true,
 			},
-			"authz_profile_type": schema.StringAttribute{
-				MarkdownDescription: "Allowed Values: `SWITCH`, `TRUSTSEC`, `TACACS`. `SWITCH` is used for Standard Authorization Profiles. only `SWITCH` is supported.",
-				Computed:            true,
-			},
 			"profile_name": schema.StringAttribute{
 				MarkdownDescription: "Value needs to be an existing Network Device Profile",
 				Computed:            true,

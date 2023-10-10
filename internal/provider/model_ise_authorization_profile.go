@@ -44,7 +44,6 @@ type AuthorizationProfile struct {
 	WebRedirectionDisplayCertificatesRenewalMessages types.Bool                               `tfsdk:"web_redirection_display_certificates_renewal_messages"`
 	AgentlessPosture                                 types.Bool                               `tfsdk:"agentless_posture"`
 	AccessType                                       types.String                             `tfsdk:"access_type"`
-	AuthzProfileType                                 types.String                             `tfsdk:"authz_profile_type"`
 	ProfileName                                      types.String                             `tfsdk:"profile_name"`
 	AirespaceAcl                                     types.String                             `tfsdk:"airespace_acl"`
 	Acl                                              types.String                             `tfsdk:"acl"`
@@ -122,9 +121,7 @@ func (data AuthorizationProfile) toBody(ctx context.Context, state Authorization
 	if !data.AccessType.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.accessType", data.AccessType.ValueString())
 	}
-	if !data.AuthzProfileType.IsNull() {
-		body, _ = sjson.Set(body, "AuthorizationProfile.authzProfileType", data.AuthzProfileType.ValueString())
-	}
+	body, _ = sjson.Set(body, "AuthorizationProfile.authzProfileType", "SWITCH")
 	if !data.ProfileName.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.profileName", data.ProfileName.ValueString())
 	}
@@ -271,11 +268,6 @@ func (data *AuthorizationProfile) fromBody(ctx context.Context, res gjson.Result
 		data.AccessType = types.StringValue(value.String())
 	} else {
 		data.AccessType = types.StringValue("ACCESS_ACCEPT")
-	}
-	if value := res.Get("AuthorizationProfile.authzProfileType"); value.Exists() {
-		data.AuthzProfileType = types.StringValue(value.String())
-	} else {
-		data.AuthzProfileType = types.StringNull()
 	}
 	if value := res.Get("AuthorizationProfile.profileName"); value.Exists() {
 		data.ProfileName = types.StringValue(value.String())
@@ -475,11 +467,6 @@ func (data *AuthorizationProfile) updateFromBody(ctx context.Context, res gjson.
 		data.AccessType = types.StringValue(value.String())
 	} else if data.AccessType.ValueString() != "ACCESS_ACCEPT" {
 		data.AccessType = types.StringNull()
-	}
-	if value := res.Get("AuthorizationProfile.authzProfileType"); value.Exists() && !data.AuthzProfileType.IsNull() {
-		data.AuthzProfileType = types.StringValue(value.String())
-	} else {
-		data.AuthzProfileType = types.StringNull()
 	}
 	if value := res.Get("AuthorizationProfile.profileName"); value.Exists() && !data.ProfileName.IsNull() {
 		data.ProfileName = types.StringValue(value.String())

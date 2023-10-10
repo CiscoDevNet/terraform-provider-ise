@@ -129,10 +129,6 @@ func (r *AuthorizationProfileResource) Schema(ctx context.Context, req resource.
 				},
 				Default: stringdefault.StaticString("ACCESS_ACCEPT"),
 			},
-			"authz_profile_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Allowed Values: `SWITCH`, `TRUSTSEC`, `TACACS`. `SWITCH` is used for Standard Authorization Profiles. only `SWITCH` is supported.").String,
-				Optional:            true,
-			},
 			"profile_name": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Value needs to be an existing Network Device Profile").AddDefaultValueDescription("Cisco").String,
 				Optional:            true,

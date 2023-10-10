@@ -74,10 +74,8 @@ attributes:
     example: ACCESS_ACCEPT
   - model_name: authzProfileType
     data_path: [AuthorizationProfile]
-    description: "Allowed Values: `SWITCH`, `TRUSTSEC`, `TACACS`. `SWITCH` is used for Standard Authorization Profiles. only `SWITCH` is supported."
     type: String
-    example: SWITCH
-    tf_name: authz_profile_type
+    value: SWITCH
   - model_name: profileName
     data_path: [AuthorizationProfile]
     type: String

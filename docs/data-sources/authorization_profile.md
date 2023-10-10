@@ -34,7 +34,6 @@ data "ise_authorization_profile" "example" {
 - `airespace_acl` (String) Airespace ACL
 - `airespace_ipv6_acl` (String) Airespace IPv6 ACL
 - `asa_vpn` (String) ASA VPN
-- `authz_profile_type` (String) Allowed Values: `SWITCH`, `TRUSTSEC`, `TACACS`. `SWITCH` is used for Standard Authorization Profiles. only `SWITCH` is supported.
 - `auto_smart_port` (String) Auto smart port
 - `avc_profile` (String) AVC profile
 - `dacl_name` (String) DACL name
