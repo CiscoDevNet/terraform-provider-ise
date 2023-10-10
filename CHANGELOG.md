@@ -1,4 +1,4 @@
-## 0.1.2 (unreleased)
+## 0.1.2
 
 - Fix issue with reading nested conditions using `ise_network_access_condition` resource
 - Add support for nested conditions to `ise_network_access_policy_set` resource and data source
