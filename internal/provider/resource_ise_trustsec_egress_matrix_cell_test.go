@@ -21,6 +21,7 @@ package provider
 
 //template:begin imports
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -35,6 +36,11 @@ func TestAccIseTrustSecEgressMatrixCell(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_trustsec_egress_matrix_cell.test", "matrix_cell_status", "ENABLED"))
 
 	var steps []resource.TestStep
+	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
+		steps = append(steps, resource.TestStep{
+			Config: testAccIseTrustSecEgressMatrixCellPrerequisitesConfig + testAccIseTrustSecEgressMatrixCellConfig_minimum(),
+		})
+	}
 	steps = append(steps, resource.TestStep{
 		Config: testAccIseTrustSecEgressMatrixCellPrerequisitesConfig + testAccIseTrustSecEgressMatrixCellConfig_all(),
 		Check:  resource.ComposeTestCheckFunc(checks...),

@@ -54,6 +54,9 @@ func (data TrustSecEgressMatrixCell) getPath() string {
 //template:begin toBody
 func (data TrustSecEgressMatrixCell) toBody(ctx context.Context, state TrustSecEgressMatrixCell) string {
 	body := ""
+	if data.Id.ValueString() != "" {
+		body, _ = sjson.Set(body, "EgressMatrixCell.id", data.Id.ValueString())
+	}
 	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "EgressMatrixCell.description", data.Description.ValueString())
 	}

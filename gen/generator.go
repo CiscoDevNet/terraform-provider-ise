@@ -102,6 +102,7 @@ type YamlConfig struct {
 	RootList          bool                  `yaml:"root_list"`
 	NoReadPrefix      bool                  `yaml:"no_read_prefix"`
 	IdPath            string                `yaml:"id_path"`
+	PutIdIncludePath  string                `yaml:"put_id_include_path"`
 	MinimumVersion    string                `yaml:"minimum_version"`
 	DsDescription     string                `yaml:"ds_description"`
 	ResDescription    string                `yaml:"res_description"`
