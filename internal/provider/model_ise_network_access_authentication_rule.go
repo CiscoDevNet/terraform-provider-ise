@@ -56,14 +56,14 @@ type NetworkAccessAuthenticationRule struct {
 }
 
 type NetworkAccessAuthenticationRuleChildren struct {
-	ConditionType            types.String `tfsdk:"condition_type"`
-	ConditionId              types.String `tfsdk:"condition_id"`
-	ConditionIsNegate        types.Bool   `tfsdk:"condition_is_negate"`
-	ConditionAttributeName   types.String `tfsdk:"condition_attribute_name"`
-	ConditionAttributeValue  types.String `tfsdk:"condition_attribute_value"`
-	ConditionDictionaryName  types.String `tfsdk:"condition_dictionary_name"`
-	ConditionDictionaryValue types.String `tfsdk:"condition_dictionary_value"`
-	ConditionOperator        types.String `tfsdk:"condition_operator"`
+	ConditionType   types.String `tfsdk:"condition_type"`
+	Id              types.String `tfsdk:"id"`
+	IsNegate        types.Bool   `tfsdk:"is_negate"`
+	AttributeName   types.String `tfsdk:"attribute_name"`
+	AttributeValue  types.String `tfsdk:"attribute_value"`
+	DictionaryName  types.String `tfsdk:"dictionary_name"`
+	DictionaryValue types.String `tfsdk:"dictionary_value"`
+	Operator        types.String `tfsdk:"operator"`
 }
 
 //template:end types
@@ -121,26 +121,26 @@ func (data NetworkAccessAuthenticationRule) toBody(ctx context.Context, state Ne
 			if !item.ConditionType.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "conditionType", item.ConditionType.ValueString())
 			}
-			if !item.ConditionId.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "id", item.ConditionId.ValueString())
+			if !item.Id.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
-			if !item.ConditionIsNegate.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "isNegate", item.ConditionIsNegate.ValueBool())
+			if !item.IsNegate.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "isNegate", item.IsNegate.ValueBool())
 			}
-			if !item.ConditionAttributeName.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "attributeName", item.ConditionAttributeName.ValueString())
+			if !item.AttributeName.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "attributeName", item.AttributeName.ValueString())
 			}
-			if !item.ConditionAttributeValue.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "attributeValue", item.ConditionAttributeValue.ValueString())
+			if !item.AttributeValue.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "attributeValue", item.AttributeValue.ValueString())
 			}
-			if !item.ConditionDictionaryName.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "dictionaryName", item.ConditionDictionaryName.ValueString())
+			if !item.DictionaryName.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "dictionaryName", item.DictionaryName.ValueString())
 			}
-			if !item.ConditionDictionaryValue.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "dictionaryValue", item.ConditionDictionaryValue.ValueString())
+			if !item.DictionaryValue.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "dictionaryValue", item.DictionaryValue.ValueString())
 			}
-			if !item.ConditionOperator.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "operator", item.ConditionOperator.ValueString())
+			if !item.Operator.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "operator", item.Operator.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "rule.condition.children.-1", itemBody)
 		}
@@ -234,39 +234,39 @@ func (data *NetworkAccessAuthenticationRule) fromBody(ctx context.Context, res g
 				item.ConditionType = types.StringNull()
 			}
 			if cValue := v.Get("id"); cValue.Exists() {
-				item.ConditionId = types.StringValue(cValue.String())
+				item.Id = types.StringValue(cValue.String())
 			} else {
-				item.ConditionId = types.StringNull()
+				item.Id = types.StringNull()
 			}
 			if cValue := v.Get("isNegate"); cValue.Exists() {
-				item.ConditionIsNegate = types.BoolValue(cValue.Bool())
+				item.IsNegate = types.BoolValue(cValue.Bool())
 			} else {
-				item.ConditionIsNegate = types.BoolNull()
+				item.IsNegate = types.BoolNull()
 			}
 			if cValue := v.Get("attributeName"); cValue.Exists() {
-				item.ConditionAttributeName = types.StringValue(cValue.String())
+				item.AttributeName = types.StringValue(cValue.String())
 			} else {
-				item.ConditionAttributeName = types.StringNull()
+				item.AttributeName = types.StringNull()
 			}
 			if cValue := v.Get("attributeValue"); cValue.Exists() {
-				item.ConditionAttributeValue = types.StringValue(cValue.String())
+				item.AttributeValue = types.StringValue(cValue.String())
 			} else {
-				item.ConditionAttributeValue = types.StringNull()
+				item.AttributeValue = types.StringNull()
 			}
 			if cValue := v.Get("dictionaryName"); cValue.Exists() {
-				item.ConditionDictionaryName = types.StringValue(cValue.String())
+				item.DictionaryName = types.StringValue(cValue.String())
 			} else {
-				item.ConditionDictionaryName = types.StringNull()
+				item.DictionaryName = types.StringNull()
 			}
 			if cValue := v.Get("dictionaryValue"); cValue.Exists() {
-				item.ConditionDictionaryValue = types.StringValue(cValue.String())
+				item.DictionaryValue = types.StringValue(cValue.String())
 			} else {
-				item.ConditionDictionaryValue = types.StringNull()
+				item.DictionaryValue = types.StringNull()
 			}
 			if cValue := v.Get("operator"); cValue.Exists() {
-				item.ConditionOperator = types.StringValue(cValue.String())
+				item.Operator = types.StringValue(cValue.String())
 			} else {
-				item.ConditionOperator = types.StringNull()
+				item.Operator = types.StringNull()
 			}
 			data.Children = append(data.Children, item)
 			return true
@@ -360,7 +360,7 @@ func (data *NetworkAccessAuthenticationRule) updateFromBody(ctx context.Context,
 	}
 	for i := range data.Children {
 		keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
-		keyValues := [...]string{data.Children[i].ConditionType.ValueString(), data.Children[i].ConditionId.ValueString(), strconv.FormatBool(data.Children[i].ConditionIsNegate.ValueBool()), data.Children[i].ConditionAttributeName.ValueString(), data.Children[i].ConditionAttributeValue.ValueString(), data.Children[i].ConditionDictionaryName.ValueString(), data.Children[i].ConditionDictionaryValue.ValueString(), data.Children[i].ConditionOperator.ValueString()}
+		keyValues := [...]string{data.Children[i].ConditionType.ValueString(), data.Children[i].Id.ValueString(), strconv.FormatBool(data.Children[i].IsNegate.ValueBool()), data.Children[i].AttributeName.ValueString(), data.Children[i].AttributeValue.ValueString(), data.Children[i].DictionaryName.ValueString(), data.Children[i].DictionaryValue.ValueString(), data.Children[i].Operator.ValueString()}
 
 		var r gjson.Result
 		res.Get("response.rule.condition.children").ForEach(
@@ -386,40 +386,40 @@ func (data *NetworkAccessAuthenticationRule) updateFromBody(ctx context.Context,
 		} else {
 			data.Children[i].ConditionType = types.StringNull()
 		}
-		if value := r.Get("id"); value.Exists() && !data.Children[i].ConditionId.IsNull() {
-			data.Children[i].ConditionId = types.StringValue(value.String())
+		if value := r.Get("id"); value.Exists() && !data.Children[i].Id.IsNull() {
+			data.Children[i].Id = types.StringValue(value.String())
 		} else {
-			data.Children[i].ConditionId = types.StringNull()
+			data.Children[i].Id = types.StringNull()
 		}
-		if value := r.Get("isNegate"); value.Exists() && !data.Children[i].ConditionIsNegate.IsNull() {
-			data.Children[i].ConditionIsNegate = types.BoolValue(value.Bool())
+		if value := r.Get("isNegate"); value.Exists() && !data.Children[i].IsNegate.IsNull() {
+			data.Children[i].IsNegate = types.BoolValue(value.Bool())
 		} else {
-			data.Children[i].ConditionIsNegate = types.BoolNull()
+			data.Children[i].IsNegate = types.BoolNull()
 		}
-		if value := r.Get("attributeName"); value.Exists() && !data.Children[i].ConditionAttributeName.IsNull() {
-			data.Children[i].ConditionAttributeName = types.StringValue(value.String())
+		if value := r.Get("attributeName"); value.Exists() && !data.Children[i].AttributeName.IsNull() {
+			data.Children[i].AttributeName = types.StringValue(value.String())
 		} else {
-			data.Children[i].ConditionAttributeName = types.StringNull()
+			data.Children[i].AttributeName = types.StringNull()
 		}
-		if value := r.Get("attributeValue"); value.Exists() && !data.Children[i].ConditionAttributeValue.IsNull() {
-			data.Children[i].ConditionAttributeValue = types.StringValue(value.String())
+		if value := r.Get("attributeValue"); value.Exists() && !data.Children[i].AttributeValue.IsNull() {
+			data.Children[i].AttributeValue = types.StringValue(value.String())
 		} else {
-			data.Children[i].ConditionAttributeValue = types.StringNull()
+			data.Children[i].AttributeValue = types.StringNull()
 		}
-		if value := r.Get("dictionaryName"); value.Exists() && !data.Children[i].ConditionDictionaryName.IsNull() {
-			data.Children[i].ConditionDictionaryName = types.StringValue(value.String())
+		if value := r.Get("dictionaryName"); value.Exists() && !data.Children[i].DictionaryName.IsNull() {
+			data.Children[i].DictionaryName = types.StringValue(value.String())
 		} else {
-			data.Children[i].ConditionDictionaryName = types.StringNull()
+			data.Children[i].DictionaryName = types.StringNull()
 		}
-		if value := r.Get("dictionaryValue"); value.Exists() && !data.Children[i].ConditionDictionaryValue.IsNull() {
-			data.Children[i].ConditionDictionaryValue = types.StringValue(value.String())
+		if value := r.Get("dictionaryValue"); value.Exists() && !data.Children[i].DictionaryValue.IsNull() {
+			data.Children[i].DictionaryValue = types.StringValue(value.String())
 		} else {
-			data.Children[i].ConditionDictionaryValue = types.StringNull()
+			data.Children[i].DictionaryValue = types.StringNull()
 		}
-		if value := r.Get("operator"); value.Exists() && !data.Children[i].ConditionOperator.IsNull() {
-			data.Children[i].ConditionOperator = types.StringValue(value.String())
+		if value := r.Get("operator"); value.Exists() && !data.Children[i].Operator.IsNull() {
+			data.Children[i].Operator = types.StringValue(value.String())
 		} else {
-			data.Children[i].ConditionOperator = types.StringNull()
+			data.Children[i].Operator = types.StringNull()
 		}
 	}
 	if value := res.Get("response.identitySourceName"); value.Exists() && !data.IdentitySourceName.IsNull() {

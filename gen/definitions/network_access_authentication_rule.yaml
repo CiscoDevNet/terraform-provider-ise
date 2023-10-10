@@ -35,7 +35,13 @@ attributes:
   - model_name: conditionType
     data_path: [rule, condition]
     type: String
-    enum_values: [ConditionAndBlock, ConditionAttributes, ConditionOrBlock, ConditionReference]
+    enum_values:
+      [
+        ConditionAndBlock,
+        ConditionAttributes,
+        ConditionOrBlock,
+        ConditionReference,
+      ]
     description: Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
     example: ConditionAttributes
     minimum_test_value: '"ConditionReference"'
@@ -63,7 +69,7 @@ attributes:
     data_path: [rule, condition]
     tf_name: condition_attribute_value
     type: String
-    description: Attribute value for condition. Value type is specified in dictionary object. 
+    description: Attribute value for condition. Value type is specified in dictionary object.
     example: All Locations
   - model_name: dictionaryName
     data_path: [rule, condition]
@@ -82,55 +88,96 @@ attributes:
     data_path: [rule, condition]
     tf_name: condition_operator
     type: String
-    enum_values: [contains, endsWith, equals, greaterOrEquals, greaterThan, in, ipEquals, ipGreaterThan, ipLessThan, ipNotEquals, lessOrEquals, lessThan, matches, notContains, notEndsWith, notEquals, notIn, notStartsWith, startsWith]
+    enum_values:
+      [
+        contains,
+        endsWith,
+        equals,
+        greaterOrEquals,
+        greaterThan,
+        in,
+        ipEquals,
+        ipGreaterThan,
+        ipLessThan,
+        ipNotEquals,
+        lessOrEquals,
+        lessThan,
+        matches,
+        notContains,
+        notEndsWith,
+        notEquals,
+        notIn,
+        notStartsWith,
+        startsWith,
+      ]
     description: Equality operator
     example: equals
   - model_name: children
     type: List
     description: List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `ConditionAttributes` or `ConditionReference`.
     exclude_test: true
-    data_path: [rule, condition] 
+    data_path: [rule, condition]
     attributes:
       - model_name: conditionType
         mandatory: true
         type: String
-        enum_values: [ConditionAndBlock, ConditionAttributes, ConditionOrBlock, ConditionReference]
+        enum_values:
+          [
+            ConditionAndBlock,
+            ConditionAttributes,
+            ConditionOrBlock,
+            ConditionReference,
+          ]
         description: Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
         example: ConditionAttributes
       - model_name: id
-        tf_name: condition_id
         type: String
         description: UUID for condition
         example: 12345678-f0e7-456b-a2d1-876543320123
       - model_name: isNegate
-        tf_name: condition_is_negate
         type: Bool
         description: Indicates whereas this condition is in negate mode
         example: false
       - model_name: attributeName
-        tf_name: condition_attribute_name
         type: String
         description: Dictionary attribute name
         example: Location
       - model_name: attributeValue
-        tf_name: condition_attribute_value
         type: String
-        description: Attribute value for condition. Value type is specified in dictionary object. 
+        description: Attribute value for condition. Value type is specified in dictionary object.
         example: All Locations
       - model_name: dictionaryName
-        tf_name: condition_dictionary_name
         type: String
         description: Dictionary name
         example: DEVICE
       - model_name: dictionaryValue
-        tf_name: condition_dictionary_value
         type: String
         description: Dictionary value
         example: abc
       - model_name: operator
-        tf_name: condition_operator
         type: String
-        enum_values: [contains, endsWith, equals, greaterOrEquals, greaterThan, in, ipEquals, ipGreaterThan, ipLessThan, ipNotEquals, lessOrEquals, lessThan, matches, notContains, notEndsWith, notEquals, notIn, notStartsWith, startsWith]
+        enum_values:
+          [
+            contains,
+            endsWith,
+            equals,
+            greaterOrEquals,
+            greaterThan,
+            in,
+            ipEquals,
+            ipGreaterThan,
+            ipLessThan,
+            ipNotEquals,
+            lessOrEquals,
+            lessThan,
+            matches,
+            notContains,
+            notEndsWith,
+            notEquals,
+            notIn,
+            notStartsWith,
+            startsWith,
+          ]
         description: Equality operator
         example: equals
   - model_name: identitySourceName
@@ -139,22 +186,23 @@ attributes:
     example: Internal Endpoints
   - model_name: ifAuthFail
     type: String
-    enum_values: [REJECT, DROP , CONTINUE]
+    enum_values: [REJECT, DROP, CONTINUE]
     mandatory: true
     description: Action to perform when authentication fails such as Bad credentials, disabled user and so on
     example: REJECT
   - model_name: ifProcessFail
     type: String
-    enum_values: [REJECT, DROP , CONTINUE]
+    enum_values: [REJECT, DROP, CONTINUE]
     mandatory: true
     description: Action to perform when ISE is uanble to access the identity database
     example: DROP
   - model_name: ifUserNotFound
     type: String
-    enum_values: [REJECT, DROP , CONTINUE]
+    enum_values: [REJECT, DROP, CONTINUE]
     mandatory: true
     description: Action to perform when user is not found in any of identity stores
     example: REJECT
+
 test_prerequisites: |
   resource "ise_network_access_policy_set" "test" {
     name                      = "PolicySet1"

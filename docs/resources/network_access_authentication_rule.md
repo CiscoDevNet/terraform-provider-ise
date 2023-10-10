@@ -79,13 +79,13 @@ Required:
 
 Optional:
 
-- `condition_attribute_name` (String) Dictionary attribute name
-- `condition_attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
-- `condition_dictionary_name` (String) Dictionary name
-- `condition_dictionary_value` (String) Dictionary value
-- `condition_id` (String) UUID for condition
-- `condition_is_negate` (Boolean) Indicates whereas this condition is in negate mode
-- `condition_operator` (String) Equality operator
+- `attribute_name` (String) Dictionary attribute name
+- `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
+- `dictionary_name` (String) Dictionary name
+- `dictionary_value` (String) Dictionary value
+- `id` (String) UUID for condition
+- `is_negate` (Boolean) Indicates whereas this condition is in negate mode
+- `operator` (String) Equality operator
   - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`
 
 ## Import
