@@ -47,6 +47,7 @@ attributes:
     test_value: ise_trustsec_security_group.test.id
     example: "93e1bf00-8c01-11e6-996c-525400b48521"
     description: Destination Trustsec Security Group ID
+
 test_prerequisites: |
   resource "ise_trustsec_security_group" "test" {
     name              = "SGT1234"
