@@ -48,26 +48,26 @@ data "ise_network_access_policy_set" "example" {
 
 Read-Only:
 
+- `attribute_name` (String) Dictionary attribute name
+- `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
 - `children` (Attributes List) List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `ConditionAttributes` or `ConditionReference`. (see [below for nested schema](#nestedatt--children--children))
-- `condition_attribute_name` (String) Dictionary attribute name
-- `condition_attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
-- `condition_dictionary_name` (String) Dictionary name
-- `condition_dictionary_value` (String) Dictionary value
-- `condition_id` (String) UUID for condition
-- `condition_is_negate` (Boolean) Indicates whereas this condition is in negate mode
-- `condition_operator` (String) Equality operator
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
+- `dictionary_name` (String) Dictionary name
+- `dictionary_value` (String) Dictionary value
+- `id` (String) UUID for condition
+- `is_negate` (Boolean) Indicates whereas this condition is in negate mode
+- `operator` (String) Equality operator
 
 <a id="nestedatt--children--children"></a>
 ### Nested Schema for `children.children`
 
 Read-Only:
 
-- `condition_attribute_name` (String) Dictionary attribute name
-- `condition_attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
-- `condition_dictionary_name` (String) Dictionary name
-- `condition_dictionary_value` (String) Dictionary value
-- `condition_id` (String) UUID for condition
-- `condition_is_negate` (Boolean) Indicates whereas this condition is in negate mode
-- `condition_operator` (String) Equality operator
+- `attribute_name` (String) Dictionary attribute name
+- `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
+- `dictionary_name` (String) Dictionary name
+- `dictionary_value` (String) Dictionary value
+- `id` (String) UUID for condition
+- `is_negate` (Boolean) Indicates whereas this condition is in negate mode
+- `operator` (String) Equality operator
