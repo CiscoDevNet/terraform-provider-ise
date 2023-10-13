@@ -56,6 +56,9 @@ func (d *{{camelCase .Name}}DataSource) Metadata(_ context.Context, req datasour
 	resp.TypeName = req.ProviderTypeName + "_{{snakeCase .Name}}"
 }
 
+{{- $nameQuery := .DataSourceNameQuery}}
+{{- $openApi := false}}{{if not (isErs .RestEndpoint)}}{{$openApi = true}}{{end}}
+
 func (d *{{camelCase .Name}}DataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -64,7 +67,12 @@ func (d *{{camelCase .Name}}DataSource) Schema(ctx context.Context, req datasour
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The id of the object",
+				{{- if not .DataSourceNameQuery}}
 				Required:            true,
+				{{- else}}
+				Optional:            true,
+				Computed:            true,
+				{{- end}}
 			},
 			{{- range  .Attributes}}
 			{{- if not .Value}}
@@ -76,6 +84,9 @@ func (d *{{camelCase .Name}}DataSource) Schema(ctx context.Context, req datasour
 				{{- if .Reference}}
 				Required:            true,
 				{{- else}}
+				{{- if and (eq .ModelName "name") ($nameQuery)}}
+				Optional:            true,
+				{{- end}}
 				Computed:            true,
 				{{- end}}
 				{{- if or (eq .Type "List") (eq .Type "Set")}}
@@ -136,6 +147,17 @@ func (d *{{camelCase .Name}}DataSource) Schema(ctx context.Context, req datasour
 	}
 }
 
+{{- if .DataSourceNameQuery}}
+func (d *{{camelCase .Name}}DataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
+    return []datasource.ConfigValidator{
+        datasourcevalidator.ExactlyOneOf(
+            path.MatchRoot("id"),
+            path.MatchRoot("name"),
+        ),
+    }
+}
+{{- end}}
+
 func (d *{{camelCase .Name}}DataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -157,6 +179,30 @@ func (d *{{camelCase .Name}}DataSource) Read(ctx context.Context, req datasource
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
+
+	{{- if .DataSourceNameQuery}}
+	if config.Id.IsNull() && !config.Name.IsNull() {
+		res, err := d.client.Get(config.getPath())
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve objects, got error: %s", err))
+			return
+		}
+		if value := res.Get({{if $openApi}}"response"{{else}}"SearchResult.resources"{{end}}); len(value.Array()) > 0 {
+			value.ForEach(func(k, v gjson.Result) bool {
+				if config.Name.ValueString() == v.Get("name").String() {
+					config.Id = types.StringValue(v.Get("id").String())
+					tflog.Debug(ctx, fmt.Sprintf("%s: Found object with name '%v', id: %v", config.Id.String(), config.Name.ValueString(), config.Id.String()))
+					return false
+				}
+				return true
+			})
+		}
+		if config.Id.IsNull() {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to find object with name: %s", config.Name.ValueString()))
+			return
+		}
+	}
+	{{- end}}
 
 	res, err := d.client.Get(config.getPath(){{if not .GetNoId}} + "/" + config.Id.ValueString(){{end}})
 	if err != nil {

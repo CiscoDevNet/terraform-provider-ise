@@ -1,6 +1,7 @@
 ---
 name: Network Device Group
 rest_endpoint: /ers/config/networkdevicegroup
+data_source_name_query: true
 doc_category: Administration
 attributes:
   - model_name: name

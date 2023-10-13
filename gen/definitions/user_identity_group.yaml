@@ -1,6 +1,7 @@
 ---
 name: User Identity Group
 rest_endpoint: /ers/config/identitygroup
+data_source_name_query: true
 doc_category: Administration
 test_tags: [ISE32]
 attributes:

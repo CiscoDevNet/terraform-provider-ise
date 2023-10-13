@@ -94,24 +94,25 @@ var templates = []t{
 }
 
 type YamlConfig struct {
-	Name              string                `yaml:"name"`
-	RestEndpoint      string                `yaml:"rest_endpoint"`
-	GetNoId           bool                  `yaml:"get_no_id"`
-	NoDelete          bool                  `yaml:"no_delete"`
-	PostUpdate        bool                  `yaml:"post_update"`
-	RootList          bool                  `yaml:"root_list"`
-	NoReadPrefix      bool                  `yaml:"no_read_prefix"`
-	IdPath            string                `yaml:"id_path"`
-	PutIdIncludePath  string                `yaml:"put_id_include_path"`
-	MinimumVersion    string                `yaml:"minimum_version"`
-	DsDescription     string                `yaml:"ds_description"`
-	ResDescription    string                `yaml:"res_description"`
-	DocCategory       string                `yaml:"doc_category"`
-	ExcludeTest       bool                  `yaml:"exclude_test"`
-	SkipMinimumTest   bool                  `yaml:"skip_minimum_test"`
-	Attributes        []YamlConfigAttribute `yaml:"attributes"`
-	TestTags          []string              `yaml:"test_tags"`
-	TestPrerequisites string                `yaml:"test_prerequisites"`
+	Name                string                `yaml:"name"`
+	RestEndpoint        string                `yaml:"rest_endpoint"`
+	GetNoId             bool                  `yaml:"get_no_id"`
+	NoDelete            bool                  `yaml:"no_delete"`
+	PostUpdate          bool                  `yaml:"post_update"`
+	RootList            bool                  `yaml:"root_list"`
+	NoReadPrefix        bool                  `yaml:"no_read_prefix"`
+	IdPath              string                `yaml:"id_path"`
+	PutIdIncludePath    string                `yaml:"put_id_include_path"`
+	DataSourceNameQuery bool                  `yaml:"data_source_name_query"`
+	MinimumVersion      string                `yaml:"minimum_version"`
+	DsDescription       string                `yaml:"ds_description"`
+	ResDescription      string                `yaml:"res_description"`
+	DocCategory         string                `yaml:"doc_category"`
+	ExcludeTest         bool                  `yaml:"exclude_test"`
+	SkipMinimumTest     bool                  `yaml:"skip_minimum_test"`
+	Attributes          []YamlConfigAttribute `yaml:"attributes"`
+	TestTags            []string              `yaml:"test_tags"`
+	TestPrerequisites   string                `yaml:"test_prerequisites"`
 }
 
 type YamlConfigAttribute struct {

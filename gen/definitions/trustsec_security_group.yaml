@@ -1,6 +1,7 @@
 ---
 name: TrustSec Security Group
 rest_endpoint: /ers/config/sgt
+data_source_name_query: true
 doc_category: TrustSec
 attributes:
   - model_name: name

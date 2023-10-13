@@ -24,8 +24,12 @@ data "ise_network_access_authorization_rule" "example" {
 
 ### Required
 
-- `id` (String) The id of the object
 - `policy_set_id` (String) Policy set ID
+
+### Optional
+
+- `id` (String) The id of the object
+- `name` (String) Rule name, [Valid characters are alphanumerics, underscore, hyphen, space, period, parentheses]
 
 ### Read-Only
 
@@ -39,7 +43,6 @@ data "ise_network_access_authorization_rule" "example" {
 - `condition_operator` (String) Equality operator
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
 - `default` (Boolean) Indicates if this rule is the default one
-- `name` (String) Rule name, [Valid characters are alphanumerics, underscore, hyphen, space, period, parentheses]
 - `profile` (List of String) The authorization profile(s)
 - `rank` (Number) The rank (priority) in relation to other rules. Lower rank is higher priority.
 - `security_group` (String) Security group used in authorization policies

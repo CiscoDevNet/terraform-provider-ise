@@ -24,8 +24,12 @@ data "ise_network_access_authentication_rule" "example" {
 
 ### Required
 
-- `id` (String) The id of the object
 - `policy_set_id` (String) Policy set ID
+
+### Optional
+
+- `id` (String) The id of the object
+- `name` (String) Rule name, [Valid characters are alphanumerics, underscore, hyphen, space, period, parentheses]
 
 ### Read-Only
 
@@ -43,7 +47,6 @@ data "ise_network_access_authentication_rule" "example" {
 - `if_auth_fail` (String) Action to perform when authentication fails such as Bad credentials, disabled user and so on
 - `if_process_fail` (String) Action to perform when ISE is uanble to access the identity database
 - `if_user_not_found` (String) Action to perform when user is not found in any of identity stores
-- `name` (String) Rule name, [Valid characters are alphanumerics, underscore, hyphen, space, period, parentheses]
 - `rank` (Number) The rank (priority) in relation to other rules. Lower rank is higher priority.
 - `state` (String) The state that the rule is in. A disabled rule cannot be matched.
 
