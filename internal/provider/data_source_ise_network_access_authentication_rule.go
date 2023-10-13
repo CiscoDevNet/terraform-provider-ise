@@ -151,6 +151,46 @@ func (d *NetworkAccessAuthenticationRuleDataSource) Schema(ctx context.Context, 
 							MarkdownDescription: "Equality operator",
 							Computed:            true,
 						},
+						"children": schema.ListNestedAttribute{
+							MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `ConditionAttributes` or `ConditionReference`.",
+							Computed:            true,
+							NestedObject: schema.NestedAttributeObject{
+								Attributes: map[string]schema.Attribute{
+									"condition_type": schema.StringAttribute{
+										MarkdownDescription: "Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.",
+										Computed:            true,
+									},
+									"id": schema.StringAttribute{
+										MarkdownDescription: "UUID for condition",
+										Computed:            true,
+									},
+									"is_negate": schema.BoolAttribute{
+										MarkdownDescription: "Indicates whereas this condition is in negate mode",
+										Computed:            true,
+									},
+									"attribute_name": schema.StringAttribute{
+										MarkdownDescription: "Dictionary attribute name",
+										Computed:            true,
+									},
+									"attribute_value": schema.StringAttribute{
+										MarkdownDescription: "Attribute value for condition. Value type is specified in dictionary object.",
+										Computed:            true,
+									},
+									"dictionary_name": schema.StringAttribute{
+										MarkdownDescription: "Dictionary name",
+										Computed:            true,
+									},
+									"dictionary_value": schema.StringAttribute{
+										MarkdownDescription: "Dictionary value",
+										Computed:            true,
+									},
+									"operator": schema.StringAttribute{
+										MarkdownDescription: "Equality operator",
+										Computed:            true,
+									},
+								},
+							},
+						},
 					},
 				},
 			},

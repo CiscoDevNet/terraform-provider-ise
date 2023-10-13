@@ -127,31 +127,31 @@ func (d *NetworkAccessPolicySetDataSource) Schema(ctx context.Context, req datas
 							MarkdownDescription: "Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.",
 							Computed:            true,
 						},
-						"condition_id": schema.StringAttribute{
+						"id": schema.StringAttribute{
 							MarkdownDescription: "UUID for condition",
 							Computed:            true,
 						},
-						"condition_is_negate": schema.BoolAttribute{
+						"is_negate": schema.BoolAttribute{
 							MarkdownDescription: "Indicates whereas this condition is in negate mode",
 							Computed:            true,
 						},
-						"condition_attribute_name": schema.StringAttribute{
+						"attribute_name": schema.StringAttribute{
 							MarkdownDescription: "Dictionary attribute name",
 							Computed:            true,
 						},
-						"condition_attribute_value": schema.StringAttribute{
+						"attribute_value": schema.StringAttribute{
 							MarkdownDescription: "Attribute value for condition. Value type is specified in dictionary object.",
 							Computed:            true,
 						},
-						"condition_dictionary_name": schema.StringAttribute{
+						"dictionary_name": schema.StringAttribute{
 							MarkdownDescription: "Dictionary name",
 							Computed:            true,
 						},
-						"condition_dictionary_value": schema.StringAttribute{
+						"dictionary_value": schema.StringAttribute{
 							MarkdownDescription: "Dictionary value",
 							Computed:            true,
 						},
-						"condition_operator": schema.StringAttribute{
+						"operator": schema.StringAttribute{
 							MarkdownDescription: "Equality operator",
 							Computed:            true,
 						},
@@ -164,31 +164,31 @@ func (d *NetworkAccessPolicySetDataSource) Schema(ctx context.Context, req datas
 										MarkdownDescription: "Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.",
 										Computed:            true,
 									},
-									"condition_id": schema.StringAttribute{
+									"id": schema.StringAttribute{
 										MarkdownDescription: "UUID for condition",
 										Computed:            true,
 									},
-									"condition_is_negate": schema.BoolAttribute{
+									"is_negate": schema.BoolAttribute{
 										MarkdownDescription: "Indicates whereas this condition is in negate mode",
 										Computed:            true,
 									},
-									"condition_attribute_name": schema.StringAttribute{
+									"attribute_name": schema.StringAttribute{
 										MarkdownDescription: "Dictionary attribute name",
 										Computed:            true,
 									},
-									"condition_attribute_value": schema.StringAttribute{
+									"attribute_value": schema.StringAttribute{
 										MarkdownDescription: "Attribute value for condition. Value type is specified in dictionary object.",
 										Computed:            true,
 									},
-									"condition_dictionary_name": schema.StringAttribute{
+									"dictionary_name": schema.StringAttribute{
 										MarkdownDescription: "Dictionary name",
 										Computed:            true,
 									},
-									"condition_dictionary_value": schema.StringAttribute{
+									"dictionary_value": schema.StringAttribute{
 										MarkdownDescription: "Dictionary value",
 										Computed:            true,
 									},
-									"condition_operator": schema.StringAttribute{
+									"operator": schema.StringAttribute{
 										MarkdownDescription: "Equality operator",
 										Computed:            true,
 									},
