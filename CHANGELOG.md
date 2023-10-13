@@ -1,3 +1,9 @@
+## 0.1.3 (unreleased)
+
+- Add support for nested conditions to `ise_network_access_authentication_rule` resource and data source
+- Add support for nested conditions to `ise_network_access_authorization_rule` resource and data source
+- BREAKING CHANGE: Remove `condition_` prefix from nested attributes of `ise_network_access_policy_set` resource and data source
+
 ## 0.1.2
 
 - Fix issue with reading nested conditions using `ise_network_access_condition` resource
