@@ -240,7 +240,7 @@ func (d *NetworkAccessPolicySetDataSource) Read(ctx context.Context, req datasou
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
 	if config.Id.IsNull() && !config.Name.IsNull() {
 		for page := 1; ; page++ {
-			res, err := d.client.Get(fmt.Sprintf("%s?size=100&page=%v", config.getPath(), page))
+			res, err := d.client.Get(config.getPath())
 			if err != nil {
 				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve objects, got error: %s", err))
 				return

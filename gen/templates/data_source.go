@@ -183,7 +183,7 @@ func (d *{{camelCase .Name}}DataSource) Read(ctx context.Context, req datasource
 	{{- if .DataSourceNameQuery}}
 	if config.Id.IsNull() && !config.Name.IsNull() {
 		for page := 1; ; page++ {
-			res, err := d.client.Get(fmt.Sprintf("%s?size=100&page=%v", config.getPath(), page))
+			res, err := d.client.Get({{if $openApi}}config.getPath(){{else}}fmt.Sprintf("%s?size=100&page=%v", config.getPath(), page){{end}})
 			if err != nil {
 				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve objects, got error: %s", err))
 				return
