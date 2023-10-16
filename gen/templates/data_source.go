@@ -182,21 +182,27 @@ func (d *{{camelCase .Name}}DataSource) Read(ctx context.Context, req datasource
 
 	{{- if .DataSourceNameQuery}}
 	if config.Id.IsNull() && !config.Name.IsNull() {
-		res, err := d.client.Get(config.getPath())
-		if err != nil {
-			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve objects, got error: %s", err))
-			return
+		for page := 1; ; page++ {
+			res, err := d.client.Get(fmt.Sprintf("%s?size=100&page=%v", config.getPath(), page))
+			if err != nil {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve objects, got error: %s", err))
+				return
+			}
+			if value := res.Get({{if $openApi}}"response"{{else}}"SearchResult.resources"{{end}}); len(value.Array()) > 0 {
+				value.ForEach(func(k, v gjson.Result) bool {
+					if config.Name.ValueString() == v.Get("name").String() {
+						config.Id = types.StringValue(v.Get("id").String())
+						tflog.Debug(ctx, fmt.Sprintf("%s: Found object with name '%v', id: %v", config.Id.String(), config.Name.ValueString(), config.Id.String()))
+						return false
+					}
+					return true
+				})
+			}
+			if !config.Id.IsNull() || !res.Get("SearchResult.nextPage").Exists() {
+				break
+			}
 		}
-		if value := res.Get({{if $openApi}}"response"{{else}}"SearchResult.resources"{{end}}); len(value.Array()) > 0 {
-			value.ForEach(func(k, v gjson.Result) bool {
-				if config.Name.ValueString() == v.Get("name").String() {
-					config.Id = types.StringValue(v.Get("id").String())
-					tflog.Debug(ctx, fmt.Sprintf("%s: Found object with name '%v', id: %v", config.Id.String(), config.Name.ValueString(), config.Id.String()))
-					return false
-				}
-				return true
-			})
-		}
+
 		if config.Id.IsNull() {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to find object with name: %s", config.Name.ValueString()))
 			return
