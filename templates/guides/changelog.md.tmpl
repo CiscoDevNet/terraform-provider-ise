@@ -7,7 +7,7 @@ description: |-
 
 # Changelog
 
-## 0.1.3 (unreleased)
+## 0.1.3
 
 - Add support for nested conditions to `ise_network_access_authentication_rule` resource and data source
 - Add support for nested conditions to `ise_network_access_authorization_rule` resource and data source
