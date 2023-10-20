@@ -1,0 +1,46 @@
+---
+name: TrustSec IP to SGT Mapping Group
+rest_endpoint: /ers/config/sgmappinggroup
+doc_category: TrustSec
+id_path: response.id
+attributes:
+  - model_name: name
+    data_path: [SGMappingGroup]
+    type: String
+    mandatory: true
+    description: The name of the IP to SGT mapping Group
+    example: groupA
+  - model_name: description
+    data_path: [SGMappingGroup]
+    type: String
+    description: Description
+    exclude_test: true
+  - model_name: deployTo
+    data_path: [SGMappingGroup]
+    type: String
+    description: "Mandatory unless `deployType=ALL`"
+    exclude_test: true
+    example: "All Locations"
+  - model_name: deployType
+    data_path: [SGMappingGroup]
+    type: String
+    enum_values: [ALL, ND, NG]
+    example: "ALL"
+    description: "Deploy Type"
+    mandatory: true
+  - model_name: sgt
+    data_path: [SGMappingGroup]
+    type: String
+    example: "93e1bf00-8c01-11e6-996c-525400b48521"
+    mandatory: true
+    minimum_test_value: ise_trustsec_security_group.test.id
+    description: Trustsec Security Group ID
+
+test_prerequisites: |
+  resource "ise_trustsec_security_group" "test" {
+    name              = "SGT1234"
+    description       = "My SGT"
+    value             = 1234
+    propogate_to_apic = true
+    is_read_only      = false
+  }
