@@ -24,7 +24,7 @@ attributes:
   - model_name: deployType
     data_path: [SGMappingGroup]
     type: String
-    enum_values: [ALL, ND, NG]
+    enum_values: [ALL, ND, NDG]
     example: "ALL"
     description: "Deploy Type"
     mandatory: true

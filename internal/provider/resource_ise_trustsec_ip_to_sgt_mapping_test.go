@@ -73,7 +73,6 @@ resource "ise_trustsec_security_group" "test" {
 func testAccIseTrustSecIPToSGTMappingConfig_minimum() string {
 	config := `resource "ise_trustsec_ip_to_sgt_mapping" "test" {` + "\n"
 	config += `	name = "10.0.0.1/32"` + "\n"
-	config += `	deploy_type = "ALL"` + "\n"
 	config += `	sgt = ise_trustsec_security_group.test.id` + "\n"
 	config += `}` + "\n"
 	return config

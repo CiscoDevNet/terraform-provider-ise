@@ -26,13 +26,13 @@ resource "ise_trustsec_ip_to_sgt_mapping" "example" {
 
 ### Required
 
-- `deploy_type` (String) Deploy Type
-  - Choices: `ALL`, `ND`, `NG`
 - `name` (String) The name of the IP to SGT mapping
 
 ### Optional
 
 - `deploy_to` (String) Mandatory unless mappingGroup is set or unless `deployType=ALL`
+- `deploy_type` (String) Deploy Type
+  - Choices: `ALL`, `ND`, `NDG`
 - `description` (String) Description
 - `host_ip` (String) Mandatory if hostName is empty -- valid IP
 - `host_name` (String) Mandatory if hostIp is empty

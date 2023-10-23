@@ -26,7 +26,7 @@ resource "ise_trustsec_ip_to_sgt_mapping_group" "example" {
 ### Required
 
 - `deploy_type` (String) Deploy Type
-  - Choices: `ALL`, `ND`, `NG`
+  - Choices: `ALL`, `ND`, `NDG`
 - `name` (String) The name of the IP to SGT mapping Group
 - `sgt` (String) Trustsec Security Group ID
 

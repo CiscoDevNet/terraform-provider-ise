@@ -84,10 +84,10 @@ func (r *TrustSecIPToSGTMappingResource) Schema(ctx context.Context, req resourc
 				Optional:            true,
 			},
 			"deploy_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Deploy Type").AddStringEnumDescription("ALL", "ND", "NG").String,
-				Required:            true,
+				MarkdownDescription: helpers.NewAttributeDescription("Deploy Type").AddStringEnumDescription("ALL", "ND", "NDG").String,
+				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("ALL", "ND", "NG"),
+					stringvalidator.OneOf("ALL", "ND", "NDG"),
 				},
 			},
 			"host_name": schema.StringAttribute{
