@@ -3,7 +3,6 @@ name: TrustSec IP to SGT Mapping
 rest_endpoint: /ers/config/sgmapping
 doc_category: TrustSec
 id_path: response.id
-skip_minimum_test: true
 attributes:
   - model_name: name
     data_path: [SGMapping]
@@ -27,6 +26,7 @@ attributes:
     type: String
     enum_values: [ALL, ND, NDG]
     example: "ALL"
+    minimum_test_value: '"ALL"'
     description: "Deploy Type"
   - model_name: hostName
     data_path: [SGMapping]
@@ -39,6 +39,7 @@ attributes:
     type: String
     description: Mandatory if hostName is empty -- valid IP
     example: "10.0.0.1/32"
+    minimum_test_value: '"10.0.0.1/32"'
   - model_name: sgt
     data_path: [SGMapping]
     type: String

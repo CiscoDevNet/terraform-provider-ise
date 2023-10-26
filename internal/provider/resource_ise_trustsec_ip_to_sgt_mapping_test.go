@@ -21,6 +21,7 @@ package provider
 
 //template:begin imports
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -37,6 +38,11 @@ func TestAccIseTrustSecIPToSGTMapping(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_trustsec_ip_to_sgt_mapping.test", "sgt", "93e1bf00-8c01-11e6-996c-525400b48521"))
 
 	var steps []resource.TestStep
+	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
+		steps = append(steps, resource.TestStep{
+			Config: testAccIseTrustSecIPToSGTMappingPrerequisitesConfig + testAccIseTrustSecIPToSGTMappingConfig_minimum(),
+		})
+	}
 	steps = append(steps, resource.TestStep{
 		Config: testAccIseTrustSecIPToSGTMappingPrerequisitesConfig + testAccIseTrustSecIPToSGTMappingConfig_all(),
 		Check:  resource.ComposeTestCheckFunc(checks...),
@@ -73,6 +79,8 @@ resource "ise_trustsec_security_group" "test" {
 func testAccIseTrustSecIPToSGTMappingConfig_minimum() string {
 	config := `resource "ise_trustsec_ip_to_sgt_mapping" "test" {` + "\n"
 	config += `	name = "10.0.0.1/32"` + "\n"
+	config += `	deploy_type = "ALL"` + "\n"
+	config += `	host_ip = "10.0.0.1/32"` + "\n"
 	config += `	sgt = ise_trustsec_security_group.test.id` + "\n"
 	config += `}` + "\n"
 	return config
