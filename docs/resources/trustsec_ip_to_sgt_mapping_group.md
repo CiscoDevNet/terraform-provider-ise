@@ -32,7 +32,7 @@ resource "ise_trustsec_ip_to_sgt_mapping_group" "example" {
 
 ### Optional
 
-- `deploy_to` (String) Mandatory unless `deployType=ALL`
+- `deploy_to` (String) Mandatory unless `deploy_type` is `ALL`
 - `description` (String) Description
 
 ### Read-Only

@@ -2,6 +2,7 @@
 name: TrustSec IP to SGT Mapping Group
 rest_endpoint: /ers/config/sgmappinggroup
 doc_category: TrustSec
+data_source_name_query: true
 id_path: response.id
 attributes:
   - model_name: name
@@ -18,7 +19,7 @@ attributes:
   - model_name: deployTo
     data_path: [SGMappingGroup]
     type: String
-    description: "Mandatory unless `deployType=ALL`"
+    description: "Mandatory unless `deploy_type` is `ALL`"
     exclude_test: true
     example: "All Locations"
   - model_name: deployType
@@ -33,7 +34,7 @@ attributes:
     type: String
     example: "93e1bf00-8c01-11e6-996c-525400b48521"
     mandatory: true
-    minimum_test_value: ise_trustsec_security_group.test.id
+    test_value: ise_trustsec_security_group.test.id
     description: Trustsec Security Group ID
 
 test_prerequisites: |

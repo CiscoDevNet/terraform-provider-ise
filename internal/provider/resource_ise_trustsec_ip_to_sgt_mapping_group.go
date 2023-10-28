@@ -80,7 +80,7 @@ func (r *TrustSecIPToSGTMappingGroupResource) Schema(ctx context.Context, req re
 				Optional:            true,
 			},
 			"deploy_to": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Mandatory unless `deployType=ALL`").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Mandatory unless `deploy_type` is `ALL`").String,
 				Optional:            true,
 			},
 			"deploy_type": schema.StringAttribute{

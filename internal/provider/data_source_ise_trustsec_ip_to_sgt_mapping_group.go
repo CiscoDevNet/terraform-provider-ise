@@ -24,10 +24,14 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/datasourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
+	"github.com/tidwall/gjson"
 )
 
 //template:end imports
@@ -60,10 +64,12 @@ func (d *TrustSecIPToSGTMappingGroupDataSource) Schema(ctx context.Context, req 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The id of the object",
-				Required:            true,
+				Optional:            true,
+				Computed:            true,
 			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The name of the IP to SGT mapping Group",
+				Optional:            true,
 				Computed:            true,
 			},
 			"description": schema.StringAttribute{
@@ -71,7 +77,7 @@ func (d *TrustSecIPToSGTMappingGroupDataSource) Schema(ctx context.Context, req 
 				Computed:            true,
 			},
 			"deploy_to": schema.StringAttribute{
-				MarkdownDescription: "Mandatory unless `deployType=ALL`",
+				MarkdownDescription: "Mandatory unless `deploy_type` is `ALL`",
 				Computed:            true,
 			},
 			"deploy_type": schema.StringAttribute{
@@ -83,6 +89,14 @@ func (d *TrustSecIPToSGTMappingGroupDataSource) Schema(ctx context.Context, req 
 				Computed:            true,
 			},
 		},
+	}
+}
+func (d *TrustSecIPToSGTMappingGroupDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
+	return []datasource.ConfigValidator{
+		datasourcevalidator.ExactlyOneOf(
+			path.MatchRoot("id"),
+			path.MatchRoot("name"),
+		),
 	}
 }
 
@@ -108,6 +122,33 @@ func (d *TrustSecIPToSGTMappingGroupDataSource) Read(ctx context.Context, req da
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
+	if config.Id.IsNull() && !config.Name.IsNull() {
+		for page := 1; ; page++ {
+			res, err := d.client.Get(fmt.Sprintf("%s?size=100&page=%v", config.getPath(), page))
+			if err != nil {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve objects, got error: %s", err))
+				return
+			}
+			if value := res.Get("SearchResult.resources"); len(value.Array()) > 0 {
+				value.ForEach(func(k, v gjson.Result) bool {
+					if config.Name.ValueString() == v.Get("name").String() {
+						config.Id = types.StringValue(v.Get("id").String())
+						tflog.Debug(ctx, fmt.Sprintf("%s: Found object with name '%v', id: %v", config.Id.String(), config.Name.ValueString(), config.Id.String()))
+						return false
+					}
+					return true
+				})
+			}
+			if !config.Id.IsNull() || !res.Get("SearchResult.nextPage").Exists() {
+				break
+			}
+		}
+
+		if config.Id.IsNull() {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to find object with name: %s", config.Name.ValueString()))
+			return
+		}
+	}
 
 	res, err := d.client.Get(config.getPath() + "/" + config.Id.ValueString())
 	if err != nil {
