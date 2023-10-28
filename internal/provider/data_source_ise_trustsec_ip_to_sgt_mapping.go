@@ -24,10 +24,14 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/datasourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
+	"github.com/tidwall/gjson"
 )
 
 //template:end imports
@@ -60,10 +64,12 @@ func (d *TrustSecIPToSGTMappingDataSource) Schema(ctx context.Context, req datas
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The id of the object",
-				Required:            true,
+				Optional:            true,
+				Computed:            true,
 			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The name of the IP to SGT mapping",
+				Optional:            true,
 				Computed:            true,
 			},
 			"description": schema.StringAttribute{
@@ -71,7 +77,7 @@ func (d *TrustSecIPToSGTMappingDataSource) Schema(ctx context.Context, req datas
 				Computed:            true,
 			},
 			"deploy_to": schema.StringAttribute{
-				MarkdownDescription: "Mandatory unless mappingGroup is set or unless `deployType=ALL`",
+				MarkdownDescription: "Mandatory unless `mapping_group` is set or unless `deploy_type` is `ALL`",
 				Computed:            true,
 			},
 			"deploy_type": schema.StringAttribute{
@@ -79,22 +85,30 @@ func (d *TrustSecIPToSGTMappingDataSource) Schema(ctx context.Context, req datas
 				Computed:            true,
 			},
 			"host_name": schema.StringAttribute{
-				MarkdownDescription: "Mandatory if hostIp is empty",
+				MarkdownDescription: "Mandatory if `host_ip` is empty",
 				Computed:            true,
 			},
 			"host_ip": schema.StringAttribute{
-				MarkdownDescription: "Mandatory if hostName is empty -- valid IP",
+				MarkdownDescription: "Mandatory if `host_name` is empty",
 				Computed:            true,
 			},
 			"sgt": schema.StringAttribute{
-				MarkdownDescription: "Trustsec Security Group ID. Mandatory unless mappingGroup is set",
+				MarkdownDescription: "Trustsec Security Group ID. Mandatory unless `mapping_group` is set",
 				Computed:            true,
 			},
 			"mapping_group": schema.StringAttribute{
-				MarkdownDescription: "IP to SGT Mapping Group ID. Mandatory unless sgt and deployTo and deployType are set",
+				MarkdownDescription: "IP to SGT Mapping Group ID. Mandatory unless `sgt` and `deploy_to` and `deploy_type` are set",
 				Computed:            true,
 			},
 		},
+	}
+}
+func (d *TrustSecIPToSGTMappingDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
+	return []datasource.ConfigValidator{
+		datasourcevalidator.ExactlyOneOf(
+			path.MatchRoot("id"),
+			path.MatchRoot("name"),
+		),
 	}
 }
 
@@ -120,6 +134,33 @@ func (d *TrustSecIPToSGTMappingDataSource) Read(ctx context.Context, req datasou
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
+	if config.Id.IsNull() && !config.Name.IsNull() {
+		for page := 1; ; page++ {
+			res, err := d.client.Get(fmt.Sprintf("%s?size=100&page=%v", config.getPath(), page))
+			if err != nil {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve objects, got error: %s", err))
+				return
+			}
+			if value := res.Get("SearchResult.resources"); len(value.Array()) > 0 {
+				value.ForEach(func(k, v gjson.Result) bool {
+					if config.Name.ValueString() == v.Get("name").String() {
+						config.Id = types.StringValue(v.Get("id").String())
+						tflog.Debug(ctx, fmt.Sprintf("%s: Found object with name '%v', id: %v", config.Id.String(), config.Name.ValueString(), config.Id.String()))
+						return false
+					}
+					return true
+				})
+			}
+			if !config.Id.IsNull() || !res.Get("SearchResult.nextPage").Exists() {
+				break
+			}
+		}
+
+		if config.Id.IsNull() {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to find object with name: %s", config.Name.ValueString()))
+			return
+		}
+	}
 
 	res, err := d.client.Get(config.getPath() + "/" + config.Id.ValueString())
 	if err != nil {

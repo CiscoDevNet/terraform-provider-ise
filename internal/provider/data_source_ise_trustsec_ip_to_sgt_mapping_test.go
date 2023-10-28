@@ -34,7 +34,6 @@ func TestAccDataSourceIseTrustSecIPToSGTMapping(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_trustsec_ip_to_sgt_mapping.test", "name", "10.0.0.1/32"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_trustsec_ip_to_sgt_mapping.test", "deploy_type", "ALL"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_trustsec_ip_to_sgt_mapping.test", "host_ip", "10.0.0.1/32"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_trustsec_ip_to_sgt_mapping.test", "sgt", "93e1bf00-8c01-11e6-996c-525400b48521"))
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
@@ -69,7 +68,7 @@ func testAccDataSourceIseTrustSecIPToSGTMappingConfig() string {
 	config += `	name = "10.0.0.1/32"` + "\n"
 	config += `	deploy_type = "ALL"` + "\n"
 	config += `	host_ip = "10.0.0.1/32"` + "\n"
-	config += `	sgt = "93e1bf00-8c01-11e6-996c-525400b48521"` + "\n"
+	config += `	sgt = ise_trustsec_security_group.test.id` + "\n"
 	config += `}` + "\n"
 
 	config += `

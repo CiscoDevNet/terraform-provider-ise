@@ -30,14 +30,14 @@ resource "ise_trustsec_ip_to_sgt_mapping" "example" {
 
 ### Optional
 
-- `deploy_to` (String) Mandatory unless mappingGroup is set or unless `deployType=ALL`
+- `deploy_to` (String) Mandatory unless `mapping_group` is set or unless `deploy_type` is `ALL`
 - `deploy_type` (String) Deploy Type
   - Choices: `ALL`, `ND`, `NDG`
 - `description` (String) Description
-- `host_ip` (String) Mandatory if hostName is empty -- valid IP
-- `host_name` (String) Mandatory if hostIp is empty
-- `mapping_group` (String) IP to SGT Mapping Group ID. Mandatory unless sgt and deployTo and deployType are set
-- `sgt` (String) Trustsec Security Group ID. Mandatory unless mappingGroup is set
+- `host_ip` (String) Mandatory if `host_name` is empty
+- `host_name` (String) Mandatory if `host_ip` is empty
+- `mapping_group` (String) IP to SGT Mapping Group ID. Mandatory unless `sgt` and `deploy_to` and `deploy_type` are set
+- `sgt` (String) Trustsec Security Group ID. Mandatory unless `mapping_group` is set
 
 ### Read-Only
 

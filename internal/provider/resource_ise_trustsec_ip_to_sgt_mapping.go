@@ -80,7 +80,7 @@ func (r *TrustSecIPToSGTMappingResource) Schema(ctx context.Context, req resourc
 				Optional:            true,
 			},
 			"deploy_to": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Mandatory unless mappingGroup is set or unless `deployType=ALL`").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Mandatory unless `mapping_group` is set or unless `deploy_type` is `ALL`").String,
 				Optional:            true,
 			},
 			"deploy_type": schema.StringAttribute{
@@ -91,19 +91,19 @@ func (r *TrustSecIPToSGTMappingResource) Schema(ctx context.Context, req resourc
 				},
 			},
 			"host_name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Mandatory if hostIp is empty").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Mandatory if `host_ip` is empty").String,
 				Optional:            true,
 			},
 			"host_ip": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Mandatory if hostName is empty -- valid IP").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Mandatory if `host_name` is empty").String,
 				Optional:            true,
 			},
 			"sgt": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Trustsec Security Group ID. Mandatory unless mappingGroup is set").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Trustsec Security Group ID. Mandatory unless `mapping_group` is set").String,
 				Optional:            true,
 			},
 			"mapping_group": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("IP to SGT Mapping Group ID. Mandatory unless sgt and deployTo and deployType are set").String,
+				MarkdownDescription: helpers.NewAttributeDescription("IP to SGT Mapping Group ID. Mandatory unless `sgt` and `deploy_to` and `deploy_type` are set").String,
 				Optional:            true,
 			},
 		},

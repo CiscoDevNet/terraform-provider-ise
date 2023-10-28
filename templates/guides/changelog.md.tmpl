@@ -7,6 +7,11 @@ description: |-
 
 # Changelog
 
+## 0.1.4 (unreleased)
+
+- Add `ise_trustsec_ip_to_sgt_mapping` resource and data source
+- Add `ise_trustsec_ip_to_sgt_mapping_group` resource and data source
+
 ## 0.1.3
 
 - Add support for nested conditions to `ise_network_access_authentication_rule` resource and data source

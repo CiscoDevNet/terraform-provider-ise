@@ -2,6 +2,7 @@
 name: TrustSec IP to SGT Mapping
 rest_endpoint: /ers/config/sgmapping
 doc_category: TrustSec
+data_source_name_query: true
 id_path: response.id
 attributes:
   - model_name: name
@@ -18,7 +19,7 @@ attributes:
   - model_name: deployTo
     data_path: [SGMapping]
     type: String
-    description: "Mandatory unless mappingGroup is set or unless `deployType=ALL`"
+    description: "Mandatory unless `mapping_group` is set or unless `deploy_type` is `ALL`"
     exclude_test: true
     example: "All Locations"
   - model_name: deployType
@@ -31,26 +32,27 @@ attributes:
   - model_name: hostName
     data_path: [SGMapping]
     type: String
-    description: Mandatory if hostIp is empty
+    description: Mandatory if `host_ip` is empty
     example: "server1.cisco.com"
     exclude_test: true
   - model_name: hostIp
     data_path: [SGMapping]
     type: String
-    description: Mandatory if hostName is empty -- valid IP
+    description: Mandatory if `host_name` is empty
     example: "10.0.0.1/32"
     minimum_test_value: '"10.0.0.1/32"'
   - model_name: sgt
     data_path: [SGMapping]
     type: String
     example: "93e1bf00-8c01-11e6-996c-525400b48521"
+    test_value: ise_trustsec_security_group.test.id
     minimum_test_value: ise_trustsec_security_group.test.id
-    description: Trustsec Security Group ID. Mandatory unless mappingGroup is set
+    description: Trustsec Security Group ID. Mandatory unless `mapping_group` is set
   - model_name: mappingGroup
     data_path: [SGMapping]
     type: String
     example: "48fc1ac2-d500-493d-99ad-8d8fab0ef11f"
-    description: IP to SGT Mapping Group ID. Mandatory unless sgt and deployTo and deployType are set
+    description: IP to SGT Mapping Group ID. Mandatory unless `sgt` and `deploy_to` and `deploy_type` are set
     exclude_test: true
 
 test_prerequisites: |
