@@ -1,4 +1,4 @@
-## 0.1.4 (unreleased)
+## 0.1.4
 
 - Add `ise_trustsec_ip_to_sgt_mapping` resource and data source
 - Add `ise_trustsec_ip_to_sgt_mapping_group` resource and data source
