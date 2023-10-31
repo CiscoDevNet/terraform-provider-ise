@@ -97,7 +97,7 @@ func (r *TrustSecEgressMatrixCellResource) Schema(ctx context.Context, req resou
 			"sgacls": schema.ListAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("List of TrustSec Security Groups ACLs").String,
 				ElementType:         types.StringType,
-				Required:            true,
+				Optional:            true,
 			},
 			"source_sgt_id": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Source Trustsec Security Group ID").String,

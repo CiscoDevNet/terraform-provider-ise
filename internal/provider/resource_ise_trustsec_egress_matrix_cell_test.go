@@ -33,6 +33,7 @@ import (
 func TestAccIseTrustSecEgressMatrixCell(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("ise_trustsec_egress_matrix_cell.test", "description", "EgressMatrixCell Description"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_trustsec_egress_matrix_cell.test", "default_rule", "NONE"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_trustsec_egress_matrix_cell.test", "matrix_cell_status", "ENABLED"))
 
 	var steps []resource.TestStep
@@ -83,7 +84,7 @@ resource "ise_trustsec_security_group_acl" "test" {
 //template:begin testAccConfigMinimal
 func testAccIseTrustSecEgressMatrixCellConfig_minimum() string {
 	config := `resource "ise_trustsec_egress_matrix_cell" "test" {` + "\n"
-	config += `	sgacls = [ise_trustsec_security_group_acl.test.id]` + "\n"
+	config += `	default_rule = "PERMIT_IP"` + "\n"
 	config += `	source_sgt_id = ise_trustsec_security_group.test.id` + "\n"
 	config += `	destination_sgt_id = ise_trustsec_security_group.test.id` + "\n"
 	config += `}` + "\n"
@@ -96,6 +97,7 @@ func testAccIseTrustSecEgressMatrixCellConfig_minimum() string {
 func testAccIseTrustSecEgressMatrixCellConfig_all() string {
 	config := `resource "ise_trustsec_egress_matrix_cell" "test" {` + "\n"
 	config += `	description = "EgressMatrixCell Description"` + "\n"
+	config += `	default_rule = "NONE"` + "\n"
 	config += `	matrix_cell_status = "ENABLED"` + "\n"
 	config += `	sgacls = [ise_trustsec_security_group_acl.test.id]` + "\n"
 	config += `	source_sgt_id = ise_trustsec_security_group.test.id` + "\n"
