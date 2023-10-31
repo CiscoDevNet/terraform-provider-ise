@@ -15,9 +15,9 @@ attributes:
     type: String
     enum_values: [NONE, DENY_IP, PERMIT_IP]
     description: "Can be used only if sgacls not specified."
-    example: "PERMIT_IP"
+    example: "NONE"
     default_value: "NONE"
-    exclude_test: true
+    minimum_test_value: '"PERMIT_IP"'
   - model_name: matrixCellStatus
     data_path: [EgressMatrixCell]
     type: String
@@ -28,7 +28,6 @@ attributes:
   - model_name: sgacls
     data_path: [EgressMatrixCell]
     tf_name: sgacls
-    mandatory: true
     type: StringList
     test_value: "[ise_trustsec_security_group_acl.test.id]"
     description: List of TrustSec Security Groups ACLs

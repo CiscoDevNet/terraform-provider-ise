@@ -15,6 +15,7 @@ This resource can manage a TrustSec Egress Matrix Cell.
 ```terraform
 resource "ise_trustsec_egress_matrix_cell" "example" {
   description        = "EgressMatrixCell Description"
+  default_rule       = "NONE"
   matrix_cell_status = "ENABLED"
   sgacls             = ["26b76b10-66e6-11ee-9cc1-9eb2a3ecc82a, 9d64dcd0-6384-11ee-9cc1-9eb2a3ecc82a"]
   source_sgt_id      = "93c66ed0-8c01-11e6-996c-525400b48521"
@@ -28,7 +29,6 @@ resource "ise_trustsec_egress_matrix_cell" "example" {
 ### Required
 
 - `destination_sgt_id` (String) Destination Trustsec Security Group ID
-- `sgacls` (List of String) List of TrustSec Security Groups ACLs
 - `source_sgt_id` (String) Source Trustsec Security Group ID
 
 ### Optional
@@ -40,6 +40,7 @@ resource "ise_trustsec_egress_matrix_cell" "example" {
 - `matrix_cell_status` (String) Matrix Cell Status
   - Choices: `DISABLED`, `ENABLED`, `MONITOR`
   - Default value: `DISABLED`
+- `sgacls` (List of String) List of TrustSec Security Groups ACLs
 
 ### Read-Only
 

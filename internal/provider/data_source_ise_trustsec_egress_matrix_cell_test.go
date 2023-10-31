@@ -32,6 +32,7 @@ import (
 func TestAccDataSourceIseTrustSecEgressMatrixCell(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_trustsec_egress_matrix_cell.test", "description", "EgressMatrixCell Description"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_trustsec_egress_matrix_cell.test", "default_rule", "NONE"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_trustsec_egress_matrix_cell.test", "matrix_cell_status", "ENABLED"))
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -72,6 +73,7 @@ resource "ise_trustsec_security_group_acl" "test" {
 func testAccDataSourceIseTrustSecEgressMatrixCellConfig() string {
 	config := `resource "ise_trustsec_egress_matrix_cell" "test" {` + "\n"
 	config += `	description = "EgressMatrixCell Description"` + "\n"
+	config += `	default_rule = "NONE"` + "\n"
 	config += `	matrix_cell_status = "ENABLED"` + "\n"
 	config += `	sgacls = [ise_trustsec_security_group_acl.test.id]` + "\n"
 	config += `	source_sgt_id = ise_trustsec_security_group.test.id` + "\n"
