@@ -7,7 +7,7 @@ description: |-
 
 # Changelog
 
-## 0.1.5 (unreleased)
+## 0.1.5
 
 - Make `sgacls` attribute of `ise_trustsec_egress_matrix_cell` resource optional
 
