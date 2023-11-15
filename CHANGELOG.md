@@ -1,3 +1,7 @@
+## 0.1.5 (unreleased)
+
+- Make `sgacls` attribute of `ise_trustsec_egress_matrix_cell` resource optional
+
 ## 0.1.4
 
 - Add `ise_trustsec_ip_to_sgt_mapping` resource and data source
