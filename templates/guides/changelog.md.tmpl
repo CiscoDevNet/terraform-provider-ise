@@ -15,6 +15,7 @@ description: |-
 - Add `ise_device_admin_condition` resource and data source
 - Add `ise_device_admin_policy_set` resource and data source
 - Add `ise_device_admin_time_and_date_condition` resource and data source
+- Add `ise_device_admin_authentication_rule` resource and data source
 
 ## 0.1.5
 

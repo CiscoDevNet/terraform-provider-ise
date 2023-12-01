@@ -3,7 +3,7 @@ resource "ise_device_admin_policy_set" "example" {
   description               = "My description"
   is_proxy                  = false
   rank                      = 0
-  service_name              = "Default Network Access"
+  service_name              = "Default Device Admin"
   state                     = "enabled"
   condition_type            = "ConditionAttributes"
   condition_is_negate       = false

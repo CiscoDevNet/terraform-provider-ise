@@ -36,7 +36,7 @@ func TestAccIseDeviceAdminPolicySet(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_policy_set.test", "description", "My description"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_policy_set.test", "is_proxy", "false"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_policy_set.test", "rank", "0"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_policy_set.test", "service_name", "Default Network Access"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_policy_set.test", "service_name", "Default Device Admin"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_policy_set.test", "state", "enabled"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_policy_set.test", "condition_type", "ConditionAttributes"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_policy_set.test", "condition_is_negate", "false"))
@@ -88,7 +88,7 @@ resource "ise_device_admin_condition" "test" {
 func testAccIseDeviceAdminPolicySetConfig_minimum() string {
 	config := `resource "ise_device_admin_policy_set" "test" {` + "\n"
 	config += `	name = "PolicySet1"` + "\n"
-	config += `	service_name = "Default Network Access"` + "\n"
+	config += `	service_name = "Default Device Admin"` + "\n"
 	config += `	condition_type = "ConditionReference"` + "\n"
 	config += `	condition_id = ise_device_admin_condition.test.id` + "\n"
 	config += `}` + "\n"
@@ -104,7 +104,7 @@ func testAccIseDeviceAdminPolicySetConfig_all() string {
 	config += `	description = "My description"` + "\n"
 	config += `	is_proxy = false` + "\n"
 	config += `	rank = 0` + "\n"
-	config += `	service_name = "Default Network Access"` + "\n"
+	config += `	service_name = "Default Device Admin"` + "\n"
 	config += `	state = "enabled"` + "\n"
 	config += `	condition_type = "ConditionAttributes"` + "\n"
 	config += `	condition_is_negate = false` + "\n"
