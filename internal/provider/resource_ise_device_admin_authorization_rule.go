@@ -232,6 +232,10 @@ func (r *DeviceAdminAuthorizationRuleResource) Schema(ctx context.Context, req r
 				ElementType:         types.StringType,
 				Optional:            true,
 			},
+			"profile": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Device admin profiles control the initial login session of the device administrator").String,
+				Optional:            true,
+			},
 		},
 	}
 }

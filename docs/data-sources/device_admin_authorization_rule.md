@@ -44,6 +44,7 @@ data "ise_device_admin_authorization_rule" "example" {
 - `condition_operator` (String) Equality operator
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
 - `default` (Boolean) Indicates if this rule is the default one
+- `profile` (String) Device admin profiles control the initial login session of the device administrator
 - `rank` (Number) The rank (priority) in relation to other rules. Lower rank is higher priority.
 - `state` (String) The state that the rule is in. A disabled rule cannot be matched.
 

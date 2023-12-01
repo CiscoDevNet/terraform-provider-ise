@@ -205,6 +205,10 @@ func (d *DeviceAdminAuthorizationRuleDataSource) Schema(ctx context.Context, req
 				ElementType:         types.StringType,
 				Computed:            true,
 			},
+			"profile": schema.StringAttribute{
+				MarkdownDescription: "Device admin profiles control the initial login session of the device administrator",
+				Computed:            true,
+			},
 		},
 	}
 }

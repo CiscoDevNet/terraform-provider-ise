@@ -253,6 +253,10 @@ attributes:
     description: Command sets enforce the specified list of commands that can be executed by a device administrator
     example: DenyAllCommands
     minimum_test_value: '["DenyAllCommands"]'
+  - model_name: profile
+    type: String
+    description: Device admin profiles control the initial login session of the device administrator
+    example: Default Shell Profile
 
 test_prerequisites: |
   resource "ise_device_admin_policy_set" "test" {

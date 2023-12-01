@@ -11,4 +11,5 @@ resource "ise_device_admin_authorization_rule" "example" {
   condition_dictionary_name = "DEVICE"
   condition_operator        = "equals"
   command_sets              = ["DenyAllCommands"]
+  profile                   = "Default Shell Profile"
 }

@@ -43,6 +43,7 @@ func TestAccIseDeviceAdminAuthorizationRule(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_authorization_rule.test", "condition_dictionary_name", "DEVICE"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_authorization_rule.test", "condition_operator", "equals"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_authorization_rule.test", "command_sets.0", "DenyAllCommands"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_authorization_rule.test", "profile", "Default Shell Profile"))
 
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
@@ -118,6 +119,7 @@ func testAccIseDeviceAdminAuthorizationRuleConfig_all() string {
 	config += `	condition_dictionary_name = "DEVICE"` + "\n"
 	config += `	condition_operator = "equals"` + "\n"
 	config += `	command_sets = ["DenyAllCommands"]` + "\n"
+	config += `	profile = "Default Shell Profile"` + "\n"
 	config += `}` + "\n"
 	return config
 }

@@ -51,6 +51,7 @@ type DeviceAdminAuthorizationRule struct {
 	ConditionOperator        types.String                           `tfsdk:"condition_operator"`
 	Children                 []DeviceAdminAuthorizationRuleChildren `tfsdk:"children"`
 	CommandSets              types.List                             `tfsdk:"command_sets"`
+	Profile                  types.String                           `tfsdk:"profile"`
 }
 
 type DeviceAdminAuthorizationRuleChildren struct {
@@ -190,6 +191,9 @@ func (data DeviceAdminAuthorizationRule) toBody(ctx context.Context, state Devic
 		var values []string
 		data.CommandSets.ElementsAs(ctx, &values, false)
 		body, _ = sjson.Set(body, "commands", values)
+	}
+	if !data.Profile.IsNull() {
+		body, _ = sjson.Set(body, "profile", data.Profile.ValueString())
 	}
 	return body
 }
@@ -358,6 +362,11 @@ func (data *DeviceAdminAuthorizationRule) fromBody(ctx context.Context, res gjso
 		data.CommandSets = helpers.GetStringList(value.Array())
 	} else {
 		data.CommandSets = types.ListNull(types.StringType)
+	}
+	if value := res.Get("response.profile"); value.Exists() {
+		data.Profile = types.StringValue(value.String())
+	} else {
+		data.Profile = types.StringNull()
 	}
 }
 
@@ -557,6 +566,11 @@ func (data *DeviceAdminAuthorizationRule) updateFromBody(ctx context.Context, re
 		data.CommandSets = helpers.GetStringList(value.Array())
 	} else {
 		data.CommandSets = types.ListNull(types.StringType)
+	}
+	if value := res.Get("response.profile"); value.Exists() && !data.Profile.IsNull() {
+		data.Profile = types.StringValue(value.String())
+	} else {
+		data.Profile = types.StringNull()
 	}
 }
 
