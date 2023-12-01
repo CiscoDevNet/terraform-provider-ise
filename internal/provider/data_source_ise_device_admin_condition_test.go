@@ -35,9 +35,9 @@ func TestAccDataSourceIseDeviceAdminCondition(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_device_admin_condition.test", "description", "My description"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_device_admin_condition.test", "condition_type", "LibraryConditionAttributes"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_device_admin_condition.test", "is_negate", "false"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_device_admin_condition.test", "attribute_name", "EapAuthentication"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_device_admin_condition.test", "attribute_value", "EAP-TLS"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_device_admin_condition.test", "dictionary_name", "Network Access"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_device_admin_condition.test", "attribute_name", "User"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_device_admin_condition.test", "attribute_value", "User1"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_device_admin_condition.test", "dictionary_name", "TACACS"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_device_admin_condition.test", "operator", "equals"))
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -63,9 +63,9 @@ func testAccDataSourceIseDeviceAdminConditionConfig() string {
 	config += `	description = "My description"` + "\n"
 	config += `	condition_type = "LibraryConditionAttributes"` + "\n"
 	config += `	is_negate = false` + "\n"
-	config += `	attribute_name = "EapAuthentication"` + "\n"
-	config += `	attribute_value = "EAP-TLS"` + "\n"
-	config += `	dictionary_name = "Network Access"` + "\n"
+	config += `	attribute_name = "User"` + "\n"
+	config += `	attribute_value = "User1"` + "\n"
+	config += `	dictionary_name = "TACACS"` + "\n"
 	config += `	operator = "equals"` + "\n"
 	config += `}` + "\n"
 

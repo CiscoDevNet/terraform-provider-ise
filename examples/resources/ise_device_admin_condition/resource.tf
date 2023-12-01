@@ -3,8 +3,8 @@ resource "ise_device_admin_condition" "example" {
   description     = "My description"
   condition_type  = "LibraryConditionAttributes"
   is_negate       = false
-  attribute_name  = "EapAuthentication"
-  attribute_value = "EAP-TLS"
-  dictionary_name = "Network Access"
+  attribute_name  = "User"
+  attribute_value = "User1"
+  dictionary_name = "TACACS"
   operator        = "equals"
 }

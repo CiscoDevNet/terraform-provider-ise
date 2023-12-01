@@ -32,18 +32,18 @@ attributes:
   - model_name: attributeName
     type: String
     description: Dictionary attribute name
-    example: EapAuthentication
-    minimum_test_value: '"EapAuthentication"'
+    example: User
+    minimum_test_value: '"User"'
   - model_name: attributeValue
     type: String
     description: Attribute value for condition. Value type is specified in dictionary object.
-    example: EAP-TLS
-    minimum_test_value: '"EAP-TLS"'
+    example: User1
+    minimum_test_value: '"User1"'
   - model_name: dictionaryName
     type: String
     description: Dictionary name
-    example: Network Access
-    minimum_test_value: '"Network Access"'
+    example: TACACS
+    minimum_test_value: '"TACACS"'
   - model_name: dictionaryValue
     type: String
     description: Dictionary value
@@ -113,15 +113,15 @@ attributes:
       - model_name: attributeName
         type: String
         description: Dictionary attribute name
-        example: EapAuthentication
+        example: User
       - model_name: attributeValue
         type: String
         description: Attribute value for condition. Value type is specified in dictionary object.
-        example: EAP-TLS
+        example: User1
       - model_name: dictionaryName
         type: String
         description: Dictionary name
-        example: Network Access
+        example: TACACS
       - model_name: dictionaryValue
         type: String
         description: Dictionary value
@@ -190,15 +190,15 @@ attributes:
           - model_name: attributeName
             type: String
             description: Dictionary attribute name
-            example: EapAuthentication
+            example: User
           - model_name: attributeValue
             type: String
             description: Attribute value for condition. Value type is specified in dictionary object.
-            example: EAP-TLS
+            example: User1
           - model_name: dictionaryName
             type: String
             description: Dictionary name
-            example: Network Access
+            example: TACACS
           - model_name: dictionaryValue
             type: String
             description: Dictionary value
