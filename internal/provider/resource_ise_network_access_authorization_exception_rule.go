@@ -43,25 +43,25 @@ import (
 //template:begin model
 
 // Ensure provider defined types fully satisfy framework interfaces
-var _ resource.Resource = &NetworkAccessAuthorizationRuleResource{}
-var _ resource.ResourceWithImportState = &NetworkAccessAuthorizationRuleResource{}
+var _ resource.Resource = &NetworkAccessAuthorizationExceptionRuleResource{}
+var _ resource.ResourceWithImportState = &NetworkAccessAuthorizationExceptionRuleResource{}
 
-func NewNetworkAccessAuthorizationRuleResource() resource.Resource {
-	return &NetworkAccessAuthorizationRuleResource{}
+func NewNetworkAccessAuthorizationExceptionRuleResource() resource.Resource {
+	return &NetworkAccessAuthorizationExceptionRuleResource{}
 }
 
-type NetworkAccessAuthorizationRuleResource struct {
+type NetworkAccessAuthorizationExceptionRuleResource struct {
 	client *ise.Client
 }
 
-func (r *NetworkAccessAuthorizationRuleResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_network_access_authorization_rule"
+func (r *NetworkAccessAuthorizationExceptionRuleResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_network_access_authorization_exception_rule"
 }
 
-func (r *NetworkAccessAuthorizationRuleResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *NetworkAccessAuthorizationExceptionRuleResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage a Network Access Authorization Rule.").String,
+		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage a Network Access Authorization Exception Rule.").String,
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -240,7 +240,7 @@ func (r *NetworkAccessAuthorizationRuleResource) Schema(ctx context.Context, req
 	}
 }
 
-func (r *NetworkAccessAuthorizationRuleResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+func (r *NetworkAccessAuthorizationExceptionRuleResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -251,8 +251,8 @@ func (r *NetworkAccessAuthorizationRuleResource) Configure(_ context.Context, re
 //template:end model
 
 //template:begin create
-func (r *NetworkAccessAuthorizationRuleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan NetworkAccessAuthorizationRule
+func (r *NetworkAccessAuthorizationExceptionRuleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan NetworkAccessAuthorizationExceptionRule
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -264,7 +264,7 @@ func (r *NetworkAccessAuthorizationRuleResource) Create(ctx context.Context, req
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
 
 	// Create object
-	body := plan.toBody(ctx, NetworkAccessAuthorizationRule{})
+	body := plan.toBody(ctx, NetworkAccessAuthorizationExceptionRule{})
 	res, _, err := r.client.Post(plan.getPath(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
@@ -281,8 +281,8 @@ func (r *NetworkAccessAuthorizationRuleResource) Create(ctx context.Context, req
 //template:end create
 
 //template:begin read
-func (r *NetworkAccessAuthorizationRuleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state NetworkAccessAuthorizationRule
+func (r *NetworkAccessAuthorizationExceptionRuleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state NetworkAccessAuthorizationExceptionRule
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -313,8 +313,8 @@ func (r *NetworkAccessAuthorizationRuleResource) Read(ctx context.Context, req r
 //template:end read
 
 //template:begin update
-func (r *NetworkAccessAuthorizationRuleResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan, state NetworkAccessAuthorizationRule
+func (r *NetworkAccessAuthorizationExceptionRuleResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var plan, state NetworkAccessAuthorizationExceptionRule
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -348,8 +348,8 @@ func (r *NetworkAccessAuthorizationRuleResource) Update(ctx context.Context, req
 //template:end update
 
 //template:begin delete
-func (r *NetworkAccessAuthorizationRuleResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state NetworkAccessAuthorizationRule
+func (r *NetworkAccessAuthorizationExceptionRuleResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state NetworkAccessAuthorizationExceptionRule
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -373,7 +373,7 @@ func (r *NetworkAccessAuthorizationRuleResource) Delete(ctx context.Context, req
 //template:end delete
 
 //template:begin import
-func (r *NetworkAccessAuthorizationRuleResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *NetworkAccessAuthorizationExceptionRuleResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 

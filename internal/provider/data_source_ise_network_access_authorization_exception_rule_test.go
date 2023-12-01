@@ -29,26 +29,26 @@ import (
 //template:end imports
 
 //template:begin testAccDataSource
-func TestAccDataSourceIseNetworkAccessAuthorizationRule(t *testing.T) {
+func TestAccDataSourceIseNetworkAccessAuthorizationExceptionRule(t *testing.T) {
 	var checks []resource.TestCheckFunc
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_rule.test", "name", "Rule1"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_rule.test", "default", "false"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_rule.test", "rank", "0"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_rule.test", "state", "enabled"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_rule.test", "condition_type", "ConditionAttributes"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_rule.test", "condition_is_negate", "false"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_rule.test", "condition_attribute_name", "Location"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_rule.test", "condition_attribute_value", "All Locations"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_rule.test", "condition_dictionary_name", "DEVICE"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_rule.test", "condition_operator", "equals"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_rule.test", "profiles.0", "PermitAccess"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_rule.test", "security_group", "BYOD"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_exception_rule.test", "name", "Rule1"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_exception_rule.test", "default", "false"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_exception_rule.test", "rank", "0"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_exception_rule.test", "state", "enabled"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_exception_rule.test", "condition_type", "ConditionAttributes"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_exception_rule.test", "condition_is_negate", "false"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_exception_rule.test", "condition_attribute_name", "Location"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_exception_rule.test", "condition_attribute_value", "All Locations"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_exception_rule.test", "condition_dictionary_name", "DEVICE"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_exception_rule.test", "condition_operator", "equals"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_exception_rule.test", "profiles.0", "PermitAccess"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_authorization_exception_rule.test", "security_group", "BYOD"))
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceIseNetworkAccessAuthorizationRulePrerequisitesConfig + testAccDataSourceIseNetworkAccessAuthorizationRuleConfig(),
+				Config: testAccDataSourceIseNetworkAccessAuthorizationExceptionRulePrerequisitesConfig + testAccDataSourceIseNetworkAccessAuthorizationExceptionRuleConfig(),
 				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
@@ -58,7 +58,7 @@ func TestAccDataSourceIseNetworkAccessAuthorizationRule(t *testing.T) {
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
-const testAccDataSourceIseNetworkAccessAuthorizationRulePrerequisitesConfig = `
+const testAccDataSourceIseNetworkAccessAuthorizationExceptionRulePrerequisitesConfig = `
 resource "ise_network_access_policy_set" "test" {
   name                      = "PolicySet1"
   service_name              = "Default Network Access"
@@ -83,8 +83,8 @@ resource "ise_network_access_condition" "test" {
 //template:end testPrerequisites
 
 //template:begin testAccDataSourceConfig
-func testAccDataSourceIseNetworkAccessAuthorizationRuleConfig() string {
-	config := `resource "ise_network_access_authorization_rule" "test" {` + "\n"
+func testAccDataSourceIseNetworkAccessAuthorizationExceptionRuleConfig() string {
+	config := `resource "ise_network_access_authorization_exception_rule" "test" {` + "\n"
 	config += `	policy_set_id = ise_network_access_policy_set.test.id` + "\n"
 	config += `	name = "Rule1"` + "\n"
 	config += `	default = false` + "\n"
@@ -101,8 +101,8 @@ func testAccDataSourceIseNetworkAccessAuthorizationRuleConfig() string {
 	config += `}` + "\n"
 
 	config += `
-		data "ise_network_access_authorization_rule" "test" {
-			id = ise_network_access_authorization_rule.test.id
+		data "ise_network_access_authorization_exception_rule" "test" {
+			id = ise_network_access_authorization_exception_rule.test.id
 			policy_set_id = ise_network_access_policy_set.test.id
 		}
 	`

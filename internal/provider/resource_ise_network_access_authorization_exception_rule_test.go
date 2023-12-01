@@ -30,29 +30,29 @@ import (
 //template:end imports
 
 //template:begin testAcc
-func TestAccIseNetworkAccessAuthorizationRule(t *testing.T) {
+func TestAccIseNetworkAccessAuthorizationExceptionRule(t *testing.T) {
 	var checks []resource.TestCheckFunc
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_rule.test", "name", "Rule1"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_rule.test", "default", "false"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_rule.test", "rank", "0"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_rule.test", "state", "enabled"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_rule.test", "condition_type", "ConditionAttributes"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_rule.test", "condition_is_negate", "false"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_rule.test", "condition_attribute_name", "Location"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_rule.test", "condition_attribute_value", "All Locations"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_rule.test", "condition_dictionary_name", "DEVICE"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_rule.test", "condition_operator", "equals"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_rule.test", "profiles.0", "PermitAccess"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_rule.test", "security_group", "BYOD"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_exception_rule.test", "name", "Rule1"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_exception_rule.test", "default", "false"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_exception_rule.test", "rank", "0"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_exception_rule.test", "state", "enabled"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_exception_rule.test", "condition_type", "ConditionAttributes"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_exception_rule.test", "condition_is_negate", "false"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_exception_rule.test", "condition_attribute_name", "Location"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_exception_rule.test", "condition_attribute_value", "All Locations"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_exception_rule.test", "condition_dictionary_name", "DEVICE"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_exception_rule.test", "condition_operator", "equals"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_exception_rule.test", "profiles.0", "PermitAccess"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_exception_rule.test", "security_group", "BYOD"))
 
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccIseNetworkAccessAuthorizationRulePrerequisitesConfig + testAccIseNetworkAccessAuthorizationRuleConfig_minimum(),
+			Config: testAccIseNetworkAccessAuthorizationExceptionRulePrerequisitesConfig + testAccIseNetworkAccessAuthorizationExceptionRuleConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccIseNetworkAccessAuthorizationRulePrerequisitesConfig + testAccIseNetworkAccessAuthorizationRuleConfig_all(),
+		Config: testAccIseNetworkAccessAuthorizationExceptionRulePrerequisitesConfig + testAccIseNetworkAccessAuthorizationExceptionRuleConfig_all(),
 		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 
@@ -66,7 +66,7 @@ func TestAccIseNetworkAccessAuthorizationRule(t *testing.T) {
 //template:end testAcc
 
 //template:begin testPrerequisites
-const testAccIseNetworkAccessAuthorizationRulePrerequisitesConfig = `
+const testAccIseNetworkAccessAuthorizationExceptionRulePrerequisitesConfig = `
 resource "ise_network_access_policy_set" "test" {
   name                      = "PolicySet1"
   service_name              = "Default Network Access"
@@ -91,8 +91,8 @@ resource "ise_network_access_condition" "test" {
 //template:end testPrerequisites
 
 //template:begin testAccConfigMinimal
-func testAccIseNetworkAccessAuthorizationRuleConfig_minimum() string {
-	config := `resource "ise_network_access_authorization_rule" "test" {` + "\n"
+func testAccIseNetworkAccessAuthorizationExceptionRuleConfig_minimum() string {
+	config := `resource "ise_network_access_authorization_exception_rule" "test" {` + "\n"
 	config += `	policy_set_id = ise_network_access_policy_set.test.id` + "\n"
 	config += `	name = "Rule1"` + "\n"
 	config += `	condition_type = "ConditionReference"` + "\n"
@@ -105,8 +105,8 @@ func testAccIseNetworkAccessAuthorizationRuleConfig_minimum() string {
 //template:end testAccConfigMinimal
 
 //template:begin testAccConfigAll
-func testAccIseNetworkAccessAuthorizationRuleConfig_all() string {
-	config := `resource "ise_network_access_authorization_rule" "test" {` + "\n"
+func testAccIseNetworkAccessAuthorizationExceptionRuleConfig_all() string {
+	config := `resource "ise_network_access_authorization_exception_rule" "test" {` + "\n"
 	config += `	policy_set_id = ise_network_access_policy_set.test.id` + "\n"
 	config += `	name = "Rule1"` + "\n"
 	config += `	default = false` + "\n"

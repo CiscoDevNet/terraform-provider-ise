@@ -1,4 +1,4 @@
-resource "ise_network_access_authorization_rule" "example" {
+resource "ise_network_access_authorization_exception_rule" "example" {
   policy_set_id             = "d82952cb-b901-4b09-b363-5ebf39bdbaf9"
   name                      = "Rule1"
   default                   = false

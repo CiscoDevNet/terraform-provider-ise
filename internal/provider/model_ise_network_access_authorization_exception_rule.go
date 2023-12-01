@@ -34,39 +34,39 @@ import (
 //template:end imports
 
 //template:begin types
-type NetworkAccessAuthorizationRule struct {
-	Id                       types.String                             `tfsdk:"id"`
-	PolicySetId              types.String                             `tfsdk:"policy_set_id"`
-	Name                     types.String                             `tfsdk:"name"`
-	Default                  types.Bool                               `tfsdk:"default"`
-	Rank                     types.Int64                              `tfsdk:"rank"`
-	State                    types.String                             `tfsdk:"state"`
-	ConditionType            types.String                             `tfsdk:"condition_type"`
-	ConditionId              types.String                             `tfsdk:"condition_id"`
-	ConditionIsNegate        types.Bool                               `tfsdk:"condition_is_negate"`
-	ConditionAttributeName   types.String                             `tfsdk:"condition_attribute_name"`
-	ConditionAttributeValue  types.String                             `tfsdk:"condition_attribute_value"`
-	ConditionDictionaryName  types.String                             `tfsdk:"condition_dictionary_name"`
-	ConditionDictionaryValue types.String                             `tfsdk:"condition_dictionary_value"`
-	ConditionOperator        types.String                             `tfsdk:"condition_operator"`
-	Children                 []NetworkAccessAuthorizationRuleChildren `tfsdk:"children"`
-	Profiles                 types.List                               `tfsdk:"profiles"`
-	SecurityGroup            types.String                             `tfsdk:"security_group"`
+type NetworkAccessAuthorizationExceptionRule struct {
+	Id                       types.String                                      `tfsdk:"id"`
+	PolicySetId              types.String                                      `tfsdk:"policy_set_id"`
+	Name                     types.String                                      `tfsdk:"name"`
+	Default                  types.Bool                                        `tfsdk:"default"`
+	Rank                     types.Int64                                       `tfsdk:"rank"`
+	State                    types.String                                      `tfsdk:"state"`
+	ConditionType            types.String                                      `tfsdk:"condition_type"`
+	ConditionId              types.String                                      `tfsdk:"condition_id"`
+	ConditionIsNegate        types.Bool                                        `tfsdk:"condition_is_negate"`
+	ConditionAttributeName   types.String                                      `tfsdk:"condition_attribute_name"`
+	ConditionAttributeValue  types.String                                      `tfsdk:"condition_attribute_value"`
+	ConditionDictionaryName  types.String                                      `tfsdk:"condition_dictionary_name"`
+	ConditionDictionaryValue types.String                                      `tfsdk:"condition_dictionary_value"`
+	ConditionOperator        types.String                                      `tfsdk:"condition_operator"`
+	Children                 []NetworkAccessAuthorizationExceptionRuleChildren `tfsdk:"children"`
+	Profiles                 types.List                                        `tfsdk:"profiles"`
+	SecurityGroup            types.String                                      `tfsdk:"security_group"`
 }
 
-type NetworkAccessAuthorizationRuleChildren struct {
-	ConditionType   types.String                                     `tfsdk:"condition_type"`
-	Id              types.String                                     `tfsdk:"id"`
-	IsNegate        types.Bool                                       `tfsdk:"is_negate"`
-	AttributeName   types.String                                     `tfsdk:"attribute_name"`
-	AttributeValue  types.String                                     `tfsdk:"attribute_value"`
-	DictionaryName  types.String                                     `tfsdk:"dictionary_name"`
-	DictionaryValue types.String                                     `tfsdk:"dictionary_value"`
-	Operator        types.String                                     `tfsdk:"operator"`
-	Children        []NetworkAccessAuthorizationRuleChildrenChildren `tfsdk:"children"`
+type NetworkAccessAuthorizationExceptionRuleChildren struct {
+	ConditionType   types.String                                              `tfsdk:"condition_type"`
+	Id              types.String                                              `tfsdk:"id"`
+	IsNegate        types.Bool                                                `tfsdk:"is_negate"`
+	AttributeName   types.String                                              `tfsdk:"attribute_name"`
+	AttributeValue  types.String                                              `tfsdk:"attribute_value"`
+	DictionaryName  types.String                                              `tfsdk:"dictionary_name"`
+	DictionaryValue types.String                                              `tfsdk:"dictionary_value"`
+	Operator        types.String                                              `tfsdk:"operator"`
+	Children        []NetworkAccessAuthorizationExceptionRuleChildrenChildren `tfsdk:"children"`
 }
 
-type NetworkAccessAuthorizationRuleChildrenChildren struct {
+type NetworkAccessAuthorizationExceptionRuleChildrenChildren struct {
 	ConditionType   types.String `tfsdk:"condition_type"`
 	Id              types.String `tfsdk:"id"`
 	IsNegate        types.Bool   `tfsdk:"is_negate"`
@@ -80,14 +80,14 @@ type NetworkAccessAuthorizationRuleChildrenChildren struct {
 //template:end types
 
 //template:begin getPath
-func (data NetworkAccessAuthorizationRule) getPath() string {
-	return fmt.Sprintf("/api/v1/policy/network-access/policy-set/%v/authorization", data.PolicySetId.ValueString())
+func (data NetworkAccessAuthorizationExceptionRule) getPath() string {
+	return fmt.Sprintf("/api/v1/policy/network-access/policy-set/%v/exception", data.PolicySetId.ValueString())
 }
 
 //template:end getPath
 
 //template:begin toBody
-func (data NetworkAccessAuthorizationRule) toBody(ctx context.Context, state NetworkAccessAuthorizationRule) string {
+func (data NetworkAccessAuthorizationExceptionRule) toBody(ctx context.Context, state NetworkAccessAuthorizationExceptionRule) string {
 	body := ""
 	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "rule.name", data.Name.ValueString())
@@ -201,7 +201,7 @@ func (data NetworkAccessAuthorizationRule) toBody(ctx context.Context, state Net
 //template:end toBody
 
 //template:begin fromBody
-func (data *NetworkAccessAuthorizationRule) fromBody(ctx context.Context, res gjson.Result) {
+func (data *NetworkAccessAuthorizationExceptionRule) fromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("response.rule.name"); value.Exists() {
 		data.Name = types.StringValue(value.String())
 	} else {
@@ -263,9 +263,9 @@ func (data *NetworkAccessAuthorizationRule) fromBody(ctx context.Context, res gj
 		data.ConditionOperator = types.StringNull()
 	}
 	if value := res.Get("response.rule.condition.children"); value.Exists() {
-		data.Children = make([]NetworkAccessAuthorizationRuleChildren, 0)
+		data.Children = make([]NetworkAccessAuthorizationExceptionRuleChildren, 0)
 		value.ForEach(func(k, v gjson.Result) bool {
-			item := NetworkAccessAuthorizationRuleChildren{}
+			item := NetworkAccessAuthorizationExceptionRuleChildren{}
 			if cValue := v.Get("conditionType"); cValue.Exists() {
 				item.ConditionType = types.StringValue(cValue.String())
 			} else {
@@ -307,9 +307,9 @@ func (data *NetworkAccessAuthorizationRule) fromBody(ctx context.Context, res gj
 				item.Operator = types.StringNull()
 			}
 			if cValue := v.Get("children"); cValue.Exists() {
-				item.Children = make([]NetworkAccessAuthorizationRuleChildrenChildren, 0)
+				item.Children = make([]NetworkAccessAuthorizationExceptionRuleChildrenChildren, 0)
 				cValue.ForEach(func(ck, cv gjson.Result) bool {
-					cItem := NetworkAccessAuthorizationRuleChildrenChildren{}
+					cItem := NetworkAccessAuthorizationExceptionRuleChildrenChildren{}
 					if ccValue := cv.Get("conditionType"); ccValue.Exists() {
 						cItem.ConditionType = types.StringValue(ccValue.String())
 					} else {
@@ -373,7 +373,7 @@ func (data *NetworkAccessAuthorizationRule) fromBody(ctx context.Context, res gj
 //template:end fromBody
 
 //template:begin updateFromBody
-func (data *NetworkAccessAuthorizationRule) updateFromBody(ctx context.Context, res gjson.Result) {
+func (data *NetworkAccessAuthorizationExceptionRule) updateFromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("response.rule.name"); value.Exists() && !data.Name.IsNull() {
 		data.Name = types.StringValue(value.String())
 	} else {

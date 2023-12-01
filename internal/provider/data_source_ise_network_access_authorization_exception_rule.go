@@ -40,26 +40,26 @@ import (
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
-	_ datasource.DataSource              = &NetworkAccessAuthorizationRuleDataSource{}
-	_ datasource.DataSourceWithConfigure = &NetworkAccessAuthorizationRuleDataSource{}
+	_ datasource.DataSource              = &NetworkAccessAuthorizationExceptionRuleDataSource{}
+	_ datasource.DataSourceWithConfigure = &NetworkAccessAuthorizationExceptionRuleDataSource{}
 )
 
-func NewNetworkAccessAuthorizationRuleDataSource() datasource.DataSource {
-	return &NetworkAccessAuthorizationRuleDataSource{}
+func NewNetworkAccessAuthorizationExceptionRuleDataSource() datasource.DataSource {
+	return &NetworkAccessAuthorizationExceptionRuleDataSource{}
 }
 
-type NetworkAccessAuthorizationRuleDataSource struct {
+type NetworkAccessAuthorizationExceptionRuleDataSource struct {
 	client *ise.Client
 }
 
-func (d *NetworkAccessAuthorizationRuleDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_network_access_authorization_rule"
+func (d *NetworkAccessAuthorizationExceptionRuleDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_network_access_authorization_exception_rule"
 }
 
-func (d *NetworkAccessAuthorizationRuleDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *NetworkAccessAuthorizationExceptionRuleDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: "This data source can read the Network Access Authorization Rule.",
+		MarkdownDescription: "This data source can read the Network Access Authorization Exception Rule.",
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -212,7 +212,7 @@ func (d *NetworkAccessAuthorizationRuleDataSource) Schema(ctx context.Context, r
 		},
 	}
 }
-func (d *NetworkAccessAuthorizationRuleDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
+func (d *NetworkAccessAuthorizationExceptionRuleDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
 	return []datasource.ConfigValidator{
 		datasourcevalidator.ExactlyOneOf(
 			path.MatchRoot("id"),
@@ -221,7 +221,7 @@ func (d *NetworkAccessAuthorizationRuleDataSource) ConfigValidators(ctx context.
 	}
 }
 
-func (d *NetworkAccessAuthorizationRuleDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
+func (d *NetworkAccessAuthorizationExceptionRuleDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -232,8 +232,8 @@ func (d *NetworkAccessAuthorizationRuleDataSource) Configure(_ context.Context, 
 //template:end model
 
 //template:begin read
-func (d *NetworkAccessAuthorizationRuleDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var config NetworkAccessAuthorizationRule
+func (d *NetworkAccessAuthorizationExceptionRuleDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var config NetworkAccessAuthorizationExceptionRule
 
 	// Read config
 	diags := req.Config.Get(ctx, &config)
