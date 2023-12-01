@@ -9,6 +9,7 @@
 - Add `ise_device_admin_authentication_rule` resource and data source
 - Add `ise_device_admin_authorization_rule` resource and data source
 - Add `ise_device_admin_authorization_exception_rule` resource and data source
+- Add `ise_device_admin_authorization_global_exception_rule` resource and data source
 
 ## 0.1.5
 
