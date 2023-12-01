@@ -12,6 +12,7 @@ description: |-
 - Add `ise_downloadable_acl` resource and data source
 - Add `ise_tacacs_command_set` resource and data source
 - Add `ise_tacacs_profile` resource and data source
+- Add `ise_device_admin_condition` resource and data source
 
 ## 0.1.5
 
