@@ -1,0 +1,38 @@
+---
+name: TACACS Profile
+rest_endpoint: /ers/config/tacacsprofile
+data_source_name_query: true
+doc_category: Policy
+attributes:
+  - model_name: name
+    data_path: [TacacsProfile]
+    type: String
+    mandatory: true
+    description: The name of the TACACS profile
+    example: Profile1
+  - model_name: description
+    data_path: [TacacsProfile]
+    type: String
+    description: Description
+    example: My TACACS profile
+  - model_name: sessionAttributeList
+    data_path: [TacacsProfile, sessionAttributes]
+    tf_name: session_attributes
+    type: List
+    attributes:
+      - model_name: type
+        type: String
+        mandatory: true
+        enum_values: [MANDATORY, OPTIONAL]
+        description: Type
+        example: MANDATORY
+      - model_name: name
+        type: String
+        mandatory: true
+        description: Name
+        example: attr1
+      - model_name: value
+        type: String
+        mandatory: true
+        description: Value
+        example: value
