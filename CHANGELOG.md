@@ -1,3 +1,7 @@
+## 0.1.6 (unreleased)
+
+- Add `ise_downloadable_acl` resource and data source
+
 ## 0.1.5
 
 - Make `sgacls` attribute of `ise_trustsec_egress_matrix_cell` resource optional

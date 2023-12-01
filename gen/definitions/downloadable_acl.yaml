@@ -1,0 +1,30 @@
+---
+name: Downloadable ACL
+rest_endpoint: /ers/config/downloadableacl
+data_source_name_query: true
+doc_category: Policy
+attributes:
+  - model_name: name
+    data_path: [DownloadableAcl]
+    type: String
+    mandatory: true
+    description: The name of the downloadable ACL
+    example: MyACL
+  - model_name: description
+    data_path: [DownloadableAcl]
+    type: String
+    description: Description
+    example: My first downloadable ACL
+  - model_name: dacl
+    data_path: [DownloadableAcl]
+    type: String
+    mandatory: true
+    description: The DACL content
+    example: permit ip any any
+  - model_name: daclType
+    data_path: [DownloadableAcl]
+    type: String
+    enum_values: [IPV4, IPV6, IP_AGNOSTIC]
+    description: The type of ACL
+    default_value: IPV4
+    example: IPV4
