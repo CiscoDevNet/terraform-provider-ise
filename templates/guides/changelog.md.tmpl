@@ -7,7 +7,7 @@ description: |-
 
 # Changelog
 
-## 0.1.6 (unreleased)
+## 0.1.6
 
 - Add `ise_downloadable_acl` resource and data source
 - Add `ise_tacacs_command_set` resource and data source
