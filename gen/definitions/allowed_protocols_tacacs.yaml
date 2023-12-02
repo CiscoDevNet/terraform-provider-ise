@@ -1,0 +1,94 @@
+---
+name: Allowed Protocols TACACS
+rest_endpoint: /ers/config/allowedprotocols
+data_source_name_query: true
+res_description: This resource can manage a TACACS allowed protocols policy element.
+ds_description: This data source can read a TACACS allowed protocols policy element.
+skip_minimum_test: true # PUT fails with HTTP 500
+doc_category: Device Administration
+attributes:
+  - model_name: name
+    data_path: [AllowedProtocols]
+    type: String
+    mandatory: true
+    description: The name of the allowed protocols
+    example: Protocols1
+  - model_name: description
+    data_path: [AllowedProtocols]
+    type: String
+    description: Description
+    example: My allowed TACACS protocols
+  - model_name: processHostLookup
+    data_path: [AllowedProtocols]
+    type: Bool
+    value: false
+  - model_name: allowPapAscii
+    data_path: [AllowedProtocols]
+    type: Bool
+    mandatory: true
+    description: Allow PAP ASCII
+    example: true
+  - model_name: allowChap
+    data_path: [AllowedProtocols]
+    type: Bool
+    mandatory: true
+    description: Allow CHAP
+    example: true
+  - model_name: allowMsChapV1
+    data_path: [AllowedProtocols]
+    type: Bool
+    mandatory: true
+    description: Allow MS CHAP v1
+    example: true
+  - model_name: allowMsChapV2
+    data_path: [AllowedProtocols]
+    type: Bool
+    value: false
+  - model_name: allowEapMd5
+    data_path: [AllowedProtocols]
+    type: Bool
+    value: false
+  - model_name: allowLeap
+    data_path: [AllowedProtocols]
+    type: Bool
+    value: false
+  - model_name: allowEapTls
+    data_path: [AllowedProtocols]
+    type: Bool
+    value: false
+  - model_name: allowEapTtls
+    data_path: [AllowedProtocols]
+    type: Bool
+    value: false
+  - model_name: allowEapFast
+    data_path: [AllowedProtocols]
+    type: Bool
+    value: false
+  - model_name: allowPeap
+    data_path: [AllowedProtocols]
+    type: Bool
+    value: false
+  - model_name: allowTeap
+    data_path: [AllowedProtocols]
+    type: Bool
+    value: false
+  - model_name: allowPreferredEapProtocol
+    data_path: [AllowedProtocols]
+    type: Bool
+    value: false
+  - model_name: eapTlsLBit
+    data_path: [AllowedProtocols]
+    type: Bool
+    value: false
+  - model_name: allowWeakCiphersForEap
+    data_path: [AllowedProtocols]
+    type: Bool
+    value: false
+  - model_name: requireMessageAuth
+    data_path: [AllowedProtocols]
+    type: Bool
+    value: false
+  - model_name: fiveG
+    data_path: [AllowedProtocols]
+    type: Bool
+    value: false

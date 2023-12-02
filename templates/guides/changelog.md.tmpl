@@ -10,6 +10,7 @@ description: |-
 ## 0.1.7 (unreleased)
 
 - BREAKING CHANGE: Refactor `advanced_attributes` of `ise_authorization_profile` resource and data source
+- Add `ise_allowed_protocols_tacacs` resource and data source
 
 ## 0.1.6
 
