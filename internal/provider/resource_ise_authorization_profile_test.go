@@ -61,11 +61,10 @@ func TestAccIseAuthorizationProfile(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "mac_sec_policy", "MUST_SECURE"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "reauthentication_connectivity", "DEFAULT"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "reauthentication_timer", "1"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "advanced_attributes.0.attribute_1_value_type", "AdvancedDictionaryAttribute"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "advanced_attributes.0.attribute_1_dictionary_name", "Cisco"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "advanced_attributes.0.attribute_1_name", "cisco-av-pair"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "advanced_attributes.0.attribute_2_value_type", "AttributeValue"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "advanced_attributes.0.attribute_2_value", "set_nadprofile_vlan=true,vlan=TEST,tag=1"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "advanced_attributes.0.attribute_left_dictionary_name", "Cisco"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "advanced_attributes.0.attribute_left_name", "cisco-av-pair"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "advanced_attributes.0.attribute_right_value_type", "AttributeValue"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "advanced_attributes.0.attribute_right_value", "set_nadprofile_vlan=true,vlan=TEST,tag=1"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_authorization_profile.test", "airespace_ipv6_acl", "ACL1"))
 
 	var steps []resource.TestStep
@@ -138,11 +137,10 @@ func testAccIseAuthorizationProfileConfig_all() string {
 	config += `	reauthentication_connectivity = "DEFAULT"` + "\n"
 	config += `	reauthentication_timer = 1` + "\n"
 	config += `	advanced_attributes = [{` + "\n"
-	config += `	  attribute_1_value_type = "AdvancedDictionaryAttribute"` + "\n"
-	config += `	  attribute_1_dictionary_name = "Cisco"` + "\n"
-	config += `	  attribute_1_name = "cisco-av-pair"` + "\n"
-	config += `	  attribute_2_value_type = "AttributeValue"` + "\n"
-	config += `	  attribute_2_value = "set_nadprofile_vlan=true,vlan=TEST,tag=1"` + "\n"
+	config += `	  attribute_left_dictionary_name = "Cisco"` + "\n"
+	config += `	  attribute_left_name = "cisco-av-pair"` + "\n"
+	config += `	  attribute_right_value_type = "AttributeValue"` + "\n"
+	config += `	  attribute_right_value = "set_nadprofile_vlan=true,vlan=TEST,tag=1"` + "\n"
 	config += `	}]` + "\n"
 	config += `	airespace_ipv6_acl = "ACL1"` + "\n"
 	config += `}` + "\n"

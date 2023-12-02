@@ -233,31 +233,32 @@ func (r *AuthorizationProfileResource) Schema(ctx context.Context, req resource.
 				Optional:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
-						"attribute_1_value_type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Advanced attribute value type").AddStringEnumDescription("AdvancedDictionaryAttribute", "AttributeValue").String,
-							Required:            true,
-							Validators: []validator.String{
-								stringvalidator.OneOf("AdvancedDictionaryAttribute", "AttributeValue"),
-							},
-						},
-						"attribute_1_dictionary_name": schema.StringAttribute{
+						"attribute_left_dictionary_name": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Dictionary name").String,
-							Required:            true,
+							Optional:            true,
 						},
-						"attribute_1_name": schema.StringAttribute{
+						"attribute_left_name": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Attribute name").String,
-							Required:            true,
+							Optional:            true,
 						},
-						"attribute_2_value_type": schema.StringAttribute{
+						"attribute_right_value_type": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Advanced attribute value type").AddStringEnumDescription("AdvancedDictionaryAttribute", "AttributeValue").String,
-							Required:            true,
+							Optional:            true,
 							Validators: []validator.String{
 								stringvalidator.OneOf("AdvancedDictionaryAttribute", "AttributeValue"),
 							},
 						},
-						"attribute_2_value": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Attribute value").String,
-							Required:            true,
+						"attribute_right_value": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("Attribute value, only required when `attribute_right_value_type` is `AttributeValue`").String,
+							Optional:            true,
+						},
+						"attribute_right_dictionary_name": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("Dictionary name, only required when `attribute_right_value_type` is `AdvancedDictionaryAttribute`").String,
+							Optional:            true,
+						},
+						"attribute_right_name": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("Attribute name, only required when `attribute_right_value_type` is `AdvancedDictionaryAttribute`").String,
+							Optional:            true,
 						},
 					},
 				},

@@ -69,11 +69,12 @@ type AuthorizationProfile struct {
 }
 
 type AuthorizationProfileAdvancedAttributes struct {
-	Attribute1ValueType      types.String `tfsdk:"attribute_1_value_type"`
-	Attribute1DictionaryName types.String `tfsdk:"attribute_1_dictionary_name"`
-	Attribute1Name           types.String `tfsdk:"attribute_1_name"`
-	Attribute2ValueType      types.String `tfsdk:"attribute_2_value_type"`
-	Attribute2Value          types.String `tfsdk:"attribute_2_value"`
+	AttributeLeftDictionaryName  types.String `tfsdk:"attribute_left_dictionary_name"`
+	AttributeLeftName            types.String `tfsdk:"attribute_left_name"`
+	AttributeRightValueType      types.String `tfsdk:"attribute_right_value_type"`
+	AttributeRightValue          types.String `tfsdk:"attribute_right_value"`
+	AttributeRightDictionaryName types.String `tfsdk:"attribute_right_dictionary_name"`
+	AttributeRightName           types.String `tfsdk:"attribute_right_name"`
 }
 
 //template:end types
@@ -183,20 +184,24 @@ func (data AuthorizationProfile) toBody(ctx context.Context, state Authorization
 		body, _ = sjson.Set(body, "AuthorizationProfile.advancedAttributes", []interface{}{})
 		for _, item := range data.AdvancedAttributes {
 			itemBody := ""
-			if !item.Attribute1ValueType.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "leftHandSideDictionaryAttribue.AdvancedAttributeValueType", item.Attribute1ValueType.ValueString())
+			itemBody, _ = sjson.Set(itemBody, "leftHandSideDictionaryAttribue.AdvancedAttributeValueType", "AdvancedDictionaryAttribute")
+			if !item.AttributeLeftDictionaryName.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "leftHandSideDictionaryAttribue.dictionaryName", item.AttributeLeftDictionaryName.ValueString())
 			}
-			if !item.Attribute1DictionaryName.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "leftHandSideDictionaryAttribue.dictionaryName", item.Attribute1DictionaryName.ValueString())
+			if !item.AttributeLeftName.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "leftHandSideDictionaryAttribue.attributeName", item.AttributeLeftName.ValueString())
 			}
-			if !item.Attribute1Name.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "leftHandSideDictionaryAttribue.attributeName", item.Attribute1Name.ValueString())
+			if !item.AttributeRightValueType.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "rightHandSideAttribueValue.AdvancedAttributeValueType", item.AttributeRightValueType.ValueString())
 			}
-			if !item.Attribute2ValueType.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "rightHandSideAttribueValue.AdvancedAttributeValueType", item.Attribute2ValueType.ValueString())
+			if !item.AttributeRightValue.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "rightHandSideAttribueValue.value", item.AttributeRightValue.ValueString())
 			}
-			if !item.Attribute2Value.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "rightHandSideAttribueValue.value", item.Attribute2Value.ValueString())
+			if !item.AttributeRightDictionaryName.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "rightHandSideAttribueValue.dictionaryName", item.AttributeRightDictionaryName.ValueString())
+			}
+			if !item.AttributeRightName.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "rightHandSideAttribueValue.attributeName", item.AttributeRightName.ValueString())
 			}
 			body, _ = sjson.SetRaw(body, "AuthorizationProfile.advancedAttributes.-1", itemBody)
 		}
@@ -368,30 +373,35 @@ func (data *AuthorizationProfile) fromBody(ctx context.Context, res gjson.Result
 		data.AdvancedAttributes = make([]AuthorizationProfileAdvancedAttributes, 0)
 		value.ForEach(func(k, v gjson.Result) bool {
 			item := AuthorizationProfileAdvancedAttributes{}
-			if cValue := v.Get("leftHandSideDictionaryAttribue.AdvancedAttributeValueType"); cValue.Exists() {
-				item.Attribute1ValueType = types.StringValue(cValue.String())
-			} else {
-				item.Attribute1ValueType = types.StringNull()
-			}
 			if cValue := v.Get("leftHandSideDictionaryAttribue.dictionaryName"); cValue.Exists() {
-				item.Attribute1DictionaryName = types.StringValue(cValue.String())
+				item.AttributeLeftDictionaryName = types.StringValue(cValue.String())
 			} else {
-				item.Attribute1DictionaryName = types.StringNull()
+				item.AttributeLeftDictionaryName = types.StringNull()
 			}
 			if cValue := v.Get("leftHandSideDictionaryAttribue.attributeName"); cValue.Exists() {
-				item.Attribute1Name = types.StringValue(cValue.String())
+				item.AttributeLeftName = types.StringValue(cValue.String())
 			} else {
-				item.Attribute1Name = types.StringNull()
+				item.AttributeLeftName = types.StringNull()
 			}
 			if cValue := v.Get("rightHandSideAttribueValue.AdvancedAttributeValueType"); cValue.Exists() {
-				item.Attribute2ValueType = types.StringValue(cValue.String())
+				item.AttributeRightValueType = types.StringValue(cValue.String())
 			} else {
-				item.Attribute2ValueType = types.StringNull()
+				item.AttributeRightValueType = types.StringNull()
 			}
 			if cValue := v.Get("rightHandSideAttribueValue.value"); cValue.Exists() {
-				item.Attribute2Value = types.StringValue(cValue.String())
+				item.AttributeRightValue = types.StringValue(cValue.String())
 			} else {
-				item.Attribute2Value = types.StringNull()
+				item.AttributeRightValue = types.StringNull()
+			}
+			if cValue := v.Get("rightHandSideAttribueValue.dictionaryName"); cValue.Exists() {
+				item.AttributeRightDictionaryName = types.StringValue(cValue.String())
+			} else {
+				item.AttributeRightDictionaryName = types.StringNull()
+			}
+			if cValue := v.Get("rightHandSideAttribueValue.attributeName"); cValue.Exists() {
+				item.AttributeRightName = types.StringValue(cValue.String())
+			} else {
+				item.AttributeRightName = types.StringNull()
 			}
 			data.AdvancedAttributes = append(data.AdvancedAttributes, item)
 			return true
@@ -564,8 +574,8 @@ func (data *AuthorizationProfile) updateFromBody(ctx context.Context, res gjson.
 		data.ReauthenticationTimer = types.Int64Null()
 	}
 	for i := range data.AdvancedAttributes {
-		keys := [...]string{"leftHandSideDictionaryAttribue.AdvancedAttributeValueType", "leftHandSideDictionaryAttribue.dictionaryName", "leftHandSideDictionaryAttribue.attributeName", "rightHandSideAttribueValue.AdvancedAttributeValueType", "rightHandSideAttribueValue.value"}
-		keyValues := [...]string{data.AdvancedAttributes[i].Attribute1ValueType.ValueString(), data.AdvancedAttributes[i].Attribute1DictionaryName.ValueString(), data.AdvancedAttributes[i].Attribute1Name.ValueString(), data.AdvancedAttributes[i].Attribute2ValueType.ValueString(), data.AdvancedAttributes[i].Attribute2Value.ValueString()}
+		keys := [...]string{"leftHandSideDictionaryAttribue.dictionaryName", "leftHandSideDictionaryAttribue.attributeName", "rightHandSideAttribueValue.AdvancedAttributeValueType", "rightHandSideAttribueValue.value", "rightHandSideAttribueValue.dictionaryName", "rightHandSideAttribueValue.attributeName"}
+		keyValues := [...]string{data.AdvancedAttributes[i].AttributeLeftDictionaryName.ValueString(), data.AdvancedAttributes[i].AttributeLeftName.ValueString(), data.AdvancedAttributes[i].AttributeRightValueType.ValueString(), data.AdvancedAttributes[i].AttributeRightValue.ValueString(), data.AdvancedAttributes[i].AttributeRightDictionaryName.ValueString(), data.AdvancedAttributes[i].AttributeRightName.ValueString()}
 
 		var r gjson.Result
 		res.Get("AuthorizationProfile.advancedAttributes").ForEach(
@@ -586,30 +596,35 @@ func (data *AuthorizationProfile) updateFromBody(ctx context.Context, res gjson.
 				return true
 			},
 		)
-		if value := r.Get("leftHandSideDictionaryAttribue.AdvancedAttributeValueType"); value.Exists() && !data.AdvancedAttributes[i].Attribute1ValueType.IsNull() {
-			data.AdvancedAttributes[i].Attribute1ValueType = types.StringValue(value.String())
+		if value := r.Get("leftHandSideDictionaryAttribue.dictionaryName"); value.Exists() && !data.AdvancedAttributes[i].AttributeLeftDictionaryName.IsNull() {
+			data.AdvancedAttributes[i].AttributeLeftDictionaryName = types.StringValue(value.String())
 		} else {
-			data.AdvancedAttributes[i].Attribute1ValueType = types.StringNull()
+			data.AdvancedAttributes[i].AttributeLeftDictionaryName = types.StringNull()
 		}
-		if value := r.Get("leftHandSideDictionaryAttribue.dictionaryName"); value.Exists() && !data.AdvancedAttributes[i].Attribute1DictionaryName.IsNull() {
-			data.AdvancedAttributes[i].Attribute1DictionaryName = types.StringValue(value.String())
+		if value := r.Get("leftHandSideDictionaryAttribue.attributeName"); value.Exists() && !data.AdvancedAttributes[i].AttributeLeftName.IsNull() {
+			data.AdvancedAttributes[i].AttributeLeftName = types.StringValue(value.String())
 		} else {
-			data.AdvancedAttributes[i].Attribute1DictionaryName = types.StringNull()
+			data.AdvancedAttributes[i].AttributeLeftName = types.StringNull()
 		}
-		if value := r.Get("leftHandSideDictionaryAttribue.attributeName"); value.Exists() && !data.AdvancedAttributes[i].Attribute1Name.IsNull() {
-			data.AdvancedAttributes[i].Attribute1Name = types.StringValue(value.String())
+		if value := r.Get("rightHandSideAttribueValue.AdvancedAttributeValueType"); value.Exists() && !data.AdvancedAttributes[i].AttributeRightValueType.IsNull() {
+			data.AdvancedAttributes[i].AttributeRightValueType = types.StringValue(value.String())
 		} else {
-			data.AdvancedAttributes[i].Attribute1Name = types.StringNull()
+			data.AdvancedAttributes[i].AttributeRightValueType = types.StringNull()
 		}
-		if value := r.Get("rightHandSideAttribueValue.AdvancedAttributeValueType"); value.Exists() && !data.AdvancedAttributes[i].Attribute2ValueType.IsNull() {
-			data.AdvancedAttributes[i].Attribute2ValueType = types.StringValue(value.String())
+		if value := r.Get("rightHandSideAttribueValue.value"); value.Exists() && !data.AdvancedAttributes[i].AttributeRightValue.IsNull() {
+			data.AdvancedAttributes[i].AttributeRightValue = types.StringValue(value.String())
 		} else {
-			data.AdvancedAttributes[i].Attribute2ValueType = types.StringNull()
+			data.AdvancedAttributes[i].AttributeRightValue = types.StringNull()
 		}
-		if value := r.Get("rightHandSideAttribueValue.value"); value.Exists() && !data.AdvancedAttributes[i].Attribute2Value.IsNull() {
-			data.AdvancedAttributes[i].Attribute2Value = types.StringValue(value.String())
+		if value := r.Get("rightHandSideAttribueValue.dictionaryName"); value.Exists() && !data.AdvancedAttributes[i].AttributeRightDictionaryName.IsNull() {
+			data.AdvancedAttributes[i].AttributeRightDictionaryName = types.StringValue(value.String())
 		} else {
-			data.AdvancedAttributes[i].Attribute2Value = types.StringNull()
+			data.AdvancedAttributes[i].AttributeRightDictionaryName = types.StringNull()
+		}
+		if value := r.Get("rightHandSideAttribueValue.attributeName"); value.Exists() && !data.AdvancedAttributes[i].AttributeRightName.IsNull() {
+			data.AdvancedAttributes[i].AttributeRightName = types.StringValue(value.String())
+		} else {
+			data.AdvancedAttributes[i].AttributeRightName = types.StringNull()
 		}
 	}
 	if value := res.Get("AuthorizationProfile.ipv6DaclName"); value.Exists() && !data.Ipv6DaclName.IsNull() {

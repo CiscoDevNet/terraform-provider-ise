@@ -45,11 +45,10 @@ resource "ise_authorization_profile" "example" {
   reauthentication_timer                                = 1
   advanced_attributes = [
     {
-      attribute_1_value_type      = "AdvancedDictionaryAttribute"
-      attribute_1_dictionary_name = "Cisco"
-      attribute_1_name            = "cisco-av-pair"
-      attribute_2_value_type      = "AttributeValue"
-      attribute_2_value           = "set_nadprofile_vlan=true,vlan=TEST,tag=1"
+      attribute_left_dictionary_name = "Cisco"
+      attribute_left_name            = "cisco-av-pair"
+      attribute_right_value_type     = "AttributeValue"
+      attribute_right_value          = "set_nadprofile_vlan=true,vlan=TEST,tag=1"
     }
   ]
   airespace_ipv6_acl = "ACL1"
@@ -119,14 +118,14 @@ resource "ise_authorization_profile" "example" {
 <a id="nestedatt--advanced_attributes"></a>
 ### Nested Schema for `advanced_attributes`
 
-Required:
+Optional:
 
-- `attribute_1_dictionary_name` (String) Dictionary name
-- `attribute_1_name` (String) Attribute name
-- `attribute_1_value_type` (String) Advanced attribute value type
-  - Choices: `AdvancedDictionaryAttribute`, `AttributeValue`
-- `attribute_2_value` (String) Attribute value
-- `attribute_2_value_type` (String) Advanced attribute value type
+- `attribute_left_dictionary_name` (String) Dictionary name
+- `attribute_left_name` (String) Attribute name
+- `attribute_right_dictionary_name` (String) Dictionary name, only required when `attribute_right_value_type` is `AdvancedDictionaryAttribute`
+- `attribute_right_name` (String) Attribute name, only required when `attribute_right_value_type` is `AdvancedDictionaryAttribute`
+- `attribute_right_value` (String) Attribute value, only required when `attribute_right_value_type` is `AttributeValue`
+- `attribute_right_value_type` (String) Advanced attribute value type
   - Choices: `AdvancedDictionaryAttribute`, `AttributeValue`
 
 ## Import

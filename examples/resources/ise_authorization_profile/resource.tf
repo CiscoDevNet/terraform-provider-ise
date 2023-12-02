@@ -30,11 +30,10 @@ resource "ise_authorization_profile" "example" {
   reauthentication_timer                                = 1
   advanced_attributes = [
     {
-      attribute_1_value_type      = "AdvancedDictionaryAttribute"
-      attribute_1_dictionary_name = "Cisco"
-      attribute_1_name            = "cisco-av-pair"
-      attribute_2_value_type      = "AttributeValue"
-      attribute_2_value           = "set_nadprofile_vlan=true,vlan=TEST,tag=1"
+      attribute_left_dictionary_name = "Cisco"
+      attribute_left_name            = "cisco-av-pair"
+      attribute_right_value_type     = "AttributeValue"
+      attribute_right_value          = "set_nadprofile_vlan=true,vlan=TEST,tag=1"
     }
   ]
   airespace_ipv6_acl = "ACL1"

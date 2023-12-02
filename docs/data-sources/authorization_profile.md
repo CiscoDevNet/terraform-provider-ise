@@ -66,8 +66,9 @@ data "ise_authorization_profile" "example" {
 
 Read-Only:
 
-- `attribute_1_dictionary_name` (String) Dictionary name
-- `attribute_1_name` (String) Attribute name
-- `attribute_1_value_type` (String) Advanced attribute value type
-- `attribute_2_value` (String) Attribute value
-- `attribute_2_value_type` (String) Advanced attribute value type
+- `attribute_left_dictionary_name` (String) Dictionary name
+- `attribute_left_name` (String) Attribute name
+- `attribute_right_dictionary_name` (String) Dictionary name, only required when `attribute_right_value_type` is `AdvancedDictionaryAttribute`
+- `attribute_right_name` (String) Attribute name, only required when `attribute_right_value_type` is `AdvancedDictionaryAttribute`
+- `attribute_right_value` (String) Attribute value, only required when `attribute_right_value_type` is `AttributeValue`
+- `attribute_right_value_type` (String) Advanced attribute value type

@@ -193,24 +193,28 @@ func (d *AuthorizationProfileDataSource) Schema(ctx context.Context, req datasou
 				Computed:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
-						"attribute_1_value_type": schema.StringAttribute{
-							MarkdownDescription: "Advanced attribute value type",
-							Computed:            true,
-						},
-						"attribute_1_dictionary_name": schema.StringAttribute{
+						"attribute_left_dictionary_name": schema.StringAttribute{
 							MarkdownDescription: "Dictionary name",
 							Computed:            true,
 						},
-						"attribute_1_name": schema.StringAttribute{
+						"attribute_left_name": schema.StringAttribute{
 							MarkdownDescription: "Attribute name",
 							Computed:            true,
 						},
-						"attribute_2_value_type": schema.StringAttribute{
+						"attribute_right_value_type": schema.StringAttribute{
 							MarkdownDescription: "Advanced attribute value type",
 							Computed:            true,
 						},
-						"attribute_2_value": schema.StringAttribute{
-							MarkdownDescription: "Attribute value",
+						"attribute_right_value": schema.StringAttribute{
+							MarkdownDescription: "Attribute value, only required when `attribute_right_value_type` is `AttributeValue`",
+							Computed:            true,
+						},
+						"attribute_right_dictionary_name": schema.StringAttribute{
+							MarkdownDescription: "Dictionary name, only required when `attribute_right_value_type` is `AdvancedDictionaryAttribute`",
+							Computed:            true,
+						},
+						"attribute_right_name": schema.StringAttribute{
+							MarkdownDescription: "Attribute name, only required when `attribute_right_value_type` is `AdvancedDictionaryAttribute`",
 							Computed:            true,
 						},
 					},

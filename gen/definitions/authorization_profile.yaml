@@ -34,7 +34,13 @@ attributes:
   - model_name: WebRedirectionType
     data_path: [AuthorizationProfile, webRedirection]
     type: String
-    enum_values: [CentralizedWebAuth, HotSpot, NativeSupplicanProvisioning, ClientProvisioning]
+    enum_values:
+      [
+        CentralizedWebAuth,
+        HotSpot,
+        NativeSupplicanProvisioning,
+        ClientProvisioning,
+      ]
     description: "This type must fit the `web_redirection_portal_name`"
     example: CentralizedWebAuth
   - model_name: acl
@@ -178,7 +184,7 @@ attributes:
     tf_name: reauthentication_connectivity
     type: String
     enum_values: [DEFAULT, RADIUS_REQUEST]
-    description: Maintain Connectivity During Reauthentication	
+    description: Maintain Connectivity During Reauthentication
     example: DEFAULT
   - model_name: timer
     data_path: [AuthorizationProfile, reauth]
@@ -195,41 +201,47 @@ attributes:
     attributes:
       - model_name: AdvancedAttributeValueType
         data_path: [leftHandSideDictionaryAttribue]
-        tf_name: attribute_1_value_type
         type: String
-        enum_values: [AdvancedDictionaryAttribute, AttributeValue]
-        description: Advanced attribute value type
-        id: true
-        example: AdvancedDictionaryAttribute
+        value: AdvancedDictionaryAttribute
       - model_name: dictionaryName
         data_path: [leftHandSideDictionaryAttribue]
-        tf_name: attribute_1_dictionary_name
+        tf_name: attribute_left_dictionary_name
         type: String
-        id: true
         description: Dictionary name
         example: Cisco
       - model_name: attributeName
         data_path: [leftHandSideDictionaryAttribue]
-        tf_name: attribute_1_name
+        tf_name: attribute_left_name
         type: String
-        id: true
         description: Attribute name
         example: cisco-av-pair
       - model_name: AdvancedAttributeValueType
-        tf_name: attribute_2_value_type
+        tf_name: attribute_right_value_type
         data_path: [rightHandSideAttribueValue]
         type: String
         enum_values: [AdvancedDictionaryAttribute, AttributeValue]
         description: Advanced attribute value type
-        id: true
         example: AttributeValue
       - model_name: value
         data_path: [rightHandSideAttribueValue]
-        tf_name: attribute_2_value
+        tf_name: attribute_right_value
         type: String
-        id: true
-        description: Attribute value
+        description: Attribute value, only required when `attribute_right_value_type` is `AttributeValue`
         example: set_nadprofile_vlan=true,vlan=TEST,tag=1
+      - model_name: dictionaryName
+        data_path: [rightHandSideAttribueValue]
+        tf_name: attribute_right_dictionary_name
+        type: String
+        description: Dictionary name, only required when `attribute_right_value_type` is `AdvancedDictionaryAttribute`
+        example: Cisco
+        exclude_test: true
+      - model_name: attributeName
+        data_path: [rightHandSideAttribueValue]
+        tf_name: attribute_right_name
+        type: String
+        description: Attribute name, only required when `attribute_right_value_type` is `AdvancedDictionaryAttribute`
+        example: cisco-av-pair
+        exclude_test: true
   - model_name: ipv6DaclName
     data_path: [AuthorizationProfile]
     type: String

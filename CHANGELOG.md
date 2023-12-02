@@ -1,3 +1,7 @@
+## 0.1.7 (unreleased)
+
+- BREAKING CHANGE: Refactor `advanced_attributes` of `ise_authorization_profile` resource and data source
+
 ## 0.1.6
 
 - Add `ise_downloadable_acl` resource and data source
