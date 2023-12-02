@@ -4,7 +4,7 @@ rest_endpoint: /ers/config/authorizationprofile
 data_source_name_query: true
 res_description: This resource can manage an authorization profiles policy element.
 ds_description: This data source can read an authorization profiles policy element.
-doc_category: Policy
+doc_category: Network Access
 attributes:
   - model_name: name
     data_path: [AuthorizationProfile]

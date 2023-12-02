@@ -3,7 +3,7 @@ name: Network Access Condition
 rest_endpoint: /api/v1/policy/network-access/condition
 data_source_name_query: true
 id_path: response.id
-doc_category: Policy
+doc_category: Network Access
 attributes:
   - model_name: name
     type: String
@@ -17,7 +17,12 @@ attributes:
   - model_name: conditionType
     type: String
     mandatory: true
-    enum_values: [LibraryConditionAndBlock, LibraryConditionAttributes, LibraryConditionOrBlock]
+    enum_values:
+      [
+        LibraryConditionAndBlock,
+        LibraryConditionAttributes,
+        LibraryConditionOrBlock,
+      ]
     description: Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
     example: LibraryConditionAttributes
   - model_name: isNegate
@@ -31,7 +36,7 @@ attributes:
     minimum_test_value: '"EapAuthentication"'
   - model_name: attributeValue
     type: String
-    description: Attribute value for condition. Value type is specified in dictionary object. 
+    description: Attribute value for condition. Value type is specified in dictionary object.
     example: EAP-TLS
     minimum_test_value: '"EAP-TLS"'
   - model_name: dictionaryName
@@ -46,7 +51,28 @@ attributes:
     exclude_test: true
   - model_name: operator
     type: String
-    enum_values: [contains, endsWith, equals, greaterOrEquals, greaterThan, in, ipEquals, ipGreaterThan, ipLessThan, ipNotEquals, lessOrEquals, lessThan, matches, notContains, notEndsWith, notEquals, notIn, notStartsWith, startsWith]
+    enum_values:
+      [
+        contains,
+        endsWith,
+        equals,
+        greaterOrEquals,
+        greaterThan,
+        in,
+        ipEquals,
+        ipGreaterThan,
+        ipLessThan,
+        ipNotEquals,
+        lessOrEquals,
+        lessThan,
+        matches,
+        notContains,
+        notEndsWith,
+        notEquals,
+        notIn,
+        notStartsWith,
+        startsWith,
+      ]
     description: Equality operator
     example: equals
     minimum_test_value: '"equals"'
@@ -66,7 +92,13 @@ attributes:
       - model_name: conditionType
         type: String
         mandatory: true
-        enum_values: [ConditionAndBlock, ConditionAttributes, ConditionOrBlock, ConditionReference]
+        enum_values:
+          [
+            ConditionAndBlock,
+            ConditionAttributes,
+            ConditionOrBlock,
+            ConditionReference,
+          ]
         description: Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
         example: ConditionAttributes
       - model_name: id
@@ -84,7 +116,7 @@ attributes:
         example: EapAuthentication
       - model_name: attributeValue
         type: String
-        description: Attribute value for condition. Value type is specified in dictionary object. 
+        description: Attribute value for condition. Value type is specified in dictionary object.
         example: EAP-TLS
       - model_name: dictionaryName
         type: String
@@ -97,7 +129,28 @@ attributes:
         exclude_test: true
       - model_name: operator
         type: String
-        enum_values: [contains, endsWith, equals, greaterOrEquals, greaterThan, in, ipEquals, ipGreaterThan, ipLessThan, ipNotEquals, lessOrEquals, lessThan, matches, notContains, notEndsWith, notEquals, notIn, notStartsWith, startsWith]
+        enum_values:
+          [
+            contains,
+            endsWith,
+            equals,
+            greaterOrEquals,
+            greaterThan,
+            in,
+            ipEquals,
+            ipGreaterThan,
+            ipLessThan,
+            ipNotEquals,
+            lessOrEquals,
+            lessThan,
+            matches,
+            notContains,
+            notEndsWith,
+            notEquals,
+            notIn,
+            notStartsWith,
+            startsWith,
+          ]
         description: Equality operator
         example: equals
       - model_name: children
@@ -116,7 +169,13 @@ attributes:
           - model_name: conditionType
             type: String
             mandatory: true
-            enum_values: [ConditionAndBlock, ConditionAttributes, ConditionOrBlock, ConditionReference]
+            enum_values:
+              [
+                ConditionAndBlock,
+                ConditionAttributes,
+                ConditionOrBlock,
+                ConditionReference,
+              ]
             description: Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
             example: ConditionAttributes
           - model_name: id
@@ -134,7 +193,7 @@ attributes:
             example: EapAuthentication
           - model_name: attributeValue
             type: String
-            description: Attribute value for condition. Value type is specified in dictionary object. 
+            description: Attribute value for condition. Value type is specified in dictionary object.
             example: EAP-TLS
           - model_name: dictionaryName
             type: String
@@ -147,6 +206,27 @@ attributes:
             exclude_test: true
           - model_name: operator
             type: String
-            enum_values: [contains, endsWith, equals, greaterOrEquals, greaterThan, in, ipEquals, ipGreaterThan, ipLessThan, ipNotEquals, lessOrEquals, lessThan, matches, notContains, notEndsWith, notEquals, notIn, notStartsWith, startsWith]
+            enum_values:
+              [
+                contains,
+                endsWith,
+                equals,
+                greaterOrEquals,
+                greaterThan,
+                in,
+                ipEquals,
+                ipGreaterThan,
+                ipLessThan,
+                ipNotEquals,
+                lessOrEquals,
+                lessThan,
+                matches,
+                notContains,
+                notEndsWith,
+                notEquals,
+                notIn,
+                notStartsWith,
+                startsWith,
+              ]
             description: Equality operator
             example: equals

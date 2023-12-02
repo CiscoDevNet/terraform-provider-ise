@@ -2,7 +2,7 @@
 name: Downloadable ACL
 rest_endpoint: /ers/config/downloadableacl
 data_source_name_query: true
-doc_category: Policy
+doc_category: Network Access
 attributes:
   - model_name: name
     data_path: [DownloadableAcl]

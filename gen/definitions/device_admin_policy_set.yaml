@@ -3,7 +3,7 @@ name: Device Admin Policy Set
 rest_endpoint: /api/v1/policy/device-admin/policy-set
 data_source_name_query: true
 id_path: response.id
-doc_category: Policy
+doc_category: Device Administration
 attributes:
   - model_name: name
     type: String

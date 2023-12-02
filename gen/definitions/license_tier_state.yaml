@@ -7,7 +7,7 @@ post_update: true
 root_list: true
 no_read_prefix: true
 id_path: version
-doc_category: Administration
+doc_category: System
 attributes:
   - tf_name: licenses
     type: List

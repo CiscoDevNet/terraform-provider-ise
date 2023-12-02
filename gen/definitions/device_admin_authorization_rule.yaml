@@ -3,7 +3,7 @@ name: Device Admin Authorization Rule
 rest_endpoint: /api/v1/policy/device-admin/policy-set/%v/authorization
 data_source_name_query: true
 id_path: response.rule.id
-doc_category: Policy
+doc_category: Device Administration
 attributes:
   - tf_name: policy_set_id
     type: String

@@ -2,7 +2,7 @@
 name: Repository
 rest_endpoint: /api/v1/repository
 data_source_name_query: true
-doc_category: Administration
+doc_category: System
 attributes:
   - model_name: name
     type: String

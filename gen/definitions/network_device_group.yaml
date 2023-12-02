@@ -2,7 +2,7 @@
 name: Network Device Group
 rest_endpoint: /ers/config/networkdevicegroup
 data_source_name_query: true
-doc_category: Administration
+doc_category: Network Resources
 attributes:
   - model_name: name
     data_path: [NetworkDeviceGroup]

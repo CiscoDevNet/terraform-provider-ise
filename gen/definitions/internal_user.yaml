@@ -2,7 +2,7 @@
 name: Internal User
 rest_endpoint: /ers/config/internaluser
 data_source_name_query: true
-doc_category: Administration
+doc_category: Identity Management
 attributes:
   - model_name: name
     data_path: [InternalUser]

@@ -2,7 +2,7 @@
 name: Endpoint Identity Group
 rest_endpoint: /ers/config/endpointgroup
 data_source_name_query: true
-doc_category: Administration
+doc_category: Identity Management
 attributes:
   - model_name: name
     data_path: [EndPointGroup]
@@ -28,4 +28,3 @@ attributes:
     description: Parent endpoint identity group ID
     example: 76d24097-41c4-4558-a4d0-a8c07ac08470
     exclude_test: true
-  

@@ -2,7 +2,7 @@
 name: TACACS Command Set
 rest_endpoint: /ers/config/tacacscommandsets
 data_source_name_query: true
-doc_category: Policy
+doc_category: Device Administration
 attributes:
   - model_name: name
     data_path: [TacacsCommandSets]

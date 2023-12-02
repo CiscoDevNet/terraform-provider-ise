@@ -2,7 +2,7 @@
 name: Network Access Dictionary
 rest_endpoint: /api/v1/policy/network-access/dictionaries
 data_source_name_query: true
-doc_category: Policy
+doc_category: Network Access
 attributes:
   - model_name: name
     type: String
@@ -24,4 +24,3 @@ attributes:
     enum_values: [ENTITY_ATTR, MSG_ATTR, PIP_ATTR]
     description: The dictionary attribute type
     example: ENTITY_ATTR
-  
