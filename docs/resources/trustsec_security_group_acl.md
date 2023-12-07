@@ -35,7 +35,7 @@ resource "ise_trustsec_security_group_acl" "example" {
 - `description` (String) Description
 - `ip_version` (String) IP Version
   - Choices: `IPV4`, `IPV6`, `IP_AGNOSTIC`
-  - Default value: `IPV4`
+  - Default value: `IP_AGNOSTIC`
 - `read_only` (Boolean) Read-only
   - Default value: `false`
 

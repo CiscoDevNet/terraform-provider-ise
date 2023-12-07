@@ -86,13 +86,13 @@ func (r *TrustSecSecurityGroupACLResource) Schema(ctx context.Context, req resou
 				Required:            true,
 			},
 			"ip_version": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("IP Version").AddStringEnumDescription("IPV4", "IPV6", "IP_AGNOSTIC").AddDefaultValueDescription("IPV4").String,
+				MarkdownDescription: helpers.NewAttributeDescription("IP Version").AddStringEnumDescription("IPV4", "IPV6", "IP_AGNOSTIC").AddDefaultValueDescription("IP_AGNOSTIC").String,
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("IPV4", "IPV6", "IP_AGNOSTIC"),
 				},
-				Default: stringdefault.StaticString("IPV4"),
+				Default: stringdefault.StaticString("IP_AGNOSTIC"),
 			},
 			"read_only": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Read-only").AddDefaultValueDescription("false").String,

@@ -26,7 +26,7 @@ attributes:
     data_path: [Sgacl]
     type: String
     enum_values: [IPV4, IPV6, IP_AGNOSTIC]
-    default_value: "IPV4"
+    default_value: "IP_AGNOSTIC"
     example: "IPV4"
     description: "IP Version"
   - model_name: readOnly

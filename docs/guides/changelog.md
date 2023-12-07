@@ -7,6 +7,10 @@ description: |-
 
 # Changelog
 
+## 0.1.8 (unreleased)
+
+- Fix default value of `ip_version` attribute of `ise_trustsec_security_group_acl` resource
+
 ## 0.1.7
 
 - BREAKING CHANGE: Refactor `advanced_attributes` of `ise_authorization_profile` resource and data source

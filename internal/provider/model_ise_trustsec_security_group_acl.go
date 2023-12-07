@@ -92,7 +92,7 @@ func (data *TrustSecSecurityGroupACL) fromBody(ctx context.Context, res gjson.Re
 	if value := res.Get("Sgacl.ipVersion"); value.Exists() {
 		data.IpVersion = types.StringValue(value.String())
 	} else {
-		data.IpVersion = types.StringValue("IPV4")
+		data.IpVersion = types.StringValue("IP_AGNOSTIC")
 	}
 }
 
@@ -117,7 +117,7 @@ func (data *TrustSecSecurityGroupACL) updateFromBody(ctx context.Context, res gj
 	}
 	if value := res.Get("Sgacl.ipVersion"); value.Exists() && !data.IpVersion.IsNull() {
 		data.IpVersion = types.StringValue(value.String())
-	} else if data.IpVersion.ValueString() != "IPV4" {
+	} else if data.IpVersion.ValueString() != "IP_AGNOSTIC" {
 		data.IpVersion = types.StringNull()
 	}
 }
