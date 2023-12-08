@@ -92,6 +92,7 @@ attributes:
       - model_name: ipaddress
         type: String
         id: true
+        mandatory: true
         description: It can be either single ip address or ip range address
         example: 2.3.4.5
       - model_name: ipaddressExclude

@@ -17,6 +17,7 @@ attributes:
       - model_name: name
         type: String
         id: true
+        mandatory: true
         enum_values: [ESSENTIAL, ADVANTAGE, PREMIER, DEVICEADMIN, VM]
         description: License name
         example: ESSENTIAL

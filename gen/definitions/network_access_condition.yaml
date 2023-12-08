@@ -83,6 +83,7 @@ attributes:
     attributes:
       - model_name: name
         type: String
+        id: true
         description: Condition name
         example: Cond1
       - model_name: description
@@ -91,6 +92,7 @@ attributes:
         example: My description
       - model_name: conditionType
         type: String
+        id: true
         mandatory: true
         enum_values:
           [
@@ -104,6 +106,7 @@ attributes:
       - model_name: id
         tf_name: id
         type: String
+        id: true
         description: UUID for condition
         example: 12345678-f0e7-456b-a2d1-876543320123
       - model_name: isNegate
@@ -112,23 +115,28 @@ attributes:
         example: false
       - model_name: attributeName
         type: String
+        id: true
         description: Dictionary attribute name
         example: EapAuthentication
       - model_name: attributeValue
         type: String
+        id: true
         description: Attribute value for condition. Value type is specified in dictionary object.
         example: EAP-TLS
       - model_name: dictionaryName
         type: String
+        id: true
         description: Dictionary name
         example: Network Access
       - model_name: dictionaryValue
         type: String
+        id: true
         description: Dictionary value
         example: abc
         exclude_test: true
       - model_name: operator
         type: String
+        id: true
         enum_values:
           [
             contains,
@@ -160,6 +168,7 @@ attributes:
         attributes:
           - model_name: name
             type: String
+            id: true
             description: Condition name
             example: Cond1
           - model_name: description
@@ -168,6 +177,7 @@ attributes:
             example: My description
           - model_name: conditionType
             type: String
+            id: true
             mandatory: true
             enum_values:
               [
@@ -181,6 +191,7 @@ attributes:
           - model_name: id
             tf_name: id
             type: String
+            id: true
             description: UUID for condition
             example: 12345678-f0e7-456b-a2d1-876543320123
           - model_name: isNegate
@@ -189,23 +200,28 @@ attributes:
             example: false
           - model_name: attributeName
             type: String
+            id: true
             description: Dictionary attribute name
             example: EapAuthentication
           - model_name: attributeValue
             type: String
+            id: true
             description: Attribute value for condition. Value type is specified in dictionary object.
             example: EAP-TLS
           - model_name: dictionaryName
             type: String
+            id: true
             description: Dictionary name
             example: Network Access
           - model_name: dictionaryValue
             type: String
+            id: true
             description: Dictionary value
             example: abc
             exclude_test: true
           - model_name: operator
             type: String
+            id: true
             enum_values:
               [
                 contains,

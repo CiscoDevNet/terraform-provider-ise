@@ -22,7 +22,6 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
@@ -406,8 +405,8 @@ func (data *DeviceAdminCondition) updateFromBody(ctx context.Context, res gjson.
 		data.Operator = types.StringNull()
 	}
 	for i := range data.Children {
-		keys := [...]string{"name", "description", "conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
-		keyValues := [...]string{data.Children[i].Name.ValueString(), data.Children[i].Description.ValueString(), data.Children[i].ConditionType.ValueString(), data.Children[i].Id.ValueString(), strconv.FormatBool(data.Children[i].IsNegate.ValueBool()), data.Children[i].AttributeName.ValueString(), data.Children[i].AttributeValue.ValueString(), data.Children[i].DictionaryName.ValueString(), data.Children[i].DictionaryValue.ValueString(), data.Children[i].Operator.ValueString()}
+		keys := [...]string{"name", "conditionType", "id", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
+		keyValues := [...]string{data.Children[i].Name.ValueString(), data.Children[i].ConditionType.ValueString(), data.Children[i].Id.ValueString(), data.Children[i].AttributeName.ValueString(), data.Children[i].AttributeValue.ValueString(), data.Children[i].DictionaryName.ValueString(), data.Children[i].DictionaryValue.ValueString(), data.Children[i].Operator.ValueString()}
 
 		var r gjson.Result
 		res.Get("response.children").ForEach(
@@ -479,8 +478,8 @@ func (data *DeviceAdminCondition) updateFromBody(ctx context.Context, res gjson.
 			data.Children[i].Operator = types.StringNull()
 		}
 		for ci := range data.Children[i].Children {
-			keys := [...]string{"name", "description", "conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
-			keyValues := [...]string{data.Children[i].Children[ci].Name.ValueString(), data.Children[i].Children[ci].Description.ValueString(), data.Children[i].Children[ci].ConditionType.ValueString(), data.Children[i].Children[ci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].IsNegate.ValueBool()), data.Children[i].Children[ci].AttributeName.ValueString(), data.Children[i].Children[ci].AttributeValue.ValueString(), data.Children[i].Children[ci].DictionaryName.ValueString(), data.Children[i].Children[ci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Operator.ValueString()}
+			keys := [...]string{"name", "conditionType", "id", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
+			keyValues := [...]string{data.Children[i].Children[ci].Name.ValueString(), data.Children[i].Children[ci].ConditionType.ValueString(), data.Children[i].Children[ci].Id.ValueString(), data.Children[i].Children[ci].AttributeName.ValueString(), data.Children[i].Children[ci].AttributeValue.ValueString(), data.Children[i].Children[ci].DictionaryName.ValueString(), data.Children[i].Children[ci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Operator.ValueString()}
 
 			var cr gjson.Result
 			r.Get("children").ForEach(

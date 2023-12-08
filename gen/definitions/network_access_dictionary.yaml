@@ -7,6 +7,7 @@ attributes:
   - model_name: name
     type: String
     id: true
+    mandatory: true
     description: The dictionary name
     example: Dict1
   - model_name: description
