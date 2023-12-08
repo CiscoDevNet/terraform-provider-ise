@@ -7,7 +7,7 @@ description: |-
 
 # Changelog
 
-## 0.1.8 (unreleased)
+## 0.1.8
 
 - Fix default value of `ip_version` attribute of `ise_trustsec_security_group_acl` resource
 - Fix idempotency issue with `ise_network_access_condition` and `ise_device_admin_condition` resources
