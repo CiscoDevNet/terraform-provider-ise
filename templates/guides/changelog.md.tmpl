@@ -7,7 +7,7 @@ description: |-
 
 # Changelog
 
-## 0.1.9 (unreleased)
+## 0.1.9
 
 - Fix issue with `ise_network_device_group` resource and ISE versions >= 3.2.0 Patch1. Due to a breaking change in the API, this resource is now only supported with ISE version >= 3.2.0 Patch1.
 - Add `ise_identity_source_sequence` resource and data source
