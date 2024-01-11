@@ -1,3 +1,7 @@
+## 0.1.9 (unreleased)
+
+- Fix issue with `ise_network_device_group` resource and ISE versions >= 3.2.0 Patch1. Due to a breaking change in the API, this resource is now only supported with ISE version >= 3.2.0 Patch1.
+
 ## 0.1.8
 
 - Fix default value of `ip_version` attribute of `ise_trustsec_security_group_acl` resource

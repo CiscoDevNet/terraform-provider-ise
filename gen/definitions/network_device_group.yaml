@@ -15,7 +15,7 @@ attributes:
     type: String
     description: Description
     example: My network device group
-  - model_name: ndgtype
+  - model_name: othername
     tf_name: root_group
     data_path: [NetworkDeviceGroup]
     type: String

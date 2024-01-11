@@ -8,9 +8,9 @@ This provider uses both, the ERS and Open API. Instructions on how to enable API
 
 All resources and data sources have been tested with the following releases.
 
-| Platform | Version |
-| -------- | ------- |
-| ISE      | 3.2     |
+| Platform | Version       |
+| -------- | ------------- |
+| ISE      | 3.2.0 Patch 4 |
 
 Documentation: <https://registry.terraform.io/providers/CiscoDevNet/ise/latest>
 

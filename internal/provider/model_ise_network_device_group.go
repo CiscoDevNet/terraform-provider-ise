@@ -57,7 +57,7 @@ func (data NetworkDeviceGroup) toBody(ctx context.Context, state NetworkDeviceGr
 		body, _ = sjson.Set(body, "NetworkDeviceGroup.description", data.Description.ValueString())
 	}
 	if !data.RootGroup.IsNull() {
-		body, _ = sjson.Set(body, "NetworkDeviceGroup.ndgtype", data.RootGroup.ValueString())
+		body, _ = sjson.Set(body, "NetworkDeviceGroup.othername", data.RootGroup.ValueString())
 	}
 	return body
 }
@@ -76,7 +76,7 @@ func (data *NetworkDeviceGroup) fromBody(ctx context.Context, res gjson.Result) 
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("NetworkDeviceGroup.ndgtype"); value.Exists() {
+	if value := res.Get("NetworkDeviceGroup.othername"); value.Exists() {
 		data.RootGroup = types.StringValue(value.String())
 	} else {
 		data.RootGroup = types.StringNull()
@@ -97,7 +97,7 @@ func (data *NetworkDeviceGroup) updateFromBody(ctx context.Context, res gjson.Re
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("NetworkDeviceGroup.ndgtype"); value.Exists() && !data.RootGroup.IsNull() {
+	if value := res.Get("NetworkDeviceGroup.othername"); value.Exists() && !data.RootGroup.IsNull() {
 		data.RootGroup = types.StringValue(value.String())
 	} else {
 		data.RootGroup = types.StringNull()
