@@ -1,0 +1,46 @@
+---
+name: Identity Source Sequence
+rest_endpoint: /ers/config/idstoresequence
+data_source_name_query: true
+doc_category: Identity Management
+attributes:
+  - model_name: name
+    data_path: [IdStoreSequence]
+    type: String
+    mandatory: true
+    description: The name of the identity source sequence
+    example: Sequence1
+  - model_name: description
+    data_path: [IdStoreSequence]
+    type: String
+    description: Description
+    example: My identity source sequence
+  - model_name: breakOnStoreFail
+    data_path: [IdStoreSequence]
+    type: Bool
+    mandatory: true
+    description: Do not access other stores in the sequence if a selected identity store cannot be accessed for authentication
+    example: true
+  - model_name: certificateAuthenticationProfile
+    data_path: [IdStoreSequence]
+    type: String
+    mandatory: true
+    description: Certificate Authentication Profile, empty if doesn't exist
+    example: Global_Certificate
+  - model_name: idSeqItem
+    data_path: [IdStoreSequence]
+    tf_name: identity_sources
+    type: List
+    mandatory: true
+    attributes:
+      - model_name: idstore
+        tf_name: name
+        type: String
+        mandatory: true
+        description: Name of the identity source
+        example: Internal Users
+      - model_name: order
+        type: Int64
+        mandatory: true
+        description: Order of the identity source in the sequence
+        example: 1
