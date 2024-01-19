@@ -1,0 +1,23 @@
+---
+name: Active Directory Join Point
+rest_endpoint: /ers/config/activedirectory
+doc_category: Identity Management
+skip_minimum_test: true
+attributes:
+  - model_name: name
+    data_path: [ERSActiveDirectory]
+    type: String
+    mandatory: true
+    description: The name of the active directory join point
+    example: cisco.local
+  - model_name: description
+    data_path: [ERSActiveDirectory]
+    type: String
+    description: Join point Description
+    example: My AD join point
+  - model_name: domain
+    data_path: [ERSActiveDirectory]
+    type: String
+    mandatory: true
+    description: AD domain associated with the join point
+    example: cisco.local
