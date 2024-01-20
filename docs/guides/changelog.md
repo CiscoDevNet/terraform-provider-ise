@@ -7,7 +7,7 @@ description: |-
 
 # Changelog
 
-## 0.1.10 (unreleased)
+## 0.1.10
 
 - Retry on 400 and 500 HTTP errors when creating or updating objects
 - Fix import operation of resources
