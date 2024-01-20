@@ -119,3 +119,22 @@ func (data *DownloadableACL) updateFromBody(ctx context.Context, res gjson.Resul
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *DownloadableACL) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Description.IsNull() {
+		return false
+	}
+	if !data.Dacl.IsNull() {
+		return false
+	}
+	if !data.DaclType.IsNull() {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

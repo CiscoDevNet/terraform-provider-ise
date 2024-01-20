@@ -119,3 +119,22 @@ func (data *NetworkAccessDictionary) updateFromBody(ctx context.Context, res gjs
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *NetworkAccessDictionary) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Description.IsNull() {
+		return false
+	}
+	if !data.Version.IsNull() {
+		return false
+	}
+	if !data.DictionaryAttrType.IsNull() {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

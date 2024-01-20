@@ -1131,3 +1131,241 @@ func (data *AllowedProtocols) updateFromBody(ctx context.Context, res gjson.Resu
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *AllowedProtocols) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Description.IsNull() {
+		return false
+	}
+	if !data.ProcessHostLookup.IsNull() {
+		return false
+	}
+	if !data.AllowPapAscii.IsNull() {
+		return false
+	}
+	if !data.AllowChap.IsNull() {
+		return false
+	}
+	if !data.AllowMsChapV1.IsNull() {
+		return false
+	}
+	if !data.AllowMsChapV2.IsNull() {
+		return false
+	}
+	if !data.AllowEapMd5.IsNull() {
+		return false
+	}
+	if !data.AllowLeap.IsNull() {
+		return false
+	}
+	if !data.AllowEapTls.IsNull() {
+		return false
+	}
+	if !data.AllowEapTtls.IsNull() {
+		return false
+	}
+	if !data.AllowEapFast.IsNull() {
+		return false
+	}
+	if !data.AllowPeap.IsNull() {
+		return false
+	}
+	if !data.AllowTeap.IsNull() {
+		return false
+	}
+	if !data.AllowPreferredEapProtocol.IsNull() {
+		return false
+	}
+	if !data.PreferredEapProtocol.IsNull() {
+		return false
+	}
+	if !data.EapTlsLBit.IsNull() {
+		return false
+	}
+	if !data.AllowWeakCiphersForEap.IsNull() {
+		return false
+	}
+	if !data.RequireMessageAuth.IsNull() {
+		return false
+	}
+	if !data.EapTlsAllowAuthOfExpiredCerts.IsNull() {
+		return false
+	}
+	if !data.EapTlsEnableStatelessSessionResume.IsNull() {
+		return false
+	}
+	if !data.EapTlsSessionTicketTtl.IsNull() {
+		return false
+	}
+	if !data.EapTlsSessionTicketTtlUnit.IsNull() {
+		return false
+	}
+	if !data.EapTlsSessionTicketPercentage.IsNull() {
+		return false
+	}
+	if !data.PeapAllowPeapEapMsChapV2.IsNull() {
+		return false
+	}
+	if !data.PeapAllowPeapEapMsChapV2PwdChange.IsNull() {
+		return false
+	}
+	if !data.PeapAllowPeapEapMsChapV2PwdChangeRetries.IsNull() {
+		return false
+	}
+	if !data.PeapAllowPeapEapGtc.IsNull() {
+		return false
+	}
+	if !data.PeapAllowPeapEapGtcPwdChange.IsNull() {
+		return false
+	}
+	if !data.PeapAllowPeapEapGtcPwdChangeRetries.IsNull() {
+		return false
+	}
+	if !data.PeapAllowPeapEapTls.IsNull() {
+		return false
+	}
+	if !data.PeapAllowPeapEapTlsAuthOfExpiredCerts.IsNull() {
+		return false
+	}
+	if !data.RequireCryptobinding.IsNull() {
+		return false
+	}
+	if !data.PeapPeapV0.IsNull() {
+		return false
+	}
+	if !data.EapTtlsPapAscii.IsNull() {
+		return false
+	}
+	if !data.EapTtlsChap.IsNull() {
+		return false
+	}
+	if !data.EapTtlsMsChapV1.IsNull() {
+		return false
+	}
+	if !data.EapTtlsMsChapV2.IsNull() {
+		return false
+	}
+	if !data.EapTtlsEapMd5.IsNull() {
+		return false
+	}
+	if !data.EapTtlsEapMsChapV2.IsNull() {
+		return false
+	}
+	if !data.EapTtlsEapMsChapV2PwdChange.IsNull() {
+		return false
+	}
+	if !data.EapTtlsEapMsChapV2PwdChangeRetries.IsNull() {
+		return false
+	}
+	if !data.EapFastEapMsChapV2.IsNull() {
+		return false
+	}
+	if !data.EapFastEapMsChapV2PwdChange.IsNull() {
+		return false
+	}
+	if !data.EapFastEapMsChapV2PwdChangeRetries.IsNull() {
+		return false
+	}
+	if !data.EapFastEapGtc.IsNull() {
+		return false
+	}
+	if !data.EapFastEapGtcPwdChange.IsNull() {
+		return false
+	}
+	if !data.EapFastEapGtcPwdChangeRetries.IsNull() {
+		return false
+	}
+	if !data.EapFastEapTls.IsNull() {
+		return false
+	}
+	if !data.EapFastEapTlsAuthOfExpiredCerts.IsNull() {
+		return false
+	}
+	if !data.EapFastEnableEapChaining.IsNull() {
+		return false
+	}
+	if !data.EapFastUsePacs.IsNull() {
+		return false
+	}
+	if !data.EapFastPacsTunnelPacTtl.IsNull() {
+		return false
+	}
+	if !data.EapFastPacsTunnelPacTtlUnit.IsNull() {
+		return false
+	}
+	if !data.EapFastPacsUseProactivePacUpdatePercentage.IsNull() {
+		return false
+	}
+	if !data.EapFastPacsAllowAnonymousProvisioning.IsNull() {
+		return false
+	}
+	if !data.EapFastPacsAllowAuthenticatedProvisioning.IsNull() {
+		return false
+	}
+	if !data.EapFastPacsServerReturns.IsNull() {
+		return false
+	}
+	if !data.EapFastPacsAllowClientCert.IsNull() {
+		return false
+	}
+	if !data.EapFastPacsAllowMachineAuthentication.IsNull() {
+		return false
+	}
+	if !data.EapFastPacsMachinePacTtl.IsNull() {
+		return false
+	}
+	if !data.EapFastPacsMachinePacTtlUnit.IsNull() {
+		return false
+	}
+	if !data.EapFastPacsStatelessSessionResume.IsNull() {
+		return false
+	}
+	if !data.EapFastPacsAuthorizationPacTtl.IsNull() {
+		return false
+	}
+	if !data.EapFastPacsAuthorizationPacTtlUnit.IsNull() {
+		return false
+	}
+	if !data.EapFastAcceptClientCert.IsNull() {
+		return false
+	}
+	if !data.EapFastAllowMachineAuthentication.IsNull() {
+		return false
+	}
+	if !data.TeapEapMsChapV2.IsNull() {
+		return false
+	}
+	if !data.TeapEapMsChapV2PwdChange.IsNull() {
+		return false
+	}
+	if !data.TeapEapMsChapV2PwdChangeRetries.IsNull() {
+		return false
+	}
+	if !data.TeapEapTls.IsNull() {
+		return false
+	}
+	if !data.TeapEapTlsAuthOfExpiredCerts.IsNull() {
+		return false
+	}
+	if !data.TeapEapAcceptClientCertDuringTunnelEst.IsNull() {
+		return false
+	}
+	if !data.TeapEapChaining.IsNull() {
+		return false
+	}
+	if !data.TeapDowngradeMsk.IsNull() {
+		return false
+	}
+	if !data.TeapRequestBasicPwdAuth.IsNull() {
+		return false
+	}
+	if !data.Allow5g.IsNull() {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

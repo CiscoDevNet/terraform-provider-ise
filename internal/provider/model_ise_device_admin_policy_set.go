@@ -570,3 +570,55 @@ func (data *DeviceAdminPolicySet) updateFromBody(ctx context.Context, res gjson.
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *DeviceAdminPolicySet) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Description.IsNull() {
+		return false
+	}
+	if !data.IsProxy.IsNull() {
+		return false
+	}
+	if !data.Rank.IsNull() {
+		return false
+	}
+	if !data.ServiceName.IsNull() {
+		return false
+	}
+	if !data.State.IsNull() {
+		return false
+	}
+	if !data.ConditionType.IsNull() {
+		return false
+	}
+	if !data.ConditionId.IsNull() {
+		return false
+	}
+	if !data.ConditionIsNegate.IsNull() {
+		return false
+	}
+	if !data.ConditionAttributeName.IsNull() {
+		return false
+	}
+	if !data.ConditionAttributeValue.IsNull() {
+		return false
+	}
+	if !data.ConditionDictionaryName.IsNull() {
+		return false
+	}
+	if !data.ConditionDictionaryValue.IsNull() {
+		return false
+	}
+	if !data.ConditionOperator.IsNull() {
+		return false
+	}
+	if len(data.Children) > 0 {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

@@ -161,3 +161,31 @@ func (data *CertificateAuthenticationProfile) updateFromBody(ctx context.Context
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *CertificateAuthenticationProfile) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Description.IsNull() {
+		return false
+	}
+	if !data.AllowedAsUserName.IsNull() {
+		return false
+	}
+	if !data.ExternalIdentityStoreName.IsNull() {
+		return false
+	}
+	if !data.CertificateAttributeName.IsNull() {
+		return false
+	}
+	if !data.MatchMode.IsNull() {
+		return false
+	}
+	if !data.UsernameFrom.IsNull() {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

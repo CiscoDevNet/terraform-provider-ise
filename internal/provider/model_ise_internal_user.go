@@ -239,3 +239,52 @@ func (data *InternalUser) updateFromBody(ctx context.Context, res gjson.Result) 
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *InternalUser) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Password.IsNull() {
+		return false
+	}
+	if !data.ChangePassword.IsNull() {
+		return false
+	}
+	if !data.Email.IsNull() {
+		return false
+	}
+	if !data.AccountNameAlias.IsNull() {
+		return false
+	}
+	if !data.EnablePassword.IsNull() {
+		return false
+	}
+	if !data.Enabled.IsNull() {
+		return false
+	}
+	if !data.PasswordNeverExpires.IsNull() {
+		return false
+	}
+	if !data.FirstName.IsNull() {
+		return false
+	}
+	if !data.LastName.IsNull() {
+		return false
+	}
+	if !data.IdentityGroups.IsNull() {
+		return false
+	}
+	if !data.CustomAttributes.IsNull() {
+		return false
+	}
+	if !data.PasswordIdStore.IsNull() {
+		return false
+	}
+	if !data.Description.IsNull() {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

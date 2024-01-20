@@ -134,3 +134,13 @@ func (data *LicenseTierState) updateFromBody(ctx context.Context, res gjson.Resu
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *LicenseTierState) isNull(ctx context.Context, res gjson.Result) bool {
+	if len(data.Licenses) > 0 {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

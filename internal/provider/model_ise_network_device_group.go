@@ -105,3 +105,19 @@ func (data *NetworkDeviceGroup) updateFromBody(ctx context.Context, res gjson.Re
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *NetworkDeviceGroup) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Description.IsNull() {
+		return false
+	}
+	if !data.RootGroup.IsNull() {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

@@ -575,3 +575,58 @@ func (data *DeviceAdminAuthorizationRule) updateFromBody(ctx context.Context, re
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *DeviceAdminAuthorizationRule) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.PolicySetId.IsNull() {
+		return false
+	}
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Default.IsNull() {
+		return false
+	}
+	if !data.Rank.IsNull() {
+		return false
+	}
+	if !data.State.IsNull() {
+		return false
+	}
+	if !data.ConditionType.IsNull() {
+		return false
+	}
+	if !data.ConditionId.IsNull() {
+		return false
+	}
+	if !data.ConditionIsNegate.IsNull() {
+		return false
+	}
+	if !data.ConditionAttributeName.IsNull() {
+		return false
+	}
+	if !data.ConditionAttributeValue.IsNull() {
+		return false
+	}
+	if !data.ConditionDictionaryName.IsNull() {
+		return false
+	}
+	if !data.ConditionDictionaryValue.IsNull() {
+		return false
+	}
+	if !data.ConditionOperator.IsNull() {
+		return false
+	}
+	if len(data.Children) > 0 {
+		return false
+	}
+	if !data.CommandSets.IsNull() {
+		return false
+	}
+	if !data.Profile.IsNull() {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

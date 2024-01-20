@@ -600,3 +600,64 @@ func (data *NetworkAccessAuthenticationRule) updateFromBody(ctx context.Context,
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *NetworkAccessAuthenticationRule) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.PolicySetId.IsNull() {
+		return false
+	}
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Default.IsNull() {
+		return false
+	}
+	if !data.Rank.IsNull() {
+		return false
+	}
+	if !data.State.IsNull() {
+		return false
+	}
+	if !data.ConditionType.IsNull() {
+		return false
+	}
+	if !data.ConditionId.IsNull() {
+		return false
+	}
+	if !data.ConditionIsNegate.IsNull() {
+		return false
+	}
+	if !data.ConditionAttributeName.IsNull() {
+		return false
+	}
+	if !data.ConditionAttributeValue.IsNull() {
+		return false
+	}
+	if !data.ConditionDictionaryName.IsNull() {
+		return false
+	}
+	if !data.ConditionDictionaryValue.IsNull() {
+		return false
+	}
+	if !data.ConditionOperator.IsNull() {
+		return false
+	}
+	if len(data.Children) > 0 {
+		return false
+	}
+	if !data.IdentitySourceName.IsNull() {
+		return false
+	}
+	if !data.IfAuthFail.IsNull() {
+		return false
+	}
+	if !data.IfProcessFail.IsNull() {
+		return false
+	}
+	if !data.IfUserNotFound.IsNull() {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

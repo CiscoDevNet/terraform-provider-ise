@@ -151,3 +151,31 @@ func (data *Repository) updateFromBody(ctx context.Context, res gjson.Result) {
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *Repository) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Protocol.IsNull() {
+		return false
+	}
+	if !data.Path.IsNull() {
+		return false
+	}
+	if !data.ServerName.IsNull() {
+		return false
+	}
+	if !data.UserName.IsNull() {
+		return false
+	}
+	if !data.Password.IsNull() {
+		return false
+	}
+	if !data.EnablePki.IsNull() {
+		return false
+	}
+	return true
+}
+
+//template:end isNull
