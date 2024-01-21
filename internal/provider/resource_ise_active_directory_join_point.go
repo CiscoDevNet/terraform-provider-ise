@@ -26,11 +26,16 @@ import (
 	"strings"
 
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
@@ -80,6 +85,217 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 			"domain": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("AD domain associated with the join point").String,
 				Required:            true,
+			},
+			"ad_scopes_names": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("String that contains the names of the scopes that the active directory belongs to. Names are separated by comm").AddDefaultValueDescription("Default_Scope").String,
+				Optional:            true,
+				Computed:            true,
+				Default:             stringdefault.StaticString("Default_Scope"),
+			},
+			"enable_domain_allowed_list": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("").AddDefaultValueDescription("true").String,
+				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(true),
+			},
+			"groups": schema.ListNestedAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("List of AD Groups").String,
+				Optional:            true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("Required for each group in the group list with no duplication between groups").String,
+							Required:            true,
+						},
+						"sid": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("Required for each group in the group list with no duplication between groups").String,
+							Required:            true,
+						},
+						"type": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("").String,
+							Optional:            true,
+						},
+					},
+				},
+			},
+			"attributes": schema.ListNestedAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("List of AD Attributes").String,
+				Optional:            true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("Required for each attribute in the attribute list with no duplication between attributes").String,
+							Required:            true,
+						},
+						"type": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("Required for each group in the group list").AddStringEnumDescription("STRING", "IP", "BOOLEAN", "INT", "OCTET_STRING").String,
+							Required:            true,
+							Validators: []validator.String{
+								stringvalidator.OneOf("STRING", "IP", "BOOLEAN", "INT", "OCTET_STRING"),
+							},
+						},
+						"internal_name": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("Required for each attribute in the attribute list").String,
+							Required:            true,
+						},
+						"default_value": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("Required for each attribute in the attribute list. Can contain an empty string").String,
+							Required:            true,
+						},
+					},
+				},
+			},
+			"rewrite_rules": schema.ListNestedAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("List of Rewrite rules").String,
+				Optional:            true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"row_id": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("Required for each rule in the list in serial order").String,
+							Required:            true,
+						},
+						"rewrite_match": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("Required for each rule in the list with no duplication between rules").String,
+							Required:            true,
+						},
+						"rewrite_result": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("Required for each rule in the list").String,
+							Required:            true,
+						},
+					},
+				},
+			},
+			"enable_rewrites": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Enable Rewrites").AddDefaultValueDescription("false").String,
+				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(false),
+			},
+			"enable_pass_change": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Enable Password Change").AddDefaultValueDescription("true").String,
+				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(true),
+			},
+			"enable_machine_auth": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Enable Machin Authentication").AddDefaultValueDescription("true").String,
+				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(true),
+			},
+			"enable_machine_access": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Enable Machine Access").AddDefaultValueDescription("true").String,
+				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(true),
+			},
+			"enable_dialin_permission_check": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Enable Dial In Permission Check").AddDefaultValueDescription("false").String,
+				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(false),
+			},
+			"plaintext_auth": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Plain Text Authentication").AddDefaultValueDescription("false").String,
+				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(false),
+			},
+			"aging_time": schema.Int64Attribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Aging Time").AddDefaultValueDescription("5").String,
+				Optional:            true,
+				Computed:            true,
+				Default:             int64default.StaticInt64(5),
+			},
+			"enable_callback_for_dialin_client": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Enable Callback For Dial In Client").AddDefaultValueDescription("false").String,
+				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(false),
+			},
+			"identity_not_in_ad_behaviour": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Identity Not In AD Behaviour").AddStringEnumDescription("REJECT", "SEARCH_JOINED_FOREST", "SEARCH_ALL").String,
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("REJECT", "SEARCH_JOINED_FOREST", "SEARCH_ALL"),
+				},
+			},
+			"unreachable_domains_behaviour": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Unreachable Domains Behaviour").AddStringEnumDescription("PROCEED", "DROP").String,
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("PROCEED", "DROP"),
+				},
+			},
+			"schema": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Schema").AddStringEnumDescription("ACTIVE_DIRECTORY", "CUSTOM").String,
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("ACTIVE_DIRECTORY", "CUSTOM"),
+				},
+			},
+			"first_name": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
+				Optional:            true,
+			},
+			"department": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
+				Optional:            true,
+			},
+			"last_name": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
+				Optional:            true,
+			},
+			"organizational_unit": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
+				Optional:            true,
+			},
+			"job_title": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
+				Optional:            true,
+			},
+			"locality": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
+				Optional:            true,
+			},
+			"email": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
+				Optional:            true,
+			},
+			"state_or_province": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
+				Optional:            true,
+			},
+			"telephone": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
+				Optional:            true,
+			},
+			"country": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
+				Optional:            true,
+			},
+			"street_address": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
+				Optional:            true,
+			},
+			"enable_failed_auth_protection": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Enable prevent AD account lockout due to too many bad password attempts").AddDefaultValueDescription("false").String,
+				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(false),
+			},
+			"failed_auth_threshold": schema.Int64Attribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Number of bad password attempts").AddDefaultValueDescription("5").String,
+				Optional:            true,
+				Computed:            true,
+				Default:             int64default.StaticInt64(5),
+			},
+			"auth_protection_type": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Enable prevent AD account lockout for WIRELESS/WIRED/BOTH").AddStringEnumDescription("WIRELESS", "WIRED", "BOTH").String,
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("WIRELESS", "WIRED", "BOTH"),
+				},
 			},
 		},
 	}
@@ -176,14 +392,6 @@ func (r *ActiveDirectoryJoinPointResource) Update(ctx context.Context, req resou
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
-
-	body := plan.toBody(ctx, state)
-
-	res, err := r.client.Put(plan.getPath()+"/"+plan.Id.ValueString(), body)
-	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
-		return
-	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Update finished successfully", plan.Id.ValueString()))
 

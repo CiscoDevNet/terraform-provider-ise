@@ -414,6 +414,13 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	{{- end}}
 	{{- end}}
 	{{- else}}
+	{{- if .PutCreate}}
+	res, err := r.client.Put(plan.getPath(), body)
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
+		return
+	}
+	{{- else}}
 	res, location, err := r.client.Post(plan.getPath(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
@@ -421,6 +428,7 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	}
 	locationElements := strings.Split(location, "/")
 	plan.Id = types.StringValue(locationElements[len(locationElements)-1])
+	{{- end}}
 	{{- end}}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
@@ -442,6 +450,7 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
+	{{- if not .NoRead}}
 
 	res, err := r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + state.Id.ValueString(){{end}})
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
@@ -453,6 +462,7 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 	}
 
 	state.updateFromBody(ctx, res)
+	{{- end}}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Read finished successfully", state.Id.ValueString()))
 
@@ -479,6 +489,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
+	{{- if not .NoUpdate}}
 
 	body := plan.toBody(ctx, state)
 	{{if .PostUpdate}}
@@ -490,6 +501,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
 	}
+	{{- end}}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Update finished successfully", plan.Id.ValueString()))
 

@@ -3,7 +3,11 @@ name: str() # Name of the resource
 rest_endpoint: str(required=False) # REST endpoint path
 get_no_id: bool(required=False) # Set to true if the GET request does not require an ID
 no_delete: bool(required=False) # Set to true if the DELETE request is not supported
+no_update: bool(required=False) # Set to true if the PUT request is not supported
 post_update: bool(required=False) # Set to true if the POST request is used for update
+put_create: bool(required=False) # Set to true if the PUT request is used to create
+no_read: bool(required=False) # Set to true if the GET request is not supported
+id_from_attribute: bool(required=False) # Set to true if the ID is derived from an attribute
 root_list: bool(required=False) # Set to true if the root element of the data structure is a list
 no_read_prefix: bool(required=False) # Set to true if it is an Open API endpoint put the response is not embeeded into a "response" element
 id_path: str(required=False) # Path to the ID in the response (use "." to access nested elements)

@@ -34,6 +34,43 @@ func TestAccDataSourceIseActiveDirectoryJoinPoint(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "name", "cisco.local"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "description", "My AD join point"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "domain", "cisco.local"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "ad_scopes_names", "Default_Scope"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "enable_domain_allowed_list", "true"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "groups.0.name", "cisco.local/operators"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "groups.0.sid", "S-1-5-32-548"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "groups.0.type", "GLOBAL"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "attributes.0.name", "Attribute_1"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "attributes.0.type", "STRING"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "attributes.0.internal_name", "internal_name"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "attributes.0.default_value", "default_string"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "rewrite_rules.0.row_id", "0"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "rewrite_rules.0.rewrite_match", "rewrite_match"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "rewrite_rules.0.rewrite_result", "rewrite_result"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "enable_rewrites", "false"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "enable_pass_change", "true"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "enable_machine_auth", "true"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "enable_machine_access", "true"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "enable_dialin_permission_check", "false"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "plaintext_auth", "false"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "aging_time", "5"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "enable_callback_for_dialin_client", "false"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "identity_not_in_ad_behaviour", "SEARCH_JOINED_FOREST"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "unreachable_domains_behaviour", "PROCEED"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "schema", "ACTIVE_DIRECTORY"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "first_name", "givenName"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "department", "department"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "last_name", "sn"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "organizational_unit", "company"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "job_title", "title"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "locality", "l"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "email", "mail"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "state_or_province", "st"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "telephone", "telephoneNumber"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "country", "co"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "street_address", "streetAddress"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "enable_failed_auth_protection", "false"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "failed_auth_threshold", "5"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "auth_protection_type", "WIRELESS"))
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
@@ -57,6 +94,49 @@ func testAccDataSourceIseActiveDirectoryJoinPointConfig() string {
 	config += `	name = "cisco.local"` + "\n"
 	config += `	description = "My AD join point"` + "\n"
 	config += `	domain = "cisco.local"` + "\n"
+	config += `	ad_scopes_names = "Default_Scope"` + "\n"
+	config += `	enable_domain_allowed_list = true` + "\n"
+	config += `	groups = [{` + "\n"
+	config += `	  name = "cisco.local/operators"` + "\n"
+	config += `	  sid = "S-1-5-32-548"` + "\n"
+	config += `	  type = "GLOBAL"` + "\n"
+	config += `	}]` + "\n"
+	config += `	attributes = [{` + "\n"
+	config += `	  name = "Attribute_1"` + "\n"
+	config += `	  type = "STRING"` + "\n"
+	config += `	  internal_name = "internal_name"` + "\n"
+	config += `	  default_value = "default_string"` + "\n"
+	config += `	}]` + "\n"
+	config += `	rewrite_rules = [{` + "\n"
+	config += `	  row_id = "0"` + "\n"
+	config += `	  rewrite_match = "rewrite_match"` + "\n"
+	config += `	  rewrite_result = "rewrite_result"` + "\n"
+	config += `	}]` + "\n"
+	config += `	enable_rewrites = false` + "\n"
+	config += `	enable_pass_change = true` + "\n"
+	config += `	enable_machine_auth = true` + "\n"
+	config += `	enable_machine_access = true` + "\n"
+	config += `	enable_dialin_permission_check = false` + "\n"
+	config += `	plaintext_auth = false` + "\n"
+	config += `	aging_time = 5` + "\n"
+	config += `	enable_callback_for_dialin_client = false` + "\n"
+	config += `	identity_not_in_ad_behaviour = "SEARCH_JOINED_FOREST"` + "\n"
+	config += `	unreachable_domains_behaviour = "PROCEED"` + "\n"
+	config += `	schema = "ACTIVE_DIRECTORY"` + "\n"
+	config += `	first_name = "givenName"` + "\n"
+	config += `	department = "department"` + "\n"
+	config += `	last_name = "sn"` + "\n"
+	config += `	organizational_unit = "company"` + "\n"
+	config += `	job_title = "title"` + "\n"
+	config += `	locality = "l"` + "\n"
+	config += `	email = "mail"` + "\n"
+	config += `	state_or_province = "st"` + "\n"
+	config += `	telephone = "telephoneNumber"` + "\n"
+	config += `	country = "co"` + "\n"
+	config += `	street_address = "streetAddress"` + "\n"
+	config += `	enable_failed_auth_protection = false` + "\n"
+	config += `	failed_auth_threshold = 5` + "\n"
+	config += `	auth_protection_type = "WIRELESS"` + "\n"
 	config += `}` + "\n"
 
 	config += `

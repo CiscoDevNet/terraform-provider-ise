@@ -99,6 +99,10 @@ type YamlConfig struct {
 	GetNoId             bool                  `yaml:"get_no_id"`
 	NoDelete            bool                  `yaml:"no_delete"`
 	PostUpdate          bool                  `yaml:"post_update"`
+	PutCreate           bool                  `yaml:"put_create"`
+	NoRead              bool                  `yaml:"no_read"`
+	NoUpdate            bool                  `yaml:"no_update"`
+	IdFromAttribute     bool                  `yaml:"id_from_attribute"`
 	RootList            bool                  `yaml:"root_list"`
 	NoReadPrefix        bool                  `yaml:"no_read_prefix"`
 	IdPath              string                `yaml:"id_path"`
@@ -200,6 +204,15 @@ func contains(s []string, str string) bool {
 	return false
 }
 
+// Templating helper function to return the ID attribute
+func GetId(attributes []YamlConfigAttribute) YamlConfigAttribute {
+	for _, attr := range attributes {
+		if attr.Id {
+			return attr
+		}
+	}
+	return YamlConfigAttribute{}
+}
 // Templating helper function to return true if id included in attributes
 func HasId(attributes []YamlConfigAttribute) bool {
 	for _, attr := range attributes {
@@ -237,6 +250,7 @@ var functions = template.FuncMap{
 	"toLower":      strings.ToLower,
 	"path":         BuildPath,
 	"hasId":        HasId,
+	"getId":        GetId,
 	"hasReference": HasReference,
 	"isErs":        IsErs,
 }

@@ -2,6 +2,7 @@
 name: Active Directory Join Point
 rest_endpoint: /ers/config/activedirectory
 doc_category: Identity Management
+no_update: true
 skip_minimum_test: true
 attributes:
   - model_name: name
@@ -21,3 +22,217 @@ attributes:
     mandatory: true
     description: AD domain associated with the join point
     example: cisco.local
+  - model_name: adScopesNames
+    data_path: [ERSActiveDirectory]
+    type: String
+    description: String that contains the names of the scopes that the active directory belongs to. Names are separated by comm
+    default_value: Default_Scope
+    example: Default_Scope
+  - model_name: enableDomainAllowedList
+    data_path: [ERSActiveDirectory]
+    type: Bool
+    default_value: true
+    example: true
+  - model_name: groups
+    description: List of AD Groups
+    data_path: [ERSActiveDirectory,adgroups] 
+    type: List
+    attributes:
+      - model_name: name
+        type: String
+        mandatory: true
+        description: Required for each group in the group list with no duplication between groups
+        example: cisco.local/operators
+      - model_name: sid
+        type: String
+        mandatory: true
+        description: Required for each group in the group list with no duplication between groups
+        example: S-1-5-32-548
+      - model_name: type
+        type: String
+        example: GLOBAL
+  - model_name: attributes
+    data_path: [ERSActiveDirectory,adAttributes] 
+    type: List
+    description: List of AD Attributes
+    attributes:
+      - model_name: name
+        type: String
+        mandatory: true
+        description: Required for each attribute in the attribute list with no duplication between attributes
+        example: Attribute_1
+      - model_name: type
+        type: String
+        enum_values: [STRING, IP, BOOLEAN, INT, OCTET_STRING]
+        mandatory: true
+        description: Required for each group in the group list
+        example: STRING
+      - model_name: internalName
+        type: String
+        mandatory: true
+        description: Required for each attribute in the attribute list
+        example: internal_name
+      - model_name: defaultValue
+        type: String
+        mandatory: true
+        description: Required for each attribute in the attribute list. Can contain an empty string
+        example: default_string
+  - model_name: rewriteRules
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: List
+    description: List of Rewrite rules
+    attributes:
+      - model_name: rowId
+        type: String
+        mandatory: true
+        description: Required for each rule in the list in serial order
+        example: 0
+      - model_name: rewriteMatch
+        type: String
+        mandatory: true
+        description: Required for each rule in the list with no duplication between rules
+        example: rewrite_match
+      - model_name: rewriteResult
+        type: String
+        mandatory: true
+        description: Required for each rule in the list
+        example: rewrite_result
+  - model_name: enableRewrites
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: Bool
+    default_value: false
+    description: Enable Rewrites
+    example: false
+  - model_name: enablePassChange
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: Bool
+    default_value: true
+    description: Enable Password Change
+    example: true
+  - model_name: enableMachineAuth
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: Bool
+    default_value: true
+    description: Enable Machin Authentication
+    example: true
+  - model_name: enableMachineAccess
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: Bool
+    default_value: true
+    description: Enable Machine Access
+    example: true
+  - model_name: enableDialinPermissionCheck
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: Bool
+    default_value: false
+    description: Enable Dial In Permission Check
+    example: false
+  - model_name: plaintextAuth
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: Bool
+    default_value: false
+    description: Plain Text Authentication
+    example: false
+  - model_name: agingTime
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: Int64
+    default_value: 5
+    description: Aging Time
+    example: 5
+  - model_name: enableCallbackForDialinClient
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: Bool
+    default_value: false
+    description: Enable Callback For Dial In Client
+    example: false
+  - model_name: identityNotInAdBehaviour
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: String
+    enum_values: [REJECT, SEARCH_JOINED_FOREST, SEARCH_ALL]
+    description: Identity Not In AD Behaviour
+    example: SEARCH_JOINED_FOREST
+  - model_name: unreachableDomainsBehaviour
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: String
+    enum_values: [PROCEED, DROP]
+    description: Unreachable Domains Behaviour
+    example: PROCEED
+  - model_name: schema
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: String
+    enum_values: [ACTIVE_DIRECTORY, CUSTOM]
+    description: Schema
+    example: ACTIVE_DIRECTORY
+  - model_name: firstName
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: String
+    description: User info attribute
+    example: givenName
+  - model_name: department
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: String
+    description: User info attribute
+    example: department
+  - model_name: lastName
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: String
+    description: User info attribute
+    example: sn
+  - model_name: organizationalUnit
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: String
+    description: User info attribute
+    example: company
+  - model_name: jobTitle
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: String
+    description: User info attribute
+    example: title
+  - model_name: locality
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: String
+    description: User info attribute
+    example: l
+  - model_name: email
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: String
+    description: User info attribute
+    example: mail
+  - model_name: stateOrProvince
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: String
+    description: User info attribute
+    example: st
+  - model_name: telephone
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: String
+    description: User info attribute
+    example: telephoneNumber
+  - model_name: country
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: String
+    description: User info attribute
+    example: co
+  - model_name: streetAddress
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: String
+    description: User info attribute
+    example: streetAddress
+  - model_name: enableFailedAuthProtection
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: Bool
+    description: Enable prevent AD account lockout due to too many bad password attempts
+    example: false
+    default_value: false
+  - model_name: failedAuthThreshold
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: Int64
+    default_value: 5
+    description: Number of bad password attempts
+    example: 5
+  - model_name: authProtectionType
+    data_path: [ERSActiveDirectory,advancedSettings]
+    type: String
+    enum_values: [WIRELESS, WIRED, BOTH]
+    description: Enable prevent AD account lockout for WIRELESS/WIRED/BOTH
+    example: WIRELESS

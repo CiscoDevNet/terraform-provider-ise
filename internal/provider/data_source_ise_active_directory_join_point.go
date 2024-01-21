@@ -74,6 +74,178 @@ func (d *ActiveDirectoryJoinPointDataSource) Schema(ctx context.Context, req dat
 				MarkdownDescription: "AD domain associated with the join point",
 				Computed:            true,
 			},
+			"ad_scopes_names": schema.StringAttribute{
+				MarkdownDescription: "String that contains the names of the scopes that the active directory belongs to. Names are separated by comm",
+				Computed:            true,
+			},
+			"enable_domain_allowed_list": schema.BoolAttribute{
+				MarkdownDescription: "",
+				Computed:            true,
+			},
+			"groups": schema.ListNestedAttribute{
+				MarkdownDescription: "List of AD Groups",
+				Computed:            true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
+							MarkdownDescription: "Required for each group in the group list with no duplication between groups",
+							Computed:            true,
+						},
+						"sid": schema.StringAttribute{
+							MarkdownDescription: "Required for each group in the group list with no duplication between groups",
+							Computed:            true,
+						},
+						"type": schema.StringAttribute{
+							MarkdownDescription: "",
+							Computed:            true,
+						},
+					},
+				},
+			},
+			"attributes": schema.ListNestedAttribute{
+				MarkdownDescription: "List of AD Attributes",
+				Computed:            true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
+							MarkdownDescription: "Required for each attribute in the attribute list with no duplication between attributes",
+							Computed:            true,
+						},
+						"type": schema.StringAttribute{
+							MarkdownDescription: "Required for each group in the group list",
+							Computed:            true,
+						},
+						"internal_name": schema.StringAttribute{
+							MarkdownDescription: "Required for each attribute in the attribute list",
+							Computed:            true,
+						},
+						"default_value": schema.StringAttribute{
+							MarkdownDescription: "Required for each attribute in the attribute list. Can contain an empty string",
+							Computed:            true,
+						},
+					},
+				},
+			},
+			"rewrite_rules": schema.ListNestedAttribute{
+				MarkdownDescription: "List of Rewrite rules",
+				Computed:            true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"row_id": schema.StringAttribute{
+							MarkdownDescription: "Required for each rule in the list in serial order",
+							Computed:            true,
+						},
+						"rewrite_match": schema.StringAttribute{
+							MarkdownDescription: "Required for each rule in the list with no duplication between rules",
+							Computed:            true,
+						},
+						"rewrite_result": schema.StringAttribute{
+							MarkdownDescription: "Required for each rule in the list",
+							Computed:            true,
+						},
+					},
+				},
+			},
+			"enable_rewrites": schema.BoolAttribute{
+				MarkdownDescription: "Enable Rewrites",
+				Computed:            true,
+			},
+			"enable_pass_change": schema.BoolAttribute{
+				MarkdownDescription: "Enable Password Change",
+				Computed:            true,
+			},
+			"enable_machine_auth": schema.BoolAttribute{
+				MarkdownDescription: "Enable Machin Authentication",
+				Computed:            true,
+			},
+			"enable_machine_access": schema.BoolAttribute{
+				MarkdownDescription: "Enable Machine Access",
+				Computed:            true,
+			},
+			"enable_dialin_permission_check": schema.BoolAttribute{
+				MarkdownDescription: "Enable Dial In Permission Check",
+				Computed:            true,
+			},
+			"plaintext_auth": schema.BoolAttribute{
+				MarkdownDescription: "Plain Text Authentication",
+				Computed:            true,
+			},
+			"aging_time": schema.Int64Attribute{
+				MarkdownDescription: "Aging Time",
+				Computed:            true,
+			},
+			"enable_callback_for_dialin_client": schema.BoolAttribute{
+				MarkdownDescription: "Enable Callback For Dial In Client",
+				Computed:            true,
+			},
+			"identity_not_in_ad_behaviour": schema.StringAttribute{
+				MarkdownDescription: "Identity Not In AD Behaviour",
+				Computed:            true,
+			},
+			"unreachable_domains_behaviour": schema.StringAttribute{
+				MarkdownDescription: "Unreachable Domains Behaviour",
+				Computed:            true,
+			},
+			"schema": schema.StringAttribute{
+				MarkdownDescription: "Schema",
+				Computed:            true,
+			},
+			"first_name": schema.StringAttribute{
+				MarkdownDescription: "User info attribute",
+				Computed:            true,
+			},
+			"department": schema.StringAttribute{
+				MarkdownDescription: "User info attribute",
+				Computed:            true,
+			},
+			"last_name": schema.StringAttribute{
+				MarkdownDescription: "User info attribute",
+				Computed:            true,
+			},
+			"organizational_unit": schema.StringAttribute{
+				MarkdownDescription: "User info attribute",
+				Computed:            true,
+			},
+			"job_title": schema.StringAttribute{
+				MarkdownDescription: "User info attribute",
+				Computed:            true,
+			},
+			"locality": schema.StringAttribute{
+				MarkdownDescription: "User info attribute",
+				Computed:            true,
+			},
+			"email": schema.StringAttribute{
+				MarkdownDescription: "User info attribute",
+				Computed:            true,
+			},
+			"state_or_province": schema.StringAttribute{
+				MarkdownDescription: "User info attribute",
+				Computed:            true,
+			},
+			"telephone": schema.StringAttribute{
+				MarkdownDescription: "User info attribute",
+				Computed:            true,
+			},
+			"country": schema.StringAttribute{
+				MarkdownDescription: "User info attribute",
+				Computed:            true,
+			},
+			"street_address": schema.StringAttribute{
+				MarkdownDescription: "User info attribute",
+				Computed:            true,
+			},
+			"enable_failed_auth_protection": schema.BoolAttribute{
+				MarkdownDescription: "Enable prevent AD account lockout due to too many bad password attempts",
+				Computed:            true,
+			},
+			"failed_auth_threshold": schema.Int64Attribute{
+				MarkdownDescription: "Number of bad password attempts",
+				Computed:            true,
+			},
+			"auth_protection_type": schema.StringAttribute{
+				MarkdownDescription: "Enable prevent AD account lockout for WIRELESS/WIRED/BOTH",
+				Computed:            true,
+			},
 		},
 	}
 }
