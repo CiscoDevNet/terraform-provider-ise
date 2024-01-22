@@ -34,6 +34,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/floatplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -133,7 +138,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 				{{- else if and (len .DefaultValue) (eq .Type "String")}}
 				Default:             stringdefault.StaticString("{{.DefaultValue}}"),
 				{{- end}}
-				{{- if or .Id .Reference}}
+				{{- if or .Id .Reference .RequiresReplace}}
 				PlanModifiers: []planmodifier.{{.Type}}{
 					{{snakeCase .Type}}planmodifier.RequiresReplace(),
 				},
@@ -198,6 +203,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 							{{- else if and (len .DefaultValue) (eq .Type "String")}}
 							Default:             stringdefault.StaticString("{{.DefaultValue}}"),
 							{{- end}}
+							{{- if .RequiresReplace}}
+							PlanModifiers: []planmodifier.{{.Type}}{
+								{{snakeCase .Type}}planmodifier.RequiresReplace(),
+							},
+							{{- end}}
 							{{- if or (eq .Type "List") (eq .Type "Set")}}
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
@@ -257,6 +267,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 										Default:             booldefault.StaticBool({{.DefaultValue}}),
 										{{- else if and (len .DefaultValue) (eq .Type "String")}}
 										Default:             stringdefault.StaticString("{{.DefaultValue}}"),
+										{{- end}}
+										{{- if .RequiresReplace}}
+										PlanModifiers: []planmodifier.{{.Type}}{
+											{{snakeCase .Type}}planmodifier.RequiresReplace(),
+										},
 										{{- end}}
 										{{- if or (eq .Type "List") (eq .Type "Set")}}
 										NestedObject: schema.NestedAttributeObject{
@@ -318,6 +333,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 													{{- else if and (len .DefaultValue) (eq .Type "String")}}
 													Default:             stringdefault.StaticString("{{.DefaultValue}}"),
 													{{- end}}
+													{{- if .RequiresReplace}}
+													PlanModifiers: []planmodifier.{{.Type}}{
+														{{snakeCase .Type}}planmodifier.RequiresReplace(),
+													},
+													{{- end}}
 												},
 												{{- end}}
 												{{- end}}
@@ -331,6 +351,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 											{{- if ne .MaxList 0}}
 											listvalidator.SizeAtMost({{.MaxList}}),
 											{{- end}}
+										},
+										{{- end}}
+										{{- if .RequiresReplace}}
+										PlanModifiers: []planmodifier.{{.Type}}{
+											{{snakeCase .Type}}planmodifier.RequiresReplace(),
 										},
 										{{- end}}
 										{{- end}}
@@ -349,6 +374,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 								{{- end}}
 							},
 							{{- end}}
+							{{- if .RequiresReplace}}
+							PlanModifiers: []planmodifier.{{.Type}}{
+								{{snakeCase .Type}}planmodifier.RequiresReplace(),
+							},
+							{{- end}}
 							{{- end}}
 						},
 						{{- end}}
@@ -363,6 +393,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 					{{- if ne .MaxList 0}}
 					listvalidator.SizeAtMost({{.MaxList}}),
 					{{- end}}
+				},
+				{{- end}}
+				{{- if .RequiresReplace}}
+				PlanModifiers: []planmodifier.{{.Type}}{
+					{{snakeCase .Type}}planmodifier.RequiresReplace(),
 				},
 				{{- end}}
 				{{- end}}
