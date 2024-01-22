@@ -220,6 +220,24 @@ func HasReference(attributes []YamlConfigAttribute) bool {
 	return false
 }
 
+// Templating helper function to return number of import parts
+func ImportParts(attributes []YamlConfigAttribute) int {
+	parts := 1
+	for _, attr := range attributes {
+		if attr.Reference {
+			parts += 1
+		} else if attr.Id {
+			parts += 1
+		}
+	}
+	return parts
+}
+
+// Templating helper function to subtract one number from another
+func Subtract(a, b int) int {
+	return a - b
+}
+
 // Templating helper function to return true if ERS API endpoint
 func IsErs(endpoint string) bool {
 	if strings.HasPrefix(endpoint, "/ers") {
@@ -238,6 +256,8 @@ var functions = template.FuncMap{
 	"path":         BuildPath,
 	"hasId":        HasId,
 	"hasReference": HasReference,
+	"importParts":  ImportParts,
+	"subtract":     Subtract,
 	"isErs":        IsErs,
 }
 

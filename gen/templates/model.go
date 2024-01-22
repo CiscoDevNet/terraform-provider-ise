@@ -529,7 +529,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 //template:begin isNull
 func (data *{{camelCase .Name}}) isNull(ctx context.Context, res gjson.Result) bool {
 	{{- range .Attributes}}
-	{{- if not .Value}}
+	{{- if and (not .Value) (not .Reference)}}
 	{{- if or (eq .Type "List") (eq .Type "Set")}}
 	if len(data.{{toGoName .TfName}}) > 0 {
 		return false

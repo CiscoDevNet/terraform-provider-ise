@@ -603,9 +603,6 @@ func (data *NetworkAccessAuthenticationRule) updateFromBody(ctx context.Context,
 
 //template:begin isNull
 func (data *NetworkAccessAuthenticationRule) isNull(ctx context.Context, res gjson.Result) bool {
-	if !data.PolicySetId.IsNull() {
-		return false
-	}
 	if !data.Name.IsNull() {
 		return false
 	}

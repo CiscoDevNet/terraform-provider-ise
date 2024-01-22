@@ -603,9 +603,6 @@ func (data *DeviceAdminAuthenticationRule) updateFromBody(ctx context.Context, r
 
 //template:begin isNull
 func (data *DeviceAdminAuthenticationRule) isNull(ctx context.Context, res gjson.Result) bool {
-	if !data.PolicySetId.IsNull() {
-		return false
-	}
 	if !data.Name.IsNull() {
 		return false
 	}

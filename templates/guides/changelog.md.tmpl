@@ -7,6 +7,10 @@ description: |-
 
 # Changelog
 
+## 0.1.11 (unreleased)
+
+- Fix import operation of nested resources (e.g. `ise_network_access_authentication_rule`)
+
 ## 0.1.10
 
 - Retry on 400 and 500 HTTP errors when creating or updating objects
