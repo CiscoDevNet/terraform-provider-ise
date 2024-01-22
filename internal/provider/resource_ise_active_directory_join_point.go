@@ -31,6 +31,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -81,6 +82,9 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 			"description": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Join point Description").String,
 				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"domain": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("AD domain associated with the join point").String,
@@ -182,6 +186,9 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 				Optional:            true,
 				Computed:            true,
 				Default:             booldefault.StaticBool(true),
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
+				},
 			},
 			"enable_machine_access": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Enable Machine Access").AddDefaultValueDescription("true").String,

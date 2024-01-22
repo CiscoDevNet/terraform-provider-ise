@@ -24,6 +24,7 @@ test_prerequisites: str(required=False) # HCL code that is included in the accep
 ---
 attribute:
   model_name: str(required=False) # Name of the attribute in the model (payload)
+  requires_replace: bool(required=False) #Set to true if the attribute requires are place operation
   tf_name: str(required=False) # Name of the attribute in the Terraform resource, by default derived from model_name
   type: enum('String', 'Int64', 'Float', 'Bool', 'List', 'Set', 'StringList', required=False) # Type of the attribute
   data_path: list(str(), required=False) # Path to the attribute in the model structure

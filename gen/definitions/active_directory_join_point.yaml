@@ -14,6 +14,7 @@ attributes:
   - model_name: description
     data_path: [ERSActiveDirectory]
     type: String
+    requires_replace: true
     description: Join point Description
     example: My AD join point
   - model_name: domain
@@ -46,10 +47,12 @@ attributes:
       - model_name: sid
         type: String
         mandatory: true
+        id: true
         description: Required for each group in the group list with no duplication between groups
         example: S-1-5-32-548
       - model_name: type
         type: String
+        write_only: true
         example: GLOBAL
   - model_name: attributes
     data_path: [ERSActiveDirectory,adAttributes] 
@@ -112,6 +115,7 @@ attributes:
   - model_name: enableMachineAuth
     data_path: [ERSActiveDirectory,advancedSettings]
     type: Bool
+    requires_replace: true
     default_value: true
     description: Enable Machin Authentication
     example: true

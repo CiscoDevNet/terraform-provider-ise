@@ -38,7 +38,6 @@ func TestAccDataSourceIseActiveDirectoryJoinPoint(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "enable_domain_allowed_list", "true"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "groups.0.name", "cisco.local/operators"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "groups.0.sid", "S-1-5-32-548"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "groups.0.type", "GLOBAL"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "attributes.0.name", "Attribute_1"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "attributes.0.type", "STRING"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_active_directory_join_point.test", "attributes.0.internal_name", "internal_name"))

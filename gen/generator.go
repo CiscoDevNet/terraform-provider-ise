@@ -130,6 +130,7 @@ type YamlConfigAttribute struct {
 	WriteOnly        bool                  `yaml:"write_only"`
 	WriteChangesOnly bool                  `yaml:"write_changes_only"`
 	ExcludeTest      bool                  `yaml:"exclude_test"`
+	RequiresReplace     bool                  `yaml:"requires_replace"`
 	ExcludeExample   bool                  `yaml:"exclude_example"`
 	Description      string                `yaml:"description"`
 	Example          string                `yaml:"example"`

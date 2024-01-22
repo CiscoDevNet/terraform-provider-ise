@@ -286,11 +286,6 @@ func (data *ActiveDirectoryJoinPoint) fromBody(ctx context.Context, res gjson.Re
 			} else {
 				item.Sid = types.StringNull()
 			}
-			if cValue := v.Get("type"); cValue.Exists() {
-				item.Type = types.StringValue(cValue.String())
-			} else {
-				item.Type = types.StringNull()
-			}
 			data.Groups = append(data.Groups, item)
 			return true
 		})
@@ -503,8 +498,8 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 		data.EnableDomainAllowedList = types.BoolNull()
 	}
 	for i := range data.Groups {
-		keys := [...]string{"name", "sid", "type"}
-		keyValues := [...]string{data.Groups[i].Name.ValueString(), data.Groups[i].Sid.ValueString(), data.Groups[i].Type.ValueString()}
+		keys := [...]string{"sid"}
+		keyValues := [...]string{data.Groups[i].Sid.ValueString()}
 
 		var r gjson.Result
 		res.Get("ERSActiveDirectory.adgroups.groups").ForEach(
@@ -534,11 +529,6 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 			data.Groups[i].Sid = types.StringValue(value.String())
 		} else {
 			data.Groups[i].Sid = types.StringNull()
-		}
-		if value := r.Get("type"); value.Exists() && !data.Groups[i].Type.IsNull() {
-			data.Groups[i].Type = types.StringValue(value.String())
-		} else {
-			data.Groups[i].Type = types.StringNull()
 		}
 	}
 	for i := range data.Attributes {
