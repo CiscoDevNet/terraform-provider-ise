@@ -190,8 +190,8 @@ func (d *{{camelCase .Name}}DataSource) Read(ctx context.Context, req datasource
 			}
 			if value := res.Get({{if $openApi}}"response"{{else}}"SearchResult.resources"{{end}}); len(value.Array()) > 0 {
 				value.ForEach(func(k, v gjson.Result) bool {
-					if config.Name.ValueString() == v.Get("name").String() {
-						config.Id = types.StringValue(v.Get("id").String())
+					if config.Name.ValueString() == v.Get("{{if $openApi}}{{range .Attributes}}{{if eq .TfName "name"}}{{range .DataPath}}{{.}}.{{end}}{{end}}{{end}}{{end}}name").String() {
+						config.Id = types.StringValue(v.Get("{{if .IdPath}}{{removeFirstPathElement .IdPath}}{{else}}id{{end}}").String())
 						tflog.Debug(ctx, fmt.Sprintf("%s: Found object with name '%v', id: %v", config.Id.String(), config.Name.ValueString(), config.Id.String()))
 						return false
 					}

@@ -252,8 +252,8 @@ func (d *DeviceAdminAuthorizationRuleDataSource) Read(ctx context.Context, req d
 			}
 			if value := res.Get("response"); len(value.Array()) > 0 {
 				value.ForEach(func(k, v gjson.Result) bool {
-					if config.Name.ValueString() == v.Get("name").String() {
-						config.Id = types.StringValue(v.Get("id").String())
+					if config.Name.ValueString() == v.Get("rule.name").String() {
+						config.Id = types.StringValue(v.Get("rule.id").String())
 						tflog.Debug(ctx, fmt.Sprintf("%s: Found object with name '%v', id: %v", config.Id.String(), config.Name.ValueString(), config.Id.String()))
 						return false
 					}

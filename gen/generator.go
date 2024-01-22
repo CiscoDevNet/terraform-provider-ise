@@ -247,19 +247,26 @@ func IsErs(endpoint string) bool {
 	return false
 }
 
+// Templating helper function to remove first path element
+func RemoveFirstPathElement(path string) string {
+	elements := strings.Split(path, ".")
+	return strings.Join(elements[1:], ".")
+}
+
 // Map of templating functions
 var functions = template.FuncMap{
-	"toGoName":     ToGoName,
-	"camelCase":    CamelCase,
-	"snakeCase":    SnakeCase,
-	"sprintf":      fmt.Sprintf,
-	"toLower":      strings.ToLower,
-	"path":         BuildPath,
-	"hasId":        HasId,
-	"hasReference": HasReference,
-	"importParts":  ImportParts,
-	"subtract":     Subtract,
-	"isErs":        IsErs,
+	"toGoName":               ToGoName,
+	"camelCase":              CamelCase,
+	"snakeCase":              SnakeCase,
+	"sprintf":                fmt.Sprintf,
+	"toLower":                strings.ToLower,
+	"path":                   BuildPath,
+	"hasId":                  HasId,
+	"hasReference":           HasReference,
+	"importParts":            ImportParts,
+	"subtract":               Subtract,
+	"isErs":                  IsErs,
+	"removeFirstPathElement": RemoveFirstPathElement,
 }
 
 func augmentAttribute(attr *YamlConfigAttribute) {
