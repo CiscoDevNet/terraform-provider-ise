@@ -105,7 +105,7 @@ func (d *NetworkAccessConditionDataSource) Schema(ctx context.Context, req datas
 				Computed:            true,
 			},
 			"children": schema.ListNestedAttribute{
-				MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `LibraryConditionAndBlock` or `LibraryConditionOrBlock`.",
+				MarkdownDescription: "List of child conditions. `condition_type` must be one of `LibraryConditionAndBlock` or `LibraryConditionOrBlock`.",
 				Computed:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -150,7 +150,7 @@ func (d *NetworkAccessConditionDataSource) Schema(ctx context.Context, req datas
 							Computed:            true,
 						},
 						"children": schema.ListNestedAttribute{
-							MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `LibraryConditionAndBlock` or `LibraryConditionOrBlock`.",
+							MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.",
 							Computed:            true,
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
@@ -163,7 +163,7 @@ func (d *NetworkAccessConditionDataSource) Schema(ctx context.Context, req datas
 										Computed:            true,
 									},
 									"condition_type": schema.StringAttribute{
-										MarkdownDescription: "Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.",
+										MarkdownDescription: "Condition type.",
 										Computed:            true,
 									},
 									"id": schema.StringAttribute{

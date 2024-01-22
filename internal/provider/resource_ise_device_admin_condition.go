@@ -114,7 +114,7 @@ func (r *DeviceAdminConditionResource) Schema(ctx context.Context, req resource.
 				},
 			},
 			"children": schema.ListNestedAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `LibraryConditionAndBlock` or `LibraryConditionOrBlock`.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("List of child conditions. `condition_type` must be one of `LibraryConditionAndBlock` or `LibraryConditionOrBlock`.").String,
 				Optional:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -165,7 +165,7 @@ func (r *DeviceAdminConditionResource) Schema(ctx context.Context, req resource.
 							},
 						},
 						"children": schema.ListNestedAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `LibraryConditionAndBlock` or `LibraryConditionOrBlock`.").String,
+							MarkdownDescription: helpers.NewAttributeDescription("List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.").String,
 							Optional:            true,
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
@@ -178,10 +178,10 @@ func (r *DeviceAdminConditionResource) Schema(ctx context.Context, req resource.
 										Optional:            true,
 									},
 									"condition_type": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference").String,
+										MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAttributes", "ConditionReference").String,
 										Required:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference"),
+											stringvalidator.OneOf("ConditionAttributes", "ConditionReference"),
 										},
 									},
 									"id": schema.StringAttribute{

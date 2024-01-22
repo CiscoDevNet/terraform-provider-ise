@@ -117,7 +117,7 @@ func (d *DeviceAdminAuthorizationGlobalExceptionRuleDataSource) Schema(ctx conte
 				Computed:            true,
 			},
 			"children": schema.ListNestedAttribute{
-				MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `ConditionAttributes` or `ConditionReference`.",
+				MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.",
 				Computed:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -154,12 +154,12 @@ func (d *DeviceAdminAuthorizationGlobalExceptionRuleDataSource) Schema(ctx conte
 							Computed:            true,
 						},
 						"children": schema.ListNestedAttribute{
-							MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `ConditionAttributes` or `ConditionReference`.",
+							MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.",
 							Computed:            true,
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"condition_type": schema.StringAttribute{
-										MarkdownDescription: "Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.",
+										MarkdownDescription: "Condition type.",
 										Computed:            true,
 									},
 									"id": schema.StringAttribute{
