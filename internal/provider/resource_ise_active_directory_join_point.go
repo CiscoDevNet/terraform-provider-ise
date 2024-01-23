@@ -81,7 +81,7 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 				Required:            true,
 			},
 			"description": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Join point Description").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Join point description").String,
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -95,7 +95,7 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 				},
 			},
 			"ad_scopes_names": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("String that contains the names of the scopes that the active directory belongs to. Names are separated by comm").AddDefaultValueDescription("Default_Scope").String,
+				MarkdownDescription: helpers.NewAttributeDescription("String that contains the names of the scopes that the active directory belongs to. Names are separated by comma.").AddDefaultValueDescription("Default_Scope").String,
 				Optional:            true,
 				Computed:            true,
 				Default:             stringdefault.StaticString("Default_Scope"),
@@ -142,7 +142,7 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 				},
 			},
 			"attributes": schema.ListNestedAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("List of AD Attributes").String,
+				MarkdownDescription: helpers.NewAttributeDescription("List of AD attributes").String,
 				Optional:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -171,7 +171,7 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 							},
 						},
 						"default_value": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Required for each attribute in the attribute list. Can contain an empty string").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Required for each attribute in the attribute list. Can contain an empty string.").String,
 							Required:            true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.RequiresReplace(),
@@ -228,7 +228,7 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 				},
 			},
 			"enable_machine_auth": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Enable Machin Authentication").AddDefaultValueDescription("true").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Enable Machine Authentication").AddDefaultValueDescription("true").String,
 				Optional:            true,
 				Computed:            true,
 				Default:             booldefault.StaticBool(true),

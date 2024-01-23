@@ -11,6 +11,7 @@ description: |-
 
 - Fix import operation of nested resources (e.g. `ise_network_access_authentication_rule`)
 - Fix name-based queries for `device_admin` and `network_access` data sources
+- Add `ise_active_directory_join_point` resource and data source
 
 ## 0.1.10
 

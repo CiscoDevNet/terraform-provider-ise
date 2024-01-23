@@ -27,13 +27,13 @@ data "ise_active_directory_join_point" "example" {
 
 ### Read-Only
 
-- `ad_scopes_names` (String) String that contains the names of the scopes that the active directory belongs to. Names are separated by comm
+- `ad_scopes_names` (String) String that contains the names of the scopes that the active directory belongs to. Names are separated by comma.
 - `aging_time` (Number) Aging Time
-- `attributes` (Attributes List) List of AD Attributes (see [below for nested schema](#nestedatt--attributes))
+- `attributes` (Attributes List) List of AD attributes (see [below for nested schema](#nestedatt--attributes))
 - `auth_protection_type` (String) Enable prevent AD account lockout for WIRELESS/WIRED/BOTH
 - `country` (String) User info attribute
 - `department` (String) User info attribute
-- `description` (String) Join point Description
+- `description` (String) Join point description
 - `domain` (String) AD domain associated with the join point
 - `email` (String) User info attribute
 - `enable_callback_for_dialin_client` (Boolean) Enable Callback For Dial In Client
@@ -41,7 +41,7 @@ data "ise_active_directory_join_point" "example" {
 - `enable_domain_allowed_list` (Boolean)
 - `enable_failed_auth_protection` (Boolean) Enable prevent AD account lockout due to too many bad password attempts
 - `enable_machine_access` (Boolean) Enable Machine Access
-- `enable_machine_auth` (Boolean) Enable Machin Authentication
+- `enable_machine_auth` (Boolean) Enable Machine Authentication
 - `enable_pass_change` (Boolean) Enable Password Change
 - `enable_rewrites` (Boolean) Enable Rewrites
 - `failed_auth_threshold` (Number) Number of bad password attempts
@@ -66,7 +66,7 @@ data "ise_active_directory_join_point" "example" {
 
 Read-Only:
 
-- `default_value` (String) Required for each attribute in the attribute list. Can contain an empty string
+- `default_value` (String) Required for each attribute in the attribute list. Can contain an empty string.
 - `internal_name` (String) Required for each attribute in the attribute list
 - `name` (String) Required for each attribute in the attribute list with no duplication between attributes
 - `type` (String) Required for each group in the group list
