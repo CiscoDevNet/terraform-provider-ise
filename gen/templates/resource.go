@@ -456,6 +456,14 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
 		return
 	}
+	{{- end}}
+	{{- if hasId .Attributes}}
+	{{- range .Attributes}}
+	{{- if .Id}}
+	plan.Id = types.StringValue(fmt.Sprint(plan.{{toGoName .TfName}}.Value{{.Type}}()))
+	{{- end}}
+	{{- end}}
+	{{- else}}
 	locationElements := strings.Split(location, "/")
 	plan.Id = types.StringValue(locationElements[len(locationElements)-1])
 	{{- end}}

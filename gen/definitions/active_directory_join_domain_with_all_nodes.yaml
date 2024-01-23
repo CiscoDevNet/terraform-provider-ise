@@ -10,10 +10,11 @@ attributes:
   - tf_name: join_point_id
     type: String
     reference: true
+    id: true
     description: Active Directory Join Point ID
     example: 73808580-b6e6-11ee-8960-de6d7692bc40
   - model_name: additionalData
-    data_path: [OperationAdditionalData] 
+    data_path: [OperationAdditionalData]
     type: List
     mandatory: true
     attributes:
