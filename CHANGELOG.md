@@ -1,4 +1,4 @@
-## 0.1.11 (unreleased)
+## 0.1.11
 
 - Fix import operation of nested resources (e.g. `ise_network_access_authentication_rule`)
 - Fix name-based queries for `device_admin` and `network_access` data sources
