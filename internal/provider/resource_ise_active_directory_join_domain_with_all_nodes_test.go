@@ -40,11 +40,6 @@ func TestAccIseActiveDirectoryJoinDomainWithAllNodes(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_active_directory_join_domain_with_all_nodes.test", "additional_data.0.value", "administrator"))
 
 	var steps []resource.TestStep
-	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
-		steps = append(steps, resource.TestStep{
-			Config: testAccIseActiveDirectoryJoinDomainWithAllNodesConfig_minimum(),
-		})
-	}
 	steps = append(steps, resource.TestStep{
 		Config: testAccIseActiveDirectoryJoinDomainWithAllNodesConfig_all(),
 		Check:  resource.ComposeTestCheckFunc(checks...),

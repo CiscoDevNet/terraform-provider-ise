@@ -52,6 +52,14 @@ func (data ActiveDirectoryJoinDomainWithAllNodes) getPath() string {
 
 //template:end getPath
 
+//template:begin getPathPut
+
+func (data ActiveDirectoryJoinDomainWithAllNodes) getPathPut() string {
+	return fmt.Sprintf("/ers/config/activedirectory/%v/leaveAllNodes", data.JoinPointId.ValueString())
+}
+
+//template:end getPathPut
+
 //template:begin toBody
 func (data ActiveDirectoryJoinDomainWithAllNodes) toBody(ctx context.Context, state ActiveDirectoryJoinDomainWithAllNodes) string {
 	body := ""

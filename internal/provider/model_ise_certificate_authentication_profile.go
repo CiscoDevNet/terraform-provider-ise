@@ -51,6 +51,10 @@ func (data CertificateAuthenticationProfile) getPath() string {
 
 //template:end getPath
 
+//template:begin getPathPut
+
+//template:end getPathPut
+
 //template:begin toBody
 func (data CertificateAuthenticationProfile) toBody(ctx context.Context, state CertificateAuthenticationProfile) string {
 	body := ""

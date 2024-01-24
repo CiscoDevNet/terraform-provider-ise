@@ -242,6 +242,7 @@ func (p *IseProvider) Configure(ctx context.Context, req provider.ConfigureReque
 
 func (p *IseProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
+		NewActiveDirectoryAddGroupsResource,
 		NewActiveDirectoryJoinDomainWithAllNodesResource,
 		NewActiveDirectoryJoinPointResource,
 		NewAllowedProtocolsResource,
@@ -284,7 +285,6 @@ func (p *IseProvider) Resources(ctx context.Context) []func() resource.Resource 
 
 func (p *IseProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
-		NewActiveDirectoryJoinDomainWithAllNodesDataSource,
 		NewActiveDirectoryJoinPointDataSource,
 		NewAllowedProtocolsDataSource,
 		NewAllowedProtocolsTACACSDataSource,

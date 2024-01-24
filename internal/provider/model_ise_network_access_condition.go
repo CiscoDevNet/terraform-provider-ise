@@ -81,6 +81,10 @@ func (data NetworkAccessCondition) getPath() string {
 
 //template:end getPath
 
+//template:begin getPathPut
+
+//template:end getPathPut
+
 //template:begin toBody
 func (data NetworkAccessCondition) toBody(ctx context.Context, state NetworkAccessCondition) string {
 	body := ""

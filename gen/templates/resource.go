@@ -49,7 +49,9 @@ import (
 
 // Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &{{camelCase .Name}}Resource{}
+{{- if not .NoImport}}
 var _ resource.ResourceWithImportState = &{{camelCase .Name}}Resource{}
+{{- end}}
 
 func New{{camelCase .Name}}Resource() resource.Resource {
 	return &{{camelCase .Name}}Resource{}
@@ -561,8 +563,15 @@ func (r *{{camelCase .Name}}Resource) Delete(ctx context.Context, req resource.D
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
 
-	{{- if not .NoDelete}}
-	res, err := r.client.Delete(state.getPath() + "/" + state.Id.ValueString())
+	{{- if .PutDelete}}
+	body := state.toBody(ctx, state)
+	res, err := r.client.Put(state.getPathPut(), body)
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
+		return
+	}
+	{{- else if not .NoDelete}}
+	res, err := r.client.Delete({{if .DeleteRestEndpoint}}"{{.DeleteRestEndpoint}}"{{else}}state.getPath(){{end}} + "/" + state.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
@@ -576,7 +585,9 @@ func (r *{{camelCase .Name}}Resource) Delete(ctx context.Context, req resource.D
 //template:end delete
 
 //template:begin import
+{{- if not .NoImport}}
 func (r *{{camelCase .Name}}Resource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
+{{- end}}
 //template:end import

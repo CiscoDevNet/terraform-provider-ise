@@ -1,10 +1,14 @@
 ---
 name: Active Directory Join Domain with All Nodes
 rest_endpoint: /ers/config/activedirectory/%v/joinAllNodes
+delete_rest_endpoint: /ers/config/activedirectory/%v/leaveAllNodes
 doc_category: Identity Management
-no_delete: true
+put_delete: true
 no_read: true
 put_create: true
+no_import: true
+no_data_source: true
+skip_minimum_test: true
 test_tags: [AD]
 attributes:
   - tf_name: join_point_id
