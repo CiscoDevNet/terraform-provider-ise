@@ -285,6 +285,7 @@ func (p *IseProvider) Resources(ctx context.Context) []func() resource.Resource 
 
 func (p *IseProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
+		NewActiveDirectoryGetGroupsByDomainDataSource,
 		NewActiveDirectoryJoinPointDataSource,
 		NewAllowedProtocolsDataSource,
 		NewAllowedProtocolsTACACSDataSource,

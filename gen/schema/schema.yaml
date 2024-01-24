@@ -11,6 +11,7 @@ no_resource: bool(required=False) # Set to true if no resource should be created
 post_update: bool(required=False) # Set to true if the POST request is used for update
 put_create: bool(required=False) # Set to true if the PUT request is used to create
 put_delete: bool(required=False) # Set to true if the PUT request is used to delete
+put_read: bool(required=False) # Set to true if the PUT request is used to read
 no_read: bool(required=False) # Set to true if the GET request is not supported
 id_from_attribute: bool(required=False) # Set to true if the ID is derived from an attribute
 root_list: bool(required=False) # Set to true if the root element of the data structure is a list
