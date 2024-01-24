@@ -21,7 +21,6 @@ package provider
 
 //template:begin imports
 import (
-	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -31,9 +30,6 @@ import (
 
 //template:begin testAcc
 func TestAccIseActiveDirectoryJoinPoint(t *testing.T) {
-	if os.Getenv("AD") == "" {
-		t.Skip("skipping test, set environment variable AD")
-	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("ise_active_directory_join_point.test", "name", "cisco.local"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_active_directory_join_point.test", "description", "My AD join point"))

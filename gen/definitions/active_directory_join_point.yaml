@@ -3,7 +3,6 @@ name: Active Directory Join Point
 rest_endpoint: /ers/config/activedirectory
 doc_category: Identity Management
 skip_minimum_test: true
-test_tags: [AD]
 attributes:
   - model_name: name
     data_path: [ERSActiveDirectory]
