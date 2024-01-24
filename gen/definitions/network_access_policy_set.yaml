@@ -3,6 +3,7 @@ name: Network Access Policy Set
 rest_endpoint: /api/v1/policy/network-access/policy-set
 data_source_name_query: true
 id_path: response.id
+ignore_delete_error: Attempted to delete default
 doc_category: Network Access
 attributes:
   - model_name: name

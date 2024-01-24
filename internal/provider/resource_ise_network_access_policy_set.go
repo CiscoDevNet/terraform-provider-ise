@@ -357,7 +357,7 @@ func (r *NetworkAccessPolicySetResource) Delete(ctx context.Context, req resourc
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
 	res, err := r.client.Delete(state.getPath() + "/" + state.Id.ValueString())
-	if err != nil {
+	if err != nil && !strings.Contains(res.String(), "Attempted to delete default") {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
 	}

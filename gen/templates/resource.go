@@ -553,7 +553,7 @@ func (r *{{camelCase .Name}}Resource) Delete(ctx context.Context, req resource.D
 
 	{{- if not .NoDelete}}
 	res, err := r.client.Delete(state.getPath() + "/" + state.Id.ValueString())
-	if err != nil {
+	if err != nil{{if .IgnoreDeleteError}} && !strings.Contains(res.String(), "{{.IgnoreDeleteError}}"){{end}} {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
 	}

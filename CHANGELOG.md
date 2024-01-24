@@ -1,3 +1,7 @@
+## 0.1.12 (unreleased)
+
+- Ignore error messages when attempting to delete default policy sets or rules
+
 ## 0.1.11
 
 - Fix import operation of nested resources (e.g. `ise_network_access_authentication_rule`)

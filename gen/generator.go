@@ -110,6 +110,7 @@ type YamlConfig struct {
 	DocCategory         string                `yaml:"doc_category"`
 	ExcludeTest         bool                  `yaml:"exclude_test"`
 	SkipMinimumTest     bool                  `yaml:"skip_minimum_test"`
+	IgnoreDeleteError   string                `yaml:"ignore_delete_error"`
 	Attributes          []YamlConfigAttribute `yaml:"attributes"`
 	TestTags            []string              `yaml:"test_tags"`
 	TestPrerequisites   string                `yaml:"test_prerequisites"`

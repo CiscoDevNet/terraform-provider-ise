@@ -3,6 +3,7 @@ name: Device Admin Authorization Rule
 rest_endpoint: /api/v1/policy/device-admin/policy-set/%v/authorization
 data_source_name_query: true
 id_path: response.rule.id
+ignore_delete_error: Attempted to delete default
 doc_category: Device Administration
 attributes:
   - tf_name: policy_set_id
