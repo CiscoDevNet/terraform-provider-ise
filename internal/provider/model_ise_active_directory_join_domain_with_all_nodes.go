@@ -144,3 +144,13 @@ func (data *ActiveDirectoryJoinDomainWithAllNodes) updateFromBody(ctx context.Co
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *ActiveDirectoryJoinDomainWithAllNodes) isNull(ctx context.Context, res gjson.Result) bool {
+	if len(data.AdditionalData) > 0 {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

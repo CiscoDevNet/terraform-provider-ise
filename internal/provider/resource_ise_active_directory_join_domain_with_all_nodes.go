@@ -23,6 +23,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -118,12 +119,13 @@ func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Create(ctx context.Conte
 
 	// Create object
 	body := plan.toBody(ctx, ActiveDirectoryJoinDomainWithAllNodes{})
-	res, err := r.client.Put(plan.getPath(), body)
+	res, location, err := r.client.Post(plan.getPath(), body)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
 		return
 	}
-	plan.Id = types.StringValue(fmt.Sprint(plan.JoinPointId.ValueString()))
+	locationElements := strings.Split(location, "/")
+	plan.Id = types.StringValue(locationElements[len(locationElements)-1])
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -145,6 +147,22 @@ func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Read(ctx context.Context
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
+
+	res, err := r.client.Get(state.getPath() + "/" + state.Id.ValueString())
+	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
+		resp.State.RemoveResource(ctx)
+		return
+	} else if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
+		return
+	}
+
+	// If every attribute is set to null we are dealing with an import operation and therefore reading all attributes
+	if state.isNull(ctx, res) {
+		state.fromBody(ctx, res)
+	} else {
+		state.updateFromBody(ctx, res)
+	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Read finished successfully", state.Id.ValueString()))
 
@@ -201,8 +219,7 @@ func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Delete(ctx context.Conte
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	body := state.toBody(ctx, state)
-	res, err := r.client.Put(state.getPathPut(), body)
+	res, err := r.client.Delete(state.getPath() + "/" + state.Id.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return

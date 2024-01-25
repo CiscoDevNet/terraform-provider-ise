@@ -120,7 +120,7 @@ func (d *ActiveDirectoryJoinPointDataSource) Schema(ctx context.Context, req dat
 							Computed:            true,
 						},
 						"default_value": schema.StringAttribute{
-							MarkdownDescription: "Required for each attribute in the attribute list. Can contain an empty string",
+							MarkdownDescription: "Required for each attribute in the attribute list. Can contain an empty string.",
 							Computed:            true,
 						},
 					},

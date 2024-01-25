@@ -852,4 +852,3 @@ func (data *ActiveDirectoryJoinPoint) isNull(ctx context.Context, res gjson.Resu
 }
 
 //template:end isNull
-

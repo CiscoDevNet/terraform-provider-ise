@@ -137,7 +137,7 @@ type YamlConfigAttribute struct {
 	WriteOnly        bool                  `yaml:"write_only"`
 	WriteChangesOnly bool                  `yaml:"write_changes_only"`
 	ExcludeTest      bool                  `yaml:"exclude_test"`
-	RequiresReplace     bool                  `yaml:"requires_replace"`
+	RequiresReplace  bool                  `yaml:"requires_replace"`
 	ExcludeExample   bool                  `yaml:"exclude_example"`
 	Description      string                `yaml:"description"`
 	Example          string                `yaml:"example"`
@@ -151,7 +151,6 @@ type YamlConfigAttribute struct {
 	StringPatterns   []string              `yaml:"string_patterns"`
 	StringMinLength  int64                 `yaml:"string_min_length"`
 	StringMaxLength  int64                 `yaml:"string_max_length"`
-	RequiresReplace  bool                  `yaml:"requires_replace"`
 	DefaultValue     string                `yaml:"default_value"`
 	Value            string                `yaml:"value"`
 	TestValue        string                `yaml:"test_value"`
@@ -222,6 +221,7 @@ func GetId(attributes []YamlConfigAttribute) YamlConfigAttribute {
 	}
 	return YamlConfigAttribute{}
 }
+
 // Templating helper function to return true if id included in attributes
 func HasId(attributes []YamlConfigAttribute) bool {
 	for _, attr := range attributes {
@@ -283,7 +283,7 @@ var functions = template.FuncMap{
 	"toLower":                strings.ToLower,
 	"path":                   BuildPath,
 	"hasId":                  HasId,
-  "getId":                  GetId,
+	"getId":                  GetId,
 	"hasReference":           HasReference,
 	"importParts":            ImportParts,
 	"subtract":               Subtract,
@@ -450,7 +450,7 @@ func main() {
 				(configs[i].NoDataSource && t.path == "./gen/templates/data-source.tf") ||
 				(configs[i].NoResource && t.path == "./gen/templates/resource.go") ||
 				(configs[i].NoResource && t.path == "./gen/templates/resource_test.go") ||
-			 	(configs[i].NoResource && t.path == "./gen/templates/resource.tf") ||
+				(configs[i].NoResource && t.path == "./gen/templates/resource.tf") ||
 				(configs[i].NoResource && t.path == "./gen/templates/import.sh") {
 				continue
 			}

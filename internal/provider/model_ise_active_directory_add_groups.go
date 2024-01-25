@@ -214,3 +214,28 @@ func (data *ActiveDirectoryAddGroups) updateFromBody(ctx context.Context, res gj
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *ActiveDirectoryAddGroups) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Description.IsNull() {
+		return false
+	}
+	if !data.Domain.IsNull() {
+		return false
+	}
+	if !data.AdScopesNames.IsNull() {
+		return false
+	}
+	if !data.EnableDomainAllowedList.IsNull() {
+		return false
+	}
+	if len(data.Groups) > 0 {
+		return false
+	}
+	return true
+}
+
+//template:end isNull
