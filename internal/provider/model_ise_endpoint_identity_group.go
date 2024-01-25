@@ -48,6 +48,10 @@ func (data EndpointIdentityGroup) getPath() string {
 
 //template:end getPath
 
+//template:begin getPathPut
+
+//template:end getPathPut
+
 //template:begin toBody
 func (data EndpointIdentityGroup) toBody(ctx context.Context, state EndpointIdentityGroup) string {
 	body := ""

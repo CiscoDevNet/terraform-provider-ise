@@ -90,6 +90,12 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 			"domain": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("AD domain associated with the join point").String,
 				Required:            true,
+			},
+			"ad_scopes_names": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("String that contains the names of the scopes that the active directory belongs to. Names are separated by comm").AddDefaultValueDescription("Default_Scope").String,
+				Optional:            true,
+				Computed:            true,
+				Default:             stringdefault.StaticString("Default_Scope"),
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -142,7 +148,7 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 				},
 			},
 			"attributes": schema.ListNestedAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("List of AD attributes").String,
+				MarkdownDescription: helpers.NewAttributeDescription("List of AD Attributes").String,
 				Optional:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -165,6 +171,10 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 						},
 						"internal_name": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Required for each attribute in the attribute list").String,
+							Required:            true,
+						},
+						"default_value": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("Required for each attribute in the attribute list. Can contain an empty string").String,
 							Required:            true,
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.RequiresReplace(),
@@ -223,6 +233,9 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 				Optional:            true,
 				Computed:            true,
 				Default:             booldefault.StaticBool(true),
+			},
+			"enable_machine_auth": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Enable Machin Authentication").AddDefaultValueDescription("true").String,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.RequiresReplace(),
 				},
@@ -482,6 +495,9 @@ func (r *ActiveDirectoryJoinPointResource) Read(ctx context.Context, req resourc
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 		return
 	}
+
+
+	state.updateFromBody(ctx, res)
 
 	// If every attribute is set to null we are dealing with an import operation and therefore reading all attributes
 	if state.isNull(ctx, res) {

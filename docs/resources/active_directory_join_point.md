@@ -135,7 +135,7 @@ resource "ise_active_directory_join_point" "example" {
 
 Required:
 
-- `default_value` (String) Required for each attribute in the attribute list. Can contain an empty string.
+- `default_value` (String) Required for each attribute in the attribute list. Can contain an empty string
 - `internal_name` (String) Required for each attribute in the attribute list
 - `name` (String) Required for each attribute in the attribute list with no duplication between attributes
 - `type` (String) Required for each group in the group list

@@ -1,0 +1,35 @@
+---
+name: Active Directory Join Domain with All Nodes
+rest_endpoint: /ers/config/activedirectory/%v/joinAllNodes
+delete_rest_endpoint: /ers/config/activedirectory/%v/leaveAllNodes
+doc_category: Identity Management
+put_delete: true
+no_read: true
+put_create: true
+no_import: true
+no_data_source: true
+skip_minimum_test: true
+test_tags: [AD]
+attributes:
+  - tf_name: join_point_id
+    type: String
+    reference: true
+    id: true
+    description: Active Directory Join Point ID
+    example: 73808580-b6e6-11ee-8960-de6d7692bc40
+  - model_name: additionalData
+    data_path: [OperationAdditionalData]
+    type: List
+    mandatory: true
+    attributes:
+      - model_name: name
+        type: String
+        id: true
+        mandatory: true
+        description: Additional attribute name
+        example: username
+      - model_name: value
+        type: String
+        mandatory: true
+        description: Additional attribute value
+        example: administrator

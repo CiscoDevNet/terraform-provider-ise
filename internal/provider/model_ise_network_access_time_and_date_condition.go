@@ -58,6 +58,10 @@ func (data NetworkAccessTimeAndDateCondition) getPath() string {
 
 //template:end getPath
 
+//template:begin getPathPut
+
+//template:end getPathPut
+
 //template:begin toBody
 func (data NetworkAccessTimeAndDateCondition) toBody(ctx context.Context, state NetworkAccessTimeAndDateCondition) string {
 	body := ""
