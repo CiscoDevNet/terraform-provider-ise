@@ -319,7 +319,6 @@ func (r *NetworkAccessConditionResource) Update(ctx context.Context, req resourc
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
-
 	body := plan.toBody(ctx, state)
 
 	res, err := r.client.Put(plan.getPath()+"/"+plan.Id.ValueString(), body)
@@ -327,7 +326,6 @@ func (r *NetworkAccessConditionResource) Update(ctx context.Context, req resourc
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
 	}
-
 	tflog.Debug(ctx, fmt.Sprintf("%s: Update finished successfully", plan.Id.ValueString()))
 
 	diags = resp.State.Set(ctx, &plan)

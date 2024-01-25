@@ -540,6 +540,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
+	{{- if not .NoUpdate}}
 	body := plan.toBody(ctx, state)
 	{{if .PostUpdate}}
 	res, _, err := r.client.Post(plan.getPath(), body)
@@ -550,7 +551,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
 	}
-
+	{{- end}}
 	tflog.Debug(ctx, fmt.Sprintf("%s: Update finished successfully", plan.Id.ValueString()))
 
 	diags = resp.State.Set(ctx, &plan)
