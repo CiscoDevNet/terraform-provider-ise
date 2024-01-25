@@ -86,10 +86,6 @@ func (data AuthorizationProfile) getPath() string {
 
 //template:end getPath
 
-//template:begin getPathPut
-
-//template:end getPathPut
-
 //template:begin toBody
 func (data AuthorizationProfile) toBody(ctx context.Context, state AuthorizationProfile) string {
 	body := ""

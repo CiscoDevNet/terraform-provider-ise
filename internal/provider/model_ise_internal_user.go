@@ -58,10 +58,6 @@ func (data InternalUser) getPath() string {
 
 //template:end getPath
 
-//template:begin getPathPut
-
-//template:end getPathPut
-
 //template:begin toBody
 func (data InternalUser) toBody(ctx context.Context, state InternalUser) string {
 	body := ""

@@ -48,10 +48,6 @@ func (data NetworkAccessDictionary) getPath() string {
 
 //template:end getPath
 
-//template:begin getPathPut
-
-//template:end getPathPut
-
 //template:begin toBody
 func (data NetworkAccessDictionary) toBody(ctx context.Context, state NetworkAccessDictionary) string {
 	body := ""

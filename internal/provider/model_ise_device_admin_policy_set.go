@@ -83,10 +83,6 @@ func (data DeviceAdminPolicySet) getPath() string {
 
 //template:end getPath
 
-//template:begin getPathPut
-
-//template:end getPathPut
-
 //template:begin toBody
 func (data DeviceAdminPolicySet) toBody(ctx context.Context, state DeviceAdminPolicySet) string {
 	body := ""

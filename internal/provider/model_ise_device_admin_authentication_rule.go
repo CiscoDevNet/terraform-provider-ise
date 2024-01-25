@@ -87,10 +87,6 @@ func (data DeviceAdminAuthenticationRule) getPath() string {
 
 //template:end getPath
 
-//template:begin getPathPut
-
-//template:end getPathPut
-
 //template:begin toBody
 func (data DeviceAdminAuthenticationRule) toBody(ctx context.Context, state DeviceAdminAuthenticationRule) string {
 	body := ""

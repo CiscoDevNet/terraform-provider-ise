@@ -52,10 +52,6 @@ func (data TrustSecIPToSGTMapping) getPath() string {
 
 //template:end getPath
 
-//template:begin getPathPut
-
-//template:end getPathPut
-
 //template:begin toBody
 func (data TrustSecIPToSGTMapping) toBody(ctx context.Context, state TrustSecIPToSGTMapping) string {
 	body := ""

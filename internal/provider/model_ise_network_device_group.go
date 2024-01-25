@@ -47,10 +47,6 @@ func (data NetworkDeviceGroup) getPath() string {
 
 //template:end getPath
 
-//template:begin getPathPut
-
-//template:end getPathPut
-
 //template:begin toBody
 func (data NetworkDeviceGroup) toBody(ctx context.Context, state NetworkDeviceGroup) string {
 	body := ""

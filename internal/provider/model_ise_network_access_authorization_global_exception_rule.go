@@ -84,10 +84,6 @@ func (data NetworkAccessAuthorizationGlobalExceptionRule) getPath() string {
 
 //template:end getPath
 
-//template:begin getPathPut
-
-//template:end getPathPut
-
 //template:begin toBody
 func (data NetworkAccessAuthorizationGlobalExceptionRule) toBody(ctx context.Context, state NetworkAccessAuthorizationGlobalExceptionRule) string {
 	body := ""

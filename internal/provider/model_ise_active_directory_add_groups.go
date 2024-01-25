@@ -58,10 +58,6 @@ func (data ActiveDirectoryAddGroups) getPath() string {
 
 //template:end getPath
 
-//template:begin getPathPut
-
-//template:end getPathPut
-
 //template:begin toBody
 func (data ActiveDirectoryAddGroups) toBody(ctx context.Context, state ActiveDirectoryAddGroups) string {
 	body := ""
