@@ -205,6 +205,7 @@ func (r *ActiveDirectoryAddGroupsResource) Update(ctx context.Context, req resou
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
+
 	tflog.Debug(ctx, fmt.Sprintf("%s: Update finished successfully", plan.Id.ValueString()))
 
 	diags = resp.State.Set(ctx, &plan)

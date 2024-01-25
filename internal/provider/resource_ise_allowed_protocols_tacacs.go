@@ -195,6 +195,7 @@ func (r *AllowedProtocolsTACACSResource) Update(ctx context.Context, req resourc
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
 	}
+
 	tflog.Debug(ctx, fmt.Sprintf("%s: Update finished successfully", plan.Id.ValueString()))
 
 	diags = resp.State.Set(ctx, &plan)
