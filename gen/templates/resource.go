@@ -496,6 +496,7 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
+	{{- if not .NoRead}}
 	res, err := r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + state.Id.ValueString(){{end}})
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
@@ -511,6 +512,7 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 	} else {
 		state.updateFromBody(ctx, res)
 	}
+	{{- end}}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Read finished successfully", state.Id.ValueString()))
 
