@@ -43,11 +43,3 @@ Required:
 
 - `name` (String) Additional attribute name
 - `value` (String) Additional attribute value
-
-## Import
-
-Import is supported using the following syntax:
-
-```shell
-terraform import ise_active_directory_join_domain_with_all_nodes.example "73808580-b6e6-11ee-8960-de6d7692bc40"
-```
