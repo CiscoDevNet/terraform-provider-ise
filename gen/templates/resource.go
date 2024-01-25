@@ -451,13 +451,29 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	{{- end}}
 	{{- end}}
 	{{- else}}
+	{{- if .PutCreate}}
+	res, err := r.client.Put(plan.getPath(), body)
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
+		return
+	}
+	{{- else}}
 	res, location, err := r.client.Post(plan.getPath(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
 		return
 	}
+	{{- end}}
+	{{- if hasId .Attributes}}
+	{{- range .Attributes}}
+	{{- if .Id}}
+	plan.Id = types.StringValue(fmt.Sprint(plan.{{toGoName .TfName}}.Value{{.Type}}()))
+	{{- end}}
+	{{- end}}
+	{{- else}}
 	locationElements := strings.Split(location, "/")
 	plan.Id = types.StringValue(locationElements[len(locationElements)-1])
+	{{- end}}
 	{{- end}}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
