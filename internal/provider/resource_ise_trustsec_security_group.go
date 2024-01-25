@@ -154,7 +154,6 @@ func (r *TrustSecSecurityGroupResource) Read(ctx context.Context, req resource.R
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
-
 	res, err := r.client.Get(state.getPath() + "/" + state.Id.ValueString())
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
