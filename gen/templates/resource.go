@@ -496,7 +496,6 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
-
 	{{- if not .NoRead}}
 	res, err := r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + state.Id.ValueString(){{end}})
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
@@ -554,7 +553,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 		return
 	}
 	{{- end}}
-	
+
 	tflog.Debug(ctx, fmt.Sprintf("%s: Update finished successfully", plan.Id.ValueString()))
 
 	diags = resp.State.Set(ctx, &plan)
