@@ -120,6 +120,7 @@ type YamlConfig struct {
 	DocCategory         string                `yaml:"doc_category"`
 	ExcludeTest         bool                  `yaml:"exclude_test"`
 	SkipMinimumTest     bool                  `yaml:"skip_minimum_test"`
+	IgnoreDeleteError   string                `yaml:"ignore_delete_error"`
 	Attributes          []YamlConfigAttribute `yaml:"attributes"`
 	TestTags            []string              `yaml:"test_tags"`
 	TestPrerequisites   string                `yaml:"test_prerequisites"`
@@ -150,6 +151,7 @@ type YamlConfigAttribute struct {
 	StringPatterns   []string              `yaml:"string_patterns"`
 	StringMinLength  int64                 `yaml:"string_min_length"`
 	StringMaxLength  int64                 `yaml:"string_max_length"`
+	RequiresReplace  bool                  `yaml:"requires_replace"`
 	DefaultValue     string                `yaml:"default_value"`
 	Value            string                `yaml:"value"`
 	TestValue        string                `yaml:"test_value"`
@@ -240,6 +242,24 @@ func HasReference(attributes []YamlConfigAttribute) bool {
 	return false
 }
 
+// Templating helper function to return number of import parts
+func ImportParts(attributes []YamlConfigAttribute) int {
+	parts := 1
+	for _, attr := range attributes {
+		if attr.Reference {
+			parts += 1
+		} else if attr.Id {
+			parts += 1
+		}
+	}
+	return parts
+}
+
+// Templating helper function to subtract one number from another
+func Subtract(a, b int) int {
+	return a - b
+}
+
 // Templating helper function to return true if ERS API endpoint
 func IsErs(endpoint string) bool {
 	if strings.HasPrefix(endpoint, "/ers") {
@@ -248,18 +268,27 @@ func IsErs(endpoint string) bool {
 	return false
 }
 
+// Templating helper function to remove first path element
+func RemoveFirstPathElement(path string) string {
+	elements := strings.Split(path, ".")
+	return strings.Join(elements[1:], ".")
+}
+
 // Map of templating functions
 var functions = template.FuncMap{
-	"toGoName":     ToGoName,
-	"camelCase":    CamelCase,
-	"snakeCase":    SnakeCase,
-	"sprintf":      fmt.Sprintf,
-	"toLower":      strings.ToLower,
-	"path":         BuildPath,
-	"hasId":        HasId,
-	"getId":        GetId,
-	"hasReference": HasReference,
-	"isErs":        IsErs,
+	"toGoName":               ToGoName,
+	"camelCase":              CamelCase,
+	"snakeCase":              SnakeCase,
+	"sprintf":                fmt.Sprintf,
+	"toLower":                strings.ToLower,
+	"path":                   BuildPath,
+	"hasId":                  HasId,
+  "getId":                  GetId,
+	"hasReference":           HasReference,
+	"importParts":            ImportParts,
+	"subtract":               Subtract,
+	"isErs":                  IsErs,
+	"removeFirstPathElement": RemoveFirstPathElement,
 }
 
 func augmentAttribute(attr *YamlConfigAttribute) {

@@ -79,16 +79,16 @@ resource "ise_active_directory_join_point" "example" {
 
 ### Optional
 
-- `ad_scopes_names` (String) String that contains the names of the scopes that the active directory belongs to. Names are separated by comm
+- `ad_scopes_names` (String) String that contains the names of the scopes that the active directory belongs to. Names are separated by comma.
   - Default value: `Default_Scope`
 - `aging_time` (Number) Aging Time
   - Default value: `5`
-- `attributes` (Attributes List) List of AD Attributes (see [below for nested schema](#nestedatt--attributes))
+- `attributes` (Attributes List) List of AD attributes (see [below for nested schema](#nestedatt--attributes))
 - `auth_protection_type` (String) Enable prevent AD account lockout for WIRELESS/WIRED/BOTH
   - Choices: `WIRELESS`, `WIRED`, `BOTH`
 - `country` (String) User info attribute
 - `department` (String) User info attribute
-- `description` (String) Join point Description
+- `description` (String) Join point description
 - `email` (String) User info attribute
 - `enable_callback_for_dialin_client` (Boolean) Enable Callback For Dial In Client
   - Default value: `false`
@@ -99,7 +99,7 @@ resource "ise_active_directory_join_point" "example" {
   - Default value: `false`
 - `enable_machine_access` (Boolean) Enable Machine Access
   - Default value: `true`
-- `enable_machine_auth` (Boolean) Enable Machin Authentication
+- `enable_machine_auth` (Boolean) Enable Machine Authentication
   - Default value: `true`
 - `enable_pass_change` (Boolean) Enable Password Change
   - Default value: `true`

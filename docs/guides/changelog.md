@@ -7,6 +7,21 @@ description: |-
 
 # Changelog
 
+## 0.1.12 (unreleased)
+
+- Ignore error messages when attempting to delete default policy sets or rules
+
+## 0.1.11
+
+- Fix import operation of nested resources (e.g. `ise_network_access_authentication_rule`)
+- Fix name-based queries for `device_admin` and `network_access` data sources
+- Add `ise_active_directory_join_point` resource and data source
+
+## 0.1.10
+
+- Retry on 400 and 500 HTTP errors when creating or updating objects
+- Fix import operation of resources
+
 ## 0.1.9
 
 - Fix issue with `ise_network_device_group` resource and ISE versions >= 3.2.0 Patch1. Due to a breaking change in the API, this resource is now only supported with ISE version >= 3.2.0 Patch1.

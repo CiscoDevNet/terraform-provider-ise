@@ -121,7 +121,7 @@ func (d *NetworkAccessAuthenticationRuleDataSource) Schema(ctx context.Context, 
 				Computed:            true,
 			},
 			"children": schema.ListNestedAttribute{
-				MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `ConditionAttributes` or `ConditionReference`.",
+				MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.",
 				Computed:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -158,12 +158,12 @@ func (d *NetworkAccessAuthenticationRuleDataSource) Schema(ctx context.Context, 
 							Computed:            true,
 						},
 						"children": schema.ListNestedAttribute{
-							MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `ConditionAttributes` or `ConditionReference`.",
+							MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.",
 							Computed:            true,
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"condition_type": schema.StringAttribute{
-										MarkdownDescription: "Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.",
+										MarkdownDescription: "Condition type.",
 										Computed:            true,
 									},
 									"id": schema.StringAttribute{
@@ -259,8 +259,8 @@ func (d *NetworkAccessAuthenticationRuleDataSource) Read(ctx context.Context, re
 			}
 			if value := res.Get("response"); len(value.Array()) > 0 {
 				value.ForEach(func(k, v gjson.Result) bool {
-					if config.Name.ValueString() == v.Get("name").String() {
-						config.Id = types.StringValue(v.Get("id").String())
+					if config.Name.ValueString() == v.Get("rule.name").String() {
+						config.Id = types.StringValue(v.Get("rule.id").String())
 						tflog.Debug(ctx, fmt.Sprintf("%s: Found object with name '%v', id: %v", config.Id.String(), config.Name.ValueString(), config.Id.String()))
 						return false
 					}

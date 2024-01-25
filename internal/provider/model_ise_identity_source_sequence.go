@@ -195,3 +195,25 @@ func (data *IdentitySourceSequence) updateFromBody(ctx context.Context, res gjso
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *IdentitySourceSequence) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Description.IsNull() {
+		return false
+	}
+	if !data.BreakOnStoreFail.IsNull() {
+		return false
+	}
+	if !data.CertificateAuthenticationProfile.IsNull() {
+		return false
+	}
+	if len(data.IdentitySources) > 0 {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

@@ -559,3 +559,40 @@ func (data *DeviceAdminCondition) updateFromBody(ctx context.Context, res gjson.
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *DeviceAdminCondition) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Description.IsNull() {
+		return false
+	}
+	if !data.ConditionType.IsNull() {
+		return false
+	}
+	if !data.IsNegate.IsNull() {
+		return false
+	}
+	if !data.AttributeName.IsNull() {
+		return false
+	}
+	if !data.AttributeValue.IsNull() {
+		return false
+	}
+	if !data.DictionaryName.IsNull() {
+		return false
+	}
+	if !data.DictionaryValue.IsNull() {
+		return false
+	}
+	if !data.Operator.IsNull() {
+		return false
+	}
+	if len(data.Children) > 0 {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

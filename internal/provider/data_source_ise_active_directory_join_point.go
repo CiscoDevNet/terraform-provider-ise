@@ -67,7 +67,7 @@ func (d *ActiveDirectoryJoinPointDataSource) Schema(ctx context.Context, req dat
 				Computed:            true,
 			},
 			"description": schema.StringAttribute{
-				MarkdownDescription: "Join point Description",
+				MarkdownDescription: "Join point description",
 				Computed:            true,
 			},
 			"domain": schema.StringAttribute{
@@ -75,7 +75,7 @@ func (d *ActiveDirectoryJoinPointDataSource) Schema(ctx context.Context, req dat
 				Computed:            true,
 			},
 			"ad_scopes_names": schema.StringAttribute{
-				MarkdownDescription: "String that contains the names of the scopes that the active directory belongs to. Names are separated by comm",
+				MarkdownDescription: "String that contains the names of the scopes that the active directory belongs to. Names are separated by comma.",
 				Computed:            true,
 			},
 			"enable_domain_allowed_list": schema.BoolAttribute{
@@ -103,7 +103,7 @@ func (d *ActiveDirectoryJoinPointDataSource) Schema(ctx context.Context, req dat
 				},
 			},
 			"attributes": schema.ListNestedAttribute{
-				MarkdownDescription: "List of AD Attributes",
+				MarkdownDescription: "List of AD attributes",
 				Computed:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -155,7 +155,7 @@ func (d *ActiveDirectoryJoinPointDataSource) Schema(ctx context.Context, req dat
 				Computed:            true,
 			},
 			"enable_machine_auth": schema.BoolAttribute{
-				MarkdownDescription: "Enable Machin Authentication",
+				MarkdownDescription: "Enable Machine Authentication",
 				Computed:            true,
 			},
 			"enable_machine_access": schema.BoolAttribute{

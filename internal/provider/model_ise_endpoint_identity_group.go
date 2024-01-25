@@ -123,3 +123,22 @@ func (data *EndpointIdentityGroup) updateFromBody(ctx context.Context, res gjson
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *EndpointIdentityGroup) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Description.IsNull() {
+		return false
+	}
+	if !data.SystemDefined.IsNull() {
+		return false
+	}
+	if !data.ParentEndpointIdentityGroupId.IsNull() {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

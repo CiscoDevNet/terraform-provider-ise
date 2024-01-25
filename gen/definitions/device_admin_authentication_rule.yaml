@@ -3,6 +3,7 @@ name: Device Admin Authentication Rule
 rest_endpoint: /api/v1/policy/device-admin/policy-set/%v/authentication
 data_source_name_query: true
 id_path: response.rule.id
+ignore_delete_error: Attempted to delete default
 doc_category: Device Administration
 attributes:
   - tf_name: policy_set_id
@@ -115,7 +116,7 @@ attributes:
     example: equals
   - model_name: children
     type: List
-    description: List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `ConditionAttributes` or `ConditionReference`.
+    description: List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.
     exclude_test: true
     data_path: [rule, condition]
     attributes:
@@ -183,19 +184,17 @@ attributes:
         example: equals
       - model_name: children
         type: List
-        description: List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `ConditionAttributes` or `ConditionReference`.
+        description: List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.
         attributes:
           - model_name: conditionType
             mandatory: true
             type: String
             enum_values:
               [
-                ConditionAndBlock,
                 ConditionAttributes,
-                ConditionOrBlock,
                 ConditionReference,
               ]
-            description: Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
+            description: Condition type.
             example: ConditionAttributes
           - model_name: id
             type: String

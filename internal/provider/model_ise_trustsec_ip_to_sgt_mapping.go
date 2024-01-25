@@ -179,3 +179,34 @@ func (data *TrustSecIPToSGTMapping) updateFromBody(ctx context.Context, res gjso
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *TrustSecIPToSGTMapping) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Description.IsNull() {
+		return false
+	}
+	if !data.DeployTo.IsNull() {
+		return false
+	}
+	if !data.DeployType.IsNull() {
+		return false
+	}
+	if !data.HostName.IsNull() {
+		return false
+	}
+	if !data.HostIp.IsNull() {
+		return false
+	}
+	if !data.Sgt.IsNull() {
+		return false
+	}
+	if !data.MappingGroup.IsNull() {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

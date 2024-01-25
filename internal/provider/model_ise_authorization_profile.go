@@ -644,3 +644,109 @@ func (data *AuthorizationProfile) updateFromBody(ctx context.Context, res gjson.
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *AuthorizationProfile) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Description.IsNull() {
+		return false
+	}
+	if !data.VlanNameId.IsNull() {
+		return false
+	}
+	if !data.VlanTagId.IsNull() {
+		return false
+	}
+	if !data.WebRedirectionType.IsNull() {
+		return false
+	}
+	if !data.WebRedirectionAcl.IsNull() {
+		return false
+	}
+	if !data.WebRedirectionPortalName.IsNull() {
+		return false
+	}
+	if !data.WebRedirectionStaticIpHostNameFqdn.IsNull() {
+		return false
+	}
+	if !data.WebRedirectionDisplayCertificatesRenewalMessages.IsNull() {
+		return false
+	}
+	if !data.AgentlessPosture.IsNull() {
+		return false
+	}
+	if !data.AccessType.IsNull() {
+		return false
+	}
+	if !data.ProfileName.IsNull() {
+		return false
+	}
+	if !data.AirespaceAcl.IsNull() {
+		return false
+	}
+	if !data.Acl.IsNull() {
+		return false
+	}
+	if !data.DaclName.IsNull() {
+		return false
+	}
+	if !data.AutoSmartPort.IsNull() {
+		return false
+	}
+	if !data.InterfaceTemplate.IsNull() {
+		return false
+	}
+	if !data.Ipv6AclFilter.IsNull() {
+		return false
+	}
+	if !data.AvcProfile.IsNull() {
+		return false
+	}
+	if !data.AsaVpn.IsNull() {
+		return false
+	}
+	if !data.UniqueIdentifier.IsNull() {
+		return false
+	}
+	if !data.TrackMovement.IsNull() {
+		return false
+	}
+	if !data.ServiceTemplate.IsNull() {
+		return false
+	}
+	if !data.EasywiredSessionCandidate.IsNull() {
+		return false
+	}
+	if !data.VoiceDomainPermission.IsNull() {
+		return false
+	}
+	if !data.Neat.IsNull() {
+		return false
+	}
+	if !data.WebAuth.IsNull() {
+		return false
+	}
+	if !data.MacSecPolicy.IsNull() {
+		return false
+	}
+	if !data.ReauthenticationConnectivity.IsNull() {
+		return false
+	}
+	if !data.ReauthenticationTimer.IsNull() {
+		return false
+	}
+	if len(data.AdvancedAttributes) > 0 {
+		return false
+	}
+	if !data.Ipv6DaclName.IsNull() {
+		return false
+	}
+	if !data.AirespaceIpv6Acl.IsNull() {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

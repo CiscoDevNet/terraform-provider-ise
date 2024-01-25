@@ -127,3 +127,25 @@ func (data *TrustSecSecurityGroup) updateFromBody(ctx context.Context, res gjson
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *TrustSecSecurityGroup) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Description.IsNull() {
+		return false
+	}
+	if !data.Value.IsNull() {
+		return false
+	}
+	if !data.PropogateToApic.IsNull() {
+		return false
+	}
+	if !data.IsReadOnly.IsNull() {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

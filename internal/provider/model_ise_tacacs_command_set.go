@@ -194,3 +194,22 @@ func (data *TACACSCommandSet) updateFromBody(ctx context.Context, res gjson.Resu
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *TACACSCommandSet) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Description.IsNull() {
+		return false
+	}
+	if !data.PermitUnmatched.IsNull() {
+		return false
+	}
+	if len(data.Commands) > 0 {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

@@ -255,3 +255,49 @@ func (data *DeviceAdminTimeAndDateCondition) updateFromBody(ctx context.Context,
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *DeviceAdminTimeAndDateCondition) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Description.IsNull() {
+		return false
+	}
+	if !data.IsNegate.IsNull() {
+		return false
+	}
+	if !data.WeekDays.IsNull() {
+		return false
+	}
+	if !data.WeekDaysException.IsNull() {
+		return false
+	}
+	if !data.StartDate.IsNull() {
+		return false
+	}
+	if !data.EndDate.IsNull() {
+		return false
+	}
+	if !data.ExceptionStartDate.IsNull() {
+		return false
+	}
+	if !data.ExceptionEndDate.IsNull() {
+		return false
+	}
+	if !data.StartTime.IsNull() {
+		return false
+	}
+	if !data.EndTime.IsNull() {
+		return false
+	}
+	if !data.ExceptionStartTime.IsNull() {
+		return false
+	}
+	if !data.ExceptionEndTime.IsNull() {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

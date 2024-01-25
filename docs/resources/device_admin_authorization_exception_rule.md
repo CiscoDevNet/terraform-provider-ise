@@ -40,7 +40,7 @@ resource "ise_device_admin_authorization_exception_rule" "example" {
 
 ### Optional
 
-- `children` (Attributes List) List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `ConditionAttributes` or `ConditionReference`. (see [below for nested schema](#nestedatt--children))
+- `children` (Attributes List) List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`. (see [below for nested schema](#nestedatt--children))
 - `command_sets` (List of String) Command sets enforce the specified list of commands that can be executed by a device administrator
 - `condition_attribute_name` (String) Dictionary attribute name
 - `condition_attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
@@ -74,7 +74,7 @@ Optional:
 
 - `attribute_name` (String) Dictionary attribute name
 - `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
-- `children` (Attributes List) List of child conditions. `condition_type` must be one of `ConditionAndBlock`, `ConditionOrBlock`, `ConditionAttributes` or `ConditionReference`. (see [below for nested schema](#nestedatt--children--children))
+- `children` (Attributes List) List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`. (see [below for nested schema](#nestedatt--children--children))
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
 - `id` (String) UUID for condition
@@ -87,8 +87,8 @@ Optional:
 
 Required:
 
-- `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
-  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
+- `condition_type` (String) Condition type.
+  - Choices: `ConditionAttributes`, `ConditionReference`
 
 Optional:
 
@@ -106,5 +106,5 @@ Optional:
 Import is supported using the following syntax:
 
 ```shell
-terraform import ise_device_admin_authorization_exception_rule.example "76d24097-41c4-4558-a4d0-a8c07ac08470"
+terraform import ise_device_admin_authorization_exception_rule.example "76d24097-41c4-4558-a4d0-a8c07ac08470,76d24097-41c4-4558-a4d0-a8c07ac08470"
 ```

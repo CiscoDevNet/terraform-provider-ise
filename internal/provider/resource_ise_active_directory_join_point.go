@@ -33,6 +33,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -80,7 +81,7 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 				Required:            true,
 			},
 			"description": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Join point Description").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Join point description").String,
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -95,12 +96,27 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 				Optional:            true,
 				Computed:            true,
 				Default:             stringdefault.StaticString("Default_Scope"),
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+			},
+			"ad_scopes_names": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("String that contains the names of the scopes that the active directory belongs to. Names are separated by comma.").AddDefaultValueDescription("Default_Scope").String,
+				Optional:            true,
+				Computed:            true,
+				Default:             stringdefault.StaticString("Default_Scope"),
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"enable_domain_allowed_list": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("").AddDefaultValueDescription("true").String,
 				Optional:            true,
 				Computed:            true,
 				Default:             booldefault.StaticBool(true),
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
+				},
 			},
 			"groups": schema.ListNestedAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("List of AD Groups").String,
@@ -110,14 +126,23 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 						"name": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Required for each group in the group list with no duplication between groups").String,
 							Required:            true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifier.RequiresReplace(),
+							},
 						},
 						"sid": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Required for each group in the group list with no duplication between groups").String,
 							Required:            true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifier.RequiresReplace(),
+							},
 						},
 						"type": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("").String,
 							Optional:            true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifier.RequiresReplace(),
+							},
 						},
 					},
 				},
@@ -130,12 +155,18 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 						"name": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Required for each attribute in the attribute list with no duplication between attributes").String,
 							Required:            true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifier.RequiresReplace(),
+							},
 						},
 						"type": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Required for each group in the group list").AddStringEnumDescription("STRING", "IP", "BOOLEAN", "INT", "OCTET_STRING").String,
 							Required:            true,
 							Validators: []validator.String{
 								stringvalidator.OneOf("STRING", "IP", "BOOLEAN", "INT", "OCTET_STRING"),
+							},
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifier.RequiresReplace(),
 							},
 						},
 						"internal_name": schema.StringAttribute{
@@ -145,6 +176,16 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 						"default_value": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Required for each attribute in the attribute list. Can contain an empty string").String,
 							Required:            true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifier.RequiresReplace(),
+							},
+						},
+						"default_value": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("Required for each attribute in the attribute list. Can contain an empty string.").String,
+							Required:            true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifier.RequiresReplace(),
+							},
 						},
 					},
 				},
@@ -157,14 +198,23 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 						"row_id": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Required for each rule in the list in serial order").String,
 							Required:            true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifier.RequiresReplace(),
+							},
 						},
 						"rewrite_match": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Required for each rule in the list with no duplication between rules").String,
 							Required:            true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifier.RequiresReplace(),
+							},
 						},
 						"rewrite_result": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("Required for each rule in the list").String,
 							Required:            true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifier.RequiresReplace(),
+							},
 						},
 					},
 				},
@@ -174,6 +224,9 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 				Optional:            true,
 				Computed:            true,
 				Default:             booldefault.StaticBool(false),
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
+				},
 			},
 			"enable_pass_change": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Enable Password Change").AddDefaultValueDescription("true").String,
@@ -183,6 +236,12 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 			},
 			"enable_machine_auth": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Enable Machin Authentication").AddDefaultValueDescription("true").String,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
+				},
+			},
+			"enable_machine_auth": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Enable Machine Authentication").AddDefaultValueDescription("true").String,
 				Optional:            true,
 				Computed:            true,
 				Default:             booldefault.StaticBool(true),
@@ -195,36 +254,54 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 				Optional:            true,
 				Computed:            true,
 				Default:             booldefault.StaticBool(true),
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
+				},
 			},
 			"enable_dialin_permission_check": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Enable Dial In Permission Check").AddDefaultValueDescription("false").String,
 				Optional:            true,
 				Computed:            true,
 				Default:             booldefault.StaticBool(false),
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
+				},
 			},
 			"plaintext_auth": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Plain Text Authentication").AddDefaultValueDescription("false").String,
 				Optional:            true,
 				Computed:            true,
 				Default:             booldefault.StaticBool(false),
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
+				},
 			},
 			"aging_time": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Aging Time").AddDefaultValueDescription("5").String,
 				Optional:            true,
 				Computed:            true,
 				Default:             int64default.StaticInt64(5),
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.RequiresReplace(),
+				},
 			},
 			"enable_callback_for_dialin_client": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Enable Callback For Dial In Client").AddDefaultValueDescription("false").String,
 				Optional:            true,
 				Computed:            true,
 				Default:             booldefault.StaticBool(false),
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
+				},
 			},
 			"identity_not_in_ad_behaviour": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Identity Not In AD Behaviour").AddStringEnumDescription("REJECT", "SEARCH_JOINED_FOREST", "SEARCH_ALL").String,
 				Optional:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("REJECT", "SEARCH_JOINED_FOREST", "SEARCH_ALL"),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"unreachable_domains_behaviour": schema.StringAttribute{
@@ -233,6 +310,9 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 				Validators: []validator.String{
 					stringvalidator.OneOf("PROCEED", "DROP"),
 				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"schema": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Schema").AddStringEnumDescription("ACTIVE_DIRECTORY", "CUSTOM").String,
@@ -240,68 +320,113 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 				Validators: []validator.String{
 					stringvalidator.OneOf("ACTIVE_DIRECTORY", "CUSTOM"),
 				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"first_name": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
 				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"department": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
 				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"last_name": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
 				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"organizational_unit": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
 				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"job_title": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
 				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"locality": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
 				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"email": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
 				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"state_or_province": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
 				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"telephone": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
 				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"country": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
 				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"street_address": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("User info attribute").String,
 				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"enable_failed_auth_protection": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Enable prevent AD account lockout due to too many bad password attempts").AddDefaultValueDescription("false").String,
 				Optional:            true,
 				Computed:            true,
 				Default:             booldefault.StaticBool(false),
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
+				},
 			},
 			"failed_auth_threshold": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Number of bad password attempts").AddDefaultValueDescription("5").String,
 				Optional:            true,
 				Computed:            true,
 				Default:             int64default.StaticInt64(5),
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.RequiresReplace(),
+				},
 			},
 			"auth_protection_type": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Enable prevent AD account lockout for WIRELESS/WIRED/BOTH").AddStringEnumDescription("WIRELESS", "WIRED", "BOTH").String,
 				Optional:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("WIRELESS", "WIRED", "BOTH"),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
 				},
 			},
 		},
@@ -371,7 +496,15 @@ func (r *ActiveDirectoryJoinPointResource) Read(ctx context.Context, req resourc
 		return
 	}
 
+
 	state.updateFromBody(ctx, res)
+
+	// If every attribute is set to null we are dealing with an import operation and therefore reading all attributes
+	if state.isNull(ctx, res) {
+		state.fromBody(ctx, res)
+	} else {
+		state.updateFromBody(ctx, res)
+	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Read finished successfully", state.Id.ValueString()))
 
@@ -399,6 +532,14 @@ func (r *ActiveDirectoryJoinPointResource) Update(ctx context.Context, req resou
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
+
+	body := plan.toBody(ctx, state)
+
+	res, err := r.client.Put(plan.getPath()+"/"+plan.Id.ValueString(), body)
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
+		return
+	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Update finished successfully", plan.Id.ValueString()))
 

@@ -151,3 +151,25 @@ func (data *AllowedProtocolsTACACS) updateFromBody(ctx context.Context, res gjso
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *AllowedProtocolsTACACS) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Description.IsNull() {
+		return false
+	}
+	if !data.AllowPapAscii.IsNull() {
+		return false
+	}
+	if !data.AllowChap.IsNull() {
+		return false
+	}
+	if !data.AllowMsChapV1.IsNull() {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

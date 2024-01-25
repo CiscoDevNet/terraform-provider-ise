@@ -746,3 +746,110 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *ActiveDirectoryJoinPoint) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Description.IsNull() {
+		return false
+	}
+	if !data.Domain.IsNull() {
+		return false
+	}
+	if !data.AdScopesNames.IsNull() {
+		return false
+	}
+	if !data.EnableDomainAllowedList.IsNull() {
+		return false
+	}
+	if len(data.Groups) > 0 {
+		return false
+	}
+	if len(data.Attributes) > 0 {
+		return false
+	}
+	if len(data.RewriteRules) > 0 {
+		return false
+	}
+	if !data.EnableRewrites.IsNull() {
+		return false
+	}
+	if !data.EnablePassChange.IsNull() {
+		return false
+	}
+	if !data.EnableMachineAuth.IsNull() {
+		return false
+	}
+	if !data.EnableMachineAccess.IsNull() {
+		return false
+	}
+	if !data.EnableDialinPermissionCheck.IsNull() {
+		return false
+	}
+	if !data.PlaintextAuth.IsNull() {
+		return false
+	}
+	if !data.AgingTime.IsNull() {
+		return false
+	}
+	if !data.EnableCallbackForDialinClient.IsNull() {
+		return false
+	}
+	if !data.IdentityNotInAdBehaviour.IsNull() {
+		return false
+	}
+	if !data.UnreachableDomainsBehaviour.IsNull() {
+		return false
+	}
+	if !data.Schema.IsNull() {
+		return false
+	}
+	if !data.FirstName.IsNull() {
+		return false
+	}
+	if !data.Department.IsNull() {
+		return false
+	}
+	if !data.LastName.IsNull() {
+		return false
+	}
+	if !data.OrganizationalUnit.IsNull() {
+		return false
+	}
+	if !data.JobTitle.IsNull() {
+		return false
+	}
+	if !data.Locality.IsNull() {
+		return false
+	}
+	if !data.Email.IsNull() {
+		return false
+	}
+	if !data.StateOrProvince.IsNull() {
+		return false
+	}
+	if !data.Telephone.IsNull() {
+		return false
+	}
+	if !data.Country.IsNull() {
+		return false
+	}
+	if !data.StreetAddress.IsNull() {
+		return false
+	}
+	if !data.EnableFailedAuthProtection.IsNull() {
+		return false
+	}
+	if !data.FailedAuthThreshold.IsNull() {
+		return false
+	}
+	if !data.AuthProtectionType.IsNull() {
+		return false
+	}
+	return true
+}
+
+//template:end isNull
+

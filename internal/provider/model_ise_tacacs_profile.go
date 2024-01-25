@@ -180,3 +180,19 @@ func (data *TACACSProfile) updateFromBody(ctx context.Context, res gjson.Result)
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *TACACSProfile) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Description.IsNull() {
+		return false
+	}
+	if len(data.SessionAttributes) > 0 {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

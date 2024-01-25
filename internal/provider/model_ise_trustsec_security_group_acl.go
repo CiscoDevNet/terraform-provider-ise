@@ -127,3 +127,25 @@ func (data *TrustSecSecurityGroupACL) updateFromBody(ctx context.Context, res gj
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *TrustSecSecurityGroupACL) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Description.IsNull() {
+		return false
+	}
+	if !data.AclContent.IsNull() {
+		return false
+	}
+	if !data.IpVersion.IsNull() {
+		return false
+	}
+	if !data.ReadOnly.IsNull() {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

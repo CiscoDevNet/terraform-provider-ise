@@ -719,3 +719,136 @@ func (data *NetworkDevice) updateFromBody(ctx context.Context, res gjson.Result)
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *NetworkDevice) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Name.IsNull() {
+		return false
+	}
+	if !data.Description.IsNull() {
+		return false
+	}
+	if !data.AuthenticationEnableKeyWrap.IsNull() {
+		return false
+	}
+	if !data.AuthenticationEncryptionKey.IsNull() {
+		return false
+	}
+	if !data.AuthenticationEncryptionKeyFormat.IsNull() {
+		return false
+	}
+	if !data.AuthenticationMessageAuthenticatorCodeKey.IsNull() {
+		return false
+	}
+	if !data.AuthenticationNetworkProtocol.IsNull() {
+		return false
+	}
+	if !data.AuthenticationRadiusSharedSecret.IsNull() {
+		return false
+	}
+	if !data.AuthenticationEnableMultiSecret.IsNull() {
+		return false
+	}
+	if !data.AuthenticationSecondRadiusSharedSecret.IsNull() {
+		return false
+	}
+	if !data.AuthenticationDtlsRequired.IsNull() {
+		return false
+	}
+	if !data.CoaPort.IsNull() {
+		return false
+	}
+	if !data.DtlsDnsName.IsNull() {
+		return false
+	}
+	if len(data.Ips) > 0 {
+		return false
+	}
+	if !data.NetworkDeviceGroups.IsNull() {
+		return false
+	}
+	if !data.ModelName.IsNull() {
+		return false
+	}
+	if !data.SoftwareVersion.IsNull() {
+		return false
+	}
+	if !data.ProfileName.IsNull() {
+		return false
+	}
+	if !data.SnmpLinkTrapQuery.IsNull() {
+		return false
+	}
+	if !data.SnmpMacTrapQuery.IsNull() {
+		return false
+	}
+	if !data.SnmpOriginatingPolicyServiceNode.IsNull() {
+		return false
+	}
+	if !data.SnmpPollingInterval.IsNull() {
+		return false
+	}
+	if !data.SnmpRoCommunity.IsNull() {
+		return false
+	}
+	if !data.SnmpVersion.IsNull() {
+		return false
+	}
+	if !data.TacacsConnectModeOptions.IsNull() {
+		return false
+	}
+	if !data.TacacsSharedSecret.IsNull() {
+		return false
+	}
+	if !data.TrustsecDeviceId.IsNull() {
+		return false
+	}
+	if !data.TrustsecDevicePassword.IsNull() {
+		return false
+	}
+	if !data.TrustsecRestApiUsername.IsNull() {
+		return false
+	}
+	if !data.TrustsecRestApiPassword.IsNull() {
+		return false
+	}
+	if !data.TrustsecEnableModePassword.IsNull() {
+		return false
+	}
+	if !data.TrustsecExecModePassword.IsNull() {
+		return false
+	}
+	if !data.TrustsecExecModeUsername.IsNull() {
+		return false
+	}
+	if !data.TrustsecIncludeWhenDeployingSgtUpdates.IsNull() {
+		return false
+	}
+	if !data.TrustsecDownloadEnviromentDataEveryXSeconds.IsNull() {
+		return false
+	}
+	if !data.TrustsecDownloadPeerAuthorizationPolicyEveryXSeconds.IsNull() {
+		return false
+	}
+	if !data.TrustsecDownloadSgaclListsEveryXSeconds.IsNull() {
+		return false
+	}
+	if !data.TrustsecOtherSgaDevicesToTrustThisDevice.IsNull() {
+		return false
+	}
+	if !data.TrustsecReAuthenticationEveryXSeconds.IsNull() {
+		return false
+	}
+	if !data.TrustsecSendConfigurationToDevice.IsNull() {
+		return false
+	}
+	if !data.TrustsecSendConfigurationToDeviceUsing.IsNull() {
+		return false
+	}
+	if !data.TrustsecCoaSourceHost.IsNull() {
+		return false
+	}
+	return true
+}
+
+//template:end isNull

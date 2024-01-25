@@ -157,3 +157,28 @@ func (data *TrustSecEgressMatrixCell) updateFromBody(ctx context.Context, res gj
 }
 
 //template:end updateFromBody
+
+//template:begin isNull
+func (data *TrustSecEgressMatrixCell) isNull(ctx context.Context, res gjson.Result) bool {
+	if !data.Description.IsNull() {
+		return false
+	}
+	if !data.DefaultRule.IsNull() {
+		return false
+	}
+	if !data.MatrixCellStatus.IsNull() {
+		return false
+	}
+	if !data.Sgacls.IsNull() {
+		return false
+	}
+	if !data.SourceSgtId.IsNull() {
+		return false
+	}
+	if !data.DestinationSgtId.IsNull() {
+		return false
+	}
+	return true
+}
+
+//template:end isNull
