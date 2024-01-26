@@ -96,6 +96,10 @@ func (data ActiveDirectoryJoinPoint) getPath() string {
 
 //template:end getPath
 
+//template:begin getPathDelete
+
+//template:end getPathDelete
+
 //template:begin toBody
 func (data ActiveDirectoryJoinPoint) toBody(ctx context.Context, state ActiveDirectoryJoinPoint) string {
 	body := ""

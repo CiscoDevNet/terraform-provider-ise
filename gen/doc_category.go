@@ -35,7 +35,7 @@ const (
 type YamlConfig struct {
 	Name         string `yaml:"name"`
 	DocCategory  string `yaml:"doc_category"`
-	NoResource	 bool   `yaml:"no_resource"`
+	NoResource   bool   `yaml:"no_resource"`
 	NoDataSource bool   `yaml:"no_data_source"`
 }
 

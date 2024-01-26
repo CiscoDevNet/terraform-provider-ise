@@ -58,6 +58,10 @@ func (data DeviceAdminTimeAndDateCondition) getPath() string {
 
 //template:end getPath
 
+//template:begin getPathDelete
+
+//template:end getPathDelete
+
 //template:begin toBody
 func (data DeviceAdminTimeAndDateCondition) toBody(ctx context.Context, state DeviceAdminTimeAndDateCondition) string {
 	body := ""

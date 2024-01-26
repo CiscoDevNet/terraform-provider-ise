@@ -2,7 +2,6 @@
 name: TrustSec Egress Matrix Cell
 rest_endpoint: /ers/config/egressmatrixcell
 doc_category: TrustSec
-id_path: response.id
 put_id_include_path: EgressMatrixCell
 attributes:
   - model_name: description

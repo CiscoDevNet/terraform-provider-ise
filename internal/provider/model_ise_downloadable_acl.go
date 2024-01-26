@@ -48,6 +48,10 @@ func (data DownloadableACL) getPath() string {
 
 //template:end getPath
 
+//template:begin getPathDelete
+
+//template:end getPathDelete
+
 //template:begin toBody
 func (data DownloadableACL) toBody(ctx context.Context, state DownloadableACL) string {
 	body := ""

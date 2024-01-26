@@ -93,6 +93,10 @@ func (data NetworkDevice) getPath() string {
 
 //template:end getPath
 
+//template:begin getPathDelete
+
+//template:end getPathDelete
+
 //template:begin toBody
 func (data NetworkDevice) toBody(ctx context.Context, state NetworkDevice) string {
 	body := ""

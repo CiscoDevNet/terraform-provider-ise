@@ -83,6 +83,10 @@ func (data NetworkAccessPolicySet) getPath() string {
 
 //template:end getPath
 
+//template:begin getPathDelete
+
+//template:end getPathDelete
+
 //template:begin toBody
 func (data NetworkAccessPolicySet) toBody(ctx context.Context, state NetworkAccessPolicySet) string {
 	body := ""

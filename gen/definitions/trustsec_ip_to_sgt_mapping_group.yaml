@@ -3,7 +3,6 @@ name: TrustSec IP to SGT Mapping Group
 rest_endpoint: /ers/config/sgmappinggroup
 doc_category: TrustSec
 data_source_name_query: true
-id_path: response.id
 attributes:
   - model_name: name
     data_path: [SGMappingGroup]

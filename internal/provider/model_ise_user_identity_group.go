@@ -47,6 +47,10 @@ func (data UserIdentityGroup) getPath() string {
 
 //template:end getPath
 
+//template:begin getPathDelete
+
+//template:end getPathDelete
+
 //template:begin toBody
 func (data UserIdentityGroup) toBody(ctx context.Context, state UserIdentityGroup) string {
 	body := ""

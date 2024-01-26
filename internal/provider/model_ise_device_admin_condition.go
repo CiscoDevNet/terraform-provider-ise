@@ -81,6 +81,10 @@ func (data DeviceAdminCondition) getPath() string {
 
 //template:end getPath
 
+//template:begin getPathDelete
+
+//template:end getPathDelete
+
 //template:begin toBody
 func (data DeviceAdminCondition) toBody(ctx context.Context, state DeviceAdminCondition) string {
 	body := ""

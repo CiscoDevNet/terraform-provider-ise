@@ -51,6 +51,10 @@ func (data TrustSecEgressMatrixCell) getPath() string {
 
 //template:end getPath
 
+//template:begin getPathDelete
+
+//template:end getPathDelete
+
 //template:begin toBody
 func (data TrustSecEgressMatrixCell) toBody(ctx context.Context, state TrustSecEgressMatrixCell) string {
 	body := ""

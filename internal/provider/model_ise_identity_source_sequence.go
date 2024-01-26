@@ -55,6 +55,10 @@ func (data IdentitySourceSequence) getPath() string {
 
 //template:end getPath
 
+//template:begin getPathDelete
+
+//template:end getPathDelete
+
 //template:begin toBody
 func (data IdentitySourceSequence) toBody(ctx context.Context, state IdentitySourceSequence) string {
 	body := ""

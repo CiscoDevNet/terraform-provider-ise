@@ -49,6 +49,10 @@ func (data TrustSecSecurityGroupACL) getPath() string {
 
 //template:end getPath
 
+//template:begin getPathDelete
+
+//template:end getPathDelete
+
 //template:begin toBody
 func (data TrustSecSecurityGroupACL) toBody(ctx context.Context, state TrustSecSecurityGroupACL) string {
 	body := ""

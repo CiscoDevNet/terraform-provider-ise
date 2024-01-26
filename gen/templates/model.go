@@ -145,17 +145,17 @@ func (data {{camelCase .Name}}) getPath() string {
 }
 //template:end getPath
 
+//template:begin getPathDelete
 {{if .DeleteRestEndpoint}}
-//template:begin getPathPut
-func (data {{camelCase .Name}}) getPathPut() string {
+func (data {{camelCase .Name}}) getPathDelete() string {
 	{{- if hasReference .Attributes}}
 		return fmt.Sprintf("{{.DeleteRestEndpoint}}"{{range .Attributes}}{{if .Reference}}, data.{{toGoName .TfName}}.Value{{.Type}}(){{end}}{{end}})
 	{{- else}}
 		return "{{.DeleteRestEndpoint}}"
 	{{- end}}
 }
-//template:end getPathPut
 {{end}}
+//template:end getPathDelete
 
 //template:begin toBody
 func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .Name}}) string {

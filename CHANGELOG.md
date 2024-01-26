@@ -1,6 +1,8 @@
 ## 0.1.12 (unreleased)
 
 - Ignore error messages when attempting to delete default policy sets or rules
+- Add `ise_active_directory_add_groups` resource
+- Add `ise_active_directory_join_domain_with_all_nodes` resource
 
 ## 0.1.11
 

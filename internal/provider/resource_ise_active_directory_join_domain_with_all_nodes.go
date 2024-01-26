@@ -201,7 +201,7 @@ func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Delete(ctx context.Conte
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
 	body := state.toBody(ctx, state)
-	res, err := r.client.Put(state.getPathPut(), body)
+	res, err := r.client.Put(state.getPathDelete(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return

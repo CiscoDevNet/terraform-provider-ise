@@ -49,6 +49,10 @@ func (data AllowedProtocolsTACACS) getPath() string {
 
 //template:end getPath
 
+//template:begin getPathDelete
+
+//template:end getPathDelete
+
 //template:begin toBody
 func (data AllowedProtocolsTACACS) toBody(ctx context.Context, state AllowedProtocolsTACACS) string {
 	body := ""

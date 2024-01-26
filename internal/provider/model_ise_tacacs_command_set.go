@@ -54,6 +54,10 @@ func (data TACACSCommandSet) getPath() string {
 
 //template:end getPath
 
+//template:begin getPathDelete
+
+//template:end getPathDelete
+
 //template:begin toBody
 func (data TACACSCommandSet) toBody(ctx context.Context, state TACACSCommandSet) string {
 	body := ""

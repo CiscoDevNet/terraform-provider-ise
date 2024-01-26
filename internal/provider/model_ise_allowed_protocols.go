@@ -121,6 +121,10 @@ func (data AllowedProtocols) getPath() string {
 
 //template:end getPath
 
+//template:begin getPathDelete
+
+//template:end getPathDelete
+
 //template:begin toBody
 func (data AllowedProtocols) toBody(ctx context.Context, state AllowedProtocols) string {
 	body := ""

@@ -435,45 +435,25 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	// Create object
 	body := plan.toBody(ctx, {{camelCase .Name}}{})
 
-	{{- if not (isErs .RestEndpoint)}}
+	{{- if .PutCreate}}
+	res, err := r.client.Put(plan.getPath(), body)
+	{{- else if and (isErs .RestEndpoint) (not .IdPath) (not (hasId .Attributes))}}
+	res, location, err := r.client.Post(plan.getPath(), body)
+	{{- else}}
 	res, _, err := r.client.Post(plan.getPath(), body)
+	{{- end}}
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object ({{- if .PutCreate}}PUT{{else}}POST{{end}}), got error: %s, %s", err, res.String()))
 		return
 	}
 	{{- if .IdPath}}
 	plan.Id = types.StringValue(res.Get("{{.IdPath}}").String())
-	{{- else}}
-	{{- range .Attributes}}
-	{{- if .Id}}
-	plan.Id = types.StringValue(fmt.Sprint(plan.{{toGoName .TfName}}.Value{{.Type}}()))
-	{{- end}}
-	{{- end}}
-	{{- end}}
-	{{- else}}
-	{{- if .PutCreate}}
-	res, err := r.client.Put(plan.getPath(), body)
-	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
-		return
-	}
-	{{- else}}
-	res, location, err := r.client.Post(plan.getPath(), body)
-	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
-		return
-	}
-	{{- end}}
-	{{- if hasId .Attributes}}
-	{{- range .Attributes}}
-	{{- if .Id}}
-	plan.Id = types.StringValue(fmt.Sprint(plan.{{toGoName .TfName}}.Value{{.Type}}()))
-	{{- end}}
-	{{- end}}
+	{{- else if hasId .Attributes}}
+		{{- $id := getId .Attributes}}
+	plan.Id = types.StringValue(fmt.Sprint(plan.{{toGoName $id.TfName}}.Value{{$id.Type}}()))
 	{{- else}}
 	locationElements := strings.Split(location, "/")
 	plan.Id = types.StringValue(locationElements[len(locationElements)-1])
-	{{- end}}
 	{{- end}}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
@@ -540,7 +520,6 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
-
 	{{- if not .NoUpdate}}
 	body := plan.toBody(ctx, state)
 	{{if .PostUpdate}}
@@ -574,15 +553,13 @@ func (r *{{camelCase .Name}}Resource) Delete(ctx context.Context, req resource.D
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
 
+	{{- if not .NoDelete}}
 	{{- if .PutDelete}}
 	body := state.toBody(ctx, state)
-	res, err := r.client.Put(state.getPathPut(), body)
-	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
-		return
-	}
-	{{- else if not .NoDelete}}
-	res, err := r.client.Delete({{if .DeleteRestEndpoint}}"{{.DeleteRestEndpoint}}"{{else}}state.getPath(){{end}} + "/" + state.Id.ValueString())
+	res, err := r.client.Put(state.getPathDelete(), body)
+	{{- else}}
+	res, err := r.client.Delete({{if .DeleteRestEndpoint}}state.getPathDelete(){{else}}state.getPath(){{end}} + "/" + state.Id.ValueString())
+	{{- end}}
 	if err != nil{{if .IgnoreDeleteError}} && !strings.Contains(res.String(), "{{.IgnoreDeleteError}}"){{end}} {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return

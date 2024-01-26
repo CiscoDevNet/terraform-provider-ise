@@ -51,6 +51,10 @@ func (data Repository) getPath() string {
 
 //template:end getPath
 
+//template:begin getPathDelete
+
+//template:end getPathDelete
+
 //template:begin toBody
 func (data Repository) toBody(ctx context.Context, state Repository) string {
 	body := ""
