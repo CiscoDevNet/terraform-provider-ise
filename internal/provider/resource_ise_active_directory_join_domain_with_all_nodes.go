@@ -23,10 +23,8 @@ package provider
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
-	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -41,25 +39,24 @@ import (
 //template:begin model
 
 // Ensure provider defined types fully satisfy framework interfaces
-var _ resource.Resource = &IdentitySourceSequenceResource{}
-var _ resource.ResourceWithImportState = &IdentitySourceSequenceResource{}
+var _ resource.Resource = &ActiveDirectoryJoinDomainWithAllNodesResource{}
 
-func NewIdentitySourceSequenceResource() resource.Resource {
-	return &IdentitySourceSequenceResource{}
+func NewActiveDirectoryJoinDomainWithAllNodesResource() resource.Resource {
+	return &ActiveDirectoryJoinDomainWithAllNodesResource{}
 }
 
-type IdentitySourceSequenceResource struct {
+type ActiveDirectoryJoinDomainWithAllNodesResource struct {
 	client *ise.Client
 }
 
-func (r *IdentitySourceSequenceResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_identity_source_sequence"
+func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_active_directory_join_domain_with_all_nodes"
 }
 
-func (r *IdentitySourceSequenceResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage an Identity Source Sequence.").String,
+		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage an Active Directory Join Domain with All Nodes.").String,
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -69,33 +66,24 @@ func (r *IdentitySourceSequenceResource) Schema(ctx context.Context, req resourc
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The name of the identity source sequence").String,
+			"join_point_id": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Active Directory Join Point ID").String,
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
-			"description": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Description").String,
-				Optional:            true,
-			},
-			"break_on_store_fail": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Do not access other stores in the sequence if a selected identity store cannot be accessed for authentication").String,
-				Required:            true,
-			},
-			"certificate_authentication_profile": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Certificate Authentication Profile, empty if doesn't exist").String,
-				Required:            true,
-			},
-			"identity_sources": schema.ListNestedAttribute{
+			"additional_data": schema.ListNestedAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("").String,
 				Required:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Name of the identity source").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Additional attribute name").String,
 							Required:            true,
 						},
-						"order": schema.Int64Attribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Order of the identity source in the sequence").String,
+						"value": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("Additional attribute value").String,
 							Required:            true,
 						},
 					},
@@ -105,7 +93,7 @@ func (r *IdentitySourceSequenceResource) Schema(ctx context.Context, req resourc
 	}
 }
 
-func (r *IdentitySourceSequenceResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -116,8 +104,8 @@ func (r *IdentitySourceSequenceResource) Configure(_ context.Context, req resour
 //template:end model
 
 //template:begin create
-func (r *IdentitySourceSequenceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan IdentitySourceSequence
+func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan ActiveDirectoryJoinDomainWithAllNodes
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -129,14 +117,13 @@ func (r *IdentitySourceSequenceResource) Create(ctx context.Context, req resourc
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
 
 	// Create object
-	body := plan.toBody(ctx, IdentitySourceSequence{})
-	res, location, err := r.client.Post(plan.getPath(), body)
+	body := plan.toBody(ctx, ActiveDirectoryJoinDomainWithAllNodes{})
+	res, err := r.client.Put(plan.getPath(), body)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
 	}
-	locationElements := strings.Split(location, "/")
-	plan.Id = types.StringValue(locationElements[len(locationElements)-1])
+	plan.Id = types.StringValue(fmt.Sprint(plan.JoinPointId.ValueString()))
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -147,8 +134,8 @@ func (r *IdentitySourceSequenceResource) Create(ctx context.Context, req resourc
 //template:end create
 
 //template:begin read
-func (r *IdentitySourceSequenceResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state IdentitySourceSequence
+func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state ActiveDirectoryJoinDomainWithAllNodes
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -158,21 +145,6 @@ func (r *IdentitySourceSequenceResource) Read(ctx context.Context, req resource.
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
-	res, err := r.client.Get(state.getPath() + "/" + state.Id.ValueString())
-	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
-		resp.State.RemoveResource(ctx)
-		return
-	} else if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
-		return
-	}
-
-	// If every attribute is set to null we are dealing with an import operation and therefore reading all attributes
-	if state.isNull(ctx, res) {
-		state.fromBody(ctx, res)
-	} else {
-		state.updateFromBody(ctx, res)
-	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Read finished successfully", state.Id.ValueString()))
 
@@ -183,8 +155,8 @@ func (r *IdentitySourceSequenceResource) Read(ctx context.Context, req resource.
 //template:end read
 
 //template:begin update
-func (r *IdentitySourceSequenceResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan, state IdentitySourceSequence
+func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var plan, state ActiveDirectoryJoinDomainWithAllNodes
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -217,8 +189,8 @@ func (r *IdentitySourceSequenceResource) Update(ctx context.Context, req resourc
 //template:end update
 
 //template:begin delete
-func (r *IdentitySourceSequenceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state IdentitySourceSequence
+func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state ActiveDirectoryJoinDomainWithAllNodes
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -228,7 +200,8 @@ func (r *IdentitySourceSequenceResource) Delete(ctx context.Context, req resourc
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath() + "/" + state.Id.ValueString())
+	body := state.toBody(ctx, state)
+	res, err := r.client.Put(state.getPathPut(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
@@ -242,8 +215,4 @@ func (r *IdentitySourceSequenceResource) Delete(ctx context.Context, req resourc
 //template:end delete
 
 //template:begin import
-func (r *IdentitySourceSequenceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
-}
-
 //template:end import

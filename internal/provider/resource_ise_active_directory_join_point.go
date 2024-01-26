@@ -473,7 +473,6 @@ func (r *ActiveDirectoryJoinPointResource) Read(ctx context.Context, req resourc
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
-
 	res, err := r.client.Get(state.getPath() + "/" + state.Id.ValueString())
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
@@ -516,14 +515,6 @@ func (r *ActiveDirectoryJoinPointResource) Update(ctx context.Context, req resou
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
-
-	body := plan.toBody(ctx, state)
-
-	res, err := r.client.Put(plan.getPath()+"/"+plan.Id.ValueString(), body)
-	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
-		return
-	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Update finished successfully", plan.Id.ValueString()))
 

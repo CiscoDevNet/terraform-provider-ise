@@ -2,6 +2,7 @@
 name: Active Directory Join Point
 rest_endpoint: /ers/config/activedirectory
 doc_category: Identity Management
+no_update: true
 skip_minimum_test: true
 attributes:
   - model_name: name

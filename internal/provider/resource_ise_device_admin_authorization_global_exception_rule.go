@@ -285,7 +285,6 @@ func (r *DeviceAdminAuthorizationGlobalExceptionRuleResource) Read(ctx context.C
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
-
 	res, err := r.client.Get(state.getPath() + "/" + state.Id.ValueString())
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
@@ -328,7 +327,6 @@ func (r *DeviceAdminAuthorizationGlobalExceptionRuleResource) Update(ctx context
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
-
 	body := plan.toBody(ctx, state)
 
 	res, err := r.client.Put(plan.getPath()+"/"+plan.Id.ValueString(), body)

@@ -96,9 +96,19 @@ var templates = []t{
 type YamlConfig struct {
 	Name                string                `yaml:"name"`
 	RestEndpoint        string                `yaml:"rest_endpoint"`
+	DeleteRestEndpoint  string                `yaml:"delete_rest_endpoint"`
 	GetNoId             bool                  `yaml:"get_no_id"`
+	NoDataSource        bool                  `yaml:"no_data_source"`
+	NoResource          bool                  `yaml:"no_resource"`
 	NoDelete            bool                  `yaml:"no_delete"`
+	NoImport            bool                  `yaml:"no_import"`
 	PostUpdate          bool                  `yaml:"post_update"`
+	PutCreate           bool                  `yaml:"put_create"`
+	PutDelete           bool                  `yaml:"put_delete"`
+	PutRead             bool                  `yaml:"put_read"`
+	NoRead              bool                  `yaml:"no_read"`
+	NoUpdate            bool                  `yaml:"no_update"`
+	IdFromAttribute     bool                  `yaml:"id_from_attribute"`
 	RootList            bool                  `yaml:"root_list"`
 	NoReadPrefix        bool                  `yaml:"no_read_prefix"`
 	IdPath              string                `yaml:"id_path"`
@@ -127,6 +137,7 @@ type YamlConfigAttribute struct {
 	WriteOnly        bool                  `yaml:"write_only"`
 	WriteChangesOnly bool                  `yaml:"write_changes_only"`
 	ExcludeTest      bool                  `yaml:"exclude_test"`
+	RequiresReplace  bool                  `yaml:"requires_replace"`
 	ExcludeExample   bool                  `yaml:"exclude_example"`
 	Description      string                `yaml:"description"`
 	Example          string                `yaml:"example"`
@@ -140,7 +151,6 @@ type YamlConfigAttribute struct {
 	StringPatterns   []string              `yaml:"string_patterns"`
 	StringMinLength  int64                 `yaml:"string_min_length"`
 	StringMaxLength  int64                 `yaml:"string_max_length"`
-	RequiresReplace  bool                  `yaml:"requires_replace"`
 	DefaultValue     string                `yaml:"default_value"`
 	Value            string                `yaml:"value"`
 	TestValue        string                `yaml:"test_value"`
@@ -200,6 +210,16 @@ func contains(s []string, str string) bool {
 		}
 	}
 	return false
+}
+
+// Templating helper function to return the ID attribute
+func GetId(attributes []YamlConfigAttribute) YamlConfigAttribute {
+	for _, attr := range attributes {
+		if attr.Id {
+			return attr
+		}
+	}
+	return YamlConfigAttribute{}
 }
 
 // Templating helper function to return true if id included in attributes
@@ -263,6 +283,7 @@ var functions = template.FuncMap{
 	"toLower":                strings.ToLower,
 	"path":                   BuildPath,
 	"hasId":                  HasId,
+	"getId":                  GetId,
 	"hasReference":           HasReference,
 	"importParts":            ImportParts,
 	"subtract":               Subtract,
@@ -399,8 +420,6 @@ func renderTemplate(templatePath, outputPath string, config interface{}) {
 }
 
 func main() {
-	providerConfig := make([]string, 0)
-
 	files, _ := os.ReadDir(definitionsPath)
 	configs := make([]YamlConfig, len(files))
 
@@ -425,13 +444,22 @@ func main() {
 
 		// Iterate over templates and render files
 		for _, t := range templates {
+			if (configs[i].NoImport && t.path == "./gen/templates/import.sh") ||
+				(configs[i].NoDataSource && t.path == "./gen/templates/data_source.go") ||
+				(configs[i].NoDataSource && t.path == "./gen/templates/data_source_test.go") ||
+				(configs[i].NoDataSource && t.path == "./gen/templates/data-source.tf") ||
+				(configs[i].NoResource && t.path == "./gen/templates/resource.go") ||
+				(configs[i].NoResource && t.path == "./gen/templates/resource_test.go") ||
+				(configs[i].NoResource && t.path == "./gen/templates/resource.tf") ||
+				(configs[i].NoResource && t.path == "./gen/templates/import.sh") {
+				continue
+			}
 			renderTemplate(t.path, t.prefix+SnakeCase(configs[i].Name)+t.suffix, configs[i])
 		}
-		providerConfig = append(providerConfig, configs[i].Name)
 	}
 
 	// render provider.go
-	renderTemplate(providerTemplate, providerLocation, providerConfig)
+	renderTemplate(providerTemplate, providerLocation, configs)
 
 	changelog, err := os.ReadFile(changelogOriginal)
 	if err != nil {

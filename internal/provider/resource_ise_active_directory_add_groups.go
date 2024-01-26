@@ -23,18 +23,14 @@ package provider
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
-	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
-	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
@@ -45,25 +41,24 @@ import (
 //template:begin model
 
 // Ensure provider defined types fully satisfy framework interfaces
-var _ resource.Resource = &TrustSecSecurityGroupACLResource{}
-var _ resource.ResourceWithImportState = &TrustSecSecurityGroupACLResource{}
+var _ resource.Resource = &ActiveDirectoryAddGroupsResource{}
 
-func NewTrustSecSecurityGroupACLResource() resource.Resource {
-	return &TrustSecSecurityGroupACLResource{}
+func NewActiveDirectoryAddGroupsResource() resource.Resource {
+	return &ActiveDirectoryAddGroupsResource{}
 }
 
-type TrustSecSecurityGroupACLResource struct {
+type ActiveDirectoryAddGroupsResource struct {
 	client *ise.Client
 }
 
-func (r *TrustSecSecurityGroupACLResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_trustsec_security_group_acl"
+func (r *ActiveDirectoryAddGroupsResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_active_directory_add_groups"
 }
 
-func (r *TrustSecSecurityGroupACLResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *ActiveDirectoryAddGroupsResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage a TrustSec Security Group ACL.").String,
+		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage an Active Directory Add Groups.").String,
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -73,38 +68,65 @@ func (r *TrustSecSecurityGroupACLResource) Schema(ctx context.Context, req resou
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"join_point_id": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Active Directory Join Point ID").String,
+				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+			},
 			"name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The name of the security group ACL").String,
+				MarkdownDescription: helpers.NewAttributeDescription("The name of the active directory join point").String,
 				Required:            true,
 			},
 			"description": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Description").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Join point Description").String,
 				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
-			"acl_content": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Content of ACL").String,
+			"domain": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("AD domain associated with the join point").String,
 				Required:            true,
 			},
-			"ip_version": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("IP Version").AddStringEnumDescription("IPV4", "IPV6", "IP_AGNOSTIC").AddDefaultValueDescription("IP_AGNOSTIC").String,
+			"ad_scopes_names": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("String that contains the names of the scopes that the active directory belongs to. Names are separated by comm").AddDefaultValueDescription("Default_Scope").String,
 				Optional:            true,
 				Computed:            true,
-				Validators: []validator.String{
-					stringvalidator.OneOf("IPV4", "IPV6", "IP_AGNOSTIC"),
-				},
-				Default: stringdefault.StaticString("IP_AGNOSTIC"),
+				Default:             stringdefault.StaticString("Default_Scope"),
 			},
-			"read_only": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Read-only").AddDefaultValueDescription("false").String,
+			"enable_domain_allowed_list": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("").AddDefaultValueDescription("true").String,
 				Optional:            true,
 				Computed:            true,
-				Default:             booldefault.StaticBool(false),
+				Default:             booldefault.StaticBool(true),
+			},
+			"groups": schema.ListNestedAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("List of AD Groups").String,
+				Optional:            true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("Required for each group in the group list with no duplication between groups").String,
+							Required:            true,
+						},
+						"sid": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("Required for each group in the group list with no duplication between groups").String,
+							Required:            true,
+						},
+						"type": schema.StringAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("").String,
+							Optional:            true,
+						},
+					},
+				},
 			},
 		},
 	}
 }
 
-func (r *TrustSecSecurityGroupACLResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+func (r *ActiveDirectoryAddGroupsResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -115,8 +137,8 @@ func (r *TrustSecSecurityGroupACLResource) Configure(_ context.Context, req reso
 //template:end model
 
 //template:begin create
-func (r *TrustSecSecurityGroupACLResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan TrustSecSecurityGroupACL
+func (r *ActiveDirectoryAddGroupsResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan ActiveDirectoryAddGroups
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -128,14 +150,13 @@ func (r *TrustSecSecurityGroupACLResource) Create(ctx context.Context, req resou
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
 
 	// Create object
-	body := plan.toBody(ctx, TrustSecSecurityGroupACL{})
-	res, location, err := r.client.Post(plan.getPath(), body)
+	body := plan.toBody(ctx, ActiveDirectoryAddGroups{})
+	res, err := r.client.Put(plan.getPath(), body)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
 	}
-	locationElements := strings.Split(location, "/")
-	plan.Id = types.StringValue(locationElements[len(locationElements)-1])
+	plan.Id = types.StringValue(fmt.Sprint(plan.JoinPointId.ValueString()))
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -146,8 +167,8 @@ func (r *TrustSecSecurityGroupACLResource) Create(ctx context.Context, req resou
 //template:end create
 
 //template:begin read
-func (r *TrustSecSecurityGroupACLResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state TrustSecSecurityGroupACL
+func (r *ActiveDirectoryAddGroupsResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state ActiveDirectoryAddGroups
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -157,21 +178,6 @@ func (r *TrustSecSecurityGroupACLResource) Read(ctx context.Context, req resourc
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
-	res, err := r.client.Get(state.getPath() + "/" + state.Id.ValueString())
-	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
-		resp.State.RemoveResource(ctx)
-		return
-	} else if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
-		return
-	}
-
-	// If every attribute is set to null we are dealing with an import operation and therefore reading all attributes
-	if state.isNull(ctx, res) {
-		state.fromBody(ctx, res)
-	} else {
-		state.updateFromBody(ctx, res)
-	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Read finished successfully", state.Id.ValueString()))
 
@@ -182,8 +188,8 @@ func (r *TrustSecSecurityGroupACLResource) Read(ctx context.Context, req resourc
 //template:end read
 
 //template:begin update
-func (r *TrustSecSecurityGroupACLResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan, state TrustSecSecurityGroupACL
+func (r *ActiveDirectoryAddGroupsResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var plan, state ActiveDirectoryAddGroups
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -199,13 +205,6 @@ func (r *TrustSecSecurityGroupACLResource) Update(ctx context.Context, req resou
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
-	body := plan.toBody(ctx, state)
-
-	res, err := r.client.Put(plan.getPath()+"/"+plan.Id.ValueString(), body)
-	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
-		return
-	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Update finished successfully", plan.Id.ValueString()))
 
@@ -216,8 +215,8 @@ func (r *TrustSecSecurityGroupACLResource) Update(ctx context.Context, req resou
 //template:end update
 
 //template:begin delete
-func (r *TrustSecSecurityGroupACLResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state TrustSecSecurityGroupACL
+func (r *ActiveDirectoryAddGroupsResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state ActiveDirectoryAddGroups
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -227,11 +226,6 @@ func (r *TrustSecSecurityGroupACLResource) Delete(ctx context.Context, req resou
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath() + "/" + state.Id.ValueString())
-	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
-		return
-	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Delete finished successfully", state.Id.ValueString()))
 
@@ -241,8 +235,4 @@ func (r *TrustSecSecurityGroupACLResource) Delete(ctx context.Context, req resou
 //template:end delete
 
 //template:begin import
-func (r *TrustSecSecurityGroupACLResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
-}
-
 //template:end import

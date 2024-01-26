@@ -145,6 +145,18 @@ func (data {{camelCase .Name}}) getPath() string {
 }
 //template:end getPath
 
+{{if .DeleteRestEndpoint}}
+//template:begin getPathPut
+func (data {{camelCase .Name}}) getPathPut() string {
+	{{- if hasReference .Attributes}}
+		return fmt.Sprintf("{{.DeleteRestEndpoint}}"{{range .Attributes}}{{if .Reference}}, data.{{toGoName .TfName}}.Value{{.Type}}(){{end}}{{end}})
+	{{- else}}
+		return "{{.DeleteRestEndpoint}}"
+	{{- end}}
+}
+//template:end getPathPut
+{{end}}
+
 //template:begin toBody
 func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .Name}}) string {
 	{{- if .RootList}}
