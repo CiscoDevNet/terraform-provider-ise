@@ -65,6 +65,7 @@ func (d *{{camelCase .Name}}DataSource) Schema(ctx context.Context, req datasour
 		MarkdownDescription: "{{.DsDescription}}",
 
 		Attributes: map[string]schema.Attribute{
+			{{- if not .NoId}}
 			"id": schema.StringAttribute{
 				MarkdownDescription: "The id of the object",
 				{{- if not .DataSourceNameQuery}}
@@ -74,6 +75,7 @@ func (d *{{camelCase .Name}}DataSource) Schema(ctx context.Context, req datasour
 				Computed:            true,
 				{{- end}}
 			},
+			{{- end}}
 			{{- range  .Attributes}}
 			{{- if not .Value}}
 			"{{.TfName}}": schema.{{if or (eq .Type "List") (eq .Type "Set")}}{{.Type}}Nested{{else if eq .Type "StringList"}}List{{else}}{{.Type}}{{end}}Attribute{
@@ -83,10 +85,16 @@ func (d *{{camelCase .Name}}DataSource) Schema(ctx context.Context, req datasour
 				{{- end}}
 				{{- if .Reference}}
 				Required:            true,
-				{{- else}}
-				{{- if and (eq .ModelName "name") ($nameQuery)}}
+				{{- else if and (eq .ModelName "name") ($nameQuery)}}
 				Optional:            true,
-				{{- end}}
+				Computed:            true,
+				{{- else if .DataSourceQuery}}
+					{{- if .Mandatory}}
+				Required:            true,
+					{{- else}}
+				Optional:            true,
+					{{- end}}
+				{{- else}}
 				Computed:            true,
 				{{- end}}
 				{{- if or (eq .Type "List") (eq .Type "Set")}}
@@ -178,7 +186,7 @@ func (d *{{camelCase .Name}}DataSource) Read(ctx context.Context, req datasource
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
+	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", {{if not .NoId}}config.Id.ValueString(){{else}}""{{end}}))
 
 	{{- if .DataSourceNameQuery}}
 	if config.Id.IsNull() && !config.Name.IsNull() {
@@ -218,7 +226,7 @@ func (d *{{camelCase .Name}}DataSource) Read(ctx context.Context, req datasource
 
 	config.fromBody(ctx, res)
 
-	tflog.Debug(ctx, fmt.Sprintf("%s: Read finished successfully", config.Id.ValueString()))
+	tflog.Debug(ctx, fmt.Sprintf("%s: Read finished successfully", {{if not .NoId}}config.Id.ValueString(){{else}}""{{end}}))
 
 	diags = resp.State.Set(ctx, &config)
 	resp.Diagnostics.Append(diags...)

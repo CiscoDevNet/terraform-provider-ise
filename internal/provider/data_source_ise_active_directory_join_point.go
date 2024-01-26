@@ -271,7 +271,7 @@ func (d *ActiveDirectoryJoinPointDataSource) Read(ctx context.Context, req datas
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
+	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.ValueString()))
 
 	res, err := d.client.Get(config.getPath() + "/" + config.Id.ValueString())
 	if err != nil {

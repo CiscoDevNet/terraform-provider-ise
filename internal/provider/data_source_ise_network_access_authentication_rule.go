@@ -249,7 +249,7 @@ func (d *NetworkAccessAuthenticationRuleDataSource) Read(ctx context.Context, re
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
+	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.ValueString()))
 	if config.Id.IsNull() && !config.Name.IsNull() {
 		for page := 1; ; page++ {
 			res, err := d.client.Get(config.getPath())

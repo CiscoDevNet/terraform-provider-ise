@@ -15,6 +15,7 @@ put_read: bool(required=False) # Set to true if the PUT request is used to read
 no_read: bool(required=False) # Set to true if the GET request is not supported
 root_list: bool(required=False) # Set to true if the root element of the data structure is a list
 no_read_prefix: bool(required=False) # Set to true if it is an Open API endpoint put the response is not embeeded into a "response" element
+no_id: bool(required=False) # Set to true if the data source does not have an ID
 id_path: str(required=False) # Path to the ID in the response (use "." to access nested elements)
 put_id_include_path: str(required=False) # If PUT needs to have specific JSON path where ID should be inserted
 data_source_name_query: bool(required=False) # Set to true if the data source supports name queries
@@ -36,6 +37,7 @@ attribute:
   data_path: list(str(), required=False) # Path to the attribute in the model structure
   id: bool(required=False) # Set to true if the attribute is part of the ID
   reference: bool(required=False) # Set to true if the attribute is a reference being used in the path (URL) of the REST endpoint
+  data_source_query: bool(required=False) # Set to true if the attribute is an alternative query parameter for the data source
   mandatory: bool(required=False) # Set to true if the attribute is mandatory
   write_only: bool(required=False) # Set to true if the attribute is write-only, meaning we cannot read the value
   write_changes_only: bool(required=False) # Set to true if the attribute should only be written (included in PUT payload) if it has changed

@@ -110,6 +110,7 @@ type YamlConfig struct {
 	NoUpdate            bool                  `yaml:"no_update"`
 	RootList            bool                  `yaml:"root_list"`
 	NoReadPrefix        bool                  `yaml:"no_read_prefix"`
+	NoId                bool                  `yaml:"no_id"`
 	IdPath              string                `yaml:"id_path"`
 	PutIdIncludePath    string                `yaml:"put_id_include_path"`
 	DataSourceNameQuery bool                  `yaml:"data_source_name_query"`
@@ -132,6 +133,7 @@ type YamlConfigAttribute struct {
 	DataPath         []string              `yaml:"data_path"`
 	Id               bool                  `yaml:"id"`
 	Reference        bool                  `yaml:"reference"`
+	DataSourceQuery  bool                  `yaml:"data_source_query"`
 	Mandatory        bool                  `yaml:"mandatory"`
 	WriteOnly        bool                  `yaml:"write_only"`
 	WriteChangesOnly bool                  `yaml:"write_changes_only"`

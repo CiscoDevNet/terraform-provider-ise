@@ -39,7 +39,9 @@ import (
 //template:begin types
 {{- $name := camelCase .Name}}
 type {{camelCase .Name}} struct {
+{{- if not .NoId}}
 	Id types.String `tfsdk:"id"`
+{{- end}}
 {{- range .Attributes}}
 {{- if not .Value}}
 {{- if or (eq .Type "List") (eq .Type "Set")}}

@@ -103,7 +103,7 @@ func (d *LicenseTierStateDataSource) Read(ctx context.Context, req datasource.Re
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.String()))
+	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", config.Id.ValueString()))
 
 	res, err := d.client.Get(config.getPath())
 	if err != nil {

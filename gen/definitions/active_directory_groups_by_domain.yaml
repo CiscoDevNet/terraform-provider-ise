@@ -1,0 +1,50 @@
+---
+name: Active Directory Groups By Domain
+rest_endpoint: /ers/config/activedirectory/%v/getGroupsByDomain
+doc_category: Identity Management
+no_resource: true
+get_no_id: true
+no_id: true
+test_tags: [AD]
+attributes:
+  - tf_name: join_point_id
+    type: String
+    reference: true
+    id: true
+    description: Active Directory Join Point ID
+    example: 73808580-b6e6-11ee-8960-de6d7692bc40
+  - model_name: Domain
+    type: String
+    mandatory: true
+    data_source_query: true
+    description: The domain whose groups we want to fetch
+    example: cisco.com
+  - model_name: filter
+    type: String
+    data_source_query: true
+    description: Exact match filter on group's CN
+    example: CN=ISE Admins
+  - model_name: sidFilter
+    type: String
+    data_source_query: true
+    description: Exact match filter on group's SID, optionally specifying the domain as prefix. e.g. S-1-5-33-544 and R1.dom/S-1-5-33-544 are legal.
+    example: cisco.com/S-1-5-33-544
+  - model_name: typeFilter
+    type: String
+    data_source_query: true
+    description: "Can be exactly one of: BUILTIN, DOMAIN LOCAL, GLOBAL, UNIVERSAL."
+    example: UNIVERSAL
+  - model_name: groups
+    data_path: [ERSActiveDirectoryGroups]
+    type: List
+    description: List of groups
+    attributes:
+      - model_name: name
+        type: String
+        description: Group name
+      - model_name: sid
+        type: String
+        description: Group SID
+      - model_name: type
+        type: String
+        description: Group type
