@@ -112,7 +112,6 @@ func (d *ActiveDirectoryGroupsByDomainDataSource) Configure(_ context.Context, r
 
 //template:end model
 
-//template:begin read
 func (d *ActiveDirectoryGroupsByDomainDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var config ActiveDirectoryGroupsByDomain
 
@@ -123,20 +122,19 @@ func (d *ActiveDirectoryGroupsByDomainDataSource) Read(ctx context.Context, req 
 		return
 	}
 
-	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", ""))
+	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", "ActiveDirectoryGroupsByDomain"))
 
-	res, err := d.client.Get(config.getPath())
+	body := config.toBody(ctx, config)
+	res, err := d.client.Put(config.getPath(), body)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (PUT), got error: %s", err))
 		return
 	}
 
 	config.fromBody(ctx, res)
 
-	tflog.Debug(ctx, fmt.Sprintf("%s: Read finished successfully", ""))
+	tflog.Debug(ctx, fmt.Sprintf("%s: Read finished successfully", "ActiveDirectoryGroupsByDomain"))
 
 	diags = resp.State.Set(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 }
-
-//template:end read
