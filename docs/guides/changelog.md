@@ -7,7 +7,7 @@ description: |-
 
 # Changelog
 
-## 0.1.12 (unreleased)
+## 0.1.12
 
 - Ignore error messages when attempting to delete default policy sets or rules
 - Add `ise_active_directory_add_groups` resource
