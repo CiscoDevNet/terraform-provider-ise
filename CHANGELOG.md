@@ -1,3 +1,9 @@
+## 0.1.13 (unreleased)
+
+- Add `default` attribute to `ise_network_access_policy_set` resource
+- Add `default` attribute to `ise_device_admin_policy_set` resource
+- Allow updating default policy sets and rules
+
 ## 0.1.12
 
 - Ignore error messages when attempting to delete default policy sets or rules

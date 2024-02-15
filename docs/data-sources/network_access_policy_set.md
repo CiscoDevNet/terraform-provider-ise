@@ -37,6 +37,7 @@ data "ise_network_access_policy_set" "example" {
 - `condition_is_negate` (Boolean) Indicates whereas this condition is in negate mode
 - `condition_operator` (String) Equality operator
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
+- `default` (Boolean) Indicates if this policy set is the default one
 - `description` (String) The description of the policy set
 - `is_proxy` (Boolean) Flag which indicates if the policy set service is of type 'Proxy Sequence' or 'Allowed Protocols'
 - `rank` (Number) The rank (priority) in relation to other policy sets. Lower rank is higher priority.

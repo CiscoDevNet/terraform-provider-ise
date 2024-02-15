@@ -108,7 +108,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 				{{- else}}
 				Optional:            true,
 				{{- end}}
-				{{- if len .DefaultValue}}
+				{{- if or (len .DefaultValue) .Computed}}
 				Computed:            true,
 				{{- end}}
 				{{- if len .EnumValues}}
@@ -145,6 +145,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 					{{snakeCase .Type}}planmodifier.RequiresReplace(),
 				},
 				{{- end}}
+				{{- if .Computed}}
+				PlanModifiers: []planmodifier.{{.Type}}{
+					{{snakeCase .Type}}planmodifier.UseStateForUnknown(),
+				},
+				{{- end}}
 				{{- if or (eq .Type "List") (eq .Type "Set")}}
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -173,7 +178,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 							{{- else}}
 							Optional:            true,
 							{{- end}}
-							{{- if len .DefaultValue}}
+							{{- if or (len .DefaultValue) .Computed}}
 							Computed:            true,
 							{{- end}}
 							{{- if len .EnumValues}}
@@ -210,6 +215,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 								{{snakeCase .Type}}planmodifier.RequiresReplace(),
 							},
 							{{- end}}
+							{{- if .Computed}}
+							PlanModifiers: []planmodifier.{{.Type}}{
+								{{snakeCase .Type}}planmodifier.UseStateForUnknown(),
+							},
+							{{- end}}
 							{{- if or (eq .Type "List") (eq .Type "Set")}}
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
@@ -238,7 +248,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 										{{- else}}
 										Optional:            true,
 										{{- end}}
-										{{- if len .DefaultValue}}
+										{{- if or (len .DefaultValue) .Computed}}
 										Computed:            true,
 										{{- end}}
 										{{- if len .EnumValues}}
@@ -275,6 +285,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 											{{snakeCase .Type}}planmodifier.RequiresReplace(),
 										},
 										{{- end}}
+										{{- if .Computed}}
+										PlanModifiers: []planmodifier.{{.Type}}{
+											{{snakeCase .Type}}planmodifier.UseStateForUnknown(),
+										},
+										{{- end}}
 										{{- if or (eq .Type "List") (eq .Type "Set")}}
 										NestedObject: schema.NestedAttributeObject{
 											Attributes: map[string]schema.Attribute{
@@ -303,7 +318,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 													{{- else}}
 													Optional:            true,
 													{{- end}}
-													{{- if len .DefaultValue}}
+													{{- if or (len .DefaultValue) .Computed}}
 													Computed:            true,
 													{{- end}}
 													{{- if len .EnumValues}}
@@ -338,6 +353,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 													{{- if .RequiresReplace}}
 													PlanModifiers: []planmodifier.{{.Type}}{
 														{{snakeCase .Type}}planmodifier.RequiresReplace(),
+													},
+													{{- end}}
+													{{- if .Computed}}
+													PlanModifiers: []planmodifier.{{.Type}}{
+														{{snakeCase .Type}}planmodifier.UseStateForUnknown(),
 													},
 													{{- end}}
 												},

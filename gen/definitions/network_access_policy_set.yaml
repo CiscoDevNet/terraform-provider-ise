@@ -13,6 +13,7 @@ attributes:
     example: PolicySet1
   - model_name: description
     type: String
+    computed: true
     description: The description of the policy set
     example: My description
   - model_name: isProxy
@@ -21,6 +22,7 @@ attributes:
     example: false
   - model_name: rank
     type: Int64
+    computed: true
     description: The rank (priority) in relation to other policy sets. Lower rank is higher priority.
     example: 0
   - model_name: serviceName
@@ -33,9 +35,13 @@ attributes:
     enum_values: [disabled, enabled, monitor]
     description: The state that the policy set is in. A disabled policy set cannot be matched.
     example: enabled
+  - model_name: default
+    type: Bool
+    description: Indicates if this policy set is the default one
+    example: false
+    exclude_test: true
   - model_name: conditionType
     data_path: [condition]
-    mandatory: true
     type: String
     enum_values:
       [

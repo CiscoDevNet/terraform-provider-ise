@@ -135,6 +135,7 @@ type YamlConfigAttribute struct {
 	Reference        bool                  `yaml:"reference"`
 	DataSourceQuery  bool                  `yaml:"data_source_query"`
 	Mandatory        bool                  `yaml:"mandatory"`
+	Computed         bool                  `yaml:"computed"`
 	WriteOnly        bool                  `yaml:"write_only"`
 	WriteChangesOnly bool                  `yaml:"write_changes_only"`
 	ExcludeTest      bool                  `yaml:"exclude_test"`

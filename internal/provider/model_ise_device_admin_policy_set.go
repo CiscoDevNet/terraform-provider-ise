@@ -40,6 +40,7 @@ type DeviceAdminPolicySet struct {
 	Rank                     types.Int64                    `tfsdk:"rank"`
 	ServiceName              types.String                   `tfsdk:"service_name"`
 	State                    types.String                   `tfsdk:"state"`
+	Default                  types.Bool                     `tfsdk:"default"`
 	ConditionType            types.String                   `tfsdk:"condition_type"`
 	ConditionId              types.String                   `tfsdk:"condition_id"`
 	ConditionIsNegate        types.Bool                     `tfsdk:"condition_is_negate"`
@@ -107,6 +108,9 @@ func (data DeviceAdminPolicySet) toBody(ctx context.Context, state DeviceAdminPo
 	}
 	if !data.State.IsNull() {
 		body, _ = sjson.Set(body, "state", data.State.ValueString())
+	}
+	if !data.Default.IsNull() {
+		body, _ = sjson.Set(body, "default", data.Default.ValueBool())
 	}
 	if !data.ConditionType.IsNull() {
 		body, _ = sjson.Set(body, "condition.conditionType", data.ConditionType.ValueString())
@@ -230,6 +234,11 @@ func (data *DeviceAdminPolicySet) fromBody(ctx context.Context, res gjson.Result
 		data.State = types.StringValue(value.String())
 	} else {
 		data.State = types.StringNull()
+	}
+	if value := res.Get("response.default"); value.Exists() {
+		data.Default = types.BoolValue(value.Bool())
+	} else {
+		data.Default = types.BoolNull()
 	}
 	if value := res.Get("response.condition.conditionType"); value.Exists() {
 		data.ConditionType = types.StringValue(value.String())
@@ -402,6 +411,11 @@ func (data *DeviceAdminPolicySet) updateFromBody(ctx context.Context, res gjson.
 		data.State = types.StringValue(value.String())
 	} else {
 		data.State = types.StringNull()
+	}
+	if value := res.Get("response.default"); value.Exists() && !data.Default.IsNull() {
+		data.Default = types.BoolValue(value.Bool())
+	} else {
+		data.Default = types.BoolNull()
 	}
 	if value := res.Get("response.condition.conditionType"); value.Exists() && !data.ConditionType.IsNull() {
 		data.ConditionType = types.StringValue(value.String())
@@ -593,6 +607,9 @@ func (data *DeviceAdminPolicySet) isNull(ctx context.Context, res gjson.Result) 
 		return false
 	}
 	if !data.State.IsNull() {
+		return false
+	}
+	if !data.Default.IsNull() {
 		return false
 	}
 	if !data.ConditionType.IsNull() {

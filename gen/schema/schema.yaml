@@ -39,6 +39,7 @@ attribute:
   reference: bool(required=False) # Set to true if the attribute is a reference being used in the path (URL) of the REST endpoint
   data_source_query: bool(required=False) # Set to true if the attribute is an alternative query parameter for the data source
   mandatory: bool(required=False) # Set to true if the attribute is mandatory
+  computed: bool(required=False) # Set to true if the attribute is computed
   write_only: bool(required=False) # Set to true if the attribute is write-only, meaning we cannot read the value
   write_changes_only: bool(required=False) # Set to true if the attribute should only be written (included in PUT payload) if it has changed
   exclude_test: bool(required=False) # Exclude attribute from example (documentation) and acceptance test
@@ -55,7 +56,6 @@ attribute:
   string_patterns: list(str(), required=False) # List of regular expressions that the string must match, only relevant if type is "String"
   string_min_length: int(required=False) # Minimum length of a string, only relevant if type is "String"
   string_max_length: int(required=False) # Maximum length of a string, only relevant if type is "String"
-  requires_replace: bool(required=False) # Set to true if the attribute requires a replace operation
   default_value: any(str(), int(), bool(), required=False) # Default value for the attribute
   value: any(str(), int(), bool(), required=False) # Hardcoded value for the attribute
   test_value: str(required=False) # Value used for acceptance test

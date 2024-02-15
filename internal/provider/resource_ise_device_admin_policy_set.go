@@ -30,12 +30,14 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
+	"github.com/tidwall/gjson"
 )
 
 //template:end imports
@@ -78,6 +80,10 @@ func (r *DeviceAdminPolicySetResource) Schema(ctx context.Context, req resource.
 			"description": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("The description of the policy set").String,
 				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"is_proxy": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Flag which indicates if the policy set service is of type 'Proxy Sequence' or 'Allowed Protocols'").String,
@@ -86,6 +92,10 @@ func (r *DeviceAdminPolicySetResource) Schema(ctx context.Context, req resource.
 			"rank": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("The rank (priority) in relation to other policy sets. Lower rank is higher priority.").String,
 				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
 			},
 			"service_name": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Policy set service identifier. 'Allowed Protocols' or 'Server Sequence'.").String,
@@ -98,9 +108,13 @@ func (r *DeviceAdminPolicySetResource) Schema(ctx context.Context, req resource.
 					stringvalidator.OneOf("disabled", "enabled", "monitor"),
 				},
 			},
+			"default": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Indicates if this policy set is the default one").String,
+				Optional:            true,
+			},
 			"condition_type": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference").String,
-				Required:            true,
+				Optional:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference"),
 				},
@@ -242,7 +256,6 @@ func (r *DeviceAdminPolicySetResource) Configure(_ context.Context, req resource
 
 //template:end model
 
-//template:begin create
 func (r *DeviceAdminPolicySetResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan DeviceAdminPolicySet
 
@@ -257,20 +270,43 @@ func (r *DeviceAdminPolicySetResource) Create(ctx context.Context, req resource.
 
 	// Create object
 	body := plan.toBody(ctx, DeviceAdminPolicySet{})
-	res, _, err := r.client.Post(plan.getPath(), body)
-	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
-		return
+	if plan.Name.ValueString() != "Default" {
+		res, _, err := r.client.Post(plan.getPath(), body)
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
+			return
+		}
+		plan.Id = types.StringValue(res.Get("response.id").String())
+	} else {
+		res, err := r.client.Get(plan.getPath())
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve objects, got error: %s", err))
+			return
+		}
+		if value := res.Get("response"); len(value.Array()) > 0 {
+			value.ForEach(func(k, v gjson.Result) bool {
+				if v.Get("name").String() == plan.Name.ValueString() {
+					plan.Id = types.StringValue(v.Get("id").String())
+					plan.Description = types.StringValue(v.Get("description").String())
+					plan.Rank = types.Int64Value(v.Get("rank").Int())
+					return false
+				}
+				return true
+			})
+		}
+		body = plan.toBody(ctx, DeviceAdminPolicySet{})
+		res, err = r.client.Put(plan.getPath()+"/"+plan.Id.ValueString(), body)
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
+			return
+		}
 	}
-	plan.Id = types.StringValue(res.Get("response.id").String())
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
-//template:end create
 
 //template:begin read
 func (r *DeviceAdminPolicySetResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -308,7 +344,6 @@ func (r *DeviceAdminPolicySetResource) Read(ctx context.Context, req resource.Re
 
 //template:end read
 
-//template:begin update
 func (r *DeviceAdminPolicySetResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state DeviceAdminPolicySet
 
@@ -326,6 +361,10 @@ func (r *DeviceAdminPolicySetResource) Update(ctx context.Context, req resource.
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
+	if plan.Name.ValueString() == "Default" {
+		plan.Description = state.Description
+		plan.Rank = state.Rank
+	}
 	body := plan.toBody(ctx, state)
 
 	res, err := r.client.Put(plan.getPath()+"/"+plan.Id.ValueString(), body)
@@ -339,8 +378,6 @@ func (r *DeviceAdminPolicySetResource) Update(ctx context.Context, req resource.
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
-//template:end update
 
 //template:begin delete
 func (r *DeviceAdminPolicySetResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

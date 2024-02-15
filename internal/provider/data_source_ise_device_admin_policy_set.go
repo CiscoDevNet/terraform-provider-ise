@@ -92,6 +92,10 @@ func (d *DeviceAdminPolicySetDataSource) Schema(ctx context.Context, req datasou
 				MarkdownDescription: "The state that the policy set is in. A disabled policy set cannot be matched.",
 				Computed:            true,
 			},
+			"default": schema.BoolAttribute{
+				MarkdownDescription: "Indicates if this policy set is the default one",
+				Computed:            true,
+			},
 			"condition_type": schema.StringAttribute{
 				MarkdownDescription: "Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.",
 				Computed:            true,

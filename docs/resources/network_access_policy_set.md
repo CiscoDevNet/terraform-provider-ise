@@ -34,8 +34,6 @@ resource "ise_network_access_policy_set" "example" {
 
 ### Required
 
-- `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
-  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
 - `name` (String) Given name for the policy set, [Valid characters are alphanumerics, underscore, hyphen, space, period, parentheses]
 - `service_name` (String) Policy set service identifier. 'Allowed Protocols' or 'Server Sequence'.
 
@@ -50,6 +48,9 @@ resource "ise_network_access_policy_set" "example" {
 - `condition_is_negate` (Boolean) Indicates whereas this condition is in negate mode
 - `condition_operator` (String) Equality operator
   - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`
+- `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
+  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
+- `default` (Boolean) Indicates if this policy set is the default one
 - `description` (String) The description of the policy set
 - `is_proxy` (Boolean) Flag which indicates if the policy set service is of type 'Proxy Sequence' or 'Allowed Protocols'
 - `rank` (Number) The rank (priority) in relation to other policy sets. Lower rank is higher priority.
