@@ -277,6 +277,12 @@ func (r *DeviceAdminPolicySetResource) Create(ctx context.Context, req resource.
 			return
 		}
 		plan.Id = types.StringValue(res.Get("response.id").String())
+		if plan.Description.IsUnknown() {
+			plan.Description = types.StringNull()
+		}
+		if plan.Rank.IsUnknown() {
+			plan.Rank = types.Int64Null()
+		}
 	} else {
 		res, err := r.client.Get(plan.getPath())
 		if err != nil {
