@@ -1,4 +1,4 @@
-## 0.1.13 (unreleased)
+## 0.1.13
 
 - Add `default` attribute to `ise_network_access_policy_set` resource
 - Add `default` attribute to `ise_device_admin_policy_set` resource
