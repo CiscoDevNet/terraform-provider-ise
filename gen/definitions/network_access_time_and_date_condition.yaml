@@ -24,11 +24,13 @@ attributes:
     example: false
   - model_name: weekDays
     description: Defines for which days this condition will be matched. List of weekdays - `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday`, `Saturday`, `Sunday`. Default - List of all week days.
-    type: StringList
+    type: List
+    element_type: String
     example: Monday
   - model_name: weekDaysException
     description: Defines for which days this condition will NOT be matched. List of weekdays - `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday`, `Saturday`, `Sunday`.
-    type: StringList
+    type: List
+    element_type: String
     example: Tuesday
   - model_name: startDate
     data_path: [datesRange]

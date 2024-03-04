@@ -241,7 +241,8 @@ attributes:
             example: equals
   - model_name: commands
     tf_name: command_sets
-    type: StringList
+    type: List
+    element_type: String
     description: Command sets enforce the specified list of commands that can be executed by a device administrator
     example: DenyAllCommands
     minimum_test_value: '["DenyAllCommands"]'

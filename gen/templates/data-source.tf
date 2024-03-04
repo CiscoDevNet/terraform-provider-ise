@@ -4,7 +4,7 @@ data "ise_{{snakeCase .Name}}" "example" {
   {{- end}}
   {{- range  .Attributes}}
   {{- if or .Reference .DataSourceQuery}}
-  {{.TfName}} = {{if eq .Type "String"}}"{{.Example}}"{{else if eq .Type "StringList"}}["{{.Example}}"]{{else}}{{.Example}}{{end}}
+  {{.TfName}} = {{if eq .Type "String"}}"{{.Example}}"{{else if isStringListSet .}}["{{.Example}}"]{{else if isInt64ListSet .}}[{{.Example}}]{{else}}{{.Example}}{{end}}
   {{- end}}
   {{- end}}
 }

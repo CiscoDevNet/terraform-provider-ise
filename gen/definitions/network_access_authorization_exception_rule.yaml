@@ -247,7 +247,8 @@ attributes:
             example: equals
   - model_name: profile
     tf_name: profiles
-    type: StringList
+    type: List
+    element_type: String
     description: The authorization profile(s)
     example: PermitAccess
     minimum_test_value: '["PermitAccess"]'
