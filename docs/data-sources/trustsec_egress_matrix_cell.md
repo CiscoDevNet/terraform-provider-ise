@@ -31,5 +31,5 @@ data "ise_trustsec_egress_matrix_cell" "example" {
 - `description` (String) Description
 - `destination_sgt_id` (String) Destination Trustsec Security Group ID
 - `matrix_cell_status` (String) Matrix Cell Status
-- `sgacls` (List of String) List of TrustSec Security Groups ACLs
+- `sgacls` (Set of String) List of TrustSec Security Groups ACLs
 - `source_sgt_id` (String) Source Trustsec Security Group ID

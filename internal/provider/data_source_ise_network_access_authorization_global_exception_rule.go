@@ -196,7 +196,7 @@ func (d *NetworkAccessAuthorizationGlobalExceptionRuleDataSource) Schema(ctx con
 					},
 				},
 			},
-			"profiles": schema.ListAttribute{
+			"profiles": schema.SetAttribute{
 				MarkdownDescription: "The authorization profile(s)",
 				ElementType:         types.StringType,
 				Computed:            true,

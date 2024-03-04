@@ -247,7 +247,7 @@ attributes:
             example: equals
   - model_name: profile
     tf_name: profiles
-    type: List
+    type: Set
     element_type: String
     description: The authorization profile(s)
     example: PermitAccess

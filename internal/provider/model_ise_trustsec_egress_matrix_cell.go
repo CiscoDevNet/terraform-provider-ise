@@ -37,7 +37,7 @@ type TrustSecEgressMatrixCell struct {
 	Description      types.String `tfsdk:"description"`
 	DefaultRule      types.String `tfsdk:"default_rule"`
 	MatrixCellStatus types.String `tfsdk:"matrix_cell_status"`
-	Sgacls           types.List   `tfsdk:"sgacls"`
+	Sgacls           types.Set    `tfsdk:"sgacls"`
 	SourceSgtId      types.String `tfsdk:"source_sgt_id"`
 	DestinationSgtId types.String `tfsdk:"destination_sgt_id"`
 }
@@ -104,9 +104,9 @@ func (data *TrustSecEgressMatrixCell) fromBody(ctx context.Context, res gjson.Re
 		data.MatrixCellStatus = types.StringValue("DISABLED")
 	}
 	if value := res.Get("EgressMatrixCell.sgacls"); value.Exists() {
-		data.Sgacls = helpers.GetStringList(value.Array())
+		data.Sgacls = helpers.GetStringSet(value.Array())
 	} else {
-		data.Sgacls = types.ListNull(types.StringType)
+		data.Sgacls = types.SetNull(types.StringType)
 	}
 	if value := res.Get("EgressMatrixCell.sourceSgtId"); value.Exists() {
 		data.SourceSgtId = types.StringValue(value.String())
@@ -140,9 +140,9 @@ func (data *TrustSecEgressMatrixCell) updateFromBody(ctx context.Context, res gj
 		data.MatrixCellStatus = types.StringNull()
 	}
 	if value := res.Get("EgressMatrixCell.sgacls"); value.Exists() && !data.Sgacls.IsNull() {
-		data.Sgacls = helpers.GetStringList(value.Array())
+		data.Sgacls = helpers.GetStringSet(value.Array())
 	} else {
-		data.Sgacls = types.ListNull(types.StringType)
+		data.Sgacls = types.SetNull(types.StringType)
 	}
 	if value := res.Get("EgressMatrixCell.sourceSgtId"); value.Exists() && !data.SourceSgtId.IsNull() {
 		data.SourceSgtId = types.StringValue(value.String())

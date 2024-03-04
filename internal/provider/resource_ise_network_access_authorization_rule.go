@@ -228,7 +228,7 @@ func (r *NetworkAccessAuthorizationRuleResource) Schema(ctx context.Context, req
 					},
 				},
 			},
-			"profiles": schema.ListAttribute{
+			"profiles": schema.SetAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("The authorization profile(s)").String,
 				ElementType:         types.StringType,
 				Optional:            true,

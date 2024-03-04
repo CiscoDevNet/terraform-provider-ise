@@ -200,7 +200,7 @@ func (d *NetworkAccessAuthorizationRuleDataSource) Schema(ctx context.Context, r
 					},
 				},
 			},
-			"profiles": schema.ListAttribute{
+			"profiles": schema.SetAttribute{
 				MarkdownDescription: "The authorization profile(s)",
 				ElementType:         types.StringType,
 				Computed:            true,

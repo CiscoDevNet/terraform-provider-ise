@@ -50,7 +50,7 @@ type DeviceAdminAuthorizationExceptionRule struct {
 	ConditionDictionaryValue types.String                                    `tfsdk:"condition_dictionary_value"`
 	ConditionOperator        types.String                                    `tfsdk:"condition_operator"`
 	Children                 []DeviceAdminAuthorizationExceptionRuleChildren `tfsdk:"children"`
-	CommandSets              types.List                                      `tfsdk:"command_sets"`
+	CommandSets              types.Set                                       `tfsdk:"command_sets"`
 	Profile                  types.String                                    `tfsdk:"profile"`
 }
 
@@ -363,9 +363,9 @@ func (data *DeviceAdminAuthorizationExceptionRule) fromBody(ctx context.Context,
 		})
 	}
 	if value := res.Get("response.commands"); value.Exists() {
-		data.CommandSets = helpers.GetStringList(value.Array())
+		data.CommandSets = helpers.GetStringSet(value.Array())
 	} else {
-		data.CommandSets = types.ListNull(types.StringType)
+		data.CommandSets = types.SetNull(types.StringType)
 	}
 	if value := res.Get("response.profile"); value.Exists() {
 		data.Profile = types.StringValue(value.String())
@@ -567,9 +567,9 @@ func (data *DeviceAdminAuthorizationExceptionRule) updateFromBody(ctx context.Co
 		}
 	}
 	if value := res.Get("response.commands"); value.Exists() && !data.CommandSets.IsNull() {
-		data.CommandSets = helpers.GetStringList(value.Array())
+		data.CommandSets = helpers.GetStringSet(value.Array())
 	} else {
-		data.CommandSets = types.ListNull(types.StringType)
+		data.CommandSets = types.SetNull(types.StringType)
 	}
 	if value := res.Get("response.profile"); value.Exists() && !data.Profile.IsNull() {
 		data.Profile = types.StringValue(value.String())

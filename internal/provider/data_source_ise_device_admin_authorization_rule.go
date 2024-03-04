@@ -200,7 +200,7 @@ func (d *DeviceAdminAuthorizationRuleDataSource) Schema(ctx context.Context, req
 					},
 				},
 			},
-			"command_sets": schema.ListAttribute{
+			"command_sets": schema.SetAttribute{
 				MarkdownDescription: "Command sets enforce the specified list of commands that can be executed by a device administrator",
 				ElementType:         types.StringType,
 				Computed:            true,

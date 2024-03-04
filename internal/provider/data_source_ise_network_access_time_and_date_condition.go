@@ -80,12 +80,12 @@ func (d *NetworkAccessTimeAndDateConditionDataSource) Schema(ctx context.Context
 				MarkdownDescription: "Indicates whereas this condition is in negate mode",
 				Computed:            true,
 			},
-			"week_days": schema.ListAttribute{
+			"week_days": schema.SetAttribute{
 				MarkdownDescription: "Defines for which days this condition will be matched. List of weekdays - `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday`, `Saturday`, `Sunday`. Default - List of all week days.",
 				ElementType:         types.StringType,
 				Computed:            true,
 			},
-			"week_days_exception": schema.ListAttribute{
+			"week_days_exception": schema.SetAttribute{
 				MarkdownDescription: "Defines for which days this condition will NOT be matched. List of weekdays - `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday`, `Saturday`, `Sunday`.",
 				ElementType:         types.StringType,
 				Computed:            true,

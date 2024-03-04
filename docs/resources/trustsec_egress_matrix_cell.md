@@ -40,7 +40,7 @@ resource "ise_trustsec_egress_matrix_cell" "example" {
 - `matrix_cell_status` (String) Matrix Cell Status
   - Choices: `DISABLED`, `ENABLED`, `MONITOR`
   - Default value: `DISABLED`
-- `sgacls` (List of String) List of TrustSec Security Groups ACLs
+- `sgacls` (Set of String) List of TrustSec Security Groups ACLs
 
 ### Read-Only
 

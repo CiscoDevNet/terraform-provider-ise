@@ -42,7 +42,7 @@ data "ise_network_device" "example" {
 - `dtls_dns_name` (String) This value is used to verify the client identity contained in the X.509 RADIUS/DTLS client certificate
 - `ips` (Attributes List) List of IP subnets (see [below for nested schema](#nestedatt--ips))
 - `model_name` (String) Model name
-- `network_device_groups` (List of String) List of network device groups, e.g. `Device Type#All Device Types#ACCESS`
+- `network_device_groups` (Set of String) List of network device groups, e.g. `Device Type#All Device Types#ACCESS`
 - `profile_name` (String) Profile name
 - `snmp_link_trap_query` (Boolean) SNMP link Trap Query
 - `snmp_mac_trap_query` (Boolean) SNMP MAC Trap Query

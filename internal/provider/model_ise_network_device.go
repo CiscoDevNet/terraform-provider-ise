@@ -48,7 +48,7 @@ type NetworkDevice struct {
 	CoaPort                                              types.Int64        `tfsdk:"coa_port"`
 	DtlsDnsName                                          types.String       `tfsdk:"dtls_dns_name"`
 	Ips                                                  []NetworkDeviceIps `tfsdk:"ips"`
-	NetworkDeviceGroups                                  types.List         `tfsdk:"network_device_groups"`
+	NetworkDeviceGroups                                  types.Set          `tfsdk:"network_device_groups"`
 	ModelName                                            types.String       `tfsdk:"model_name"`
 	SoftwareVersion                                      types.String       `tfsdk:"software_version"`
 	ProfileName                                          types.String       `tfsdk:"profile_name"`
@@ -337,9 +337,9 @@ func (data *NetworkDevice) fromBody(ctx context.Context, res gjson.Result) {
 		})
 	}
 	if value := res.Get("NetworkDevice.NetworkDeviceGroupList"); value.Exists() {
-		data.NetworkDeviceGroups = helpers.GetStringList(value.Array())
+		data.NetworkDeviceGroups = helpers.GetStringSet(value.Array())
 	} else {
-		data.NetworkDeviceGroups = types.ListNull(types.StringType)
+		data.NetworkDeviceGroups = types.SetNull(types.StringType)
 	}
 	if value := res.Get("NetworkDevice.modelName"); value.Exists() {
 		data.ModelName = types.StringValue(value.String())
@@ -582,9 +582,9 @@ func (data *NetworkDevice) updateFromBody(ctx context.Context, res gjson.Result)
 		}
 	}
 	if value := res.Get("NetworkDevice.NetworkDeviceGroupList"); value.Exists() && !data.NetworkDeviceGroups.IsNull() {
-		data.NetworkDeviceGroups = helpers.GetStringList(value.Array())
+		data.NetworkDeviceGroups = helpers.GetStringSet(value.Array())
 	} else {
-		data.NetworkDeviceGroups = types.ListNull(types.StringType)
+		data.NetworkDeviceGroups = types.SetNull(types.StringType)
 	}
 	if value := res.Get("NetworkDevice.modelName"); value.Exists() && !data.ModelName.IsNull() {
 		data.ModelName = types.StringValue(value.String())

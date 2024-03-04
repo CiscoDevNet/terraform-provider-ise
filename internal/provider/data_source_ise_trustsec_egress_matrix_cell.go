@@ -75,7 +75,7 @@ func (d *TrustSecEgressMatrixCellDataSource) Schema(ctx context.Context, req dat
 				MarkdownDescription: "Matrix Cell Status",
 				Computed:            true,
 			},
-			"sgacls": schema.ListAttribute{
+			"sgacls": schema.SetAttribute{
 				MarkdownDescription: "List of TrustSec Security Groups ACLs",
 				ElementType:         types.StringType,
 				Computed:            true,

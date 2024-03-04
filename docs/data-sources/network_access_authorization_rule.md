@@ -43,7 +43,7 @@ data "ise_network_access_authorization_rule" "example" {
 - `condition_operator` (String) Equality operator
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
 - `default` (Boolean) Indicates if this rule is the default one
-- `profiles` (List of String) The authorization profile(s)
+- `profiles` (Set of String) The authorization profile(s)
 - `rank` (Number) The rank (priority) in relation to other rules. Lower rank is higher priority.
 - `security_group` (String) Security group used in authorization policies
 - `state` (String) The state that the rule is in. A disabled rule cannot be matched.

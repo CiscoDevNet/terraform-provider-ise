@@ -154,7 +154,7 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 					},
 				},
 			},
-			"network_device_groups": schema.ListAttribute{
+			"network_device_groups": schema.SetAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("List of network device groups, e.g. `Device Type#All Device Types#ACCESS`").String,
 				ElementType:         types.StringType,
 				Optional:            true,

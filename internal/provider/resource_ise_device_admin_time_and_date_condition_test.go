@@ -35,8 +35,6 @@ func TestAccIseDeviceAdminTimeAndDateCondition(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_time_and_date_condition.test", "name", "Cond1"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_time_and_date_condition.test", "description", "My description"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_time_and_date_condition.test", "is_negate", "false"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_time_and_date_condition.test", "week_days.0", "Monday"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_time_and_date_condition.test", "week_days_exception.0", "Tuesday"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_time_and_date_condition.test", "start_date", "2022-05-06"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_time_and_date_condition.test", "end_date", "2022-05-10"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_time_and_date_condition.test", "exception_start_date", "2022-06-06"))

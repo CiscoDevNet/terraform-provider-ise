@@ -81,12 +81,12 @@ func (r *DeviceAdminTimeAndDateConditionResource) Schema(ctx context.Context, re
 				MarkdownDescription: helpers.NewAttributeDescription("Indicates whereas this condition is in negate mode").String,
 				Optional:            true,
 			},
-			"week_days": schema.ListAttribute{
+			"week_days": schema.SetAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Defines for which days this condition will be matched. List of weekdays - `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday`, `Saturday`, `Sunday`. Default - List of all week days.").String,
 				ElementType:         types.StringType,
 				Optional:            true,
 			},
-			"week_days_exception": schema.ListAttribute{
+			"week_days_exception": schema.SetAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Defines for which days this condition will NOT be matched. List of weekdays - `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday`, `Saturday`, `Sunday`.").String,
 				ElementType:         types.StringType,
 				Optional:            true,

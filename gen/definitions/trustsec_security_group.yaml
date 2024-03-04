@@ -38,7 +38,7 @@ attributes:
   # - model_name: defaultSGACLs
   #   data_path: [Sgt]
   #   tf_name: default_sg_acls
-  #   type: List
+  #   type: Set
   #   element_type: String
   #   description: List of default SG ACLs
   #   example: SGACL1

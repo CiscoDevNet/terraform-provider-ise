@@ -50,7 +50,7 @@ type NetworkAccessAuthorizationExceptionRule struct {
 	ConditionDictionaryValue types.String                                      `tfsdk:"condition_dictionary_value"`
 	ConditionOperator        types.String                                      `tfsdk:"condition_operator"`
 	Children                 []NetworkAccessAuthorizationExceptionRuleChildren `tfsdk:"children"`
-	Profiles                 types.List                                        `tfsdk:"profiles"`
+	Profiles                 types.Set                                         `tfsdk:"profiles"`
 	SecurityGroup            types.String                                      `tfsdk:"security_group"`
 }
 
@@ -363,9 +363,9 @@ func (data *NetworkAccessAuthorizationExceptionRule) fromBody(ctx context.Contex
 		})
 	}
 	if value := res.Get("response.profile"); value.Exists() {
-		data.Profiles = helpers.GetStringList(value.Array())
+		data.Profiles = helpers.GetStringSet(value.Array())
 	} else {
-		data.Profiles = types.ListNull(types.StringType)
+		data.Profiles = types.SetNull(types.StringType)
 	}
 	if value := res.Get("response.securityGroup"); value.Exists() {
 		data.SecurityGroup = types.StringValue(value.String())
@@ -567,9 +567,9 @@ func (data *NetworkAccessAuthorizationExceptionRule) updateFromBody(ctx context.
 		}
 	}
 	if value := res.Get("response.profile"); value.Exists() && !data.Profiles.IsNull() {
-		data.Profiles = helpers.GetStringList(value.Array())
+		data.Profiles = helpers.GetStringSet(value.Array())
 	} else {
-		data.Profiles = types.ListNull(types.StringType)
+		data.Profiles = types.SetNull(types.StringType)
 	}
 	if value := res.Get("response.securityGroup"); value.Exists() && !data.SecurityGroup.IsNull() {
 		data.SecurityGroup = types.StringValue(value.String())

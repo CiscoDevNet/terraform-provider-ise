@@ -49,8 +49,8 @@ resource "ise_device_admin_time_and_date_condition" "example" {
 - `is_negate` (Boolean) Indicates whereas this condition is in negate mode
 - `start_date` (String) Start date
 - `start_time` (String) Start time
-- `week_days` (List of String) Defines for which days this condition will be matched. List of weekdays - `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday`, `Saturday`, `Sunday`. Default - List of all week days.
-- `week_days_exception` (List of String) Defines for which days this condition will NOT be matched. List of weekdays - `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday`, `Saturday`, `Sunday`.
+- `week_days` (Set of String) Defines for which days this condition will be matched. List of weekdays - `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday`, `Saturday`, `Sunday`. Default - List of all week days.
+- `week_days_exception` (Set of String) Defines for which days this condition will NOT be matched. List of weekdays - `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday`, `Saturday`, `Sunday`.
 
 ### Read-Only
 

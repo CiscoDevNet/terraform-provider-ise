@@ -94,7 +94,7 @@ func (r *TrustSecEgressMatrixCellResource) Schema(ctx context.Context, req resou
 				},
 				Default: stringdefault.StaticString("DISABLED"),
 			},
-			"sgacls": schema.ListAttribute{
+			"sgacls": schema.SetAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("List of TrustSec Security Groups ACLs").String,
 				ElementType:         types.StringType,
 				Optional:            true,

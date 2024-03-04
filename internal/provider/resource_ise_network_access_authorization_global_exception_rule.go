@@ -220,7 +220,7 @@ func (r *NetworkAccessAuthorizationGlobalExceptionRuleResource) Schema(ctx conte
 					},
 				},
 			},
-			"profiles": schema.ListAttribute{
+			"profiles": schema.SetAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("The authorization profile(s)").String,
 				ElementType:         types.StringType,
 				Optional:            true,

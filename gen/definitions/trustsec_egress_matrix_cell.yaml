@@ -27,7 +27,7 @@ attributes:
   - model_name: sgacls
     data_path: [EgressMatrixCell]
     tf_name: sgacls
-    type: List
+    type: Set
     element_type: String
     test_value: "[ise_trustsec_security_group_acl.test.id]"
     description: List of TrustSec Security Groups ACLs

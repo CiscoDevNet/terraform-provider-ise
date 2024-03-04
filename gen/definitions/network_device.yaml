@@ -107,7 +107,7 @@ attributes:
   - model_name: NetworkDeviceGroupList
     tf_name: network_device_groups
     data_path: [NetworkDevice]
-    type: List
+    type: Set
     element_type: String
     description: List of network device groups, e.g. `Device Type#All Device Types#ACCESS`
     example: Device Type#All Device Types#ACCESS

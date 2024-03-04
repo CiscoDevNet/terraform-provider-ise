@@ -1,3 +1,7 @@
+## 0.1.14 (unreleased)
+
+- Use `set` type for list attributes with primitive values
+
 ## 0.1.13
 
 - Add `default` attribute to `ise_network_access_policy_set` resource

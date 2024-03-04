@@ -37,8 +37,8 @@ type NetworkAccessTimeAndDateCondition struct {
 	Name               types.String `tfsdk:"name"`
 	Description        types.String `tfsdk:"description"`
 	IsNegate           types.Bool   `tfsdk:"is_negate"`
-	WeekDays           types.List   `tfsdk:"week_days"`
-	WeekDaysException  types.List   `tfsdk:"week_days_exception"`
+	WeekDays           types.Set    `tfsdk:"week_days"`
+	WeekDaysException  types.Set    `tfsdk:"week_days_exception"`
 	StartDate          types.String `tfsdk:"start_date"`
 	EndDate            types.String `tfsdk:"end_date"`
 	ExceptionStartDate types.String `tfsdk:"exception_start_date"`
@@ -132,14 +132,14 @@ func (data *NetworkAccessTimeAndDateCondition) fromBody(ctx context.Context, res
 		data.IsNegate = types.BoolNull()
 	}
 	if value := res.Get("response.weekDays"); value.Exists() {
-		data.WeekDays = helpers.GetStringList(value.Array())
+		data.WeekDays = helpers.GetStringSet(value.Array())
 	} else {
-		data.WeekDays = types.ListNull(types.StringType)
+		data.WeekDays = types.SetNull(types.StringType)
 	}
 	if value := res.Get("response.weekDaysException"); value.Exists() {
-		data.WeekDaysException = helpers.GetStringList(value.Array())
+		data.WeekDaysException = helpers.GetStringSet(value.Array())
 	} else {
-		data.WeekDaysException = types.ListNull(types.StringType)
+		data.WeekDaysException = types.SetNull(types.StringType)
 	}
 	if value := res.Get("response.datesRange.startDate"); value.Exists() {
 		data.StartDate = types.StringValue(value.String())
@@ -203,14 +203,14 @@ func (data *NetworkAccessTimeAndDateCondition) updateFromBody(ctx context.Contex
 		data.IsNegate = types.BoolNull()
 	}
 	if value := res.Get("response.weekDays"); value.Exists() && !data.WeekDays.IsNull() {
-		data.WeekDays = helpers.GetStringList(value.Array())
+		data.WeekDays = helpers.GetStringSet(value.Array())
 	} else {
-		data.WeekDays = types.ListNull(types.StringType)
+		data.WeekDays = types.SetNull(types.StringType)
 	}
 	if value := res.Get("response.weekDaysException"); value.Exists() && !data.WeekDaysException.IsNull() {
-		data.WeekDaysException = helpers.GetStringList(value.Array())
+		data.WeekDaysException = helpers.GetStringSet(value.Array())
 	} else {
-		data.WeekDaysException = types.ListNull(types.StringType)
+		data.WeekDaysException = types.SetNull(types.StringType)
 	}
 	if value := res.Get("response.datesRange.startDate"); value.Exists() && !data.StartDate.IsNull() {
 		data.StartDate = types.StringValue(value.String())
