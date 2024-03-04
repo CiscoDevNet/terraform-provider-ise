@@ -24,6 +24,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"net/url"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -218,7 +219,7 @@ func (d *{{camelCase .Name}}DataSource) Read(ctx context.Context, req datasource
 	}
 	{{- end}}
 
-	res, err := d.client.Get(config.getPath(){{if not .GetNoId}} + "/" + config.Id.ValueString(){{end}})
+	res, err := d.client.Get(config.getPath(){{if not .GetNoId}} + "/" + url.QueryEscape(config.Id.ValueString()){{end}})
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object, got error: %s", err))
 		return

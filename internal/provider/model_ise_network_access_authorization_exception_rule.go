@@ -23,6 +23,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"strconv"
 
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
@@ -81,7 +82,7 @@ type NetworkAccessAuthorizationExceptionRuleChildrenChildren struct {
 
 //template:begin getPath
 func (data NetworkAccessAuthorizationExceptionRule) getPath() string {
-	return fmt.Sprintf("/api/v1/policy/network-access/policy-set/%v/exception", data.PolicySetId.ValueString())
+	return fmt.Sprintf("/api/v1/policy/network-access/policy-set/%v/exception", url.QueryEscape(data.PolicySetId.ValueString()))
 }
 
 //template:end getPath

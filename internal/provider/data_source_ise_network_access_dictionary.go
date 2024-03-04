@@ -23,6 +23,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"net/url"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/datasourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -146,7 +147,7 @@ func (d *NetworkAccessDictionaryDataSource) Read(ctx context.Context, req dataso
 		}
 	}
 
-	res, err := d.client.Get(config.getPath() + "/" + config.Id.ValueString())
+	res, err := d.client.Get(config.getPath() + "/" + url.QueryEscape(config.Id.ValueString()))
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object, got error: %s", err))
 		return

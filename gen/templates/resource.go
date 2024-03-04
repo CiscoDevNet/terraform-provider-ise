@@ -24,6 +24,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"strings"
 	"sync"
 
@@ -497,7 +498,7 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
 	{{- if not .NoRead}}
-	res, err := r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + state.Id.ValueString(){{end}})
+	res, err := r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + url.QueryEscape(state.Id.ValueString()){{end}})
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
@@ -545,7 +546,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	{{if .PostUpdate}}
 	res, _, err := r.client.Post(plan.getPath(), body)
 	{{- else}}
-	res, err := r.client.Put(plan.getPath() + "/" + plan.Id.ValueString(), body)
+	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body)
 	{{- end}}
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
@@ -578,7 +579,7 @@ func (r *{{camelCase .Name}}Resource) Delete(ctx context.Context, req resource.D
 	body := state.toBody(ctx, state)
 	res, err := r.client.Put(state.getPathDelete(), body)
 	{{- else}}
-	res, err := r.client.Delete({{if .DeleteRestEndpoint}}state.getPathDelete(){{else}}state.getPath(){{end}} + "/" + state.Id.ValueString())
+	res, err := r.client.Delete({{if .DeleteRestEndpoint}}state.getPathDelete(){{else}}state.getPath(){{end}} + "/" + url.QueryEscape(state.Id.ValueString()))
 	{{- end}}
 	if err != nil{{if .IgnoreDeleteError}} && !strings.Contains(res.String(), "{{.IgnoreDeleteError}}"){{end}} {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))

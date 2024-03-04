@@ -23,6 +23,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"net/url"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
@@ -53,7 +54,7 @@ type ActiveDirectoryAddGroupsGroups struct {
 
 //template:begin getPath
 func (data ActiveDirectoryAddGroups) getPath() string {
-	return fmt.Sprintf("/ers/config/activedirectory/%v/addGroups", data.JoinPointId.ValueString())
+	return fmt.Sprintf("/ers/config/activedirectory/%v/addGroups", url.QueryEscape(data.JoinPointId.ValueString()))
 }
 
 //template:end getPath

@@ -23,6 +23,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -82,7 +83,7 @@ type NetworkAccessAuthenticationRuleChildrenChildren struct {
 
 //template:begin getPath
 func (data NetworkAccessAuthenticationRule) getPath() string {
-	return fmt.Sprintf("/api/v1/policy/network-access/policy-set/%v/authentication", data.PolicySetId.ValueString())
+	return fmt.Sprintf("/api/v1/policy/network-access/policy-set/%v/authentication", url.QueryEscape(data.PolicySetId.ValueString()))
 }
 
 //template:end getPath

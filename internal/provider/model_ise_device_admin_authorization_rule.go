@@ -23,6 +23,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"strconv"
 
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
@@ -81,7 +82,7 @@ type DeviceAdminAuthorizationRuleChildrenChildren struct {
 
 //template:begin getPath
 func (data DeviceAdminAuthorizationRule) getPath() string {
-	return fmt.Sprintf("/api/v1/policy/device-admin/policy-set/%v/authorization", data.PolicySetId.ValueString())
+	return fmt.Sprintf("/api/v1/policy/device-admin/policy-set/%v/authorization", url.QueryEscape(data.PolicySetId.ValueString()))
 }
 
 //template:end getPath
