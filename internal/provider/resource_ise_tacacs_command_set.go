@@ -42,7 +42,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &TACACSCommandSetResource{}
@@ -60,6 +60,9 @@ func (r *TACACSCommandSetResource) Metadata(ctx context.Context, req resource.Me
 	resp.TypeName = req.ProviderTypeName + "_tacacs_command_set"
 }
 
+//template:end header
+
+//template:begin model
 func (r *TACACSCommandSetResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -114,6 +117,9 @@ func (r *TACACSCommandSetResource) Schema(ctx context.Context, req resource.Sche
 	}
 }
 
+//template:end model
+
+//template:begin configure
 func (r *TACACSCommandSetResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -122,7 +128,7 @@ func (r *TACACSCommandSetResource) Configure(_ context.Context, req resource.Con
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin create
 func (r *TACACSCommandSetResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

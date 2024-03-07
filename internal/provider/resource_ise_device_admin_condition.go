@@ -41,7 +41,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &DeviceAdminConditionResource{}
@@ -59,6 +59,9 @@ func (r *DeviceAdminConditionResource) Metadata(ctx context.Context, req resourc
 	resp.TypeName = req.ProviderTypeName + "_device_admin_condition"
 }
 
+//template:end header
+
+//template:begin model
 func (r *DeviceAdminConditionResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -226,6 +229,9 @@ func (r *DeviceAdminConditionResource) Schema(ctx context.Context, req resource.
 	}
 }
 
+//template:end model
+
+//template:begin configure
 func (r *DeviceAdminConditionResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -234,7 +240,7 @@ func (r *DeviceAdminConditionResource) Configure(_ context.Context, req resource
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin create
 func (r *DeviceAdminConditionResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

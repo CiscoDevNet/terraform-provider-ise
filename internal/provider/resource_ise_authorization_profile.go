@@ -44,7 +44,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &AuthorizationProfileResource{}
@@ -62,6 +62,9 @@ func (r *AuthorizationProfileResource) Metadata(ctx context.Context, req resourc
 	resp.TypeName = req.ProviderTypeName + "_authorization_profile"
 }
 
+//template:end header
+
+//template:begin model
 func (r *AuthorizationProfileResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -276,6 +279,9 @@ func (r *AuthorizationProfileResource) Schema(ctx context.Context, req resource.
 	}
 }
 
+//template:end model
+
+//template:begin configure
 func (r *AuthorizationProfileResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -284,7 +290,7 @@ func (r *AuthorizationProfileResource) Configure(_ context.Context, req resource
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin create
 func (r *AuthorizationProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

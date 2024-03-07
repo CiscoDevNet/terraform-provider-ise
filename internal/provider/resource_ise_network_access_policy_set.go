@@ -38,12 +38,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
-	"github.com/tidwall/gjson"
 )
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &NetworkAccessPolicySetResource{}
@@ -61,6 +60,9 @@ func (r *NetworkAccessPolicySetResource) Metadata(ctx context.Context, req resou
 	resp.TypeName = req.ProviderTypeName + "_network_access_policy_set"
 }
 
+//template:end header
+
+//template:begin model
 func (r *NetworkAccessPolicySetResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -247,6 +249,9 @@ func (r *NetworkAccessPolicySetResource) Schema(ctx context.Context, req resourc
 	}
 }
 
+//template:end model
+
+//template:begin configure
 func (r *NetworkAccessPolicySetResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -255,8 +260,9 @@ func (r *NetworkAccessPolicySetResource) Configure(_ context.Context, req resour
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
+//template:begin create
 func (r *NetworkAccessPolicySetResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan NetworkAccessPolicySet
 
@@ -271,49 +277,20 @@ func (r *NetworkAccessPolicySetResource) Create(ctx context.Context, req resourc
 
 	// Create object
 	body := plan.toBody(ctx, NetworkAccessPolicySet{})
-	if plan.Name.ValueString() != "Default" {
-		res, _, err := r.client.Post(plan.getPath(), body)
-		if err != nil {
-			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
-			return
-		}
-		plan.Id = types.StringValue(res.Get("response.id").String())
-		if plan.Description.IsUnknown() {
-			plan.Description = types.StringNull()
-		}
-		if plan.Rank.IsUnknown() {
-			plan.Rank = types.Int64Null()
-		}
-	} else {
-		res, err := r.client.Get(plan.getPath())
-		if err != nil {
-			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve objects, got error: %s", err))
-			return
-		}
-		if value := res.Get("response"); len(value.Array()) > 0 {
-			value.ForEach(func(k, v gjson.Result) bool {
-				if v.Get("name").String() == plan.Name.ValueString() {
-					plan.Id = types.StringValue(v.Get("id").String())
-					plan.Description = types.StringValue(v.Get("description").String())
-					plan.Rank = types.Int64Value(v.Get("rank").Int())
-					return false
-				}
-				return true
-			})
-		}
-		body = plan.toBody(ctx, NetworkAccessPolicySet{})
-		res, err = r.client.Put(plan.getPath()+"/"+plan.Id.ValueString(), body)
-		if err != nil {
-			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
-			return
-		}
+	res, _, err := r.client.Post(plan.getPath(), body)
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
+		return
 	}
+	plan.Id = types.StringValue(res.Get("response.id").String())
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
+//template:end create
 
 //template:begin read
 func (r *NetworkAccessPolicySetResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -351,6 +328,7 @@ func (r *NetworkAccessPolicySetResource) Read(ctx context.Context, req resource.
 
 //template:end read
 
+//template:begin update
 func (r *NetworkAccessPolicySetResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state NetworkAccessPolicySet
 
@@ -368,13 +346,9 @@ func (r *NetworkAccessPolicySetResource) Update(ctx context.Context, req resourc
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
-	if plan.Name.ValueString() == "Default" {
-		plan.Description = state.Description
-		plan.Rank = state.Rank
-	}
 	body := plan.toBody(ctx, state)
 
-	res, err := r.client.Put(plan.getPath()+"/"+plan.Id.ValueString(), body)
+	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -385,6 +359,8 @@ func (r *NetworkAccessPolicySetResource) Update(ctx context.Context, req resourc
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
+//template:end update
 
 //template:begin delete
 func (r *NetworkAccessPolicySetResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

@@ -37,7 +37,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
@@ -57,6 +57,9 @@ func (d *CertificateAuthenticationProfileDataSource) Metadata(_ context.Context,
 	resp.TypeName = req.ProviderTypeName + "_certificate_authentication_profile"
 }
 
+//template:end header
+
+//template:begin model
 func (d *CertificateAuthenticationProfileDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -100,6 +103,10 @@ func (d *CertificateAuthenticationProfileDataSource) Schema(ctx context.Context,
 		},
 	}
 }
+
+//template:end model
+
+//template:begin configValidators
 func (d *CertificateAuthenticationProfileDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
 	return []datasource.ConfigValidator{
 		datasourcevalidator.ExactlyOneOf(
@@ -109,6 +116,9 @@ func (d *CertificateAuthenticationProfileDataSource) ConfigValidators(ctx contex
 	}
 }
 
+//template:end configValidators
+
+//template:end configure
 func (d *CertificateAuthenticationProfileDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -117,7 +127,7 @@ func (d *CertificateAuthenticationProfileDataSource) Configure(_ context.Context
 	d.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin read
 func (d *CertificateAuthenticationProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {

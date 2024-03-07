@@ -37,7 +37,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
@@ -57,6 +57,9 @@ func (d *EndpointIdentityGroupDataSource) Metadata(_ context.Context, req dataso
 	resp.TypeName = req.ProviderTypeName + "_endpoint_identity_group"
 }
 
+//template:end header
+
+//template:begin model
 func (d *EndpointIdentityGroupDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -88,6 +91,10 @@ func (d *EndpointIdentityGroupDataSource) Schema(ctx context.Context, req dataso
 		},
 	}
 }
+
+//template:end model
+
+//template:begin configValidators
 func (d *EndpointIdentityGroupDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
 	return []datasource.ConfigValidator{
 		datasourcevalidator.ExactlyOneOf(
@@ -97,6 +104,9 @@ func (d *EndpointIdentityGroupDataSource) ConfigValidators(ctx context.Context) 
 	}
 }
 
+//template:end configValidators
+
+//template:end configure
 func (d *EndpointIdentityGroupDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -105,7 +115,7 @@ func (d *EndpointIdentityGroupDataSource) Configure(_ context.Context, req datas
 	d.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin read
 func (d *EndpointIdentityGroupDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {

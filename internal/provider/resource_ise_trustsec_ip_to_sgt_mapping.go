@@ -41,7 +41,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &TrustSecIPToSGTMappingResource{}
@@ -59,6 +59,9 @@ func (r *TrustSecIPToSGTMappingResource) Metadata(ctx context.Context, req resou
 	resp.TypeName = req.ProviderTypeName + "_trustsec_ip_to_sgt_mapping"
 }
 
+//template:end header
+
+//template:begin model
 func (r *TrustSecIPToSGTMappingResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -111,6 +114,9 @@ func (r *TrustSecIPToSGTMappingResource) Schema(ctx context.Context, req resourc
 	}
 }
 
+//template:end model
+
+//template:begin configure
 func (r *TrustSecIPToSGTMappingResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -119,7 +125,7 @@ func (r *TrustSecIPToSGTMappingResource) Configure(_ context.Context, req resour
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin create
 func (r *TrustSecIPToSGTMappingResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

@@ -37,12 +37,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
-	"github.com/tidwall/gjson"
 )
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &NetworkAccessAuthenticationRuleResource{}
@@ -60,6 +59,9 @@ func (r *NetworkAccessAuthenticationRuleResource) Metadata(ctx context.Context, 
 	resp.TypeName = req.ProviderTypeName + "_network_access_authentication_rule"
 }
 
+//template:end header
+
+//template:begin model
 func (r *NetworkAccessAuthenticationRuleResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -258,6 +260,9 @@ func (r *NetworkAccessAuthenticationRuleResource) Schema(ctx context.Context, re
 	}
 }
 
+//template:end model
+
+//template:begin configure
 func (r *NetworkAccessAuthenticationRuleResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -266,8 +271,9 @@ func (r *NetworkAccessAuthenticationRuleResource) Configure(_ context.Context, r
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
+//template:begin create
 func (r *NetworkAccessAuthenticationRuleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan NetworkAccessAuthenticationRule
 
@@ -282,40 +288,20 @@ func (r *NetworkAccessAuthenticationRuleResource) Create(ctx context.Context, re
 
 	// Create object
 	body := plan.toBody(ctx, NetworkAccessAuthenticationRule{})
-	if plan.Name.ValueString() != "Default" {
-		res, _, err := r.client.Post(plan.getPath(), body)
-		if err != nil {
-			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
-			return
-		}
-		plan.Id = types.StringValue(res.Get("response.rule.id").String())
-	} else {
-		res, err := r.client.Get(plan.getPath())
-		if err != nil {
-			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve objects, got error: %s", err))
-			return
-		}
-		if value := res.Get("response"); len(value.Array()) > 0 {
-			value.ForEach(func(k, v gjson.Result) bool {
-				if v.Get("rule.name").String() == plan.Name.ValueString() {
-					plan.Id = types.StringValue(v.Get("rule.id").String())
-					return false
-				}
-				return true
-			})
-		}
-		res, err = r.client.Put(plan.getPath()+"/"+plan.Id.ValueString(), body)
-		if err != nil {
-			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
-			return
-		}
+	res, _, err := r.client.Post(plan.getPath(), body)
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
+		return
 	}
+	plan.Id = types.StringValue(res.Get("response.rule.id").String())
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
+//template:end create
 
 //template:begin read
 func (r *NetworkAccessAuthenticationRuleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {

@@ -41,7 +41,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &DeviceAdminAuthorizationGlobalExceptionRuleResource{}
@@ -59,6 +59,9 @@ func (r *DeviceAdminAuthorizationGlobalExceptionRuleResource) Metadata(ctx conte
 	resp.TypeName = req.ProviderTypeName + "_device_admin_authorization_global_exception_rule"
 }
 
+//template:end header
+
+//template:begin model
 func (r *DeviceAdminAuthorizationGlobalExceptionRuleResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -234,6 +237,9 @@ func (r *DeviceAdminAuthorizationGlobalExceptionRuleResource) Schema(ctx context
 	}
 }
 
+//template:end model
+
+//template:begin configure
 func (r *DeviceAdminAuthorizationGlobalExceptionRuleResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -242,7 +248,7 @@ func (r *DeviceAdminAuthorizationGlobalExceptionRuleResource) Configure(_ contex
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin create
 func (r *DeviceAdminAuthorizationGlobalExceptionRuleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

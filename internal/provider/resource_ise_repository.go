@@ -41,7 +41,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &RepositoryResource{}
@@ -59,6 +59,9 @@ func (r *RepositoryResource) Metadata(ctx context.Context, req resource.Metadata
 	resp.TypeName = req.ProviderTypeName + "_repository"
 }
 
+//template:end header
+
+//template:begin model
 func (r *RepositoryResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -110,6 +113,9 @@ func (r *RepositoryResource) Schema(ctx context.Context, req resource.SchemaRequ
 	}
 }
 
+//template:end model
+
+//template:begin configure
 func (r *RepositoryResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -118,7 +124,7 @@ func (r *RepositoryResource) Configure(_ context.Context, req resource.Configure
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin create
 func (r *RepositoryResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

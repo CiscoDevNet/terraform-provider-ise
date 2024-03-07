@@ -41,7 +41,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &NetworkAccessDictionaryResource{}
@@ -59,6 +59,9 @@ func (r *NetworkAccessDictionaryResource) Metadata(ctx context.Context, req reso
 	resp.TypeName = req.ProviderTypeName + "_network_access_dictionary"
 }
 
+//template:end header
+
+//template:begin model
 func (r *NetworkAccessDictionaryResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -98,6 +101,9 @@ func (r *NetworkAccessDictionaryResource) Schema(ctx context.Context, req resour
 	}
 }
 
+//template:end model
+
+//template:begin configure
 func (r *NetworkAccessDictionaryResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -106,7 +112,7 @@ func (r *NetworkAccessDictionaryResource) Configure(_ context.Context, req resou
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin create
 func (r *NetworkAccessDictionaryResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

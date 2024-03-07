@@ -41,7 +41,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &InternalUserResource{}
@@ -59,6 +59,9 @@ func (r *InternalUserResource) Metadata(ctx context.Context, req resource.Metada
 	resp.TypeName = req.ProviderTypeName + "_internal_user"
 }
 
+//template:end header
+
+//template:begin model
 func (r *InternalUserResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -138,6 +141,9 @@ func (r *InternalUserResource) Schema(ctx context.Context, req resource.SchemaRe
 	}
 }
 
+//template:end model
+
+//template:begin configure
 func (r *InternalUserResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -146,7 +152,7 @@ func (r *InternalUserResource) Configure(_ context.Context, req resource.Configu
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin create
 func (r *InternalUserResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

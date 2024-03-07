@@ -39,7 +39,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &NetworkDeviceGroupResource{}
@@ -57,6 +57,9 @@ func (r *NetworkDeviceGroupResource) Metadata(ctx context.Context, req resource.
 	resp.TypeName = req.ProviderTypeName + "_network_device_group"
 }
 
+//template:end header
+
+//template:begin model
 func (r *NetworkDeviceGroupResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -86,6 +89,9 @@ func (r *NetworkDeviceGroupResource) Schema(ctx context.Context, req resource.Sc
 	}
 }
 
+//template:end model
+
+//template:begin configure
 func (r *NetworkDeviceGroupResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -94,7 +100,7 @@ func (r *NetworkDeviceGroupResource) Configure(_ context.Context, req resource.C
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin create
 func (r *NetworkDeviceGroupResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

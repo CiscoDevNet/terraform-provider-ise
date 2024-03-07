@@ -37,7 +37,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
@@ -57,6 +57,9 @@ func (d *TrustSecIPToSGTMappingGroupDataSource) Metadata(_ context.Context, req 
 	resp.TypeName = req.ProviderTypeName + "_trustsec_ip_to_sgt_mapping_group"
 }
 
+//template:end header
+
+//template:begin model
 func (d *TrustSecIPToSGTMappingGroupDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -92,6 +95,10 @@ func (d *TrustSecIPToSGTMappingGroupDataSource) Schema(ctx context.Context, req 
 		},
 	}
 }
+
+//template:end model
+
+//template:begin configValidators
 func (d *TrustSecIPToSGTMappingGroupDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
 	return []datasource.ConfigValidator{
 		datasourcevalidator.ExactlyOneOf(
@@ -101,6 +108,9 @@ func (d *TrustSecIPToSGTMappingGroupDataSource) ConfigValidators(ctx context.Con
 	}
 }
 
+//template:end configValidators
+
+//template:end configure
 func (d *TrustSecIPToSGTMappingGroupDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -109,7 +119,7 @@ func (d *TrustSecIPToSGTMappingGroupDataSource) Configure(_ context.Context, req
 	d.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin read
 func (d *TrustSecIPToSGTMappingGroupDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {

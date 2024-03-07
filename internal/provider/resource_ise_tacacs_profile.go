@@ -41,7 +41,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &TACACSProfileResource{}
@@ -59,6 +59,9 @@ func (r *TACACSProfileResource) Metadata(ctx context.Context, req resource.Metad
 	resp.TypeName = req.ProviderTypeName + "_tacacs_profile"
 }
 
+//template:end header
+
+//template:begin model
 func (r *TACACSProfileResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -107,6 +110,9 @@ func (r *TACACSProfileResource) Schema(ctx context.Context, req resource.SchemaR
 	}
 }
 
+//template:end model
+
+//template:begin configure
 func (r *TACACSProfileResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -115,7 +121,7 @@ func (r *TACACSProfileResource) Configure(_ context.Context, req resource.Config
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin create
 func (r *TACACSProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

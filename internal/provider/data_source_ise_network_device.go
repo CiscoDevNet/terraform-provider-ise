@@ -37,7 +37,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
@@ -57,6 +57,9 @@ func (d *NetworkDeviceDataSource) Metadata(_ context.Context, req datasource.Met
 	resp.TypeName = req.ProviderTypeName + "_network_device"
 }
 
+//template:end header
+
+//template:begin model
 func (d *NetworkDeviceDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -257,6 +260,10 @@ func (d *NetworkDeviceDataSource) Schema(ctx context.Context, req datasource.Sch
 		},
 	}
 }
+
+//template:end model
+
+//template:begin configValidators
 func (d *NetworkDeviceDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
 	return []datasource.ConfigValidator{
 		datasourcevalidator.ExactlyOneOf(
@@ -266,6 +273,9 @@ func (d *NetworkDeviceDataSource) ConfigValidators(ctx context.Context) []dataso
 	}
 }
 
+//template:end configValidators
+
+//template:end configure
 func (d *NetworkDeviceDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -274,7 +284,7 @@ func (d *NetworkDeviceDataSource) Configure(_ context.Context, req datasource.Co
 	d.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin read
 func (d *NetworkDeviceDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {

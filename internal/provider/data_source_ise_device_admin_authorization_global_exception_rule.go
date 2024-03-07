@@ -37,7 +37,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
@@ -57,6 +57,9 @@ func (d *DeviceAdminAuthorizationGlobalExceptionRuleDataSource) Metadata(_ conte
 	resp.TypeName = req.ProviderTypeName + "_device_admin_authorization_global_exception_rule"
 }
 
+//template:end header
+
+//template:begin model
 func (d *DeviceAdminAuthorizationGlobalExceptionRuleDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -209,6 +212,10 @@ func (d *DeviceAdminAuthorizationGlobalExceptionRuleDataSource) Schema(ctx conte
 		},
 	}
 }
+
+//template:end model
+
+//template:begin configValidators
 func (d *DeviceAdminAuthorizationGlobalExceptionRuleDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
 	return []datasource.ConfigValidator{
 		datasourcevalidator.ExactlyOneOf(
@@ -218,6 +225,9 @@ func (d *DeviceAdminAuthorizationGlobalExceptionRuleDataSource) ConfigValidators
 	}
 }
 
+//template:end configValidators
+
+//template:end configure
 func (d *DeviceAdminAuthorizationGlobalExceptionRuleDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -226,7 +236,7 @@ func (d *DeviceAdminAuthorizationGlobalExceptionRuleDataSource) Configure(_ cont
 	d.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin read
 func (d *DeviceAdminAuthorizationGlobalExceptionRuleDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {

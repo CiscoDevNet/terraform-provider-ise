@@ -42,7 +42,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &DownloadableACLResource{}
@@ -60,6 +60,9 @@ func (r *DownloadableACLResource) Metadata(ctx context.Context, req resource.Met
 	resp.TypeName = req.ProviderTypeName + "_downloadable_acl"
 }
 
+//template:end header
+
+//template:begin model
 func (r *DownloadableACLResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -98,6 +101,9 @@ func (r *DownloadableACLResource) Schema(ctx context.Context, req resource.Schem
 	}
 }
 
+//template:end model
+
+//template:begin configure
 func (r *DownloadableACLResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -106,7 +112,7 @@ func (r *DownloadableACLResource) Configure(_ context.Context, req resource.Conf
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin create
 func (r *DownloadableACLResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

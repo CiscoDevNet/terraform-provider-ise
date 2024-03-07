@@ -41,7 +41,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &NetworkAccessConditionResource{}
@@ -59,6 +59,9 @@ func (r *NetworkAccessConditionResource) Metadata(ctx context.Context, req resou
 	resp.TypeName = req.ProviderTypeName + "_network_access_condition"
 }
 
+//template:end header
+
+//template:begin model
 func (r *NetworkAccessConditionResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -226,6 +229,9 @@ func (r *NetworkAccessConditionResource) Schema(ctx context.Context, req resourc
 	}
 }
 
+//template:end model
+
+//template:begin configure
 func (r *NetworkAccessConditionResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -234,7 +240,7 @@ func (r *NetworkAccessConditionResource) Configure(_ context.Context, req resour
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin create
 func (r *NetworkAccessConditionResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

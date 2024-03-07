@@ -37,7 +37,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
@@ -57,6 +57,9 @@ func (d *InternalUserDataSource) Metadata(_ context.Context, req datasource.Meta
 	resp.TypeName = req.ProviderTypeName + "_internal_user"
 }
 
+//template:end header
+
+//template:begin model
 func (d *InternalUserDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -128,6 +131,10 @@ func (d *InternalUserDataSource) Schema(ctx context.Context, req datasource.Sche
 		},
 	}
 }
+
+//template:end model
+
+//template:begin configValidators
 func (d *InternalUserDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
 	return []datasource.ConfigValidator{
 		datasourcevalidator.ExactlyOneOf(
@@ -137,6 +144,9 @@ func (d *InternalUserDataSource) ConfigValidators(ctx context.Context) []datasou
 	}
 }
 
+//template:end configValidators
+
+//template:end configure
 func (d *InternalUserDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -145,7 +155,7 @@ func (d *InternalUserDataSource) Configure(_ context.Context, req datasource.Con
 	d.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin read
 func (d *InternalUserDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {

@@ -37,7 +37,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
@@ -57,6 +57,9 @@ func (d *AllowedProtocolsDataSource) Metadata(_ context.Context, req datasource.
 	resp.TypeName = req.ProviderTypeName + "_allowed_protocols"
 }
 
+//template:end header
+
+//template:begin model
 func (d *AllowedProtocolsDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -380,6 +383,10 @@ func (d *AllowedProtocolsDataSource) Schema(ctx context.Context, req datasource.
 		},
 	}
 }
+
+//template:end model
+
+//template:begin configValidators
 func (d *AllowedProtocolsDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
 	return []datasource.ConfigValidator{
 		datasourcevalidator.ExactlyOneOf(
@@ -389,6 +396,9 @@ func (d *AllowedProtocolsDataSource) ConfigValidators(ctx context.Context) []dat
 	}
 }
 
+//template:end configValidators
+
+//template:end configure
 func (d *AllowedProtocolsDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -397,7 +407,7 @@ func (d *AllowedProtocolsDataSource) Configure(_ context.Context, req datasource
 	d.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin read
 func (d *AllowedProtocolsDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {

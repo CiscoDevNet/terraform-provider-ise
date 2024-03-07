@@ -43,7 +43,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &CertificateAuthenticationProfileResource{}
@@ -61,6 +61,9 @@ func (r *CertificateAuthenticationProfileResource) Metadata(ctx context.Context,
 	resp.TypeName = req.ProviderTypeName + "_certificate_authentication_profile"
 }
 
+//template:end header
+
+//template:begin model
 func (r *CertificateAuthenticationProfileResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -125,6 +128,9 @@ func (r *CertificateAuthenticationProfileResource) Schema(ctx context.Context, r
 	}
 }
 
+//template:end model
+
+//template:begin configure
 func (r *CertificateAuthenticationProfileResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -133,7 +139,7 @@ func (r *CertificateAuthenticationProfileResource) Configure(_ context.Context, 
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin create
 func (r *CertificateAuthenticationProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

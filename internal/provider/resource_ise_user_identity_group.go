@@ -39,7 +39,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &UserIdentityGroupResource{}
@@ -57,6 +57,9 @@ func (r *UserIdentityGroupResource) Metadata(ctx context.Context, req resource.M
 	resp.TypeName = req.ProviderTypeName + "_user_identity_group"
 }
 
+//template:end header
+
+//template:begin model
 func (r *UserIdentityGroupResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -86,6 +89,9 @@ func (r *UserIdentityGroupResource) Schema(ctx context.Context, req resource.Sch
 	}
 }
 
+//template:end model
+
+//template:begin configure
 func (r *UserIdentityGroupResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -94,7 +100,7 @@ func (r *UserIdentityGroupResource) Configure(_ context.Context, req resource.Co
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin create
 func (r *UserIdentityGroupResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

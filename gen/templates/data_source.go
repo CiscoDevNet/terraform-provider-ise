@@ -37,7 +37,7 @@ import (
 )
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
@@ -56,10 +56,12 @@ type {{camelCase .Name}}DataSource struct {
 func (d *{{camelCase .Name}}DataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_{{snakeCase .Name}}"
 }
+//template:end header
 
 {{- $nameQuery := .DataSourceNameQuery}}
 {{- $openApi := false}}{{if not (isErs .RestEndpoint)}}{{$openApi = true}}{{end}}
 
+//template:begin model
 func (d *{{camelCase .Name}}DataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -155,7 +157,9 @@ func (d *{{camelCase .Name}}DataSource) Schema(ctx context.Context, req datasour
 		},
 	}
 }
+//template:end model
 
+//template:begin configValidators
 {{- if .DataSourceNameQuery}}
 func (d *{{camelCase .Name}}DataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
     return []datasource.ConfigValidator{
@@ -166,7 +170,9 @@ func (d *{{camelCase .Name}}DataSource) ConfigValidators(ctx context.Context) []
     }
 }
 {{- end}}
+//template:end configValidators
 
+//template:end configure
 func (d *{{camelCase .Name}}DataSource) Configure(_ context.Context, req datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -174,7 +180,7 @@ func (d *{{camelCase .Name}}DataSource) Configure(_ context.Context, req datasou
 
 	d.client = req.ProviderData.(*IseProviderData).Client
 }
-//template:end model
+//template:end configure
 
 //template:begin read
 func (d *{{camelCase .Name}}DataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {

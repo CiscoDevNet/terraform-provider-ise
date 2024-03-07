@@ -37,7 +37,7 @@ import (
 
 //template:end imports
 
-//template:begin model
+//template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &ActiveDirectoryJoinDomainWithAllNodesResource{}
@@ -54,6 +54,9 @@ func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Metadata(ctx context.Con
 	resp.TypeName = req.ProviderTypeName + "_active_directory_join_domain_with_all_nodes"
 }
 
+//template:end header
+
+//template:begin model
 func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
@@ -94,6 +97,9 @@ func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Schema(ctx context.Conte
 	}
 }
 
+//template:end model
+
+//template:begin configure
 func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -102,7 +108,7 @@ func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Configure(_ context.Cont
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-//template:end model
+//template:end configure
 
 //template:begin create
 func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
