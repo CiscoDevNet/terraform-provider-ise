@@ -55,8 +55,8 @@ type IseProviderModel struct {
 
 // IseProviderData describes the data maintained by the provider.
 type IseProviderData struct {
-	Client      *ise.Client
-	UpdateMutex *sync.Mutex
+	Client                  *ise.Client
+	NetworkDeviceGroupMutex *sync.Mutex
 }
 
 // Metadata returns the provider type name.
@@ -235,7 +235,7 @@ func (p *IseProvider) Configure(ctx context.Context, req provider.ConfigureReque
 		return
 	}
 
-	data := IseProviderData{Client: &c, UpdateMutex: &sync.Mutex{}}
+	data := IseProviderData{Client: &c, NetworkDeviceGroupMutex: &sync.Mutex{}}
 	resp.DataSourceData = &data
 	resp.ResourceData = &data
 }

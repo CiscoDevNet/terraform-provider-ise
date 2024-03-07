@@ -19,12 +19,13 @@
 
 package provider
 
-//template:begin imports
 import (
 	"context"
 	"fmt"
 	"net/url"
 	"strings"
+	"sync"
+	"time"
 
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -37,10 +38,6 @@ import (
 	"github.com/netascode/go-ise"
 )
 
-//template:end imports
-
-//template:begin header
-
 // Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &NetworkDeviceGroupResource{}
 var _ resource.ResourceWithImportState = &NetworkDeviceGroupResource{}
@@ -50,14 +47,13 @@ func NewNetworkDeviceGroupResource() resource.Resource {
 }
 
 type NetworkDeviceGroupResource struct {
-	client *ise.Client
+	client                  *ise.Client
+	networkDeviceGroupMutex *sync.Mutex
 }
 
 func (r *NetworkDeviceGroupResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_network_device_group"
 }
-
-//template:end header
 
 //template:begin model
 func (r *NetworkDeviceGroupResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -91,18 +87,15 @@ func (r *NetworkDeviceGroupResource) Schema(ctx context.Context, req resource.Sc
 
 //template:end model
 
-//template:begin configure
 func (r *NetworkDeviceGroupResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
 
 	r.client = req.ProviderData.(*IseProviderData).Client
+	r.networkDeviceGroupMutex = req.ProviderData.(*IseProviderData).NetworkDeviceGroupMutex
 }
 
-//template:end configure
-
-//template:begin create
 func (r *NetworkDeviceGroupResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan NetworkDeviceGroup
 
@@ -116,6 +109,8 @@ func (r *NetworkDeviceGroupResource) Create(ctx context.Context, req resource.Cr
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
 
 	// Create object
+	r.networkDeviceGroupMutex.Lock()
+	defer r.networkDeviceGroupMutex.Unlock()
 	body := plan.toBody(ctx, NetworkDeviceGroup{})
 	res, location, err := r.client.Post(plan.getPath(), body)
 	if err != nil {
@@ -125,13 +120,13 @@ func (r *NetworkDeviceGroupResource) Create(ctx context.Context, req resource.Cr
 	locationElements := strings.Split(location, "/")
 	plan.Id = types.StringValue(locationElements[len(locationElements)-1])
 
+	time.Sleep(5 * time.Second)
+
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
-//template:end create
 
 //template:begin read
 func (r *NetworkDeviceGroupResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
