@@ -18,6 +18,12 @@ All resources and data sources have been tested with the following releases.
 | -------- | ------------- |
 | ISE      | 3.2.0 Patch 4 |
 
+## Getting Started
+
+The following guides with examples exist to demonstrate the use of the provider:
+
+- [Getting Started](https://registry.terraform.io/providers/CiscoDevNet/ise/latest/docs/guides/getting_started)
+
 ## Example Usage
 
 ```terraform
