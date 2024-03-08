@@ -7,7 +7,7 @@ description: |-
 
 # Changelog
 
-## 0.1.14 (unreleased)
+## 0.1.14
 
 - Use `set` type for list attributes with primitive values
 - Implement workaround for API issue when creating multiple network device groups at once
