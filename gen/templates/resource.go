@@ -105,6 +105,8 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 					.String,
 				{{- if isListSet .}}
 				ElementType:         types.{{.ElementType}}Type,
+				{{- else if eq .Type "Map"}}
+				ElementType:         types.StringType,
 				{{- end}}
 				{{- if or .Reference .Mandatory}}
 				Required:            true,
@@ -175,6 +177,8 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 								.String,
 							{{- if isListSet .}}
 							ElementType:         types.{{.ElementType}}Type,
+							{{- else if eq .Type "Map"}}
+							ElementType:         types.StringType,
 							{{- end}}
 							{{- if or .Reference .Mandatory}}
 							Required:            true,
@@ -245,6 +249,8 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 											.String,
 										{{- if isListSet .}}
 										ElementType:         types.{{.ElementType}}Type,
+										{{- else if eq .Type "Map"}}
+										ElementType:         types.StringType,
 										{{- end}}
 										{{- if or .Reference .Mandatory}}
 										Required:            true,
@@ -315,6 +321,8 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 														.String,
 													{{- if isListSet .}}
 													ElementType:         types.{{.ElementType}}Type,
+													{{- else if eq .Type "Map"}}
+													ElementType:         types.StringType,
 													{{- end}}
 													{{- if or .Reference .Mandatory}}
 													Required:            true,
