@@ -32,6 +32,14 @@ func Contains(s []string, str string) bool {
 	return false
 }
 
+func GetStringMap(result map[string]gjson.Result) types.Map {
+	v := make(map[string]attr.Value)
+	for key, value := range result {
+		v[key] = types.StringValue(value.String())
+	}
+	return types.MapValueMust(types.StringType, v)
+}
+
 func GetStringList(result []gjson.Result) types.List {
 	v := make([]attr.Value, len(result))
 	for r := range result {

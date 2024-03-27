@@ -85,6 +85,8 @@ func (d *{{camelCase .Name}}DataSource) Schema(ctx context.Context, req datasour
 				MarkdownDescription: "{{.Description}}",
 				{{- if isListSet .}}
 				ElementType:         types.{{.ElementType}}Type,
+				{{- else if eq .Type "Map"}}
+				ElementType:         types.StringType,
 				{{- end}}
 				{{- if .Reference}}
 				Required:            true,
@@ -109,6 +111,8 @@ func (d *{{camelCase .Name}}DataSource) Schema(ctx context.Context, req datasour
 							MarkdownDescription: "{{.Description}}",
 							{{- if isListSet .}}
 							ElementType:         types.{{.ElementType}}Type,
+							{{- else if eq .Type "Map"}}
+							ElementType:         types.StringType,
 							{{- end}}
 							Computed:            true,
 							{{- if isNestedListSet .}}
@@ -120,6 +124,8 @@ func (d *{{camelCase .Name}}DataSource) Schema(ctx context.Context, req datasour
 										MarkdownDescription: "{{.Description}}",
 										{{- if isListSet .}}
 										ElementType:         types.{{.ElementType}}Type,
+										{{- else if eq .Type "Map"}}
+										ElementType:         types.StringType,
 										{{- end}}
 										Computed:            true,
 										{{- if isNestedListSet .}}
