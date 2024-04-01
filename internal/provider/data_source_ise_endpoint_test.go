@@ -34,7 +34,6 @@ func TestAccDataSourceIseEndpoint(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_endpoint.test", "name", "00:11:22:33:44:55"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_endpoint.test", "description", "My endpoint"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_endpoint.test", "mac", "00:11:22:33:44:55"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_endpoint.test", "group_id", "3a88eec0-8c00-11e6-996c-525400b48521"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_endpoint.test", "profile_id", "3a91a150-8c00-11e6-996c-525400b48521"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_endpoint.test", "static_profile_assignment", "true"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_endpoint.test", "static_profile_assignment_defined", "true"))
@@ -45,7 +44,7 @@ func TestAccDataSourceIseEndpoint(t *testing.T) {
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceIseEndpointConfig(),
+				Config: testAccDataSourceIseEndpointPrerequisitesConfig + testAccDataSourceIseEndpointConfig(),
 				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
@@ -55,6 +54,15 @@ func TestAccDataSourceIseEndpoint(t *testing.T) {
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
+const testAccDataSourceIseEndpointPrerequisitesConfig = `
+resource "ise_endpoint_identity_group" "test" {
+  name           = "EndpointGroup1"
+  description    = "Test endpoint identity group"
+  system_defined = false
+}
+
+`
+
 //template:end testPrerequisites
 
 //template:begin testAccDataSourceConfig
@@ -63,7 +71,7 @@ func testAccDataSourceIseEndpointConfig() string {
 	config += `	name = "00:11:22:33:44:55"` + "\n"
 	config += `	description = "My endpoint"` + "\n"
 	config += `	mac = "00:11:22:33:44:55"` + "\n"
-	config += `	group_id = "3a88eec0-8c00-11e6-996c-525400b48521"` + "\n"
+	config += `	group_id = ise_endpoint_identity_group.test.id` + "\n"
 	config += `	profile_id = "3a91a150-8c00-11e6-996c-525400b48521"` + "\n"
 	config += `	static_profile_assignment = true` + "\n"
 	config += `	static_profile_assignment_defined = true` + "\n"

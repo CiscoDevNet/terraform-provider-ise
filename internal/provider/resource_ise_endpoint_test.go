@@ -35,7 +35,6 @@ func TestAccIseEndpoint(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_endpoint.test", "name", "00:11:22:33:44:55"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_endpoint.test", "description", "My endpoint"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_endpoint.test", "mac", "00:11:22:33:44:55"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_endpoint.test", "group_id", "3a88eec0-8c00-11e6-996c-525400b48521"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_endpoint.test", "profile_id", "3a91a150-8c00-11e6-996c-525400b48521"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_endpoint.test", "static_profile_assignment", "true"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_endpoint.test", "static_profile_assignment_defined", "true"))
@@ -45,11 +44,11 @@ func TestAccIseEndpoint(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccIseEndpointConfig_minimum(),
+			Config: testAccIseEndpointPrerequisitesConfig + testAccIseEndpointConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccIseEndpointConfig_all(),
+		Config: testAccIseEndpointPrerequisitesConfig + testAccIseEndpointConfig_all(),
 		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
@@ -67,6 +66,15 @@ func TestAccIseEndpoint(t *testing.T) {
 //template:end testAcc
 
 //template:begin testPrerequisites
+const testAccIseEndpointPrerequisitesConfig = `
+resource "ise_endpoint_identity_group" "test" {
+  name           = "EndpointGroup1"
+  description    = "Test endpoint identity group"
+  system_defined = false
+}
+
+`
+
 //template:end testPrerequisites
 
 //template:begin testAccConfigMinimal
@@ -74,7 +82,7 @@ func testAccIseEndpointConfig_minimum() string {
 	config := `resource "ise_endpoint" "test" {` + "\n"
 	config += `	name = "00:11:22:33:44:55"` + "\n"
 	config += `	mac = "00:11:22:33:44:55"` + "\n"
-	config += `	group_id = "3a88eec0-8c00-11e6-996c-525400b48521"` + "\n"
+	config += `	group_id = ise_endpoint_identity_group.test.id` + "\n"
 	config += `	static_profile_assignment = true` + "\n"
 	config += `	static_group_assignment = true` + "\n"
 	config += `}` + "\n"
@@ -89,7 +97,7 @@ func testAccIseEndpointConfig_all() string {
 	config += `	name = "00:11:22:33:44:55"` + "\n"
 	config += `	description = "My endpoint"` + "\n"
 	config += `	mac = "00:11:22:33:44:55"` + "\n"
-	config += `	group_id = "3a88eec0-8c00-11e6-996c-525400b48521"` + "\n"
+	config += `	group_id = ise_endpoint_identity_group.test.id` + "\n"
 	config += `	profile_id = "3a91a150-8c00-11e6-996c-525400b48521"` + "\n"
 	config += `	static_profile_assignment = true` + "\n"
 	config += `	static_profile_assignment_defined = true` + "\n"
