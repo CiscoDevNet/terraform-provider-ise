@@ -1,6 +1,7 @@
 ## 0.1.15 (unreleased)
 
 - Add `ise_endpoint` resource and data source
+- Add support for ISE version 3.3.0
 
 ## 0.1.14
 
