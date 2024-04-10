@@ -1,3 +1,7 @@
+## 0.1.15 (unreleased)
+
+- Add `ise_endpoint` resource and data source
+
 ## 0.1.14
 
 - Use `set` type for list attributes with primitive values
