@@ -26,7 +26,7 @@ attributes:
     type: String
     mandatory: true
     description: Certificate Authentication Profile, empty if doesn't exist
-    example: Global_Certificate
+    example: Preloaded_Certificate_Profile
   - model_name: idSeqItem
     data_path: [IdStoreSequence]
     tf_name: identity_sources

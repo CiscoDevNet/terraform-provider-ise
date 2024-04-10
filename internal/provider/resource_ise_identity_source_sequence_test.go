@@ -35,7 +35,7 @@ func TestAccIseIdentitySourceSequence(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_identity_source_sequence.test", "name", "Sequence1"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_identity_source_sequence.test", "description", "My identity source sequence"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_identity_source_sequence.test", "break_on_store_fail", "true"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_identity_source_sequence.test", "certificate_authentication_profile", "Global_Certificate"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_identity_source_sequence.test", "certificate_authentication_profile", "Preloaded_Certificate_Profile"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_identity_source_sequence.test", "identity_sources.0.name", "Internal Users"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_identity_source_sequence.test", "identity_sources.0.order", "1"))
 
@@ -71,7 +71,7 @@ func testAccIseIdentitySourceSequenceConfig_minimum() string {
 	config := `resource "ise_identity_source_sequence" "test" {` + "\n"
 	config += `	name = "Sequence1"` + "\n"
 	config += `	break_on_store_fail = true` + "\n"
-	config += `	certificate_authentication_profile = "Global_Certificate"` + "\n"
+	config += `	certificate_authentication_profile = "Preloaded_Certificate_Profile"` + "\n"
 	config += `	identity_sources = [{` + "\n"
 	config += `	  name = "Internal Users"` + "\n"
 	config += `	  order = 1` + "\n"
@@ -88,7 +88,7 @@ func testAccIseIdentitySourceSequenceConfig_all() string {
 	config += `	name = "Sequence1"` + "\n"
 	config += `	description = "My identity source sequence"` + "\n"
 	config += `	break_on_store_fail = true` + "\n"
-	config += `	certificate_authentication_profile = "Global_Certificate"` + "\n"
+	config += `	certificate_authentication_profile = "Preloaded_Certificate_Profile"` + "\n"
 	config += `	identity_sources = [{` + "\n"
 	config += `	  name = "Internal Users"` + "\n"
 	config += `	  order = 1` + "\n"
