@@ -7,7 +7,7 @@ description: |-
 
 # Changelog
 
-## 0.1.15 (unreleased)
+## 0.2.0
 
 - Add `ise_endpoint` resource and data source
 - Add support for ISE version 3.3.0
