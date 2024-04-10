@@ -1,0 +1,153 @@
+---
+name: Endpoint
+rest_endpoint: /ers/config/endpoint
+data_source_name_query: true
+doc_category: Identity Management
+attributes:
+  - model_name: name
+    data_path: [ERSEndPoint]
+    type: String
+    mandatory: true
+    description: The name of the endpoint
+    example: 00:11:22:33:44:55
+  - model_name: description
+    data_path: [ERSEndPoint]
+    type: String
+    description: Description
+    example: My endpoint
+  - model_name: mac
+    data_path: [ERSEndPoint]
+    type: String
+    mandatory: true
+    description: MAC address of the endpoint
+    example: 00:11:22:33:44:55
+  - model_name: groupId
+    data_path: [ERSEndPoint]
+    mandatory: true
+    type: String
+    description: Identity Group ID
+    example: 3a88eec0-8c00-11e6-996c-525400b48521
+    test_value: ise_endpoint_identity_group.test.id
+  - model_name: profileId
+    data_path: [ERSEndPoint]
+    type: String
+    description: Profile ID
+    example: 3a91a150-8c00-11e6-996c-525400b48521
+  - model_name: staticProfileAssignment
+    data_path: [ERSEndPoint]
+    mandatory: true
+    type: Bool
+    description: Static Profile Assignment
+    example: true
+  - model_name: staticProfileAssignmentDefined
+    data_path: [ERSEndPoint]
+    type: Bool
+    description: Static Profile Assignment Defined
+    default_value: true
+    example: true
+  - model_name: staticGroupAssignment
+    data_path: [ERSEndPoint]
+    mandatory: true
+    type: Bool
+    description: Static Group Assignment
+    example: true
+  - model_name: staticGroupAssignmentDefined
+    data_path: [ERSEndPoint]
+    type: Bool
+    description: staticGroupAssignmentDefined
+    default_value: true
+    example: true
+  - model_name: customAttributes
+    data_path: [ERSEndPoint, customAttributes]
+    type: Map
+    description: Custom Attributes
+    exclude_test: true
+    example: "{\"key1\" = \"value1\"}"
+  - model_name: identityStore
+    data_path: [ERSEndPoint]
+    type: String
+    description: Identity Store
+    exclude_test: true
+  - model_name: identityStoreId
+    data_path: [ERSEndPoint]
+    type: String
+    description: Identity Store Id
+    exclude_test: true
+  - model_name: portalUser
+    data_path: [ERSEndPoint]
+    type: String
+    description: Portal User
+    exclude_test: true
+  - model_name: mdmServerName
+    data_path: [ERSEndPoint, mdmAttributes]
+    type: String
+    description: Mdm Server Name
+    exclude_test: true
+  - model_name: mdmReachable
+    data_path: [ERSEndPoint, mdmAttributes]
+    type: Bool
+    description: Mdm Reachable
+    exclude_test: true
+  - model_name: mdmEnrolled
+    data_path: [ERSEndPoint, mdmAttributes]
+    type: Bool
+    description: Mdm Enrolled
+    exclude_test: true
+  - model_name: mdmComplianceStatus
+    data_path: [ERSEndPoint, mdmAttributes]
+    type: Bool
+    description: Mdm Compliance Status
+    exclude_test: true
+  - model_name: mdmOS
+    tf_name: mdm_os
+    data_path: [ERSEndPoint, mdmAttributes]
+    type: String
+    description: Mdm OS
+    exclude_test: true
+  - model_name: mdmManufacturer
+    data_path: [ERSEndPoint, mdmAttributes]
+    type: String
+    description: Mdm Manufacturer
+    exclude_test: true
+  - model_name: mdmModel
+    data_path: [ERSEndPoint, mdmAttributes]
+    type: String
+    description: Mdm Model
+    exclude_test: true
+  - model_name: mdmSerial
+    data_path: [ERSEndPoint, mdmAttributes]
+    type: String
+    description: Mdm Serial
+    exclude_test: true
+  - model_name: mdmEncrypted
+    data_path: [ERSEndPoint, mdmAttributes]
+    type: Bool
+    description: Mdm Encrypted
+    exclude_test: true
+  - model_name: mdmPinlock
+    data_path: [ERSEndPoint, mdmAttributes]
+    type: Bool
+    description: Mdm Pinlock
+    exclude_test: true
+  - model_name: mdmJailBroken
+    data_path: [ERSEndPoint, mdmAttributes]
+    type: Bool
+    description: Mdm JailBroken
+    exclude_test: true
+  - model_name: mdmIMEI
+    tf_name: mdm_imei
+    data_path: [ERSEndPoint, mdmAttributes]
+    type: String
+    description: Mdm IMEI
+    exclude_test: true
+  - model_name: mdmPhoneNumber
+    data_path: [ERSEndPoint, mdmAttributes]
+    type: String
+    description: Mdm PhoneNumber
+    exclude_test: true
+test_prerequisites: |
+  resource "ise_endpoint_identity_group" "test" {
+    name           = "EndpointGroup1"
+    description    = "Test endpoint identity group"
+    system_defined = false
+  }
