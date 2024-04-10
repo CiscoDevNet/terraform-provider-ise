@@ -31,7 +31,6 @@ attributes:
     example: aaa@cisco.com
   - model_name: accountNameAlias
     data_path: [InternalUser]
-    test_tags: [ISE32]
     type: String
     description: The Account Name Alias will be used to send email notifications about password expiration. This field is only supported from ISE 3.2.
     example: User 1
@@ -48,7 +47,6 @@ attributes:
     example: true
   - model_name: passwordNeverExpires
     data_path: [InternalUser]
-    test_tags: [ISE32]
     type: Bool
     description: Set to `true` to indicate the user password never expires. This will not apply to Users who are also ISE Admins. This field is only supported from ISE 3.2.
     default_value: false

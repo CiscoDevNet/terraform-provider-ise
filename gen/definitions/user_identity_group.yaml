@@ -3,7 +3,6 @@ name: User Identity Group
 rest_endpoint: /ers/config/identitygroup
 data_source_name_query: true
 doc_category: Identity Management
-test_tags: [ISE32]
 attributes:
   - model_name: name
     data_path: [IdentityGroup]

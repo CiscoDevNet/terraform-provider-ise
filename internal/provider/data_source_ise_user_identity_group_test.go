@@ -21,7 +21,6 @@ package provider
 
 //template:begin imports
 import (
-	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -31,9 +30,6 @@ import (
 
 //template:begin testAccDataSource
 func TestAccDataSourceIseUserIdentityGroup(t *testing.T) {
-	if os.Getenv("ISE32") == "" {
-		t.Skip("skipping test, set environment variable ISE32")
-	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_user_identity_group.test", "name", "Group1"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_user_identity_group.test", "description", "My endpoint identity group"))

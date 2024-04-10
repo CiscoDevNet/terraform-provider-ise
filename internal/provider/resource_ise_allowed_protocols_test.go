@@ -21,7 +21,6 @@ package provider
 
 //template:begin imports
 import (
-	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -105,9 +104,7 @@ func TestAccIseAllowedProtocols(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_allowed_protocols.test", "teap_eap_accept_client_cert_during_tunnel_est", "true"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_allowed_protocols.test", "teap_eap_chaining", "true"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_allowed_protocols.test", "teap_downgrade_msk", "true"))
-	if os.Getenv("ISE32") != "" {
-		checks = append(checks, resource.TestCheckResourceAttr("ise_allowed_protocols.test", "allow_5g", "true"))
-	}
+	checks = append(checks, resource.TestCheckResourceAttr("ise_allowed_protocols.test", "allow_5g", "true"))
 
 	var steps []resource.TestStep
 	steps = append(steps, resource.TestStep{
@@ -151,9 +148,7 @@ func testAccIseAllowedProtocolsConfig_minimum() string {
 	config += `	eap_tls_l_bit = true` + "\n"
 	config += `	allow_weak_ciphers_for_eap = true` + "\n"
 	config += `	require_message_auth = true` + "\n"
-	if os.Getenv("ISE32") != "" {
-		config += `	allow_5g = true` + "\n"
-	}
+	config += `	allow_5g = true` + "\n"
 	config += `}` + "\n"
 	return config
 }
@@ -237,9 +232,7 @@ func testAccIseAllowedProtocolsConfig_all() string {
 	config += `	teap_eap_chaining = true` + "\n"
 	config += `	teap_downgrade_msk = true` + "\n"
 	config += `	teap_request_basic_pwd_auth = true` + "\n"
-	if os.Getenv("ISE32") != "" {
-		config += `	allow_5g = true` + "\n"
-	}
+	config += `	allow_5g = true` + "\n"
 	config += `}` + "\n"
 	return config
 }

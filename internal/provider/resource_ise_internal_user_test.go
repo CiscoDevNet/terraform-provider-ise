@@ -35,13 +35,9 @@ func TestAccIseInternalUser(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_internal_user.test", "name", "UserTF"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_internal_user.test", "change_password", "true"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_internal_user.test", "email", "aaa@cisco.com"))
-	if os.Getenv("ISE32") != "" {
-		checks = append(checks, resource.TestCheckResourceAttr("ise_internal_user.test", "account_name_alias", "User 1"))
-	}
+	checks = append(checks, resource.TestCheckResourceAttr("ise_internal_user.test", "account_name_alias", "User 1"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_internal_user.test", "enabled", "true"))
-	if os.Getenv("ISE32") != "" {
-		checks = append(checks, resource.TestCheckResourceAttr("ise_internal_user.test", "password_never_expires", "false"))
-	}
+	checks = append(checks, resource.TestCheckResourceAttr("ise_internal_user.test", "password_never_expires", "false"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_internal_user.test", "first_name", "John"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_internal_user.test", "last_name", "Doe"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_internal_user.test", "password_id_store", "Internal Users"))
@@ -92,14 +88,10 @@ func testAccIseInternalUserConfig_all() string {
 	config += `	password = "Cisco123"` + "\n"
 	config += `	change_password = true` + "\n"
 	config += `	email = "aaa@cisco.com"` + "\n"
-	if os.Getenv("ISE32") != "" {
-		config += `	account_name_alias = "User 1"` + "\n"
-	}
+	config += `	account_name_alias = "User 1"` + "\n"
 	config += `	enable_password = "Cisco123"` + "\n"
 	config += `	enabled = true` + "\n"
-	if os.Getenv("ISE32") != "" {
-		config += `	password_never_expires = false` + "\n"
-	}
+	config += `	password_never_expires = false` + "\n"
 	config += `	first_name = "John"` + "\n"
 	config += `	last_name = "Doe"` + "\n"
 	config += `	password_id_store = "Internal Users"` + "\n"

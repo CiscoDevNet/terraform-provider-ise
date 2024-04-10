@@ -500,6 +500,5 @@ attributes:
     tf_name: allow_5g
     type: Bool
     description: Allow 5G. This field is only supported from ISE 3.2.
-    test_tags: [ISE32]
     example: true
     minimum_test_value: "true"

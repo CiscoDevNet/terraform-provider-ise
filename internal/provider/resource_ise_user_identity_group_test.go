@@ -31,9 +31,6 @@ import (
 
 //template:begin testAcc
 func TestAccIseUserIdentityGroup(t *testing.T) {
-	if os.Getenv("ISE32") == "" {
-		t.Skip("skipping test, set environment variable ISE32")
-	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("ise_user_identity_group.test", "name", "Group1"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_user_identity_group.test", "description", "My endpoint identity group"))
