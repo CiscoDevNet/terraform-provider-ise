@@ -82,7 +82,6 @@ func testAccIseEndpointConfig_minimum() string {
 	config := `resource "ise_endpoint" "test" {` + "\n"
 	config += `	name = "00:11:22:33:44:55"` + "\n"
 	config += `	mac = "00:11:22:33:44:55"` + "\n"
-	config += `	group_id = ise_endpoint_identity_group.test.id` + "\n"
 	config += `	static_profile_assignment = true` + "\n"
 	config += `	static_group_assignment = true` + "\n"
 	config += `}` + "\n"

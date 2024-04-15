@@ -88,7 +88,7 @@ func (r *EndpointResource) Schema(ctx context.Context, req resource.SchemaReques
 			},
 			"group_id": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Identity Group ID").String,
-				Required:            true,
+				Optional:            true,
 			},
 			"profile_id": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Profile ID").String,
