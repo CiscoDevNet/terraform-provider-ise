@@ -1,4 +1,4 @@
-## 0.2.1 (unreleased)
+## 0.2.1
 
 - Make `groupId` attribute of `ise_endpoint` resource optional
 
