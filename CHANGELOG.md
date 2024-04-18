@@ -1,3 +1,7 @@
+## 0.2.1 (unreleased)
+
+- Make `groupId` attribute of `ise_endpoint` resource optional
+
 ## 0.2.0
 
 - Add `ise_endpoint` resource and data source

@@ -31,7 +31,6 @@ resource "ise_endpoint" "example" {
 
 ### Required
 
-- `group_id` (String) Identity Group ID
 - `mac` (String) MAC address of the endpoint
 - `name` (String) The name of the endpoint
 - `static_group_assignment` (Boolean) Static Group Assignment
@@ -41,6 +40,7 @@ resource "ise_endpoint" "example" {
 
 - `custom_attributes` (Map of String) Custom Attributes
 - `description` (String) Description
+- `group_id` (String) Identity Group ID
 - `identity_store` (String) Identity Store
 - `identity_store_id` (String) Identity Store Id
 - `mdm_compliance_status` (Boolean) Mdm Compliance Status
