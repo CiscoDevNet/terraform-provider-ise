@@ -1,3 +1,7 @@
+## 0.2.2 (unreleased)
+
+- Fix issue with `ise_repository` triggers in-place upgrade when no changes are made #59
+
 ## 0.2.1
 
 - Make `groupId` attribute of `ise_endpoint` resource optional

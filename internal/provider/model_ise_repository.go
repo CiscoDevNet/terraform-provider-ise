@@ -111,11 +111,6 @@ func (data *Repository) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.UserName = types.StringNull()
 	}
-	if value := res.Get("response.enablePki"); value.Exists() {
-		data.EnablePki = types.BoolValue(value.Bool())
-	} else {
-		data.EnablePki = types.BoolNull()
-	}
 }
 
 //template:end fromBody
@@ -146,11 +141,6 @@ func (data *Repository) updateFromBody(ctx context.Context, res gjson.Result) {
 		data.UserName = types.StringValue(value.String())
 	} else {
 		data.UserName = types.StringNull()
-	}
-	if value := res.Get("response.enablePki"); value.Exists() && !data.EnablePki.IsNull() {
-		data.EnablePki = types.BoolValue(value.Bool())
-	} else {
-		data.EnablePki = types.BoolNull()
 	}
 }
 

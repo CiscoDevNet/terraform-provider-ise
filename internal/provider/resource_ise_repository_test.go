@@ -37,7 +37,6 @@ func TestAccIseRepository(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_repository.test", "path", "/dir"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_repository.test", "server_name", "server1"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_repository.test", "user_name", "user9"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_repository.test", "enable_pki", "false"))
 
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {

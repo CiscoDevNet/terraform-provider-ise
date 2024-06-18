@@ -37,5 +37,6 @@ attributes:
     example: cisco123
   - model_name: enablePki
     type: Bool
+    write_only: true
     description: Enable PKI
     example: false
