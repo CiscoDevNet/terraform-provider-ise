@@ -3,18 +3,18 @@
 page_title: "ise_network_access_authentication_rule_update_rank Resource - terraform-provider-ise"
 subcategory: "Network Access"
 description: |-
-  This resource is used to update rank field in network access authentication rule. It serves as a workaround for the ISE API/Backend limitation which restricts rank assignments to a strictly incremental sequence. By utilizing this resource and network_access_authentication_rule resource, you can bypass the APIs limitation. Creation of this resource is performing PUT operation (Update) and it only tracks rank field. Every time this resource is created or re-created, terr considers image activation on the device. (Catalyst Center does not however proceed with activation if the image is already running on the device, assuming the operation has succeeded and noting this fact in its audit log.) When this resource is destroyed, no action is performed on ISE and resource is just removed from state.
+  This resource is used to update rank field in network access authentication rule. It serves as a workaround for the ISE API/Backend limitation which restricts rank assignments to a strictly incremental sequence. By utilizing this resource and network_access_authentication_rule resource, you can bypass the APIs limitation. Creation of this resource is performing PUT operation (Update) and it only tracks rank field. When this resource is destroyed, no action is performed on ISE and resource is just removed from state.
 ---
 
 # ise_network_access_authentication_rule_update_rank (Resource)
 
-This resource is used to update rank field in network access authentication rule. It serves as a workaround for the ISE API/Backend limitation which restricts rank assignments to a strictly incremental sequence. By utilizing this resource and network_access_authentication_rule resource, you can bypass the APIs limitation. Creation of this resource is performing PUT operation (Update) and it only tracks rank field. Every time this resource is created or re-created, terr considers image activation on the device. (Catalyst Center does not however proceed with activation if the image is already running on the device, assuming the operation has succeeded and noting this fact in its audit log.) When this resource is destroyed, no action is performed on ISE and resource is just removed from state.
+This resource is used to update rank field in network access authentication rule. It serves as a workaround for the ISE API/Backend limitation which restricts rank assignments to a strictly incremental sequence. By utilizing this resource and network_access_authentication_rule resource, you can bypass the APIs limitation. Creation of this resource is performing PUT operation (Update) and it only tracks rank field. When this resource is destroyed, no action is performed on ISE and resource is just removed from state.
 
 ## Example Usage
 
 ```terraform
 resource "ise_network_access_authentication_rule_update_rank" "example" {
-  auth_rule_id              = "d82952cb-b901-4b09-b363-5ebf39bdbaf9"
+  auth_rule_id              = "9b3680da-0165-44f6-9cff-88e778d98020"
   policy_set_id             = "d82952cb-b901-4b09-b363-5ebf39bdbaf9"
   name                      = "Rule1"
   default                   = false

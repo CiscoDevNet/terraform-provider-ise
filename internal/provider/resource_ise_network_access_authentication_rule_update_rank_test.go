@@ -21,7 +21,6 @@ package provider
 
 //template:begin imports
 import (
-	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -31,18 +30,10 @@ import (
 
 //template:begin testAcc
 func TestAccIseNetworkAccessAuthenticationRuleUpdateRank(t *testing.T) {
-	if os.Getenv("TEST") == "" {
-		t.Skip("skipping test, set environment variable TEST")
-	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authentication_rule_update_rank.test", "rank", "0"))
 
 	var steps []resource.TestStep
-	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
-		steps = append(steps, resource.TestStep{
-			Config: testAccIseNetworkAccessAuthenticationRuleUpdateRankPrerequisitesConfig + testAccIseNetworkAccessAuthenticationRuleUpdateRankConfig_minimum(),
-		})
-	}
 	steps = append(steps, resource.TestStep{
 		Config: testAccIseNetworkAccessAuthenticationRuleUpdateRankPrerequisitesConfig + testAccIseNetworkAccessAuthenticationRuleUpdateRankConfig_all(),
 		Check:  resource.ComposeTestCheckFunc(checks...),
@@ -69,13 +60,21 @@ resource "ise_network_access_policy_set" "test" {
   condition_dictionary_name = "DEVICE"
   condition_operator        = "equals"
 }
-resource "ise_network_access_condition" "test" {
-  name            = "Cond1"
-  condition_type  = "LibraryConditionAttributes"
-  attribute_name  = "NAS-Port-Type"
-  attribute_value = "Wireless - IEEE 802.11"
-  dictionary_name = "Radius"
-  operator        = "equals"
+resource "ise_network_access_authentication_rule" "test" {
+  policy_set_id             = ise_network_access_policy_set.test.id
+  name                      = "Rule1"
+  default                   = false
+  state                     = "enabled"
+  condition_type            = "ConditionAttributes"
+  condition_is_negate       = false
+  condition_attribute_name  = "Location"
+  condition_attribute_value = "All Locations"
+  condition_dictionary_name = "DEVICE"
+  condition_operator        = "equals"
+  identity_source_name      = "Internal Endpoints"
+  if_auth_fail              = "REJECT"
+  if_process_fail           = "DROP"
+  if_user_not_found         = "REJECT"
 }
 
 `
@@ -85,11 +84,9 @@ resource "ise_network_access_condition" "test" {
 //template:begin testAccConfigMinimal
 func testAccIseNetworkAccessAuthenticationRuleUpdateRankConfig_minimum() string {
 	config := `resource "ise_network_access_authentication_rule_update_rank" "test" {` + "\n"
-	config += `	auth_rule_id = "d82952cb-b901-4b09-b363-5ebf39bdbaf9"` + "\n"
+	config += `	auth_rule_id = ise_network_access_authentication_rule.test.id` + "\n"
 	config += `	policy_set_id = ise_network_access_policy_set.test.id` + "\n"
 	config += `	name = "Rule1"` + "\n"
-	config += `	condition_type = "ConditionReference"` + "\n"
-	config += `	condition_id = ise_network_access_condition.test.id` + "\n"
 	config += `	if_auth_fail = "REJECT"` + "\n"
 	config += `	if_process_fail = "DROP"` + "\n"
 	config += `	if_user_not_found = "REJECT"` + "\n"
@@ -102,7 +99,7 @@ func testAccIseNetworkAccessAuthenticationRuleUpdateRankConfig_minimum() string 
 //template:begin testAccConfigAll
 func testAccIseNetworkAccessAuthenticationRuleUpdateRankConfig_all() string {
 	config := `resource "ise_network_access_authentication_rule_update_rank" "test" {` + "\n"
-	config += `	auth_rule_id = "d82952cb-b901-4b09-b363-5ebf39bdbaf9"` + "\n"
+	config += `	auth_rule_id = ise_network_access_authentication_rule.test.id` + "\n"
 	config += `	policy_set_id = ise_network_access_policy_set.test.id` + "\n"
 	config += `	name = "Rule1"` + "\n"
 	config += `	default = false` + "\n"
