@@ -7,7 +7,7 @@ description: |-
 
 # Changelog
 
-## 0.2.2 (unreleased)
+## 0.2.2
 
 - Fix issue with `ise_repository` triggers in-place upgrade when no changes are made #59
 
