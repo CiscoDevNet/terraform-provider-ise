@@ -38,6 +38,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
 	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
 )
 
 //template:end imports
@@ -288,6 +289,9 @@ func (r *NetworkAccessAuthenticationRuleResource) Create(ctx context.Context, re
 
 	// Create object
 	body := plan.toBody(ctx, NetworkAccessAuthenticationRule{})
+
+	tflog.Debug(ctx, fmt.Sprintf("Generated body123: %s", body))
+
 	if plan.Name.ValueString() != "Default" {
 		res, _, err := r.client.Post(plan.getPath(), body)
 		if err != nil {
@@ -359,9 +363,8 @@ func (r *NetworkAccessAuthenticationRuleResource) Read(ctx context.Context, req 
 
 //template:end read
 
-//template:begin update
 func (r *NetworkAccessAuthenticationRuleResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan, state NetworkAccessAuthenticationRule
+	var plan, state, existingData NetworkAccessAuthenticationRule
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -379,6 +382,20 @@ func (r *NetworkAccessAuthenticationRuleResource) Update(ctx context.Context, re
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	body := plan.toBody(ctx, state)
 
+	// Check if plan.Rank is null (i.e., not provided) and set rank to body from existingData to not reorder rule during update
+	if plan.Rank.IsNull() {
+		// Read existing attributes from the API
+		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
+			return
+		}
+		existingData.fromBody(ctx, res)
+
+		// If plan.Rank is not provided, set it from existingData.Rank
+		body, _ = sjson.Set(body, "rule.rank", existingData.Rank.ValueInt64())
+	}
+
 	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
@@ -390,8 +407,6 @@ func (r *NetworkAccessAuthenticationRuleResource) Update(ctx context.Context, re
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
-//template:end update
 
 //template:begin delete
 func (r *NetworkAccessAuthenticationRuleResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

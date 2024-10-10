@@ -70,17 +70,17 @@ func (data NetworkDeviceGroup) toBody(ctx context.Context, state NetworkDeviceGr
 
 //template:begin fromBody
 func (data *NetworkDeviceGroup) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("NetworkDeviceGroup.name"); value.Exists() {
+	if value := res.Get("NetworkDeviceGroup.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("NetworkDeviceGroup.description"); value.Exists() {
+	if value := res.Get("NetworkDeviceGroup.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("NetworkDeviceGroup.othername"); value.Exists() {
+	if value := res.Get("NetworkDeviceGroup.othername"); value.Exists() && value.Type != gjson.Null {
 		data.RootGroup = types.StringValue(value.String())
 	} else {
 		data.RootGroup = types.StringNull()

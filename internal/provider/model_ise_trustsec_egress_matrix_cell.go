@@ -88,17 +88,17 @@ func (data TrustSecEgressMatrixCell) toBody(ctx context.Context, state TrustSecE
 
 //template:begin fromBody
 func (data *TrustSecEgressMatrixCell) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("EgressMatrixCell.description"); value.Exists() {
+	if value := res.Get("EgressMatrixCell.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("EgressMatrixCell.defaultRule"); value.Exists() {
+	if value := res.Get("EgressMatrixCell.defaultRule"); value.Exists() && value.Type != gjson.Null {
 		data.DefaultRule = types.StringValue(value.String())
 	} else {
 		data.DefaultRule = types.StringValue("NONE")
 	}
-	if value := res.Get("EgressMatrixCell.matrixCellStatus"); value.Exists() {
+	if value := res.Get("EgressMatrixCell.matrixCellStatus"); value.Exists() && value.Type != gjson.Null {
 		data.MatrixCellStatus = types.StringValue(value.String())
 	} else {
 		data.MatrixCellStatus = types.StringValue("DISABLED")
@@ -108,12 +108,12 @@ func (data *TrustSecEgressMatrixCell) fromBody(ctx context.Context, res gjson.Re
 	} else {
 		data.Sgacls = types.SetNull(types.StringType)
 	}
-	if value := res.Get("EgressMatrixCell.sourceSgtId"); value.Exists() {
+	if value := res.Get("EgressMatrixCell.sourceSgtId"); value.Exists() && value.Type != gjson.Null {
 		data.SourceSgtId = types.StringValue(value.String())
 	} else {
 		data.SourceSgtId = types.StringNull()
 	}
-	if value := res.Get("EgressMatrixCell.destinationSgtId"); value.Exists() {
+	if value := res.Get("EgressMatrixCell.destinationSgtId"); value.Exists() && value.Type != gjson.Null {
 		data.DestinationSgtId = types.StringValue(value.String())
 	} else {
 		data.DestinationSgtId = types.StringNull()

@@ -7,6 +7,10 @@ description: |-
 
 # Changelog
 
+## 0.2.3 (unreleased)
+
+- Add resource `network_access_authentication_rule_update_rank` for updating rank under network access authentication rule to bypass API limitation which restricts rank assignments to a strictly incremental sequence
+
 ## 0.2.2
 
 - Fix issue with `ise_repository` triggers in-place upgrade when no changes are made #59

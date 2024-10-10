@@ -70,17 +70,17 @@ func (data UserIdentityGroup) toBody(ctx context.Context, state UserIdentityGrou
 
 //template:begin fromBody
 func (data *UserIdentityGroup) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("IdentityGroup.name"); value.Exists() {
+	if value := res.Get("IdentityGroup.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("IdentityGroup.description"); value.Exists() {
+	if value := res.Get("IdentityGroup.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("IdentityGroup.parent"); value.Exists() {
+	if value := res.Get("IdentityGroup.parent"); value.Exists() && value.Type != gjson.Null {
 		data.Parent = types.StringValue(value.String())
 	} else {
 		data.Parent = types.StringNull()

@@ -78,22 +78,22 @@ func (data TrustSecSecurityGroupACL) toBody(ctx context.Context, state TrustSecS
 
 //template:begin fromBody
 func (data *TrustSecSecurityGroupACL) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("Sgacl.name"); value.Exists() {
+	if value := res.Get("Sgacl.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("Sgacl.description"); value.Exists() {
+	if value := res.Get("Sgacl.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("Sgacl.aclcontent"); value.Exists() {
+	if value := res.Get("Sgacl.aclcontent"); value.Exists() && value.Type != gjson.Null {
 		data.AclContent = types.StringValue(value.String())
 	} else {
 		data.AclContent = types.StringNull()
 	}
-	if value := res.Get("Sgacl.ipVersion"); value.Exists() {
+	if value := res.Get("Sgacl.ipVersion"); value.Exists() && value.Type != gjson.Null {
 		data.IpVersion = types.StringValue(value.String())
 	} else {
 		data.IpVersion = types.StringValue("IP_AGNOSTIC")

@@ -88,12 +88,12 @@ func (data *ActiveDirectoryJoinDomainWithAllNodes) fromBody(ctx context.Context,
 		data.AdditionalData = make([]ActiveDirectoryJoinDomainWithAllNodesAdditionalData, 0)
 		value.ForEach(func(k, v gjson.Result) bool {
 			item := ActiveDirectoryJoinDomainWithAllNodesAdditionalData{}
-			if cValue := v.Get("name"); cValue.Exists() {
+			if cValue := v.Get("name"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Name = types.StringValue(cValue.String())
 			} else {
 				item.Name = types.StringNull()
 			}
-			if cValue := v.Get("value"); cValue.Exists() {
+			if cValue := v.Get("value"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Value = types.StringValue(cValue.String())
 			} else {
 				item.Value = types.StringNull()

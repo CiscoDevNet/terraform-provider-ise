@@ -74,22 +74,22 @@ func (data EndpointIdentityGroup) toBody(ctx context.Context, state EndpointIden
 
 //template:begin fromBody
 func (data *EndpointIdentityGroup) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("EndPointGroup.name"); value.Exists() {
+	if value := res.Get("EndPointGroup.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("EndPointGroup.description"); value.Exists() {
+	if value := res.Get("EndPointGroup.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("EndPointGroup.systemDefined"); value.Exists() {
+	if value := res.Get("EndPointGroup.systemDefined"); value.Exists() && value.Type != gjson.Null {
 		data.SystemDefined = types.BoolValue(value.Bool())
 	} else {
 		data.SystemDefined = types.BoolValue(false)
 	}
-	if value := res.Get("EndPointGroup.parentId"); value.Exists() {
+	if value := res.Get("EndPointGroup.parentId"); value.Exists() && value.Type != gjson.Null {
 		data.ParentEndpointIdentityGroupId = types.StringValue(value.String())
 	} else {
 		data.ParentEndpointIdentityGroupId = types.StringNull()

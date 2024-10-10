@@ -74,22 +74,22 @@ func (data DownloadableACL) toBody(ctx context.Context, state DownloadableACL) s
 
 //template:begin fromBody
 func (data *DownloadableACL) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("DownloadableAcl.name"); value.Exists() {
+	if value := res.Get("DownloadableAcl.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("DownloadableAcl.description"); value.Exists() {
+	if value := res.Get("DownloadableAcl.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("DownloadableAcl.dacl"); value.Exists() {
+	if value := res.Get("DownloadableAcl.dacl"); value.Exists() && value.Type != gjson.Null {
 		data.Dacl = types.StringValue(value.String())
 	} else {
 		data.Dacl = types.StringNull()
 	}
-	if value := res.Get("DownloadableAcl.daclType"); value.Exists() {
+	if value := res.Get("DownloadableAcl.daclType"); value.Exists() && value.Type != gjson.Null {
 		data.DaclType = types.StringValue(value.String())
 	} else {
 		data.DaclType = types.StringValue("IPV4")

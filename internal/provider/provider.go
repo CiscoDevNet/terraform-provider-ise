@@ -263,6 +263,7 @@ func (p *IseProvider) Resources(ctx context.Context) []func() resource.Resource 
 		NewInternalUserResource,
 		NewLicenseTierStateResource,
 		NewNetworkAccessAuthenticationRuleResource,
+		NewNetworkAccessAuthenticationRuleUpdateRankResource,
 		NewNetworkAccessAuthorizationExceptionRuleResource,
 		NewNetworkAccessAuthorizationGlobalExceptionRuleResource,
 		NewNetworkAccessAuthorizationRuleResource,

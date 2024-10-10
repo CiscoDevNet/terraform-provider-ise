@@ -90,42 +90,42 @@ func (data TrustSecIPToSGTMapping) toBody(ctx context.Context, state TrustSecIPT
 
 //template:begin fromBody
 func (data *TrustSecIPToSGTMapping) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("SGMapping.name"); value.Exists() {
+	if value := res.Get("SGMapping.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("SGMapping.description"); value.Exists() {
+	if value := res.Get("SGMapping.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("SGMapping.deployTo"); value.Exists() {
+	if value := res.Get("SGMapping.deployTo"); value.Exists() && value.Type != gjson.Null {
 		data.DeployTo = types.StringValue(value.String())
 	} else {
 		data.DeployTo = types.StringNull()
 	}
-	if value := res.Get("SGMapping.deployType"); value.Exists() {
+	if value := res.Get("SGMapping.deployType"); value.Exists() && value.Type != gjson.Null {
 		data.DeployType = types.StringValue(value.String())
 	} else {
 		data.DeployType = types.StringNull()
 	}
-	if value := res.Get("SGMapping.hostName"); value.Exists() {
+	if value := res.Get("SGMapping.hostName"); value.Exists() && value.Type != gjson.Null {
 		data.HostName = types.StringValue(value.String())
 	} else {
 		data.HostName = types.StringNull()
 	}
-	if value := res.Get("SGMapping.hostIp"); value.Exists() {
+	if value := res.Get("SGMapping.hostIp"); value.Exists() && value.Type != gjson.Null {
 		data.HostIp = types.StringValue(value.String())
 	} else {
 		data.HostIp = types.StringNull()
 	}
-	if value := res.Get("SGMapping.sgt"); value.Exists() {
+	if value := res.Get("SGMapping.sgt"); value.Exists() && value.Type != gjson.Null {
 		data.Sgt = types.StringValue(value.String())
 	} else {
 		data.Sgt = types.StringNull()
 	}
-	if value := res.Get("SGMapping.mappingGroup"); value.Exists() {
+	if value := res.Get("SGMapping.mappingGroup"); value.Exists() && value.Type != gjson.Null {
 		data.MappingGroup = types.StringValue(value.String())
 	} else {
 		data.MappingGroup = types.StringNull()

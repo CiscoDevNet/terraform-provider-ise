@@ -196,47 +196,47 @@ func (data NetworkAccessCondition) toBody(ctx context.Context, state NetworkAcce
 
 //template:begin fromBody
 func (data *NetworkAccessCondition) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("response.name"); value.Exists() {
+	if value := res.Get("response.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("response.description"); value.Exists() {
+	if value := res.Get("response.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("response.conditionType"); value.Exists() {
+	if value := res.Get("response.conditionType"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionType = types.StringValue(value.String())
 	} else {
 		data.ConditionType = types.StringNull()
 	}
-	if value := res.Get("response.isNegate"); value.Exists() {
+	if value := res.Get("response.isNegate"); value.Exists() && value.Type != gjson.Null {
 		data.IsNegate = types.BoolValue(value.Bool())
 	} else {
 		data.IsNegate = types.BoolNull()
 	}
-	if value := res.Get("response.attributeName"); value.Exists() {
+	if value := res.Get("response.attributeName"); value.Exists() && value.Type != gjson.Null {
 		data.AttributeName = types.StringValue(value.String())
 	} else {
 		data.AttributeName = types.StringNull()
 	}
-	if value := res.Get("response.attributeValue"); value.Exists() {
+	if value := res.Get("response.attributeValue"); value.Exists() && value.Type != gjson.Null {
 		data.AttributeValue = types.StringValue(value.String())
 	} else {
 		data.AttributeValue = types.StringNull()
 	}
-	if value := res.Get("response.dictionaryName"); value.Exists() {
+	if value := res.Get("response.dictionaryName"); value.Exists() && value.Type != gjson.Null {
 		data.DictionaryName = types.StringValue(value.String())
 	} else {
 		data.DictionaryName = types.StringNull()
 	}
-	if value := res.Get("response.dictionaryValue"); value.Exists() {
+	if value := res.Get("response.dictionaryValue"); value.Exists() && value.Type != gjson.Null {
 		data.DictionaryValue = types.StringValue(value.String())
 	} else {
 		data.DictionaryValue = types.StringNull()
 	}
-	if value := res.Get("response.operator"); value.Exists() {
+	if value := res.Get("response.operator"); value.Exists() && value.Type != gjson.Null {
 		data.Operator = types.StringValue(value.String())
 	} else {
 		data.Operator = types.StringNull()
@@ -245,52 +245,52 @@ func (data *NetworkAccessCondition) fromBody(ctx context.Context, res gjson.Resu
 		data.Children = make([]NetworkAccessConditionChildren, 0)
 		value.ForEach(func(k, v gjson.Result) bool {
 			item := NetworkAccessConditionChildren{}
-			if cValue := v.Get("name"); cValue.Exists() {
+			if cValue := v.Get("name"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Name = types.StringValue(cValue.String())
 			} else {
 				item.Name = types.StringNull()
 			}
-			if cValue := v.Get("description"); cValue.Exists() {
+			if cValue := v.Get("description"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Description = types.StringValue(cValue.String())
 			} else {
 				item.Description = types.StringNull()
 			}
-			if cValue := v.Get("conditionType"); cValue.Exists() {
+			if cValue := v.Get("conditionType"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.ConditionType = types.StringValue(cValue.String())
 			} else {
 				item.ConditionType = types.StringNull()
 			}
-			if cValue := v.Get("id"); cValue.Exists() {
+			if cValue := v.Get("id"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Id = types.StringValue(cValue.String())
 			} else {
 				item.Id = types.StringNull()
 			}
-			if cValue := v.Get("isNegate"); cValue.Exists() {
+			if cValue := v.Get("isNegate"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.IsNegate = types.BoolValue(cValue.Bool())
 			} else {
 				item.IsNegate = types.BoolNull()
 			}
-			if cValue := v.Get("attributeName"); cValue.Exists() {
+			if cValue := v.Get("attributeName"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.AttributeName = types.StringValue(cValue.String())
 			} else {
 				item.AttributeName = types.StringNull()
 			}
-			if cValue := v.Get("attributeValue"); cValue.Exists() {
+			if cValue := v.Get("attributeValue"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.AttributeValue = types.StringValue(cValue.String())
 			} else {
 				item.AttributeValue = types.StringNull()
 			}
-			if cValue := v.Get("dictionaryName"); cValue.Exists() {
+			if cValue := v.Get("dictionaryName"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.DictionaryName = types.StringValue(cValue.String())
 			} else {
 				item.DictionaryName = types.StringNull()
 			}
-			if cValue := v.Get("dictionaryValue"); cValue.Exists() {
+			if cValue := v.Get("dictionaryValue"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.DictionaryValue = types.StringValue(cValue.String())
 			} else {
 				item.DictionaryValue = types.StringNull()
 			}
-			if cValue := v.Get("operator"); cValue.Exists() {
+			if cValue := v.Get("operator"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Operator = types.StringValue(cValue.String())
 			} else {
 				item.Operator = types.StringNull()
@@ -299,52 +299,52 @@ func (data *NetworkAccessCondition) fromBody(ctx context.Context, res gjson.Resu
 				item.Children = make([]NetworkAccessConditionChildrenChildren, 0)
 				cValue.ForEach(func(ck, cv gjson.Result) bool {
 					cItem := NetworkAccessConditionChildrenChildren{}
-					if ccValue := cv.Get("name"); ccValue.Exists() {
+					if ccValue := cv.Get("name"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.Name = types.StringValue(ccValue.String())
 					} else {
 						cItem.Name = types.StringNull()
 					}
-					if ccValue := cv.Get("description"); ccValue.Exists() {
+					if ccValue := cv.Get("description"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.Description = types.StringValue(ccValue.String())
 					} else {
 						cItem.Description = types.StringNull()
 					}
-					if ccValue := cv.Get("conditionType"); ccValue.Exists() {
+					if ccValue := cv.Get("conditionType"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.ConditionType = types.StringValue(ccValue.String())
 					} else {
 						cItem.ConditionType = types.StringNull()
 					}
-					if ccValue := cv.Get("id"); ccValue.Exists() {
+					if ccValue := cv.Get("id"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.Id = types.StringValue(ccValue.String())
 					} else {
 						cItem.Id = types.StringNull()
 					}
-					if ccValue := cv.Get("isNegate"); ccValue.Exists() {
+					if ccValue := cv.Get("isNegate"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.IsNegate = types.BoolValue(ccValue.Bool())
 					} else {
 						cItem.IsNegate = types.BoolNull()
 					}
-					if ccValue := cv.Get("attributeName"); ccValue.Exists() {
+					if ccValue := cv.Get("attributeName"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.AttributeName = types.StringValue(ccValue.String())
 					} else {
 						cItem.AttributeName = types.StringNull()
 					}
-					if ccValue := cv.Get("attributeValue"); ccValue.Exists() {
+					if ccValue := cv.Get("attributeValue"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.AttributeValue = types.StringValue(ccValue.String())
 					} else {
 						cItem.AttributeValue = types.StringNull()
 					}
-					if ccValue := cv.Get("dictionaryName"); ccValue.Exists() {
+					if ccValue := cv.Get("dictionaryName"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.DictionaryName = types.StringValue(ccValue.String())
 					} else {
 						cItem.DictionaryName = types.StringNull()
 					}
-					if ccValue := cv.Get("dictionaryValue"); ccValue.Exists() {
+					if ccValue := cv.Get("dictionaryValue"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.DictionaryValue = types.StringValue(ccValue.String())
 					} else {
 						cItem.DictionaryValue = types.StringNull()
 					}
-					if ccValue := cv.Get("operator"); ccValue.Exists() {
+					if ccValue := cv.Get("operator"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.Operator = types.StringValue(ccValue.String())
 					} else {
 						cItem.Operator = types.StringNull()

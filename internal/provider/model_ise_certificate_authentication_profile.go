@@ -86,37 +86,37 @@ func (data CertificateAuthenticationProfile) toBody(ctx context.Context, state C
 
 //template:begin fromBody
 func (data *CertificateAuthenticationProfile) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("CertificateProfile.name"); value.Exists() {
+	if value := res.Get("CertificateProfile.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("CertificateProfile.description"); value.Exists() {
+	if value := res.Get("CertificateProfile.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("CertificateProfile.allowedAsUserName"); value.Exists() {
+	if value := res.Get("CertificateProfile.allowedAsUserName"); value.Exists() && value.Type != gjson.Null {
 		data.AllowedAsUserName = types.BoolValue(value.Bool())
 	} else {
 		data.AllowedAsUserName = types.BoolValue(false)
 	}
-	if value := res.Get("CertificateProfile.externalIdentityStoreName"); value.Exists() {
+	if value := res.Get("CertificateProfile.externalIdentityStoreName"); value.Exists() && value.Type != gjson.Null {
 		data.ExternalIdentityStoreName = types.StringValue(value.String())
 	} else {
 		data.ExternalIdentityStoreName = types.StringValue("[not applicable]")
 	}
-	if value := res.Get("CertificateProfile.certificateAttributeName"); value.Exists() {
+	if value := res.Get("CertificateProfile.certificateAttributeName"); value.Exists() && value.Type != gjson.Null {
 		data.CertificateAttributeName = types.StringValue(value.String())
 	} else {
 		data.CertificateAttributeName = types.StringValue("SUBJECT_COMMON_NAME")
 	}
-	if value := res.Get("CertificateProfile.matchMode"); value.Exists() {
+	if value := res.Get("CertificateProfile.matchMode"); value.Exists() && value.Type != gjson.Null {
 		data.MatchMode = types.StringValue(value.String())
 	} else {
 		data.MatchMode = types.StringValue("NEVER")
 	}
-	if value := res.Get("CertificateProfile.usernameFrom"); value.Exists() {
+	if value := res.Get("CertificateProfile.usernameFrom"); value.Exists() && value.Type != gjson.Null {
 		data.UsernameFrom = types.StringValue(value.String())
 	} else {
 		data.UsernameFrom = types.StringValue("CERTIFICATE")

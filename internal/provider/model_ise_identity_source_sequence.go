@@ -94,22 +94,22 @@ func (data IdentitySourceSequence) toBody(ctx context.Context, state IdentitySou
 
 //template:begin fromBody
 func (data *IdentitySourceSequence) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("IdStoreSequence.name"); value.Exists() {
+	if value := res.Get("IdStoreSequence.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("IdStoreSequence.description"); value.Exists() {
+	if value := res.Get("IdStoreSequence.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("IdStoreSequence.breakOnStoreFail"); value.Exists() {
+	if value := res.Get("IdStoreSequence.breakOnStoreFail"); value.Exists() && value.Type != gjson.Null {
 		data.BreakOnStoreFail = types.BoolValue(value.Bool())
 	} else {
 		data.BreakOnStoreFail = types.BoolNull()
 	}
-	if value := res.Get("IdStoreSequence.certificateAuthenticationProfile"); value.Exists() {
+	if value := res.Get("IdStoreSequence.certificateAuthenticationProfile"); value.Exists() && value.Type != gjson.Null {
 		data.CertificateAuthenticationProfile = types.StringValue(value.String())
 	} else {
 		data.CertificateAuthenticationProfile = types.StringNull()
@@ -118,12 +118,12 @@ func (data *IdentitySourceSequence) fromBody(ctx context.Context, res gjson.Resu
 		data.IdentitySources = make([]IdentitySourceSequenceIdentitySources, 0)
 		value.ForEach(func(k, v gjson.Result) bool {
 			item := IdentitySourceSequenceIdentitySources{}
-			if cValue := v.Get("idstore"); cValue.Exists() {
+			if cValue := v.Get("idstore"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Name = types.StringValue(cValue.String())
 			} else {
 				item.Name = types.StringNull()
 			}
-			if cValue := v.Get("order"); cValue.Exists() {
+			if cValue := v.Get("order"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Order = types.Int64Value(cValue.Int())
 			} else {
 				item.Order = types.Int64Null()
