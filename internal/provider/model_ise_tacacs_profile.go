@@ -89,12 +89,12 @@ func (data TACACSProfile) toBody(ctx context.Context, state TACACSProfile) strin
 
 //template:begin fromBody
 func (data *TACACSProfile) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("TacacsProfile.name"); value.Exists() {
+	if value := res.Get("TacacsProfile.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("TacacsProfile.description"); value.Exists() {
+	if value := res.Get("TacacsProfile.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()

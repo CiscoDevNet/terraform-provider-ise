@@ -251,27 +251,27 @@ func (data ActiveDirectoryJoinPoint) toBody(ctx context.Context, state ActiveDir
 
 //template:begin fromBody
 func (data *ActiveDirectoryJoinPoint) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("ERSActiveDirectory.name"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.description"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.domain"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.domain"); value.Exists() && value.Type != gjson.Null {
 		data.Domain = types.StringValue(value.String())
 	} else {
 		data.Domain = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.adScopesNames"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.adScopesNames"); value.Exists() && value.Type != gjson.Null {
 		data.AdScopesNames = types.StringValue(value.String())
 	} else {
 		data.AdScopesNames = types.StringValue("Default_Scope")
 	}
-	if value := res.Get("ERSActiveDirectory.enableDomainAllowedList"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.enableDomainAllowedList"); value.Exists() && value.Type != gjson.Null {
 		data.EnableDomainAllowedList = types.BoolValue(value.Bool())
 	} else {
 		data.EnableDomainAllowedList = types.BoolValue(true)
@@ -345,127 +345,127 @@ func (data *ActiveDirectoryJoinPoint) fromBody(ctx context.Context, res gjson.Re
 			return true
 		})
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.enableRewrites"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.enableRewrites"); value.Exists() && value.Type != gjson.Null {
 		data.EnableRewrites = types.BoolValue(value.Bool())
 	} else {
 		data.EnableRewrites = types.BoolValue(false)
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.enablePassChange"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.enablePassChange"); value.Exists() && value.Type != gjson.Null {
 		data.EnablePassChange = types.BoolValue(value.Bool())
 	} else {
 		data.EnablePassChange = types.BoolValue(true)
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.enableMachineAuth"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.enableMachineAuth"); value.Exists() && value.Type != gjson.Null {
 		data.EnableMachineAuth = types.BoolValue(value.Bool())
 	} else {
 		data.EnableMachineAuth = types.BoolValue(true)
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.enableMachineAccess"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.enableMachineAccess"); value.Exists() && value.Type != gjson.Null {
 		data.EnableMachineAccess = types.BoolValue(value.Bool())
 	} else {
 		data.EnableMachineAccess = types.BoolValue(true)
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.enableDialinPermissionCheck"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.enableDialinPermissionCheck"); value.Exists() && value.Type != gjson.Null {
 		data.EnableDialinPermissionCheck = types.BoolValue(value.Bool())
 	} else {
 		data.EnableDialinPermissionCheck = types.BoolValue(false)
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.plaintextAuth"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.plaintextAuth"); value.Exists() && value.Type != gjson.Null {
 		data.PlaintextAuth = types.BoolValue(value.Bool())
 	} else {
 		data.PlaintextAuth = types.BoolValue(false)
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.agingTime"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.agingTime"); value.Exists() && value.Type != gjson.Null {
 		data.AgingTime = types.Int64Value(value.Int())
 	} else {
 		data.AgingTime = types.Int64Value(5)
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.enableCallbackForDialinClient"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.enableCallbackForDialinClient"); value.Exists() && value.Type != gjson.Null {
 		data.EnableCallbackForDialinClient = types.BoolValue(value.Bool())
 	} else {
 		data.EnableCallbackForDialinClient = types.BoolValue(false)
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.identityNotInAdBehaviour"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.identityNotInAdBehaviour"); value.Exists() && value.Type != gjson.Null {
 		data.IdentityNotInAdBehaviour = types.StringValue(value.String())
 	} else {
 		data.IdentityNotInAdBehaviour = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.unreachableDomainsBehaviour"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.unreachableDomainsBehaviour"); value.Exists() && value.Type != gjson.Null {
 		data.UnreachableDomainsBehaviour = types.StringValue(value.String())
 	} else {
 		data.UnreachableDomainsBehaviour = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.schema"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.schema"); value.Exists() && value.Type != gjson.Null {
 		data.Schema = types.StringValue(value.String())
 	} else {
 		data.Schema = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.firstName"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.firstName"); value.Exists() && value.Type != gjson.Null {
 		data.FirstName = types.StringValue(value.String())
 	} else {
 		data.FirstName = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.department"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.department"); value.Exists() && value.Type != gjson.Null {
 		data.Department = types.StringValue(value.String())
 	} else {
 		data.Department = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.lastName"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.lastName"); value.Exists() && value.Type != gjson.Null {
 		data.LastName = types.StringValue(value.String())
 	} else {
 		data.LastName = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.organizationalUnit"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.organizationalUnit"); value.Exists() && value.Type != gjson.Null {
 		data.OrganizationalUnit = types.StringValue(value.String())
 	} else {
 		data.OrganizationalUnit = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.jobTitle"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.jobTitle"); value.Exists() && value.Type != gjson.Null {
 		data.JobTitle = types.StringValue(value.String())
 	} else {
 		data.JobTitle = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.locality"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.locality"); value.Exists() && value.Type != gjson.Null {
 		data.Locality = types.StringValue(value.String())
 	} else {
 		data.Locality = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.email"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.email"); value.Exists() && value.Type != gjson.Null {
 		data.Email = types.StringValue(value.String())
 	} else {
 		data.Email = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.stateOrProvince"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.stateOrProvince"); value.Exists() && value.Type != gjson.Null {
 		data.StateOrProvince = types.StringValue(value.String())
 	} else {
 		data.StateOrProvince = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.telephone"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.telephone"); value.Exists() && value.Type != gjson.Null {
 		data.Telephone = types.StringValue(value.String())
 	} else {
 		data.Telephone = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.country"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.country"); value.Exists() && value.Type != gjson.Null {
 		data.Country = types.StringValue(value.String())
 	} else {
 		data.Country = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.streetAddress"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.streetAddress"); value.Exists() && value.Type != gjson.Null {
 		data.StreetAddress = types.StringValue(value.String())
 	} else {
 		data.StreetAddress = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.enableFailedAuthProtection"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.enableFailedAuthProtection"); value.Exists() && value.Type != gjson.Null {
 		data.EnableFailedAuthProtection = types.BoolValue(value.Bool())
 	} else {
 		data.EnableFailedAuthProtection = types.BoolValue(false)
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.failedAuthThreshold"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.failedAuthThreshold"); value.Exists() && value.Type != gjson.Null {
 		data.FailedAuthThreshold = types.Int64Value(value.Int())
 	} else {
 		data.FailedAuthThreshold = types.Int64Value(5)
 	}
-	if value := res.Get("ERSActiveDirectory.advancedSettings.authProtectionType"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.advancedSettings.authProtectionType"); value.Exists() && value.Type != gjson.Null {
 		data.AuthProtectionType = types.StringValue(value.String())
 	} else {
 		data.AuthProtectionType = types.StringNull()

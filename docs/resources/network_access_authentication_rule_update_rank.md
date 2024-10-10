@@ -14,22 +14,9 @@ This resource is used to update rank field in network access authentication rule
 
 ```terraform
 resource "ise_network_access_authentication_rule_update_rank" "example" {
-  auth_rule_id              = "9b3680da-0165-44f6-9cff-88e778d98020"
-  policy_set_id             = "d82952cb-b901-4b09-b363-5ebf39bdbaf9"
-  name                      = "Rule1"
-  default                   = false
-  rank                      = 0
-  state                     = "enabled"
-  condition_type            = "ConditionAttributes"
-  condition_is_negate       = false
-  condition_attribute_name  = "Location"
-  condition_attribute_value = "All Locations"
-  condition_dictionary_name = "DEVICE"
-  condition_operator        = "equals"
-  identity_source_name      = "Internal Endpoints"
-  if_auth_fail              = "REJECT"
-  if_process_fail           = "DROP"
-  if_user_not_found         = "REJECT"
+  auth_rule_id  = "9b3680da-0165-44f6-9cff-88e778d98020"
+  policy_set_id = "d82952cb-b901-4b09-b363-5ebf39bdbaf9"
+  rank          = 0
 }
 ```
 
@@ -39,73 +26,9 @@ resource "ise_network_access_authentication_rule_update_rank" "example" {
 ### Required
 
 - `auth_rule_id` (String) Authentication rule ID
-- `if_auth_fail` (String) Action to perform when authentication fails such as Bad credentials, disabled user and so on
-  - Choices: `REJECT`, `DROP`, `CONTINUE`
-- `if_process_fail` (String) Action to perform when ISE is uanble to access the identity database
-  - Choices: `REJECT`, `DROP`, `CONTINUE`
-- `if_user_not_found` (String) Action to perform when user is not found in any of identity stores
-  - Choices: `REJECT`, `DROP`, `CONTINUE`
-- `name` (String) Rule name, [Valid characters are alphanumerics, underscore, hyphen, space, period, parentheses]
 - `policy_set_id` (String) Policy set ID
-
-### Optional
-
-- `children` (Attributes List) List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`. (see [below for nested schema](#nestedatt--children))
-- `condition_attribute_name` (String) Dictionary attribute name
-- `condition_attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
-- `condition_dictionary_name` (String) Dictionary name
-- `condition_dictionary_value` (String) Dictionary value
-- `condition_id` (String) UUID for condition
-- `condition_is_negate` (Boolean) Indicates whereas this condition is in negate mode
-- `condition_operator` (String) Equality operator
-  - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`
-- `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
-  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
-- `default` (Boolean) Indicates if this rule is the default one
-- `identity_source_name` (String) Identity source name from the identity stores
 - `rank` (Number) The rank (priority) in relation to other rules. Lower rank is higher priority.
-- `state` (String) The state that the rule is in. A disabled rule cannot be matched.
-  - Choices: `disabled`, `enabled`, `monitor`
 
 ### Read-Only
 
 - `id` (String) The id of the object
-
-<a id="nestedatt--children"></a>
-### Nested Schema for `children`
-
-Required:
-
-- `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
-  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
-
-Optional:
-
-- `attribute_name` (String) Dictionary attribute name
-- `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
-- `children` (Attributes List) List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`. (see [below for nested schema](#nestedatt--children--children))
-- `dictionary_name` (String) Dictionary name
-- `dictionary_value` (String) Dictionary value
-- `id` (String) UUID for condition
-- `is_negate` (Boolean) Indicates whereas this condition is in negate mode
-- `operator` (String) Equality operator
-  - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`
-
-<a id="nestedatt--children--children"></a>
-### Nested Schema for `children.children`
-
-Required:
-
-- `condition_type` (String) Condition type.
-  - Choices: `ConditionAttributes`, `ConditionReference`
-
-Optional:
-
-- `attribute_name` (String) Dictionary attribute name
-- `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
-- `dictionary_name` (String) Dictionary name
-- `dictionary_value` (String) Dictionary value
-- `id` (String) UUID for condition
-- `is_negate` (Boolean) Indicates whereas this condition is in negate mode
-- `operator` (String) Equality operator
-  - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`

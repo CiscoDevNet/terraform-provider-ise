@@ -93,17 +93,17 @@ func (data TACACSCommandSet) toBody(ctx context.Context, state TACACSCommandSet)
 
 //template:begin fromBody
 func (data *TACACSCommandSet) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("TacacsCommandSets.name"); value.Exists() {
+	if value := res.Get("TacacsCommandSets.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("TacacsCommandSets.description"); value.Exists() {
+	if value := res.Get("TacacsCommandSets.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("TacacsCommandSets.permitUnmatched"); value.Exists() {
+	if value := res.Get("TacacsCommandSets.permitUnmatched"); value.Exists() && value.Type != gjson.Null {
 		data.PermitUnmatched = types.BoolValue(value.Bool())
 	} else {
 		data.PermitUnmatched = types.BoolValue(false)

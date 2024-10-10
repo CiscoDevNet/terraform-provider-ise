@@ -92,27 +92,27 @@ func (data AllowedProtocolsTACACS) toBody(ctx context.Context, state AllowedProt
 
 //template:begin fromBody
 func (data *AllowedProtocolsTACACS) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("AllowedProtocols.name"); value.Exists() {
+	if value := res.Get("AllowedProtocols.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("AllowedProtocols.description"); value.Exists() {
+	if value := res.Get("AllowedProtocols.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("AllowedProtocols.allowPapAscii"); value.Exists() {
+	if value := res.Get("AllowedProtocols.allowPapAscii"); value.Exists() && value.Type != gjson.Null {
 		data.AllowPapAscii = types.BoolValue(value.Bool())
 	} else {
 		data.AllowPapAscii = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.allowChap"); value.Exists() {
+	if value := res.Get("AllowedProtocols.allowChap"); value.Exists() && value.Type != gjson.Null {
 		data.AllowChap = types.BoolValue(value.Bool())
 	} else {
 		data.AllowChap = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.allowMsChapV1"); value.Exists() {
+	if value := res.Get("AllowedProtocols.allowMsChapV1"); value.Exists() && value.Type != gjson.Null {
 		data.AllowMsChapV1 = types.BoolValue(value.Bool())
 	} else {
 		data.AllowMsChapV1 = types.BoolNull()

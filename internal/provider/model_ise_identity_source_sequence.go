@@ -94,22 +94,22 @@ func (data IdentitySourceSequence) toBody(ctx context.Context, state IdentitySou
 
 //template:begin fromBody
 func (data *IdentitySourceSequence) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("IdStoreSequence.name"); value.Exists() {
+	if value := res.Get("IdStoreSequence.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("IdStoreSequence.description"); value.Exists() {
+	if value := res.Get("IdStoreSequence.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("IdStoreSequence.breakOnStoreFail"); value.Exists() {
+	if value := res.Get("IdStoreSequence.breakOnStoreFail"); value.Exists() && value.Type != gjson.Null {
 		data.BreakOnStoreFail = types.BoolValue(value.Bool())
 	} else {
 		data.BreakOnStoreFail = types.BoolNull()
 	}
-	if value := res.Get("IdStoreSequence.certificateAuthenticationProfile"); value.Exists() {
+	if value := res.Get("IdStoreSequence.certificateAuthenticationProfile"); value.Exists() && value.Type != gjson.Null {
 		data.CertificateAuthenticationProfile = types.StringValue(value.String())
 	} else {
 		data.CertificateAuthenticationProfile = types.StringNull()

@@ -76,7 +76,6 @@ resource "ise_network_access_authentication_rule" "test" {
   if_process_fail           = "DROP"
   if_user_not_found         = "REJECT"
 }
-
 `
 
 //template:end testPrerequisites
@@ -86,10 +85,7 @@ func testAccIseNetworkAccessAuthenticationRuleUpdateRankConfig_minimum() string 
 	config := `resource "ise_network_access_authentication_rule_update_rank" "test" {` + "\n"
 	config += `	auth_rule_id = ise_network_access_authentication_rule.test.id` + "\n"
 	config += `	policy_set_id = ise_network_access_policy_set.test.id` + "\n"
-	config += `	name = "Rule1"` + "\n"
-	config += `	if_auth_fail = "REJECT"` + "\n"
-	config += `	if_process_fail = "DROP"` + "\n"
-	config += `	if_user_not_found = "REJECT"` + "\n"
+	config += `	rank = 0` + "\n"
 	config += `}` + "\n"
 	return config
 }
@@ -101,20 +97,7 @@ func testAccIseNetworkAccessAuthenticationRuleUpdateRankConfig_all() string {
 	config := `resource "ise_network_access_authentication_rule_update_rank" "test" {` + "\n"
 	config += `	auth_rule_id = ise_network_access_authentication_rule.test.id` + "\n"
 	config += `	policy_set_id = ise_network_access_policy_set.test.id` + "\n"
-	config += `	name = "Rule1"` + "\n"
-	config += `	default = false` + "\n"
 	config += `	rank = 0` + "\n"
-	config += `	state = "enabled"` + "\n"
-	config += `	condition_type = "ConditionAttributes"` + "\n"
-	config += `	condition_is_negate = false` + "\n"
-	config += `	condition_attribute_name = "Location"` + "\n"
-	config += `	condition_attribute_value = "All Locations"` + "\n"
-	config += `	condition_dictionary_name = "DEVICE"` + "\n"
-	config += `	condition_operator = "equals"` + "\n"
-	config += `	identity_source_name = "Internal Endpoints"` + "\n"
-	config += `	if_auth_fail = "REJECT"` + "\n"
-	config += `	if_process_fail = "DROP"` + "\n"
-	config += `	if_user_not_found = "REJECT"` + "\n"
 	config += `}` + "\n"
 	return config
 }

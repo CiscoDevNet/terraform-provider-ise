@@ -116,17 +116,17 @@ func (data DeviceAdminTimeAndDateCondition) toBody(ctx context.Context, state De
 
 //template:begin fromBody
 func (data *DeviceAdminTimeAndDateCondition) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("response.name"); value.Exists() {
+	if value := res.Get("response.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("response.description"); value.Exists() {
+	if value := res.Get("response.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("response.isNegate"); value.Exists() {
+	if value := res.Get("response.isNegate"); value.Exists() && value.Type != gjson.Null {
 		data.IsNegate = types.BoolValue(value.Bool())
 	} else {
 		data.IsNegate = types.BoolNull()
@@ -141,42 +141,42 @@ func (data *DeviceAdminTimeAndDateCondition) fromBody(ctx context.Context, res g
 	} else {
 		data.WeekDaysException = types.SetNull(types.StringType)
 	}
-	if value := res.Get("response.datesRange.startDate"); value.Exists() {
+	if value := res.Get("response.datesRange.startDate"); value.Exists() && value.Type != gjson.Null {
 		data.StartDate = types.StringValue(value.String())
 	} else {
 		data.StartDate = types.StringNull()
 	}
-	if value := res.Get("response.datesRange.endDate"); value.Exists() {
+	if value := res.Get("response.datesRange.endDate"); value.Exists() && value.Type != gjson.Null {
 		data.EndDate = types.StringValue(value.String())
 	} else {
 		data.EndDate = types.StringNull()
 	}
-	if value := res.Get("response.datesRangeException.startDate"); value.Exists() {
+	if value := res.Get("response.datesRangeException.startDate"); value.Exists() && value.Type != gjson.Null {
 		data.ExceptionStartDate = types.StringValue(value.String())
 	} else {
 		data.ExceptionStartDate = types.StringNull()
 	}
-	if value := res.Get("response.datesRangeException.endDate"); value.Exists() {
+	if value := res.Get("response.datesRangeException.endDate"); value.Exists() && value.Type != gjson.Null {
 		data.ExceptionEndDate = types.StringValue(value.String())
 	} else {
 		data.ExceptionEndDate = types.StringNull()
 	}
-	if value := res.Get("response.hoursRange.startTime"); value.Exists() {
+	if value := res.Get("response.hoursRange.startTime"); value.Exists() && value.Type != gjson.Null {
 		data.StartTime = types.StringValue(value.String())
 	} else {
 		data.StartTime = types.StringNull()
 	}
-	if value := res.Get("response.hoursRange.endTime"); value.Exists() {
+	if value := res.Get("response.hoursRange.endTime"); value.Exists() && value.Type != gjson.Null {
 		data.EndTime = types.StringValue(value.String())
 	} else {
 		data.EndTime = types.StringNull()
 	}
-	if value := res.Get("response.hoursRangeException.startTime"); value.Exists() {
+	if value := res.Get("response.hoursRangeException.startTime"); value.Exists() && value.Type != gjson.Null {
 		data.ExceptionStartTime = types.StringValue(value.String())
 	} else {
 		data.ExceptionStartTime = types.StringNull()
 	}
-	if value := res.Get("response.hoursRangeException.endTime"); value.Exists() {
+	if value := res.Get("response.hoursRangeException.endTime"); value.Exists() && value.Type != gjson.Null {
 		data.ExceptionEndTime = types.StringValue(value.String())
 	} else {
 		data.ExceptionEndTime = types.StringNull()

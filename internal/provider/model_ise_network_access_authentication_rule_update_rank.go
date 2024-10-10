@@ -34,49 +34,10 @@ import (
 
 //template:begin types
 type NetworkAccessAuthenticationRuleUpdateRank struct {
-	Id                       types.String                                        `tfsdk:"id"`
-	AuthRuleId               types.String                                        `tfsdk:"auth_rule_id"`
-	PolicySetId              types.String                                        `tfsdk:"policy_set_id"`
-	Name                     types.String                                        `tfsdk:"name"`
-	Default                  types.Bool                                          `tfsdk:"default"`
-	Rank                     types.Int64                                         `tfsdk:"rank"`
-	State                    types.String                                        `tfsdk:"state"`
-	ConditionType            types.String                                        `tfsdk:"condition_type"`
-	ConditionId              types.String                                        `tfsdk:"condition_id"`
-	ConditionIsNegate        types.Bool                                          `tfsdk:"condition_is_negate"`
-	ConditionAttributeName   types.String                                        `tfsdk:"condition_attribute_name"`
-	ConditionAttributeValue  types.String                                        `tfsdk:"condition_attribute_value"`
-	ConditionDictionaryName  types.String                                        `tfsdk:"condition_dictionary_name"`
-	ConditionDictionaryValue types.String                                        `tfsdk:"condition_dictionary_value"`
-	ConditionOperator        types.String                                        `tfsdk:"condition_operator"`
-	Children                 []NetworkAccessAuthenticationRuleUpdateRankChildren `tfsdk:"children"`
-	IdentitySourceName       types.String                                        `tfsdk:"identity_source_name"`
-	IfAuthFail               types.String                                        `tfsdk:"if_auth_fail"`
-	IfProcessFail            types.String                                        `tfsdk:"if_process_fail"`
-	IfUserNotFound           types.String                                        `tfsdk:"if_user_not_found"`
-}
-
-type NetworkAccessAuthenticationRuleUpdateRankChildren struct {
-	ConditionType   types.String                                                `tfsdk:"condition_type"`
-	Id              types.String                                                `tfsdk:"id"`
-	IsNegate        types.Bool                                                  `tfsdk:"is_negate"`
-	AttributeName   types.String                                                `tfsdk:"attribute_name"`
-	AttributeValue  types.String                                                `tfsdk:"attribute_value"`
-	DictionaryName  types.String                                                `tfsdk:"dictionary_name"`
-	DictionaryValue types.String                                                `tfsdk:"dictionary_value"`
-	Operator        types.String                                                `tfsdk:"operator"`
-	Children        []NetworkAccessAuthenticationRuleUpdateRankChildrenChildren `tfsdk:"children"`
-}
-
-type NetworkAccessAuthenticationRuleUpdateRankChildrenChildren struct {
-	ConditionType   types.String `tfsdk:"condition_type"`
-	Id              types.String `tfsdk:"id"`
-	IsNegate        types.Bool   `tfsdk:"is_negate"`
-	AttributeName   types.String `tfsdk:"attribute_name"`
-	AttributeValue  types.String `tfsdk:"attribute_value"`
-	DictionaryName  types.String `tfsdk:"dictionary_name"`
-	DictionaryValue types.String `tfsdk:"dictionary_value"`
-	Operator        types.String `tfsdk:"operator"`
+	Id          types.String `tfsdk:"id"`
+	AuthRuleId  types.String `tfsdk:"auth_rule_id"`
+	PolicySetId types.String `tfsdk:"policy_set_id"`
+	Rank        types.Int64  `tfsdk:"rank"`
 }
 
 //template:end types
@@ -98,115 +59,8 @@ func (data NetworkAccessAuthenticationRuleUpdateRank) toBody(ctx context.Context
 	if !data.AuthRuleId.IsNull() {
 		body, _ = sjson.Set(body, "", data.AuthRuleId.ValueString())
 	}
-	if !data.Name.IsNull() {
-		body, _ = sjson.Set(body, "rule.name", data.Name.ValueString())
-	}
-	if !data.Default.IsNull() {
-		body, _ = sjson.Set(body, "rule.default", data.Default.ValueBool())
-	}
 	if !data.Rank.IsNull() {
 		body, _ = sjson.Set(body, "rule.rank", data.Rank.ValueInt64())
-	}
-	if !data.State.IsNull() {
-		body, _ = sjson.Set(body, "rule.state", data.State.ValueString())
-	}
-	if !data.ConditionType.IsNull() {
-		body, _ = sjson.Set(body, "rule.condition.conditionType", data.ConditionType.ValueString())
-	}
-	if !data.ConditionId.IsNull() {
-		body, _ = sjson.Set(body, "rule.condition.id", data.ConditionId.ValueString())
-	}
-	if !data.ConditionIsNegate.IsNull() {
-		body, _ = sjson.Set(body, "rule.condition.isNegate", data.ConditionIsNegate.ValueBool())
-	}
-	if !data.ConditionAttributeName.IsNull() {
-		body, _ = sjson.Set(body, "rule.condition.attributeName", data.ConditionAttributeName.ValueString())
-	}
-	if !data.ConditionAttributeValue.IsNull() {
-		body, _ = sjson.Set(body, "rule.condition.attributeValue", data.ConditionAttributeValue.ValueString())
-	}
-	if !data.ConditionDictionaryName.IsNull() {
-		body, _ = sjson.Set(body, "rule.condition.dictionaryName", data.ConditionDictionaryName.ValueString())
-	}
-	if !data.ConditionDictionaryValue.IsNull() {
-		body, _ = sjson.Set(body, "rule.condition.dictionaryValue", data.ConditionDictionaryValue.ValueString())
-	}
-	if !data.ConditionOperator.IsNull() {
-		body, _ = sjson.Set(body, "rule.condition.operator", data.ConditionOperator.ValueString())
-	}
-	if len(data.Children) > 0 {
-		body, _ = sjson.Set(body, "rule.condition.children", []interface{}{})
-		for _, item := range data.Children {
-			itemBody := ""
-			if !item.ConditionType.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "conditionType", item.ConditionType.ValueString())
-			}
-			if !item.Id.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
-			}
-			if !item.IsNegate.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "isNegate", item.IsNegate.ValueBool())
-			}
-			if !item.AttributeName.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "attributeName", item.AttributeName.ValueString())
-			}
-			if !item.AttributeValue.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "attributeValue", item.AttributeValue.ValueString())
-			}
-			if !item.DictionaryName.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "dictionaryName", item.DictionaryName.ValueString())
-			}
-			if !item.DictionaryValue.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "dictionaryValue", item.DictionaryValue.ValueString())
-			}
-			if !item.Operator.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "operator", item.Operator.ValueString())
-			}
-			if len(item.Children) > 0 {
-				itemBody, _ = sjson.Set(itemBody, "children", []interface{}{})
-				for _, childItem := range item.Children {
-					itemChildBody := ""
-					if !childItem.ConditionType.IsNull() {
-						itemChildBody, _ = sjson.Set(itemChildBody, "conditionType", childItem.ConditionType.ValueString())
-					}
-					if !childItem.Id.IsNull() {
-						itemChildBody, _ = sjson.Set(itemChildBody, "id", childItem.Id.ValueString())
-					}
-					if !childItem.IsNegate.IsNull() {
-						itemChildBody, _ = sjson.Set(itemChildBody, "isNegate", childItem.IsNegate.ValueBool())
-					}
-					if !childItem.AttributeName.IsNull() {
-						itemChildBody, _ = sjson.Set(itemChildBody, "attributeName", childItem.AttributeName.ValueString())
-					}
-					if !childItem.AttributeValue.IsNull() {
-						itemChildBody, _ = sjson.Set(itemChildBody, "attributeValue", childItem.AttributeValue.ValueString())
-					}
-					if !childItem.DictionaryName.IsNull() {
-						itemChildBody, _ = sjson.Set(itemChildBody, "dictionaryName", childItem.DictionaryName.ValueString())
-					}
-					if !childItem.DictionaryValue.IsNull() {
-						itemChildBody, _ = sjson.Set(itemChildBody, "dictionaryValue", childItem.DictionaryValue.ValueString())
-					}
-					if !childItem.Operator.IsNull() {
-						itemChildBody, _ = sjson.Set(itemChildBody, "operator", childItem.Operator.ValueString())
-					}
-					itemBody, _ = sjson.SetRaw(itemBody, "children.-1", itemChildBody)
-				}
-			}
-			body, _ = sjson.SetRaw(body, "rule.condition.children.-1", itemBody)
-		}
-	}
-	if !data.IdentitySourceName.IsNull() {
-		body, _ = sjson.Set(body, "identitySourceName", data.IdentitySourceName.ValueString())
-	}
-	if !data.IfAuthFail.IsNull() {
-		body, _ = sjson.Set(body, "ifAuthFail", data.IfAuthFail.ValueString())
-	}
-	if !data.IfProcessFail.IsNull() {
-		body, _ = sjson.Set(body, "ifProcessFail", data.IfProcessFail.ValueString())
-	}
-	if !data.IfUserNotFound.IsNull() {
-		body, _ = sjson.Set(body, "ifUserNotFound", data.IfUserNotFound.ValueString())
 	}
 	return body
 }
@@ -215,7 +69,7 @@ func (data NetworkAccessAuthenticationRuleUpdateRank) toBody(ctx context.Context
 
 //template:begin fromBody
 func (data *NetworkAccessAuthenticationRuleUpdateRank) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("response.rule.rank"); value.Exists() {
+	if value := res.Get("response.rule.rank"); value.Exists() && value.Type != gjson.Null {
 		data.Rank = types.Int64Value(value.Int())
 	} else {
 		data.Rank = types.Int64Null()
@@ -240,55 +94,7 @@ func (data *NetworkAccessAuthenticationRuleUpdateRank) isNull(ctx context.Contex
 	if !data.AuthRuleId.IsNull() {
 		return false
 	}
-	if !data.Name.IsNull() {
-		return false
-	}
-	if !data.Default.IsNull() {
-		return false
-	}
 	if !data.Rank.IsNull() {
-		return false
-	}
-	if !data.State.IsNull() {
-		return false
-	}
-	if !data.ConditionType.IsNull() {
-		return false
-	}
-	if !data.ConditionId.IsNull() {
-		return false
-	}
-	if !data.ConditionIsNegate.IsNull() {
-		return false
-	}
-	if !data.ConditionAttributeName.IsNull() {
-		return false
-	}
-	if !data.ConditionAttributeValue.IsNull() {
-		return false
-	}
-	if !data.ConditionDictionaryName.IsNull() {
-		return false
-	}
-	if !data.ConditionDictionaryValue.IsNull() {
-		return false
-	}
-	if !data.ConditionOperator.IsNull() {
-		return false
-	}
-	if len(data.Children) > 0 {
-		return false
-	}
-	if !data.IdentitySourceName.IsNull() {
-		return false
-	}
-	if !data.IfAuthFail.IsNull() {
-		return false
-	}
-	if !data.IfProcessFail.IsNull() {
-		return false
-	}
-	if !data.IfUserNotFound.IsNull() {
 		return false
 	}
 	return true

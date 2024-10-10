@@ -104,27 +104,27 @@ func (data ActiveDirectoryAddGroups) toBody(ctx context.Context, state ActiveDir
 
 //template:begin fromBody
 func (data *ActiveDirectoryAddGroups) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("ERSActiveDirectory.name"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.description"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.domain"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.domain"); value.Exists() && value.Type != gjson.Null {
 		data.Domain = types.StringValue(value.String())
 	} else {
 		data.Domain = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.adScopesNames"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.adScopesNames"); value.Exists() && value.Type != gjson.Null {
 		data.AdScopesNames = types.StringValue(value.String())
 	} else {
 		data.AdScopesNames = types.StringValue("Default_Scope")
 	}
-	if value := res.Get("ERSActiveDirectory.enableDomainAllowedList"); value.Exists() {
+	if value := res.Get("ERSActiveDirectory.enableDomainAllowedList"); value.Exists() && value.Type != gjson.Null {
 		data.EnableDomainAllowedList = types.BoolValue(value.Bool())
 	} else {
 		data.EnableDomainAllowedList = types.BoolValue(true)

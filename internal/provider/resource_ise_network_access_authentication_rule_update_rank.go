@@ -27,15 +27,14 @@ import (
 	"strings"
 
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
-	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
+	"github.com/tidwall/sjson"
 )
 
 //template:end imports
@@ -87,179 +86,9 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Schema(ctx context.C
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
-			"name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Rule name, [Valid characters are alphanumerics, underscore, hyphen, space, period, parentheses]").String,
-				Required:            true,
-			},
-			"default": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Indicates if this rule is the default one").String,
-				Optional:            true,
-			},
 			"rank": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("The rank (priority) in relation to other rules. Lower rank is higher priority.").String,
-				Optional:            true,
-			},
-			"state": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The state that the rule is in. A disabled rule cannot be matched.").AddStringEnumDescription("disabled", "enabled", "monitor").String,
-				Optional:            true,
-				Validators: []validator.String{
-					stringvalidator.OneOf("disabled", "enabled", "monitor"),
-				},
-			},
-			"condition_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference").String,
-				Optional:            true,
-				Validators: []validator.String{
-					stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference"),
-				},
-			},
-			"condition_id": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("UUID for condition").String,
-				Optional:            true,
-			},
-			"condition_is_negate": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Indicates whereas this condition is in negate mode").String,
-				Optional:            true,
-			},
-			"condition_attribute_name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Dictionary attribute name").String,
-				Optional:            true,
-			},
-			"condition_attribute_value": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Attribute value for condition. Value type is specified in dictionary object.").String,
-				Optional:            true,
-			},
-			"condition_dictionary_name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Dictionary name").String,
-				Optional:            true,
-			},
-			"condition_dictionary_value": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Dictionary value").String,
-				Optional:            true,
-			},
-			"condition_operator": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith").String,
-				Optional:            true,
-				Validators: []validator.String{
-					stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
-				},
-			},
-			"children": schema.ListNestedAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.").String,
-				Optional:            true,
-				NestedObject: schema.NestedAttributeObject{
-					Attributes: map[string]schema.Attribute{
-						"condition_type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference").String,
-							Required:            true,
-							Validators: []validator.String{
-								stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference"),
-							},
-						},
-						"id": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("UUID for condition").String,
-							Optional:            true,
-						},
-						"is_negate": schema.BoolAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Indicates whereas this condition is in negate mode").String,
-							Optional:            true,
-						},
-						"attribute_name": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Dictionary attribute name").String,
-							Optional:            true,
-						},
-						"attribute_value": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Attribute value for condition. Value type is specified in dictionary object.").String,
-							Optional:            true,
-						},
-						"dictionary_name": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Dictionary name").String,
-							Optional:            true,
-						},
-						"dictionary_value": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Dictionary value").String,
-							Optional:            true,
-						},
-						"operator": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith").String,
-							Optional:            true,
-							Validators: []validator.String{
-								stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
-							},
-						},
-						"children": schema.ListNestedAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.").String,
-							Optional:            true,
-							NestedObject: schema.NestedAttributeObject{
-								Attributes: map[string]schema.Attribute{
-									"condition_type": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAttributes", "ConditionReference").String,
-										Required:            true,
-										Validators: []validator.String{
-											stringvalidator.OneOf("ConditionAttributes", "ConditionReference"),
-										},
-									},
-									"id": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("UUID for condition").String,
-										Optional:            true,
-									},
-									"is_negate": schema.BoolAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Indicates whereas this condition is in negate mode").String,
-										Optional:            true,
-									},
-									"attribute_name": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Dictionary attribute name").String,
-										Optional:            true,
-									},
-									"attribute_value": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Attribute value for condition. Value type is specified in dictionary object.").String,
-										Optional:            true,
-									},
-									"dictionary_name": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Dictionary name").String,
-										Optional:            true,
-									},
-									"dictionary_value": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Dictionary value").String,
-										Optional:            true,
-									},
-									"operator": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith").String,
-										Optional:            true,
-										Validators: []validator.String{
-											stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-			"identity_source_name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Identity source name from the identity stores").String,
-				Optional:            true,
-			},
-			"if_auth_fail": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Action to perform when authentication fails such as Bad credentials, disabled user and so on").AddStringEnumDescription("REJECT", "DROP", "CONTINUE").String,
 				Required:            true,
-				Validators: []validator.String{
-					stringvalidator.OneOf("REJECT", "DROP", "CONTINUE"),
-				},
-			},
-			"if_process_fail": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Action to perform when ISE is uanble to access the identity database").AddStringEnumDescription("REJECT", "DROP", "CONTINUE").String,
-				Required:            true,
-				Validators: []validator.String{
-					stringvalidator.OneOf("REJECT", "DROP", "CONTINUE"),
-				},
-			},
-			"if_user_not_found": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Action to perform when user is not found in any of identity stores").AddStringEnumDescription("REJECT", "DROP", "CONTINUE").String,
-				Required:            true,
-				Validators: []validator.String{
-					stringvalidator.OneOf("REJECT", "DROP", "CONTINUE"),
-				},
 			},
 		},
 	}
@@ -280,6 +109,7 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Configure(_ context.
 
 func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan NetworkAccessAuthenticationRuleUpdateRank
+	var existingData NetworkAccessAuthenticationRule
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -290,9 +120,21 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Create(ctx context.C
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
 
-	// Create object
-	body := plan.toBody(ctx, NetworkAccessAuthenticationRuleUpdateRank{})
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.AuthRuleId.ValueString()), body)
+	// Read existing attributes from the API
+	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.AuthRuleId.ValueString()))
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
+		return
+	}
+	existingData.fromBody(ctx, res)
+
+	// Use the `toBody` function to construct the body from existingData
+	body := existingData.toBody(ctx, existingData)
+
+	// Update rank
+	body, _ = sjson.Set(body, "rule.rank", plan.Rank.ValueInt64())
+
+	res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.AuthRuleId.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -341,9 +183,9 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Read(ctx context.Con
 
 //template:end read
 
-//template:begin update
 func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state NetworkAccessAuthenticationRuleUpdateRank
+	var existingData NetworkAccessAuthenticationRule
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -359,9 +201,22 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Update(ctx context.C
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
-	body := plan.toBody(ctx, state)
 
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
+	// Read existing attributes from the API
+	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.AuthRuleId.ValueString()))
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
+		return
+	}
+	existingData.fromBody(ctx, res)
+
+	// Use the `toBody` function to construct the body from existingData
+	body := existingData.toBody(ctx, existingData)
+
+	// Update rank
+	body, _ = sjson.Set(body, "rule.rank", plan.Rank.ValueInt64())
+
+	res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -372,8 +227,6 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Update(ctx context.C
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
-//template:end update
 
 //template:begin delete
 func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

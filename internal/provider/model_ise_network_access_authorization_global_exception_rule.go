@@ -204,62 +204,62 @@ func (data NetworkAccessAuthorizationGlobalExceptionRule) toBody(ctx context.Con
 
 //template:begin fromBody
 func (data *NetworkAccessAuthorizationGlobalExceptionRule) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("response.rule.name"); value.Exists() {
+	if value := res.Get("response.rule.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("response.rule.default"); value.Exists() {
+	if value := res.Get("response.rule.default"); value.Exists() && value.Type != gjson.Null {
 		data.Default = types.BoolValue(value.Bool())
 	} else {
 		data.Default = types.BoolNull()
 	}
-	if value := res.Get("response.rule.rank"); value.Exists() {
+	if value := res.Get("response.rule.rank"); value.Exists() && value.Type != gjson.Null {
 		data.Rank = types.Int64Value(value.Int())
 	} else {
 		data.Rank = types.Int64Null()
 	}
-	if value := res.Get("response.rule.state"); value.Exists() {
+	if value := res.Get("response.rule.state"); value.Exists() && value.Type != gjson.Null {
 		data.State = types.StringValue(value.String())
 	} else {
 		data.State = types.StringNull()
 	}
-	if value := res.Get("response.rule.condition.conditionType"); value.Exists() {
+	if value := res.Get("response.rule.condition.conditionType"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionType = types.StringValue(value.String())
 	} else {
 		data.ConditionType = types.StringNull()
 	}
-	if value := res.Get("response.rule.condition.id"); value.Exists() {
+	if value := res.Get("response.rule.condition.id"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionId = types.StringValue(value.String())
 	} else {
 		data.ConditionId = types.StringNull()
 	}
-	if value := res.Get("response.rule.condition.isNegate"); value.Exists() {
+	if value := res.Get("response.rule.condition.isNegate"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionIsNegate = types.BoolValue(value.Bool())
 	} else {
 		data.ConditionIsNegate = types.BoolNull()
 	}
-	if value := res.Get("response.rule.condition.attributeName"); value.Exists() {
+	if value := res.Get("response.rule.condition.attributeName"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionAttributeName = types.StringValue(value.String())
 	} else {
 		data.ConditionAttributeName = types.StringNull()
 	}
-	if value := res.Get("response.rule.condition.attributeValue"); value.Exists() {
+	if value := res.Get("response.rule.condition.attributeValue"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionAttributeValue = types.StringValue(value.String())
 	} else {
 		data.ConditionAttributeValue = types.StringNull()
 	}
-	if value := res.Get("response.rule.condition.dictionaryName"); value.Exists() {
+	if value := res.Get("response.rule.condition.dictionaryName"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionDictionaryName = types.StringValue(value.String())
 	} else {
 		data.ConditionDictionaryName = types.StringNull()
 	}
-	if value := res.Get("response.rule.condition.dictionaryValue"); value.Exists() {
+	if value := res.Get("response.rule.condition.dictionaryValue"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionDictionaryValue = types.StringValue(value.String())
 	} else {
 		data.ConditionDictionaryValue = types.StringNull()
 	}
-	if value := res.Get("response.rule.condition.operator"); value.Exists() {
+	if value := res.Get("response.rule.condition.operator"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionOperator = types.StringValue(value.String())
 	} else {
 		data.ConditionOperator = types.StringNull()
@@ -365,7 +365,7 @@ func (data *NetworkAccessAuthorizationGlobalExceptionRule) fromBody(ctx context.
 	} else {
 		data.Profiles = types.SetNull(types.StringType)
 	}
-	if value := res.Get("response.securityGroup"); value.Exists() {
+	if value := res.Get("response.securityGroup"); value.Exists() && value.Type != gjson.Null {
 		data.SecurityGroup = types.StringValue(value.String())
 	} else {
 		data.SecurityGroup = types.StringNull()

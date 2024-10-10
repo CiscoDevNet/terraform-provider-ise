@@ -205,77 +205,77 @@ func (data NetworkAccessPolicySet) toBody(ctx context.Context, state NetworkAcce
 
 //template:begin fromBody
 func (data *NetworkAccessPolicySet) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("response.name"); value.Exists() {
+	if value := res.Get("response.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("response.description"); value.Exists() {
+	if value := res.Get("response.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("response.isProxy"); value.Exists() {
+	if value := res.Get("response.isProxy"); value.Exists() && value.Type != gjson.Null {
 		data.IsProxy = types.BoolValue(value.Bool())
 	} else {
 		data.IsProxy = types.BoolNull()
 	}
-	if value := res.Get("response.rank"); value.Exists() {
+	if value := res.Get("response.rank"); value.Exists() && value.Type != gjson.Null {
 		data.Rank = types.Int64Value(value.Int())
 	} else {
 		data.Rank = types.Int64Null()
 	}
-	if value := res.Get("response.serviceName"); value.Exists() {
+	if value := res.Get("response.serviceName"); value.Exists() && value.Type != gjson.Null {
 		data.ServiceName = types.StringValue(value.String())
 	} else {
 		data.ServiceName = types.StringNull()
 	}
-	if value := res.Get("response.state"); value.Exists() {
+	if value := res.Get("response.state"); value.Exists() && value.Type != gjson.Null {
 		data.State = types.StringValue(value.String())
 	} else {
 		data.State = types.StringNull()
 	}
-	if value := res.Get("response.default"); value.Exists() {
+	if value := res.Get("response.default"); value.Exists() && value.Type != gjson.Null {
 		data.Default = types.BoolValue(value.Bool())
 	} else {
 		data.Default = types.BoolNull()
 	}
-	if value := res.Get("response.condition.conditionType"); value.Exists() {
+	if value := res.Get("response.condition.conditionType"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionType = types.StringValue(value.String())
 	} else {
 		data.ConditionType = types.StringNull()
 	}
-	if value := res.Get("response.condition.id"); value.Exists() {
+	if value := res.Get("response.condition.id"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionId = types.StringValue(value.String())
 	} else {
 		data.ConditionId = types.StringNull()
 	}
-	if value := res.Get("response.condition.isNegate"); value.Exists() {
+	if value := res.Get("response.condition.isNegate"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionIsNegate = types.BoolValue(value.Bool())
 	} else {
 		data.ConditionIsNegate = types.BoolNull()
 	}
-	if value := res.Get("response.condition.attributeName"); value.Exists() {
+	if value := res.Get("response.condition.attributeName"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionAttributeName = types.StringValue(value.String())
 	} else {
 		data.ConditionAttributeName = types.StringNull()
 	}
-	if value := res.Get("response.condition.attributeValue"); value.Exists() {
+	if value := res.Get("response.condition.attributeValue"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionAttributeValue = types.StringValue(value.String())
 	} else {
 		data.ConditionAttributeValue = types.StringNull()
 	}
-	if value := res.Get("response.condition.dictionaryName"); value.Exists() {
+	if value := res.Get("response.condition.dictionaryName"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionDictionaryName = types.StringValue(value.String())
 	} else {
 		data.ConditionDictionaryName = types.StringNull()
 	}
-	if value := res.Get("response.condition.dictionaryValue"); value.Exists() {
+	if value := res.Get("response.condition.dictionaryValue"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionDictionaryValue = types.StringValue(value.String())
 	} else {
 		data.ConditionDictionaryValue = types.StringNull()
 	}
-	if value := res.Get("response.condition.operator"); value.Exists() {
+	if value := res.Get("response.condition.operator"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionOperator = types.StringValue(value.String())
 	} else {
 		data.ConditionOperator = types.StringNull()

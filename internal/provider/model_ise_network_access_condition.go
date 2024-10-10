@@ -196,47 +196,47 @@ func (data NetworkAccessCondition) toBody(ctx context.Context, state NetworkAcce
 
 //template:begin fromBody
 func (data *NetworkAccessCondition) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("response.name"); value.Exists() {
+	if value := res.Get("response.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("response.description"); value.Exists() {
+	if value := res.Get("response.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("response.conditionType"); value.Exists() {
+	if value := res.Get("response.conditionType"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionType = types.StringValue(value.String())
 	} else {
 		data.ConditionType = types.StringNull()
 	}
-	if value := res.Get("response.isNegate"); value.Exists() {
+	if value := res.Get("response.isNegate"); value.Exists() && value.Type != gjson.Null {
 		data.IsNegate = types.BoolValue(value.Bool())
 	} else {
 		data.IsNegate = types.BoolNull()
 	}
-	if value := res.Get("response.attributeName"); value.Exists() {
+	if value := res.Get("response.attributeName"); value.Exists() && value.Type != gjson.Null {
 		data.AttributeName = types.StringValue(value.String())
 	} else {
 		data.AttributeName = types.StringNull()
 	}
-	if value := res.Get("response.attributeValue"); value.Exists() {
+	if value := res.Get("response.attributeValue"); value.Exists() && value.Type != gjson.Null {
 		data.AttributeValue = types.StringValue(value.String())
 	} else {
 		data.AttributeValue = types.StringNull()
 	}
-	if value := res.Get("response.dictionaryName"); value.Exists() {
+	if value := res.Get("response.dictionaryName"); value.Exists() && value.Type != gjson.Null {
 		data.DictionaryName = types.StringValue(value.String())
 	} else {
 		data.DictionaryName = types.StringNull()
 	}
-	if value := res.Get("response.dictionaryValue"); value.Exists() {
+	if value := res.Get("response.dictionaryValue"); value.Exists() && value.Type != gjson.Null {
 		data.DictionaryValue = types.StringValue(value.String())
 	} else {
 		data.DictionaryValue = types.StringNull()
 	}
-	if value := res.Get("response.operator"); value.Exists() {
+	if value := res.Get("response.operator"); value.Exists() && value.Type != gjson.Null {
 		data.Operator = types.StringValue(value.String())
 	} else {
 		data.Operator = types.StringNull()
