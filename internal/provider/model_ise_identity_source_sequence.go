@@ -118,12 +118,12 @@ func (data *IdentitySourceSequence) fromBody(ctx context.Context, res gjson.Resu
 		data.IdentitySources = make([]IdentitySourceSequenceIdentitySources, 0)
 		value.ForEach(func(k, v gjson.Result) bool {
 			item := IdentitySourceSequenceIdentitySources{}
-			if cValue := v.Get("idstore"); cValue.Exists() {
+			if cValue := v.Get("idstore"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Name = types.StringValue(cValue.String())
 			} else {
 				item.Name = types.StringNull()
 			}
-			if cValue := v.Get("order"); cValue.Exists() {
+			if cValue := v.Get("order"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Order = types.Int64Value(cValue.Int())
 			} else {
 				item.Order = types.Int64Null()

@@ -1,6 +1,7 @@
 ---
 name: Network Access Authentication Rule Update Rank
 # Manual update in Create function in resource file to add AuthRuleId to path
+# and populate attributes from existing resource using GET request in Create and Update functions
 res_description:
   'This resource is used to update rank field in network access authentication rule. It serves as a workaround for the 
   ISE API/Backend limitation which restricts rank assignments to a strictly incremental sequence.

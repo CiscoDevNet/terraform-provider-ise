@@ -112,17 +112,17 @@ func (data *TACACSCommandSet) fromBody(ctx context.Context, res gjson.Result) {
 		data.Commands = make([]TACACSCommandSetCommands, 0)
 		value.ForEach(func(k, v gjson.Result) bool {
 			item := TACACSCommandSetCommands{}
-			if cValue := v.Get("grant"); cValue.Exists() {
+			if cValue := v.Get("grant"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Grant = types.StringValue(cValue.String())
 			} else {
 				item.Grant = types.StringNull()
 			}
-			if cValue := v.Get("command"); cValue.Exists() {
+			if cValue := v.Get("command"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Command = types.StringValue(cValue.String())
 			} else {
 				item.Command = types.StringNull()
 			}
-			if cValue := v.Get("arguments"); cValue.Exists() {
+			if cValue := v.Get("arguments"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Arguments = types.StringValue(cValue.String())
 			} else {
 				item.Arguments = types.StringNull()

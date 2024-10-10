@@ -317,17 +317,17 @@ func (data *NetworkDevice) fromBody(ctx context.Context, res gjson.Result) {
 		data.Ips = make([]NetworkDeviceIps, 0)
 		value.ForEach(func(k, v gjson.Result) bool {
 			item := NetworkDeviceIps{}
-			if cValue := v.Get("ipaddress"); cValue.Exists() {
+			if cValue := v.Get("ipaddress"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Ipaddress = types.StringValue(cValue.String())
 			} else {
 				item.Ipaddress = types.StringNull()
 			}
-			if cValue := v.Get("ipaddressExclude"); cValue.Exists() {
+			if cValue := v.Get("ipaddressExclude"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.IpaddressExclude = types.StringValue(cValue.String())
 			} else {
 				item.IpaddressExclude = types.StringNull()
 			}
-			if cValue := v.Get("mask"); cValue.Exists() {
+			if cValue := v.Get("mask"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Mask = types.StringValue(cValue.String())
 			} else {
 				item.Mask = types.StringNull()

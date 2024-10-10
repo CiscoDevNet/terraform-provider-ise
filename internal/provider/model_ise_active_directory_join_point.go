@@ -280,12 +280,12 @@ func (data *ActiveDirectoryJoinPoint) fromBody(ctx context.Context, res gjson.Re
 		data.Groups = make([]ActiveDirectoryJoinPointGroups, 0)
 		value.ForEach(func(k, v gjson.Result) bool {
 			item := ActiveDirectoryJoinPointGroups{}
-			if cValue := v.Get("name"); cValue.Exists() {
+			if cValue := v.Get("name"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Name = types.StringValue(cValue.String())
 			} else {
 				item.Name = types.StringNull()
 			}
-			if cValue := v.Get("sid"); cValue.Exists() {
+			if cValue := v.Get("sid"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Sid = types.StringValue(cValue.String())
 			} else {
 				item.Sid = types.StringNull()
@@ -298,22 +298,22 @@ func (data *ActiveDirectoryJoinPoint) fromBody(ctx context.Context, res gjson.Re
 		data.Attributes = make([]ActiveDirectoryJoinPointAttributes, 0)
 		value.ForEach(func(k, v gjson.Result) bool {
 			item := ActiveDirectoryJoinPointAttributes{}
-			if cValue := v.Get("name"); cValue.Exists() {
+			if cValue := v.Get("name"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Name = types.StringValue(cValue.String())
 			} else {
 				item.Name = types.StringNull()
 			}
-			if cValue := v.Get("type"); cValue.Exists() {
+			if cValue := v.Get("type"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Type = types.StringValue(cValue.String())
 			} else {
 				item.Type = types.StringNull()
 			}
-			if cValue := v.Get("internalName"); cValue.Exists() {
+			if cValue := v.Get("internalName"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.InternalName = types.StringValue(cValue.String())
 			} else {
 				item.InternalName = types.StringNull()
 			}
-			if cValue := v.Get("defaultValue"); cValue.Exists() {
+			if cValue := v.Get("defaultValue"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.DefaultValue = types.StringValue(cValue.String())
 			} else {
 				item.DefaultValue = types.StringNull()
@@ -326,17 +326,17 @@ func (data *ActiveDirectoryJoinPoint) fromBody(ctx context.Context, res gjson.Re
 		data.RewriteRules = make([]ActiveDirectoryJoinPointRewriteRules, 0)
 		value.ForEach(func(k, v gjson.Result) bool {
 			item := ActiveDirectoryJoinPointRewriteRules{}
-			if cValue := v.Get("rowId"); cValue.Exists() {
+			if cValue := v.Get("rowId"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.RowId = types.StringValue(cValue.String())
 			} else {
 				item.RowId = types.StringNull()
 			}
-			if cValue := v.Get("rewriteMatch"); cValue.Exists() {
+			if cValue := v.Get("rewriteMatch"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.RewriteMatch = types.StringValue(cValue.String())
 			} else {
 				item.RewriteMatch = types.StringNull()
 			}
-			if cValue := v.Get("rewriteResult"); cValue.Exists() {
+			if cValue := v.Get("rewriteResult"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.RewriteResult = types.StringValue(cValue.String())
 			} else {
 				item.RewriteResult = types.StringNull()

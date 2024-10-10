@@ -377,32 +377,32 @@ func (data *AuthorizationProfile) fromBody(ctx context.Context, res gjson.Result
 		data.AdvancedAttributes = make([]AuthorizationProfileAdvancedAttributes, 0)
 		value.ForEach(func(k, v gjson.Result) bool {
 			item := AuthorizationProfileAdvancedAttributes{}
-			if cValue := v.Get("leftHandSideDictionaryAttribue.dictionaryName"); cValue.Exists() {
+			if cValue := v.Get("leftHandSideDictionaryAttribue.dictionaryName"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.AttributeLeftDictionaryName = types.StringValue(cValue.String())
 			} else {
 				item.AttributeLeftDictionaryName = types.StringNull()
 			}
-			if cValue := v.Get("leftHandSideDictionaryAttribue.attributeName"); cValue.Exists() {
+			if cValue := v.Get("leftHandSideDictionaryAttribue.attributeName"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.AttributeLeftName = types.StringValue(cValue.String())
 			} else {
 				item.AttributeLeftName = types.StringNull()
 			}
-			if cValue := v.Get("rightHandSideAttribueValue.AdvancedAttributeValueType"); cValue.Exists() {
+			if cValue := v.Get("rightHandSideAttribueValue.AdvancedAttributeValueType"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.AttributeRightValueType = types.StringValue(cValue.String())
 			} else {
 				item.AttributeRightValueType = types.StringNull()
 			}
-			if cValue := v.Get("rightHandSideAttribueValue.value"); cValue.Exists() {
+			if cValue := v.Get("rightHandSideAttribueValue.value"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.AttributeRightValue = types.StringValue(cValue.String())
 			} else {
 				item.AttributeRightValue = types.StringNull()
 			}
-			if cValue := v.Get("rightHandSideAttribueValue.dictionaryName"); cValue.Exists() {
+			if cValue := v.Get("rightHandSideAttribueValue.dictionaryName"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.AttributeRightDictionaryName = types.StringValue(cValue.String())
 			} else {
 				item.AttributeRightDictionaryName = types.StringNull()
 			}
-			if cValue := v.Get("rightHandSideAttribueValue.attributeName"); cValue.Exists() {
+			if cValue := v.Get("rightHandSideAttribueValue.attributeName"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.AttributeRightName = types.StringValue(cValue.String())
 			} else {
 				item.AttributeRightName = types.StringNull()
