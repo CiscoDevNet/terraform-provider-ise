@@ -290,8 +290,6 @@ func (r *NetworkAccessAuthenticationRuleResource) Create(ctx context.Context, re
 	// Create object
 	body := plan.toBody(ctx, NetworkAccessAuthenticationRule{})
 
-	tflog.Debug(ctx, fmt.Sprintf("Generated body123: %s", body))
-
 	if plan.Name.ValueString() != "Default" {
 		res, _, err := r.client.Post(plan.getPath(), body)
 		if err != nil {

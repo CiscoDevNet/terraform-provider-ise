@@ -9,13 +9,11 @@ res_description:
   Creation of this resource is performing PUT operation (Update) and it only tracks rank field.
   When this resource is destroyed, no action is performed on ISE and resource is just removed from state.'
 rest_endpoint: /api/v1/policy/network-access/policy-set/%v/authentication
-data_source_name_query: true
 put_create: true
 no_delete: true
 no_import: true
 no_data_source: true
 skip_minimum_test: true
-ignore_delete_error: Attempted to delete default
 doc_category: Network Access
 attributes:
   - tf_name: auth_rule_id
