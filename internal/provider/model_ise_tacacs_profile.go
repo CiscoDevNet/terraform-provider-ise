@@ -89,12 +89,12 @@ func (data TACACSProfile) toBody(ctx context.Context, state TACACSProfile) strin
 
 //template:begin fromBody
 func (data *TACACSProfile) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("TacacsProfile.name"); value.Exists() {
+	if value := res.Get("TacacsProfile.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("TacacsProfile.description"); value.Exists() {
+	if value := res.Get("TacacsProfile.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
@@ -103,17 +103,17 @@ func (data *TACACSProfile) fromBody(ctx context.Context, res gjson.Result) {
 		data.SessionAttributes = make([]TACACSProfileSessionAttributes, 0)
 		value.ForEach(func(k, v gjson.Result) bool {
 			item := TACACSProfileSessionAttributes{}
-			if cValue := v.Get("type"); cValue.Exists() {
+			if cValue := v.Get("type"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Type = types.StringValue(cValue.String())
 			} else {
 				item.Type = types.StringNull()
 			}
-			if cValue := v.Get("name"); cValue.Exists() {
+			if cValue := v.Get("name"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Name = types.StringValue(cValue.String())
 			} else {
 				item.Name = types.StringNull()
 			}
-			if cValue := v.Get("value"); cValue.Exists() {
+			if cValue := v.Get("value"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Value = types.StringValue(cValue.String())
 			} else {
 				item.Value = types.StringNull()

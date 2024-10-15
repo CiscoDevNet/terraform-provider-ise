@@ -248,67 +248,67 @@ func (data NetworkDevice) toBody(ctx context.Context, state NetworkDevice) strin
 
 //template:begin fromBody
 func (data *NetworkDevice) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("NetworkDevice.name"); value.Exists() {
+	if value := res.Get("NetworkDevice.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.description"); value.Exists() {
+	if value := res.Get("NetworkDevice.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.authenticationSettings.enableKeyWrap"); value.Exists() {
+	if value := res.Get("NetworkDevice.authenticationSettings.enableKeyWrap"); value.Exists() && value.Type != gjson.Null {
 		data.AuthenticationEnableKeyWrap = types.BoolValue(value.Bool())
 	} else {
 		data.AuthenticationEnableKeyWrap = types.BoolNull()
 	}
-	if value := res.Get("NetworkDevice.authenticationSettings.keyEncryptionKey"); value.Exists() {
+	if value := res.Get("NetworkDevice.authenticationSettings.keyEncryptionKey"); value.Exists() && value.Type != gjson.Null {
 		data.AuthenticationEncryptionKey = types.StringValue(value.String())
 	} else {
 		data.AuthenticationEncryptionKey = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.authenticationSettings.keyInputFormat"); value.Exists() {
+	if value := res.Get("NetworkDevice.authenticationSettings.keyInputFormat"); value.Exists() && value.Type != gjson.Null {
 		data.AuthenticationEncryptionKeyFormat = types.StringValue(value.String())
 	} else {
 		data.AuthenticationEncryptionKeyFormat = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.authenticationSettings.messageAuthenticatorCodeKey"); value.Exists() {
+	if value := res.Get("NetworkDevice.authenticationSettings.messageAuthenticatorCodeKey"); value.Exists() && value.Type != gjson.Null {
 		data.AuthenticationMessageAuthenticatorCodeKey = types.StringValue(value.String())
 	} else {
 		data.AuthenticationMessageAuthenticatorCodeKey = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.authenticationSettings.networkProtocol"); value.Exists() {
+	if value := res.Get("NetworkDevice.authenticationSettings.networkProtocol"); value.Exists() && value.Type != gjson.Null {
 		data.AuthenticationNetworkProtocol = types.StringValue(value.String())
 	} else {
 		data.AuthenticationNetworkProtocol = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.authenticationSettings.radiusSharedSecret"); value.Exists() {
+	if value := res.Get("NetworkDevice.authenticationSettings.radiusSharedSecret"); value.Exists() && value.Type != gjson.Null {
 		data.AuthenticationRadiusSharedSecret = types.StringValue(value.String())
 	} else {
 		data.AuthenticationRadiusSharedSecret = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.authenticationSettings.enableMultiSecret"); value.Exists() {
+	if value := res.Get("NetworkDevice.authenticationSettings.enableMultiSecret"); value.Exists() && value.Type != gjson.Null {
 		data.AuthenticationEnableMultiSecret = types.BoolValue(value.Bool())
 	} else {
 		data.AuthenticationEnableMultiSecret = types.BoolNull()
 	}
-	if value := res.Get("NetworkDevice.authenticationSettings.secondRadiusSharedSecret"); value.Exists() {
+	if value := res.Get("NetworkDevice.authenticationSettings.secondRadiusSharedSecret"); value.Exists() && value.Type != gjson.Null {
 		data.AuthenticationSecondRadiusSharedSecret = types.StringValue(value.String())
 	} else {
 		data.AuthenticationSecondRadiusSharedSecret = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.authenticationSettings.dtlsRequired"); value.Exists() {
+	if value := res.Get("NetworkDevice.authenticationSettings.dtlsRequired"); value.Exists() && value.Type != gjson.Null {
 		data.AuthenticationDtlsRequired = types.BoolValue(value.Bool())
 	} else {
 		data.AuthenticationDtlsRequired = types.BoolNull()
 	}
-	if value := res.Get("NetworkDevice.coaPort"); value.Exists() {
+	if value := res.Get("NetworkDevice.coaPort"); value.Exists() && value.Type != gjson.Null {
 		data.CoaPort = types.Int64Value(value.Int())
 	} else {
 		data.CoaPort = types.Int64Value(1700)
 	}
-	if value := res.Get("NetworkDevice.dtlsDnsName"); value.Exists() {
+	if value := res.Get("NetworkDevice.dtlsDnsName"); value.Exists() && value.Type != gjson.Null {
 		data.DtlsDnsName = types.StringValue(value.String())
 	} else {
 		data.DtlsDnsName = types.StringNull()
@@ -317,17 +317,17 @@ func (data *NetworkDevice) fromBody(ctx context.Context, res gjson.Result) {
 		data.Ips = make([]NetworkDeviceIps, 0)
 		value.ForEach(func(k, v gjson.Result) bool {
 			item := NetworkDeviceIps{}
-			if cValue := v.Get("ipaddress"); cValue.Exists() {
+			if cValue := v.Get("ipaddress"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Ipaddress = types.StringValue(cValue.String())
 			} else {
 				item.Ipaddress = types.StringNull()
 			}
-			if cValue := v.Get("ipaddressExclude"); cValue.Exists() {
+			if cValue := v.Get("ipaddressExclude"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.IpaddressExclude = types.StringValue(cValue.String())
 			} else {
 				item.IpaddressExclude = types.StringNull()
 			}
-			if cValue := v.Get("mask"); cValue.Exists() {
+			if cValue := v.Get("mask"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Mask = types.StringValue(cValue.String())
 			} else {
 				item.Mask = types.StringNull()
@@ -341,132 +341,132 @@ func (data *NetworkDevice) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.NetworkDeviceGroups = types.SetNull(types.StringType)
 	}
-	if value := res.Get("NetworkDevice.modelName"); value.Exists() {
+	if value := res.Get("NetworkDevice.modelName"); value.Exists() && value.Type != gjson.Null {
 		data.ModelName = types.StringValue(value.String())
 	} else {
 		data.ModelName = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.softwareVersion"); value.Exists() {
+	if value := res.Get("NetworkDevice.softwareVersion"); value.Exists() && value.Type != gjson.Null {
 		data.SoftwareVersion = types.StringValue(value.String())
 	} else {
 		data.SoftwareVersion = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.profileName"); value.Exists() {
+	if value := res.Get("NetworkDevice.profileName"); value.Exists() && value.Type != gjson.Null {
 		data.ProfileName = types.StringValue(value.String())
 	} else {
 		data.ProfileName = types.StringValue("Cisco")
 	}
-	if value := res.Get("NetworkDevice.snmpsettings.linkTrapQuery"); value.Exists() {
+	if value := res.Get("NetworkDevice.snmpsettings.linkTrapQuery"); value.Exists() && value.Type != gjson.Null {
 		data.SnmpLinkTrapQuery = types.BoolValue(value.Bool())
 	} else {
 		data.SnmpLinkTrapQuery = types.BoolNull()
 	}
-	if value := res.Get("NetworkDevice.snmpsettings.macTrapQuery"); value.Exists() {
+	if value := res.Get("NetworkDevice.snmpsettings.macTrapQuery"); value.Exists() && value.Type != gjson.Null {
 		data.SnmpMacTrapQuery = types.BoolValue(value.Bool())
 	} else {
 		data.SnmpMacTrapQuery = types.BoolNull()
 	}
-	if value := res.Get("NetworkDevice.snmpsettings.originatingPolicyServicesNode"); value.Exists() {
+	if value := res.Get("NetworkDevice.snmpsettings.originatingPolicyServicesNode"); value.Exists() && value.Type != gjson.Null {
 		data.SnmpOriginatingPolicyServiceNode = types.StringValue(value.String())
 	} else {
 		data.SnmpOriginatingPolicyServiceNode = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.snmpsettings.pollingInterval"); value.Exists() {
+	if value := res.Get("NetworkDevice.snmpsettings.pollingInterval"); value.Exists() && value.Type != gjson.Null {
 		data.SnmpPollingInterval = types.Int64Value(value.Int())
 	} else {
 		data.SnmpPollingInterval = types.Int64Null()
 	}
-	if value := res.Get("NetworkDevice.snmpsettings.roCommunity"); value.Exists() {
+	if value := res.Get("NetworkDevice.snmpsettings.roCommunity"); value.Exists() && value.Type != gjson.Null {
 		data.SnmpRoCommunity = types.StringValue(value.String())
 	} else {
 		data.SnmpRoCommunity = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.snmpsettings.version"); value.Exists() {
+	if value := res.Get("NetworkDevice.snmpsettings.version"); value.Exists() && value.Type != gjson.Null {
 		data.SnmpVersion = types.StringValue(value.String())
 	} else {
 		data.SnmpVersion = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.tacacsSettings.connectModeOptions"); value.Exists() {
+	if value := res.Get("NetworkDevice.tacacsSettings.connectModeOptions"); value.Exists() && value.Type != gjson.Null {
 		data.TacacsConnectModeOptions = types.StringValue(value.String())
 	} else {
 		data.TacacsConnectModeOptions = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.tacacsSettings.sharedSecret"); value.Exists() {
+	if value := res.Get("NetworkDevice.tacacsSettings.sharedSecret"); value.Exists() && value.Type != gjson.Null {
 		data.TacacsSharedSecret = types.StringValue(value.String())
 	} else {
 		data.TacacsSharedSecret = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.trustsecsettings.deviceAuthenticationSettings.sgaDeviceId"); value.Exists() {
+	if value := res.Get("NetworkDevice.trustsecsettings.deviceAuthenticationSettings.sgaDeviceId"); value.Exists() && value.Type != gjson.Null {
 		data.TrustsecDeviceId = types.StringValue(value.String())
 	} else {
 		data.TrustsecDeviceId = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.trustsecsettings.deviceAuthenticationSettings.sgaDevicePassword"); value.Exists() {
+	if value := res.Get("NetworkDevice.trustsecsettings.deviceAuthenticationSettings.sgaDevicePassword"); value.Exists() && value.Type != gjson.Null {
 		data.TrustsecDevicePassword = types.StringValue(value.String())
 	} else {
 		data.TrustsecDevicePassword = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.trustsecsettings.deviceAuthenticationSettings.restApiUsername"); value.Exists() {
+	if value := res.Get("NetworkDevice.trustsecsettings.deviceAuthenticationSettings.restApiUsername"); value.Exists() && value.Type != gjson.Null {
 		data.TrustsecRestApiUsername = types.StringValue(value.String())
 	} else {
 		data.TrustsecRestApiUsername = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.trustsecsettings.deviceConfigurationDeployment.enableModePassword"); value.Exists() {
+	if value := res.Get("NetworkDevice.trustsecsettings.deviceConfigurationDeployment.enableModePassword"); value.Exists() && value.Type != gjson.Null {
 		data.TrustsecEnableModePassword = types.StringValue(value.String())
 	} else {
 		data.TrustsecEnableModePassword = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.trustsecsettings.deviceConfigurationDeployment.execModePassword"); value.Exists() {
+	if value := res.Get("NetworkDevice.trustsecsettings.deviceConfigurationDeployment.execModePassword"); value.Exists() && value.Type != gjson.Null {
 		data.TrustsecExecModePassword = types.StringValue(value.String())
 	} else {
 		data.TrustsecExecModePassword = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.trustsecsettings.deviceConfigurationDeployment.execModeUsername"); value.Exists() {
+	if value := res.Get("NetworkDevice.trustsecsettings.deviceConfigurationDeployment.execModeUsername"); value.Exists() && value.Type != gjson.Null {
 		data.TrustsecExecModeUsername = types.StringValue(value.String())
 	} else {
 		data.TrustsecExecModeUsername = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.trustsecsettings.deviceConfigurationDeployment.includeWhenDeployingSGTUpdates"); value.Exists() {
+	if value := res.Get("NetworkDevice.trustsecsettings.deviceConfigurationDeployment.includeWhenDeployingSGTUpdates"); value.Exists() && value.Type != gjson.Null {
 		data.TrustsecIncludeWhenDeployingSgtUpdates = types.BoolValue(value.Bool())
 	} else {
 		data.TrustsecIncludeWhenDeployingSgtUpdates = types.BoolNull()
 	}
-	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.downlaodEnvironmentDataEveryXSeconds"); value.Exists() {
+	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.downlaodEnvironmentDataEveryXSeconds"); value.Exists() && value.Type != gjson.Null {
 		data.TrustsecDownloadEnviromentDataEveryXSeconds = types.Int64Value(value.Int())
 	} else {
 		data.TrustsecDownloadEnviromentDataEveryXSeconds = types.Int64Null()
 	}
-	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.downlaodPeerAuthorizationPolicyEveryXSeconds"); value.Exists() {
+	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.downlaodPeerAuthorizationPolicyEveryXSeconds"); value.Exists() && value.Type != gjson.Null {
 		data.TrustsecDownloadPeerAuthorizationPolicyEveryXSeconds = types.Int64Value(value.Int())
 	} else {
 		data.TrustsecDownloadPeerAuthorizationPolicyEveryXSeconds = types.Int64Null()
 	}
-	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.downloadSGACLListsEveryXSeconds"); value.Exists() {
+	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.downloadSGACLListsEveryXSeconds"); value.Exists() && value.Type != gjson.Null {
 		data.TrustsecDownloadSgaclListsEveryXSeconds = types.Int64Value(value.Int())
 	} else {
 		data.TrustsecDownloadSgaclListsEveryXSeconds = types.Int64Null()
 	}
-	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.otherSGADevicesToTrustThisDevice"); value.Exists() {
+	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.otherSGADevicesToTrustThisDevice"); value.Exists() && value.Type != gjson.Null {
 		data.TrustsecOtherSgaDevicesToTrustThisDevice = types.BoolValue(value.Bool())
 	} else {
 		data.TrustsecOtherSgaDevicesToTrustThisDevice = types.BoolNull()
 	}
-	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.reAuthenticationEveryXSeconds"); value.Exists() {
+	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.reAuthenticationEveryXSeconds"); value.Exists() && value.Type != gjson.Null {
 		data.TrustsecReAuthenticationEveryXSeconds = types.Int64Value(value.Int())
 	} else {
 		data.TrustsecReAuthenticationEveryXSeconds = types.Int64Null()
 	}
-	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.sendConfigurationToDevice"); value.Exists() {
+	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.sendConfigurationToDevice"); value.Exists() && value.Type != gjson.Null {
 		data.TrustsecSendConfigurationToDevice = types.BoolValue(value.Bool())
 	} else {
 		data.TrustsecSendConfigurationToDevice = types.BoolNull()
 	}
-	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.sendConfigurationToDeviceUsing"); value.Exists() {
+	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.sendConfigurationToDeviceUsing"); value.Exists() && value.Type != gjson.Null {
 		data.TrustsecSendConfigurationToDeviceUsing = types.StringValue(value.String())
 	} else {
 		data.TrustsecSendConfigurationToDeviceUsing = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.coaSourceHost"); value.Exists() {
+	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.coaSourceHost"); value.Exists() && value.Type != gjson.Null {
 		data.TrustsecCoaSourceHost = types.StringValue(value.String())
 	} else {
 		data.TrustsecCoaSourceHost = types.StringNull()

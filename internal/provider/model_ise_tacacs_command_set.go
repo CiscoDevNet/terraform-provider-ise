@@ -93,17 +93,17 @@ func (data TACACSCommandSet) toBody(ctx context.Context, state TACACSCommandSet)
 
 //template:begin fromBody
 func (data *TACACSCommandSet) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("TacacsCommandSets.name"); value.Exists() {
+	if value := res.Get("TacacsCommandSets.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("TacacsCommandSets.description"); value.Exists() {
+	if value := res.Get("TacacsCommandSets.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("TacacsCommandSets.permitUnmatched"); value.Exists() {
+	if value := res.Get("TacacsCommandSets.permitUnmatched"); value.Exists() && value.Type != gjson.Null {
 		data.PermitUnmatched = types.BoolValue(value.Bool())
 	} else {
 		data.PermitUnmatched = types.BoolValue(false)
@@ -112,17 +112,17 @@ func (data *TACACSCommandSet) fromBody(ctx context.Context, res gjson.Result) {
 		data.Commands = make([]TACACSCommandSetCommands, 0)
 		value.ForEach(func(k, v gjson.Result) bool {
 			item := TACACSCommandSetCommands{}
-			if cValue := v.Get("grant"); cValue.Exists() {
+			if cValue := v.Get("grant"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Grant = types.StringValue(cValue.String())
 			} else {
 				item.Grant = types.StringNull()
 			}
-			if cValue := v.Get("command"); cValue.Exists() {
+			if cValue := v.Get("command"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Command = types.StringValue(cValue.String())
 			} else {
 				item.Command = types.StringNull()
 			}
-			if cValue := v.Get("arguments"); cValue.Exists() {
+			if cValue := v.Get("arguments"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Arguments = types.StringValue(cValue.String())
 			} else {
 				item.Arguments = types.StringNull()

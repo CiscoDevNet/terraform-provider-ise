@@ -212,62 +212,62 @@ func (data DeviceAdminAuthenticationRule) toBody(ctx context.Context, state Devi
 
 //template:begin fromBody
 func (data *DeviceAdminAuthenticationRule) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("response.rule.name"); value.Exists() {
+	if value := res.Get("response.rule.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("response.rule.default"); value.Exists() {
+	if value := res.Get("response.rule.default"); value.Exists() && value.Type != gjson.Null {
 		data.Default = types.BoolValue(value.Bool())
 	} else {
 		data.Default = types.BoolNull()
 	}
-	if value := res.Get("response.rule.rank"); value.Exists() {
+	if value := res.Get("response.rule.rank"); value.Exists() && value.Type != gjson.Null {
 		data.Rank = types.Int64Value(value.Int())
 	} else {
 		data.Rank = types.Int64Null()
 	}
-	if value := res.Get("response.rule.state"); value.Exists() {
+	if value := res.Get("response.rule.state"); value.Exists() && value.Type != gjson.Null {
 		data.State = types.StringValue(value.String())
 	} else {
 		data.State = types.StringNull()
 	}
-	if value := res.Get("response.rule.condition.conditionType"); value.Exists() {
+	if value := res.Get("response.rule.condition.conditionType"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionType = types.StringValue(value.String())
 	} else {
 		data.ConditionType = types.StringNull()
 	}
-	if value := res.Get("response.rule.condition.id"); value.Exists() {
+	if value := res.Get("response.rule.condition.id"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionId = types.StringValue(value.String())
 	} else {
 		data.ConditionId = types.StringNull()
 	}
-	if value := res.Get("response.rule.condition.isNegate"); value.Exists() {
+	if value := res.Get("response.rule.condition.isNegate"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionIsNegate = types.BoolValue(value.Bool())
 	} else {
 		data.ConditionIsNegate = types.BoolNull()
 	}
-	if value := res.Get("response.rule.condition.attributeName"); value.Exists() {
+	if value := res.Get("response.rule.condition.attributeName"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionAttributeName = types.StringValue(value.String())
 	} else {
 		data.ConditionAttributeName = types.StringNull()
 	}
-	if value := res.Get("response.rule.condition.attributeValue"); value.Exists() {
+	if value := res.Get("response.rule.condition.attributeValue"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionAttributeValue = types.StringValue(value.String())
 	} else {
 		data.ConditionAttributeValue = types.StringNull()
 	}
-	if value := res.Get("response.rule.condition.dictionaryName"); value.Exists() {
+	if value := res.Get("response.rule.condition.dictionaryName"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionDictionaryName = types.StringValue(value.String())
 	} else {
 		data.ConditionDictionaryName = types.StringNull()
 	}
-	if value := res.Get("response.rule.condition.dictionaryValue"); value.Exists() {
+	if value := res.Get("response.rule.condition.dictionaryValue"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionDictionaryValue = types.StringValue(value.String())
 	} else {
 		data.ConditionDictionaryValue = types.StringNull()
 	}
-	if value := res.Get("response.rule.condition.operator"); value.Exists() {
+	if value := res.Get("response.rule.condition.operator"); value.Exists() && value.Type != gjson.Null {
 		data.ConditionOperator = types.StringValue(value.String())
 	} else {
 		data.ConditionOperator = types.StringNull()
@@ -276,42 +276,42 @@ func (data *DeviceAdminAuthenticationRule) fromBody(ctx context.Context, res gjs
 		data.Children = make([]DeviceAdminAuthenticationRuleChildren, 0)
 		value.ForEach(func(k, v gjson.Result) bool {
 			item := DeviceAdminAuthenticationRuleChildren{}
-			if cValue := v.Get("conditionType"); cValue.Exists() {
+			if cValue := v.Get("conditionType"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.ConditionType = types.StringValue(cValue.String())
 			} else {
 				item.ConditionType = types.StringNull()
 			}
-			if cValue := v.Get("id"); cValue.Exists() {
+			if cValue := v.Get("id"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Id = types.StringValue(cValue.String())
 			} else {
 				item.Id = types.StringNull()
 			}
-			if cValue := v.Get("isNegate"); cValue.Exists() {
+			if cValue := v.Get("isNegate"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.IsNegate = types.BoolValue(cValue.Bool())
 			} else {
 				item.IsNegate = types.BoolNull()
 			}
-			if cValue := v.Get("attributeName"); cValue.Exists() {
+			if cValue := v.Get("attributeName"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.AttributeName = types.StringValue(cValue.String())
 			} else {
 				item.AttributeName = types.StringNull()
 			}
-			if cValue := v.Get("attributeValue"); cValue.Exists() {
+			if cValue := v.Get("attributeValue"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.AttributeValue = types.StringValue(cValue.String())
 			} else {
 				item.AttributeValue = types.StringNull()
 			}
-			if cValue := v.Get("dictionaryName"); cValue.Exists() {
+			if cValue := v.Get("dictionaryName"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.DictionaryName = types.StringValue(cValue.String())
 			} else {
 				item.DictionaryName = types.StringNull()
 			}
-			if cValue := v.Get("dictionaryValue"); cValue.Exists() {
+			if cValue := v.Get("dictionaryValue"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.DictionaryValue = types.StringValue(cValue.String())
 			} else {
 				item.DictionaryValue = types.StringNull()
 			}
-			if cValue := v.Get("operator"); cValue.Exists() {
+			if cValue := v.Get("operator"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Operator = types.StringValue(cValue.String())
 			} else {
 				item.Operator = types.StringNull()
@@ -320,42 +320,42 @@ func (data *DeviceAdminAuthenticationRule) fromBody(ctx context.Context, res gjs
 				item.Children = make([]DeviceAdminAuthenticationRuleChildrenChildren, 0)
 				cValue.ForEach(func(ck, cv gjson.Result) bool {
 					cItem := DeviceAdminAuthenticationRuleChildrenChildren{}
-					if ccValue := cv.Get("conditionType"); ccValue.Exists() {
+					if ccValue := cv.Get("conditionType"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.ConditionType = types.StringValue(ccValue.String())
 					} else {
 						cItem.ConditionType = types.StringNull()
 					}
-					if ccValue := cv.Get("id"); ccValue.Exists() {
+					if ccValue := cv.Get("id"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.Id = types.StringValue(ccValue.String())
 					} else {
 						cItem.Id = types.StringNull()
 					}
-					if ccValue := cv.Get("isNegate"); ccValue.Exists() {
+					if ccValue := cv.Get("isNegate"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.IsNegate = types.BoolValue(ccValue.Bool())
 					} else {
 						cItem.IsNegate = types.BoolNull()
 					}
-					if ccValue := cv.Get("attributeName"); ccValue.Exists() {
+					if ccValue := cv.Get("attributeName"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.AttributeName = types.StringValue(ccValue.String())
 					} else {
 						cItem.AttributeName = types.StringNull()
 					}
-					if ccValue := cv.Get("attributeValue"); ccValue.Exists() {
+					if ccValue := cv.Get("attributeValue"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.AttributeValue = types.StringValue(ccValue.String())
 					} else {
 						cItem.AttributeValue = types.StringNull()
 					}
-					if ccValue := cv.Get("dictionaryName"); ccValue.Exists() {
+					if ccValue := cv.Get("dictionaryName"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.DictionaryName = types.StringValue(ccValue.String())
 					} else {
 						cItem.DictionaryName = types.StringNull()
 					}
-					if ccValue := cv.Get("dictionaryValue"); ccValue.Exists() {
+					if ccValue := cv.Get("dictionaryValue"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.DictionaryValue = types.StringValue(ccValue.String())
 					} else {
 						cItem.DictionaryValue = types.StringNull()
 					}
-					if ccValue := cv.Get("operator"); ccValue.Exists() {
+					if ccValue := cv.Get("operator"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.Operator = types.StringValue(ccValue.String())
 					} else {
 						cItem.Operator = types.StringNull()
@@ -368,22 +368,22 @@ func (data *DeviceAdminAuthenticationRule) fromBody(ctx context.Context, res gjs
 			return true
 		})
 	}
-	if value := res.Get("response.identitySourceName"); value.Exists() {
+	if value := res.Get("response.identitySourceName"); value.Exists() && value.Type != gjson.Null {
 		data.IdentitySourceName = types.StringValue(value.String())
 	} else {
 		data.IdentitySourceName = types.StringNull()
 	}
-	if value := res.Get("response.ifAuthFail"); value.Exists() {
+	if value := res.Get("response.ifAuthFail"); value.Exists() && value.Type != gjson.Null {
 		data.IfAuthFail = types.StringValue(value.String())
 	} else {
 		data.IfAuthFail = types.StringNull()
 	}
-	if value := res.Get("response.ifProcessFail"); value.Exists() {
+	if value := res.Get("response.ifProcessFail"); value.Exists() && value.Type != gjson.Null {
 		data.IfProcessFail = types.StringValue(value.String())
 	} else {
 		data.IfProcessFail = types.StringNull()
 	}
-	if value := res.Get("response.ifUserNotFound"); value.Exists() {
+	if value := res.Get("response.ifUserNotFound"); value.Exists() && value.Type != gjson.Null {
 		data.IfUserNotFound = types.StringValue(value.String())
 	} else {
 		data.IfUserNotFound = types.StringNull()

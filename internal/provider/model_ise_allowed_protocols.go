@@ -366,382 +366,382 @@ func (data AllowedProtocols) toBody(ctx context.Context, state AllowedProtocols)
 
 //template:begin fromBody
 func (data *AllowedProtocols) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("AllowedProtocols.name"); value.Exists() {
+	if value := res.Get("AllowedProtocols.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("AllowedProtocols.description"); value.Exists() {
+	if value := res.Get("AllowedProtocols.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("AllowedProtocols.processHostLookup"); value.Exists() {
+	if value := res.Get("AllowedProtocols.processHostLookup"); value.Exists() && value.Type != gjson.Null {
 		data.ProcessHostLookup = types.BoolValue(value.Bool())
 	} else {
 		data.ProcessHostLookup = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.allowPapAscii"); value.Exists() {
+	if value := res.Get("AllowedProtocols.allowPapAscii"); value.Exists() && value.Type != gjson.Null {
 		data.AllowPapAscii = types.BoolValue(value.Bool())
 	} else {
 		data.AllowPapAscii = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.allowChap"); value.Exists() {
+	if value := res.Get("AllowedProtocols.allowChap"); value.Exists() && value.Type != gjson.Null {
 		data.AllowChap = types.BoolValue(value.Bool())
 	} else {
 		data.AllowChap = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.allowMsChapV1"); value.Exists() {
+	if value := res.Get("AllowedProtocols.allowMsChapV1"); value.Exists() && value.Type != gjson.Null {
 		data.AllowMsChapV1 = types.BoolValue(value.Bool())
 	} else {
 		data.AllowMsChapV1 = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.allowMsChapV2"); value.Exists() {
+	if value := res.Get("AllowedProtocols.allowMsChapV2"); value.Exists() && value.Type != gjson.Null {
 		data.AllowMsChapV2 = types.BoolValue(value.Bool())
 	} else {
 		data.AllowMsChapV2 = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.allowEapMd5"); value.Exists() {
+	if value := res.Get("AllowedProtocols.allowEapMd5"); value.Exists() && value.Type != gjson.Null {
 		data.AllowEapMd5 = types.BoolValue(value.Bool())
 	} else {
 		data.AllowEapMd5 = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.allowLeap"); value.Exists() {
+	if value := res.Get("AllowedProtocols.allowLeap"); value.Exists() && value.Type != gjson.Null {
 		data.AllowLeap = types.BoolValue(value.Bool())
 	} else {
 		data.AllowLeap = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.allowEapTls"); value.Exists() {
+	if value := res.Get("AllowedProtocols.allowEapTls"); value.Exists() && value.Type != gjson.Null {
 		data.AllowEapTls = types.BoolValue(value.Bool())
 	} else {
 		data.AllowEapTls = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.allowEapTtls"); value.Exists() {
+	if value := res.Get("AllowedProtocols.allowEapTtls"); value.Exists() && value.Type != gjson.Null {
 		data.AllowEapTtls = types.BoolValue(value.Bool())
 	} else {
 		data.AllowEapTtls = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.allowEapFast"); value.Exists() {
+	if value := res.Get("AllowedProtocols.allowEapFast"); value.Exists() && value.Type != gjson.Null {
 		data.AllowEapFast = types.BoolValue(value.Bool())
 	} else {
 		data.AllowEapFast = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.allowPeap"); value.Exists() {
+	if value := res.Get("AllowedProtocols.allowPeap"); value.Exists() && value.Type != gjson.Null {
 		data.AllowPeap = types.BoolValue(value.Bool())
 	} else {
 		data.AllowPeap = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.allowTeap"); value.Exists() {
+	if value := res.Get("AllowedProtocols.allowTeap"); value.Exists() && value.Type != gjson.Null {
 		data.AllowTeap = types.BoolValue(value.Bool())
 	} else {
 		data.AllowTeap = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.allowPreferredEapProtocol"); value.Exists() {
+	if value := res.Get("AllowedProtocols.allowPreferredEapProtocol"); value.Exists() && value.Type != gjson.Null {
 		data.AllowPreferredEapProtocol = types.BoolValue(value.Bool())
 	} else {
 		data.AllowPreferredEapProtocol = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.preferredEapProtocol"); value.Exists() {
+	if value := res.Get("AllowedProtocols.preferredEapProtocol"); value.Exists() && value.Type != gjson.Null {
 		data.PreferredEapProtocol = types.StringValue(value.String())
 	} else {
 		data.PreferredEapProtocol = types.StringNull()
 	}
-	if value := res.Get("AllowedProtocols.eapTlsLBit"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapTlsLBit"); value.Exists() && value.Type != gjson.Null {
 		data.EapTlsLBit = types.BoolValue(value.Bool())
 	} else {
 		data.EapTlsLBit = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.allowWeakCiphersForEap"); value.Exists() {
+	if value := res.Get("AllowedProtocols.allowWeakCiphersForEap"); value.Exists() && value.Type != gjson.Null {
 		data.AllowWeakCiphersForEap = types.BoolValue(value.Bool())
 	} else {
 		data.AllowWeakCiphersForEap = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.requireMessageAuth"); value.Exists() {
+	if value := res.Get("AllowedProtocols.requireMessageAuth"); value.Exists() && value.Type != gjson.Null {
 		data.RequireMessageAuth = types.BoolValue(value.Bool())
 	} else {
 		data.RequireMessageAuth = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapTls.allowEapTlsAuthOfExpiredCerts"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapTls.allowEapTlsAuthOfExpiredCerts"); value.Exists() && value.Type != gjson.Null {
 		data.EapTlsAllowAuthOfExpiredCerts = types.BoolValue(value.Bool())
 	} else {
 		data.EapTlsAllowAuthOfExpiredCerts = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapTls.eapTlsEnableStatelessSessionResume"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapTls.eapTlsEnableStatelessSessionResume"); value.Exists() && value.Type != gjson.Null {
 		data.EapTlsEnableStatelessSessionResume = types.BoolValue(value.Bool())
 	} else {
 		data.EapTlsEnableStatelessSessionResume = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapTls.eapTlsSessionTicketTtl"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapTls.eapTlsSessionTicketTtl"); value.Exists() && value.Type != gjson.Null {
 		data.EapTlsSessionTicketTtl = types.Int64Value(value.Int())
 	} else {
 		data.EapTlsSessionTicketTtl = types.Int64Null()
 	}
-	if value := res.Get("AllowedProtocols.eapTls.eapTlsSessionTicketTtlUnits"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapTls.eapTlsSessionTicketTtlUnits"); value.Exists() && value.Type != gjson.Null {
 		data.EapTlsSessionTicketTtlUnit = types.StringValue(value.String())
 	} else {
 		data.EapTlsSessionTicketTtlUnit = types.StringNull()
 	}
-	if value := res.Get("AllowedProtocols.eapTls.eapTlsSessionTicketPrecentage"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapTls.eapTlsSessionTicketPrecentage"); value.Exists() && value.Type != gjson.Null {
 		data.EapTlsSessionTicketPercentage = types.Int64Value(value.Int())
 	} else {
 		data.EapTlsSessionTicketPercentage = types.Int64Null()
 	}
-	if value := res.Get("AllowedProtocols.peap.allowPeapEapMsChapV2"); value.Exists() {
+	if value := res.Get("AllowedProtocols.peap.allowPeapEapMsChapV2"); value.Exists() && value.Type != gjson.Null {
 		data.PeapAllowPeapEapMsChapV2 = types.BoolValue(value.Bool())
 	} else {
 		data.PeapAllowPeapEapMsChapV2 = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.peap.allowPeapEapMsChapV2PwdChange"); value.Exists() {
+	if value := res.Get("AllowedProtocols.peap.allowPeapEapMsChapV2PwdChange"); value.Exists() && value.Type != gjson.Null {
 		data.PeapAllowPeapEapMsChapV2PwdChange = types.BoolValue(value.Bool())
 	} else {
 		data.PeapAllowPeapEapMsChapV2PwdChange = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.peap.allowPeapEapMsChapV2PwdChangeRetries"); value.Exists() {
+	if value := res.Get("AllowedProtocols.peap.allowPeapEapMsChapV2PwdChangeRetries"); value.Exists() && value.Type != gjson.Null {
 		data.PeapAllowPeapEapMsChapV2PwdChangeRetries = types.Int64Value(value.Int())
 	} else {
 		data.PeapAllowPeapEapMsChapV2PwdChangeRetries = types.Int64Null()
 	}
-	if value := res.Get("AllowedProtocols.peap.allowPeapEapGtc"); value.Exists() {
+	if value := res.Get("AllowedProtocols.peap.allowPeapEapGtc"); value.Exists() && value.Type != gjson.Null {
 		data.PeapAllowPeapEapGtc = types.BoolValue(value.Bool())
 	} else {
 		data.PeapAllowPeapEapGtc = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.peap.allowPeapEapGtcPwdChange"); value.Exists() {
+	if value := res.Get("AllowedProtocols.peap.allowPeapEapGtcPwdChange"); value.Exists() && value.Type != gjson.Null {
 		data.PeapAllowPeapEapGtcPwdChange = types.BoolValue(value.Bool())
 	} else {
 		data.PeapAllowPeapEapGtcPwdChange = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.peap.allowPeapEapGtcPwdChangeRetries"); value.Exists() {
+	if value := res.Get("AllowedProtocols.peap.allowPeapEapGtcPwdChangeRetries"); value.Exists() && value.Type != gjson.Null {
 		data.PeapAllowPeapEapGtcPwdChangeRetries = types.Int64Value(value.Int())
 	} else {
 		data.PeapAllowPeapEapGtcPwdChangeRetries = types.Int64Null()
 	}
-	if value := res.Get("AllowedProtocols.peap.allowPeapEapTls"); value.Exists() {
+	if value := res.Get("AllowedProtocols.peap.allowPeapEapTls"); value.Exists() && value.Type != gjson.Null {
 		data.PeapAllowPeapEapTls = types.BoolValue(value.Bool())
 	} else {
 		data.PeapAllowPeapEapTls = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.peap.allowPeapEapTlsAuthOfExpiredCerts"); value.Exists() {
+	if value := res.Get("AllowedProtocols.peap.allowPeapEapTlsAuthOfExpiredCerts"); value.Exists() && value.Type != gjson.Null {
 		data.PeapAllowPeapEapTlsAuthOfExpiredCerts = types.BoolValue(value.Bool())
 	} else {
 		data.PeapAllowPeapEapTlsAuthOfExpiredCerts = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.peap.requireCryptobinding"); value.Exists() {
+	if value := res.Get("AllowedProtocols.peap.requireCryptobinding"); value.Exists() && value.Type != gjson.Null {
 		data.RequireCryptobinding = types.BoolValue(value.Bool())
 	} else {
 		data.RequireCryptobinding = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.peap.allowPeapV0"); value.Exists() {
+	if value := res.Get("AllowedProtocols.peap.allowPeapV0"); value.Exists() && value.Type != gjson.Null {
 		data.PeapPeapV0 = types.BoolValue(value.Bool())
 	} else {
 		data.PeapPeapV0 = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapTtls.eapTtlsPapAscii"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapTtls.eapTtlsPapAscii"); value.Exists() && value.Type != gjson.Null {
 		data.EapTtlsPapAscii = types.BoolValue(value.Bool())
 	} else {
 		data.EapTtlsPapAscii = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapTtls.eapTtlsChap"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapTtls.eapTtlsChap"); value.Exists() && value.Type != gjson.Null {
 		data.EapTtlsChap = types.BoolValue(value.Bool())
 	} else {
 		data.EapTtlsChap = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapTtls.eapTtlsMsChapV1"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapTtls.eapTtlsMsChapV1"); value.Exists() && value.Type != gjson.Null {
 		data.EapTtlsMsChapV1 = types.BoolValue(value.Bool())
 	} else {
 		data.EapTtlsMsChapV1 = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapTtls.eapTtlsMsChapV2"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapTtls.eapTtlsMsChapV2"); value.Exists() && value.Type != gjson.Null {
 		data.EapTtlsMsChapV2 = types.BoolValue(value.Bool())
 	} else {
 		data.EapTtlsMsChapV2 = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapTtls.eapTtlsEapMd5"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapTtls.eapTtlsEapMd5"); value.Exists() && value.Type != gjson.Null {
 		data.EapTtlsEapMd5 = types.BoolValue(value.Bool())
 	} else {
 		data.EapTtlsEapMd5 = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapTtls.eapTtlsEapMsChapV2"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapTtls.eapTtlsEapMsChapV2"); value.Exists() && value.Type != gjson.Null {
 		data.EapTtlsEapMsChapV2 = types.BoolValue(value.Bool())
 	} else {
 		data.EapTtlsEapMsChapV2 = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapTtls.eapTtlsEapMsChapV2PwdChange"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapTtls.eapTtlsEapMsChapV2PwdChange"); value.Exists() && value.Type != gjson.Null {
 		data.EapTtlsEapMsChapV2PwdChange = types.BoolValue(value.Bool())
 	} else {
 		data.EapTtlsEapMsChapV2PwdChange = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapTtls.eapTtlsEapMsChapV2PwdChangeRetries"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapTtls.eapTtlsEapMsChapV2PwdChangeRetries"); value.Exists() && value.Type != gjson.Null {
 		data.EapTtlsEapMsChapV2PwdChangeRetries = types.Int64Value(value.Int())
 	} else {
 		data.EapTtlsEapMsChapV2PwdChangeRetries = types.Int64Null()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.allowEapFastEapMsChapV2"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.allowEapFastEapMsChapV2"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastEapMsChapV2 = types.BoolValue(value.Bool())
 	} else {
 		data.EapFastEapMsChapV2 = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.allowEapFastEapMsChapV2PwdChange"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.allowEapFastEapMsChapV2PwdChange"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastEapMsChapV2PwdChange = types.BoolValue(value.Bool())
 	} else {
 		data.EapFastEapMsChapV2PwdChange = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.allowEapFastEapMsChapV2PwdChangeRetries"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.allowEapFastEapMsChapV2PwdChangeRetries"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastEapMsChapV2PwdChangeRetries = types.Int64Value(value.Int())
 	} else {
 		data.EapFastEapMsChapV2PwdChangeRetries = types.Int64Null()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.allowEapFastEapGtc"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.allowEapFastEapGtc"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastEapGtc = types.BoolValue(value.Bool())
 	} else {
 		data.EapFastEapGtc = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.allowEapFastEapGtcPwdChange"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.allowEapFastEapGtcPwdChange"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastEapGtcPwdChange = types.BoolValue(value.Bool())
 	} else {
 		data.EapFastEapGtcPwdChange = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.allowEapFastEapGtcPwdChangeRetries"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.allowEapFastEapGtcPwdChangeRetries"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastEapGtcPwdChangeRetries = types.Int64Value(value.Int())
 	} else {
 		data.EapFastEapGtcPwdChangeRetries = types.Int64Null()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.allowEapFastEapTls"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.allowEapFastEapTls"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastEapTls = types.BoolValue(value.Bool())
 	} else {
 		data.EapFastEapTls = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.allowEapFastEapTlsAuthOfExpiredCerts"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.allowEapFastEapTlsAuthOfExpiredCerts"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastEapTlsAuthOfExpiredCerts = types.BoolValue(value.Bool())
 	} else {
 		data.EapFastEapTlsAuthOfExpiredCerts = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.eapFastEnableEAPChaining"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.eapFastEnableEAPChaining"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastEnableEapChaining = types.BoolValue(value.Bool())
 	} else {
 		data.EapFastEnableEapChaining = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacs"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacs"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastUsePacs = types.BoolValue(value.Bool())
 	} else {
 		data.EapFastUsePacs = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsTunnelPacTtl"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsTunnelPacTtl"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastPacsTunnelPacTtl = types.Int64Value(value.Int())
 	} else {
 		data.EapFastPacsTunnelPacTtl = types.Int64Null()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsTunnelPacTtlUnits"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsTunnelPacTtlUnits"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastPacsTunnelPacTtlUnit = types.StringValue(value.String())
 	} else {
 		data.EapFastPacsTunnelPacTtlUnit = types.StringNull()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsUseProactivePacUpdatePrecentage"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsUseProactivePacUpdatePrecentage"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastPacsUseProactivePacUpdatePercentage = types.Int64Value(value.Int())
 	} else {
 		data.EapFastPacsUseProactivePacUpdatePercentage = types.Int64Null()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsAllowAnonymProvisioning"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsAllowAnonymProvisioning"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastPacsAllowAnonymousProvisioning = types.BoolValue(value.Bool())
 	} else {
 		data.EapFastPacsAllowAnonymousProvisioning = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsAllowAuthenProvisioning"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsAllowAuthenProvisioning"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastPacsAllowAuthenticatedProvisioning = types.BoolValue(value.Bool())
 	} else {
 		data.EapFastPacsAllowAuthenticatedProvisioning = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsServerReturns"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsServerReturns"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastPacsServerReturns = types.BoolValue(value.Bool())
 	} else {
 		data.EapFastPacsServerReturns = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsAcceptClientCert"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsAcceptClientCert"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastPacsAllowClientCert = types.BoolValue(value.Bool())
 	} else {
 		data.EapFastPacsAllowClientCert = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsAllowMachineAuthentication"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsAllowMachineAuthentication"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastPacsAllowMachineAuthentication = types.BoolValue(value.Bool())
 	} else {
 		data.EapFastPacsAllowMachineAuthentication = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsMachinePacTtl"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsMachinePacTtl"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastPacsMachinePacTtl = types.Int64Value(value.Int())
 	} else {
 		data.EapFastPacsMachinePacTtl = types.Int64Null()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsMachinePacTtlUnits"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsMachinePacTtlUnits"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastPacsMachinePacTtlUnit = types.StringValue(value.String())
 	} else {
 		data.EapFastPacsMachinePacTtlUnit = types.StringNull()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsStatelessSessionResume"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsStatelessSessionResume"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastPacsStatelessSessionResume = types.BoolValue(value.Bool())
 	} else {
 		data.EapFastPacsStatelessSessionResume = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsAuthorizationPacTtl"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsAuthorizationPacTtl"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastPacsAuthorizationPacTtl = types.Int64Value(value.Int())
 	} else {
 		data.EapFastPacsAuthorizationPacTtl = types.Int64Null()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsAuthorizationPacTtlUnits"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.eapFastUsePacsAuthorizationPacTtlUnits"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastPacsAuthorizationPacTtlUnit = types.StringValue(value.String())
 	} else {
 		data.EapFastPacsAuthorizationPacTtlUnit = types.StringNull()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.eapFastDontUsePacsAcceptClientCert"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.eapFastDontUsePacsAcceptClientCert"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastAcceptClientCert = types.BoolValue(value.Bool())
 	} else {
 		data.EapFastAcceptClientCert = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.eapFast.eapFastDontUsePacsAllowMachineAuthentication"); value.Exists() {
+	if value := res.Get("AllowedProtocols.eapFast.eapFastDontUsePacsAllowMachineAuthentication"); value.Exists() && value.Type != gjson.Null {
 		data.EapFastAllowMachineAuthentication = types.BoolValue(value.Bool())
 	} else {
 		data.EapFastAllowMachineAuthentication = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.teap.allowTeapEapMsChapV2"); value.Exists() {
+	if value := res.Get("AllowedProtocols.teap.allowTeapEapMsChapV2"); value.Exists() && value.Type != gjson.Null {
 		data.TeapEapMsChapV2 = types.BoolValue(value.Bool())
 	} else {
 		data.TeapEapMsChapV2 = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.teap.allowTeapEapMsChapV2PwdChange"); value.Exists() {
+	if value := res.Get("AllowedProtocols.teap.allowTeapEapMsChapV2PwdChange"); value.Exists() && value.Type != gjson.Null {
 		data.TeapEapMsChapV2PwdChange = types.BoolValue(value.Bool())
 	} else {
 		data.TeapEapMsChapV2PwdChange = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.teap.allowTeapEapMsChapV2PwdChangeRetries"); value.Exists() {
+	if value := res.Get("AllowedProtocols.teap.allowTeapEapMsChapV2PwdChangeRetries"); value.Exists() && value.Type != gjson.Null {
 		data.TeapEapMsChapV2PwdChangeRetries = types.Int64Value(value.Int())
 	} else {
 		data.TeapEapMsChapV2PwdChangeRetries = types.Int64Null()
 	}
-	if value := res.Get("AllowedProtocols.teap.allowTeapEapTls"); value.Exists() {
+	if value := res.Get("AllowedProtocols.teap.allowTeapEapTls"); value.Exists() && value.Type != gjson.Null {
 		data.TeapEapTls = types.BoolValue(value.Bool())
 	} else {
 		data.TeapEapTls = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.teap.allowTeapEapTlsAuthOfExpiredCerts"); value.Exists() {
+	if value := res.Get("AllowedProtocols.teap.allowTeapEapTlsAuthOfExpiredCerts"); value.Exists() && value.Type != gjson.Null {
 		data.TeapEapTlsAuthOfExpiredCerts = types.BoolValue(value.Bool())
 	} else {
 		data.TeapEapTlsAuthOfExpiredCerts = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.teap.acceptClientCertDuringTunnelEst"); value.Exists() {
+	if value := res.Get("AllowedProtocols.teap.acceptClientCertDuringTunnelEst"); value.Exists() && value.Type != gjson.Null {
 		data.TeapEapAcceptClientCertDuringTunnelEst = types.BoolValue(value.Bool())
 	} else {
 		data.TeapEapAcceptClientCertDuringTunnelEst = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.teap.enableEapChaining"); value.Exists() {
+	if value := res.Get("AllowedProtocols.teap.enableEapChaining"); value.Exists() && value.Type != gjson.Null {
 		data.TeapEapChaining = types.BoolValue(value.Bool())
 	} else {
 		data.TeapEapChaining = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.teap.allowDowngradeMsk"); value.Exists() {
+	if value := res.Get("AllowedProtocols.teap.allowDowngradeMsk"); value.Exists() && value.Type != gjson.Null {
 		data.TeapDowngradeMsk = types.BoolValue(value.Bool())
 	} else {
 		data.TeapDowngradeMsk = types.BoolNull()
 	}
-	if value := res.Get("AllowedProtocols.fiveG"); value.Exists() {
+	if value := res.Get("AllowedProtocols.fiveG"); value.Exists() && value.Type != gjson.Null {
 		data.Allow5g = types.BoolValue(value.Bool())
 	} else {
 		data.Allow5g = types.BoolNull()

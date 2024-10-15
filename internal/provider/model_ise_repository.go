@@ -86,27 +86,27 @@ func (data Repository) toBody(ctx context.Context, state Repository) string {
 
 //template:begin fromBody
 func (data *Repository) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("response.name"); value.Exists() {
+	if value := res.Get("response.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("response.protocol"); value.Exists() {
+	if value := res.Get("response.protocol"); value.Exists() && value.Type != gjson.Null {
 		data.Protocol = types.StringValue(value.String())
 	} else {
 		data.Protocol = types.StringNull()
 	}
-	if value := res.Get("response.path"); value.Exists() {
+	if value := res.Get("response.path"); value.Exists() && value.Type != gjson.Null {
 		data.Path = types.StringValue(value.String())
 	} else {
 		data.Path = types.StringNull()
 	}
-	if value := res.Get("response.serverName"); value.Exists() {
+	if value := res.Get("response.serverName"); value.Exists() && value.Type != gjson.Null {
 		data.ServerName = types.StringValue(value.String())
 	} else {
 		data.ServerName = types.StringNull()
 	}
-	if value := res.Get("response.userName"); value.Exists() {
+	if value := res.Get("response.userName"); value.Exists() && value.Type != gjson.Null {
 		data.UserName = types.StringValue(value.String())
 	} else {
 		data.UserName = types.StringNull()

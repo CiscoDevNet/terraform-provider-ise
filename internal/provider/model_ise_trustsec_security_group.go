@@ -78,22 +78,22 @@ func (data TrustSecSecurityGroup) toBody(ctx context.Context, state TrustSecSecu
 
 //template:begin fromBody
 func (data *TrustSecSecurityGroup) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("Sgt.name"); value.Exists() {
+	if value := res.Get("Sgt.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("Sgt.description"); value.Exists() {
+	if value := res.Get("Sgt.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("Sgt.value"); value.Exists() {
+	if value := res.Get("Sgt.value"); value.Exists() && value.Type != gjson.Null {
 		data.Value = types.Int64Value(value.Int())
 	} else {
 		data.Value = types.Int64Null()
 	}
-	if value := res.Get("Sgt.propogateToApic"); value.Exists() {
+	if value := res.Get("Sgt.propogateToApic"); value.Exists() && value.Type != gjson.Null {
 		data.PropogateToApic = types.BoolValue(value.Bool())
 	} else {
 		data.PropogateToApic = types.BoolNull()

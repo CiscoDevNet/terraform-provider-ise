@@ -74,22 +74,22 @@ func (data NetworkAccessDictionary) toBody(ctx context.Context, state NetworkAcc
 
 //template:begin fromBody
 func (data *NetworkAccessDictionary) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("response.name"); value.Exists() {
+	if value := res.Get("response.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("response.description"); value.Exists() {
+	if value := res.Get("response.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("response.version"); value.Exists() {
+	if value := res.Get("response.version"); value.Exists() && value.Type != gjson.Null {
 		data.Version = types.StringValue(value.String())
 	} else {
 		data.Version = types.StringNull()
 	}
-	if value := res.Get("response.dictionaryAttrType"); value.Exists() {
+	if value := res.Get("response.dictionaryAttrType"); value.Exists() && value.Type != gjson.Null {
 		data.DictionaryAttrType = types.StringValue(value.String())
 	} else {
 		data.DictionaryAttrType = types.StringNull()

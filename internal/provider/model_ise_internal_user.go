@@ -114,62 +114,62 @@ func (data InternalUser) toBody(ctx context.Context, state InternalUser) string 
 
 //template:begin fromBody
 func (data *InternalUser) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("InternalUser.name"); value.Exists() {
+	if value := res.Get("InternalUser.name"); value.Exists() && value.Type != gjson.Null {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("InternalUser.changePassword"); value.Exists() {
+	if value := res.Get("InternalUser.changePassword"); value.Exists() && value.Type != gjson.Null {
 		data.ChangePassword = types.BoolValue(value.Bool())
 	} else {
 		data.ChangePassword = types.BoolValue(true)
 	}
-	if value := res.Get("InternalUser.email"); value.Exists() {
+	if value := res.Get("InternalUser.email"); value.Exists() && value.Type != gjson.Null {
 		data.Email = types.StringValue(value.String())
 	} else {
 		data.Email = types.StringNull()
 	}
-	if value := res.Get("InternalUser.accountNameAlias"); value.Exists() {
+	if value := res.Get("InternalUser.accountNameAlias"); value.Exists() && value.Type != gjson.Null {
 		data.AccountNameAlias = types.StringValue(value.String())
 	} else {
 		data.AccountNameAlias = types.StringNull()
 	}
-	if value := res.Get("InternalUser.enabled"); value.Exists() {
+	if value := res.Get("InternalUser.enabled"); value.Exists() && value.Type != gjson.Null {
 		data.Enabled = types.BoolValue(value.Bool())
 	} else {
 		data.Enabled = types.BoolNull()
 	}
-	if value := res.Get("InternalUser.passwordNeverExpires"); value.Exists() {
+	if value := res.Get("InternalUser.passwordNeverExpires"); value.Exists() && value.Type != gjson.Null {
 		data.PasswordNeverExpires = types.BoolValue(value.Bool())
 	} else {
 		data.PasswordNeverExpires = types.BoolValue(false)
 	}
-	if value := res.Get("InternalUser.firstName"); value.Exists() {
+	if value := res.Get("InternalUser.firstName"); value.Exists() && value.Type != gjson.Null {
 		data.FirstName = types.StringValue(value.String())
 	} else {
 		data.FirstName = types.StringNull()
 	}
-	if value := res.Get("InternalUser.lastName"); value.Exists() {
+	if value := res.Get("InternalUser.lastName"); value.Exists() && value.Type != gjson.Null {
 		data.LastName = types.StringValue(value.String())
 	} else {
 		data.LastName = types.StringNull()
 	}
-	if value := res.Get("InternalUser.identityGroups"); value.Exists() {
+	if value := res.Get("InternalUser.identityGroups"); value.Exists() && value.Type != gjson.Null {
 		data.IdentityGroups = types.StringValue(value.String())
 	} else {
 		data.IdentityGroups = types.StringNull()
 	}
-	if value := res.Get("InternalUser.customAttributes"); value.Exists() {
+	if value := res.Get("InternalUser.customAttributes"); value.Exists() && value.Type != gjson.Null {
 		data.CustomAttributes = types.StringValue(value.String())
 	} else {
 		data.CustomAttributes = types.StringNull()
 	}
-	if value := res.Get("InternalUser.passwordIDStore"); value.Exists() {
+	if value := res.Get("InternalUser.passwordIDStore"); value.Exists() && value.Type != gjson.Null {
 		data.PasswordIdStore = types.StringValue(value.String())
 	} else {
 		data.PasswordIdStore = types.StringValue("Internal Users")
 	}
-	if value := res.Get("InternalUser.description"); value.Exists() {
+	if value := res.Get("InternalUser.description"); value.Exists() && value.Type != gjson.Null {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
