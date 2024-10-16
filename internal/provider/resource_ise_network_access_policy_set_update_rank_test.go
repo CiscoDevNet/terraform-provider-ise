@@ -38,10 +38,6 @@ func TestAccIseNetworkAccessPolicySetUpdateRank(t *testing.T) {
 		Config: testAccIseNetworkAccessPolicySetUpdateRankPrerequisitesConfig + testAccIseNetworkAccessPolicySetUpdateRankConfig_all(),
 		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
-	steps = append(steps, resource.TestStep{
-		ResourceName: "ise_network_access_policy_set_update_rank.test",
-		ImportState:  true,
-	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },

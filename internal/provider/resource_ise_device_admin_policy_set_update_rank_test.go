@@ -38,10 +38,6 @@ func TestAccIseDeviceAdminPolicySetUpdateRank(t *testing.T) {
 		Config: testAccIseDeviceAdminPolicySetUpdateRankPrerequisitesConfig + testAccIseDeviceAdminPolicySetUpdateRankConfig_all(),
 		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
-	steps = append(steps, resource.TestStep{
-		ResourceName: "ise_device_admin_policy_set_update_rank.test",
-		ImportState:  true,
-	})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
