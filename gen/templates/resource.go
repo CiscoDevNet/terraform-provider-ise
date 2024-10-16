@@ -455,6 +455,9 @@ func (r *{{camelCase .Name}}Resource) Configure(_ context.Context, req resource.
 //template:begin create
 func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan {{camelCase .Name}}
+	{{- if strContains (camelCase .Name) "UpdateRank" }}
+	var existingData {{strReplace (camelCase .Name) "UpdateRank" "" -1}}
+	{{- end}}
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -465,9 +468,39 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
 
+	{{- if strContains (camelCase .Name) "UpdateRank" }}
+	// Read existing attributes from the API
+	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.RuleId.ValueString()))
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
+		return
+	}
+	existingData.fromBody(ctx, res)
+
+	// Use the `toBody` function to construct the body from existingData
+	body := existingData.toBody(ctx, existingData)
+
+	// Update rank
+	{{- if strContains (camelCase .Name) "Rule" }}
+	body, _ = sjson.Set(body, "rule.rank", plan.Rank.ValueInt64())
+	{{- else}}
+	body, _ = sjson.Set(body, "rank", plan.Rank.ValueInt64())
+	{{- end}}
+	res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.RuleId.ValueString()), body)
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
+		return
+	}
+	plan.Id = types.StringValue(fmt.Sprint(plan.RuleId.ValueString()))
+
+	{{- else}}
+	
 	// Create object
 	body := plan.toBody(ctx, {{camelCase .Name}}{})
 
+	{{- if .UpdateDefault}}
+	if plan.Name.ValueString() != "Default" {
+	{{- end}}
 	{{- if .PutCreate}}
 	res, err := r.client.Put(plan.getPath(), body)
 	{{- else if and (isErs .RestEndpoint) (not .IdPath) (not (hasId .Attributes))}}
@@ -481,12 +514,56 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	}
 	{{- if .IdPath}}
 	plan.Id = types.StringValue(res.Get("{{.IdPath}}").String())
+	{{- if and (not (strContains (camelCase .Name) "Rule")) .UpdateDefault }}
+	if plan.Description.IsUnknown() {
+		plan.Description = types.StringNull()
+	}
+	if plan.Rank.IsUnknown() {
+		plan.Rank = types.Int64Null()
+	}
+	{{- end}}
 	{{- else if hasId .Attributes}}
 		{{- $id := getId .Attributes}}
 	plan.Id = types.StringValue(fmt.Sprint(plan.{{toGoName $id.TfName}}.Value{{$id.Type}}()))
 	{{- else}}
 	locationElements := strings.Split(location, "/")
 	plan.Id = types.StringValue(locationElements[len(locationElements)-1])
+	{{- end}}
+	{{- if .UpdateDefault}}
+	} else {
+		res, err := r.client.Get(plan.getPath())
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve objects, got error: %s", err))
+			return
+		}
+		if value := res.Get("response"); len(value.Array()) > 0 {
+			value.ForEach(func(k, v gjson.Result) bool {
+				{{- if strContains (camelCase .Name) "Rule" }}
+				if v.Get("rule.name").String() == plan.Name.ValueString() {
+					plan.Id = types.StringValue(v.Get("rule.id").String())
+					return false
+				}
+				{{- else}}
+				if v.Get("name").String() == plan.Name.ValueString() {
+					plan.Id = types.StringValue(v.Get("id").String())
+					plan.Description = types.StringValue(v.Get("description").String())
+					plan.Rank = types.Int64Value(v.Get("rank").Int())
+					return false
+				}
+				{{- end}}
+				return true
+			})
+		}
+		{{- if not (strContains (camelCase .Name) "Rule") }}
+		body = plan.toBody(ctx, {{camelCase .Name}}{})
+		{{- end}}
+		res, err = r.client.Put(plan.getPath()+"/"+plan.Id.ValueString(), body)
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
+			return
+		}
+	}
+	{{- end}}
 	{{- end}}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
@@ -537,6 +614,9 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 //template:begin update
 func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state {{camelCase .Name}}
+	{{- if strContains (camelCase .Name) "UpdateRank" }}
+	var existingData {{strReplace (camelCase .Name) "UpdateRank" "" -1}}
+	{{- end}}
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -553,8 +633,56 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
+	{{- if strContains (camelCase .Name) "UpdateRank" }}
+	
+	// Read existing attributes from the API
+	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.RuleId.ValueString()))
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
+		return
+	}
+	existingData.fromBody(ctx, res)
+
+	// Use the `toBody` function to construct the body from existingData
+	body := existingData.toBody(ctx, existingData)
+
+	// Update rank
+	{{- if strContains (camelCase .Name) "Rule" }}
+	body, _ = sjson.Set(body, "rule.rank", plan.Rank.ValueInt64())
+	{{- else}}
+	body, _ = sjson.Set(body, "rank", plan.Rank.ValueInt64())
+	{{- end}}
+
+	res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
+		return
+	}
+	{{- else}}
 	{{- if not .NoUpdate}}
 	body := plan.toBody(ctx, state)
+
+	{{- if hasAttribute .Attributes "rank"}}
+	// Check if resource has rank attribute
+	// Check if plan.Rank is null (i.e., not provided) and set Rank to body from existingData to avoid reordering the rule during update
+	if plan.Rank.IsNull() {
+		var existingData {{camelCase .Name}}
+		// Fetch existing data from the API
+		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
+			return
+		}
+		// Populate existingData with current state from the API
+		existingData.fromBody(ctx, res)
+		// Set Rank in the request body from the existing data if it's missing from the plan
+		{{- if strContains (camelCase .Name) "Rule" }}
+		body, _ = sjson.Set(body, "rule.rank", existingData.Rank.ValueInt64())
+		{{- else}}
+		body, _ = sjson.Set(body, "rank", existingData.Rank.ValueInt64())
+		{{- end}}
+	}
+	{{- end}}
 	{{if .PostUpdate}}
 	res, _, err := r.client.Post(plan.getPath(), body)
 	{{- else}}
@@ -565,7 +693,8 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 		return
 	}
 	{{- end}}
-
+	{{- end}}
+	
 	tflog.Debug(ctx, fmt.Sprintf("%s: Update finished successfully", plan.Id.ValueString()))
 
 	diags = resp.State.Set(ctx, &plan)

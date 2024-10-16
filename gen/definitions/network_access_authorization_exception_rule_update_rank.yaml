@@ -1,12 +1,12 @@
 ---
-name: Network Access Authentication Rule Update Rank
+name: Network Access Authorization Exception Rule Update Rank
 res_description:
-  'This resource is used to update rank field in network access authentication rule. It serves as a workaround for the 
+  'This resource is used to update rank field in network access authorization exception rule. It serves as a workaround for the 
   ISE API/Backend limitation which restricts rank assignments to a strictly incremental sequence.
-  By utilizing this resource and network_access_authentication_rule resource, you can bypass the APIs limitation.
+  By utilizing this resource and network_access_authorization_exception_rule resource, you can bypass the APIs limitation.
   Creation of this resource is performing PUT operation (Update) and it only tracks rank field.
   When this resource is destroyed, no action is performed on ISE and resource is just removed from state.'
-rest_endpoint: /api/v1/policy/network-access/policy-set/%v/authentication
+rest_endpoint: /api/v1/policy/network-access/policy-set/%v/exception
 put_create: true
 no_delete: true
 no_import: true
@@ -19,9 +19,9 @@ attributes:
     write_only: true
     mandatory: true
     id: true
-    description: Authentication rule ID
+    description: Authorization exception rule ID
     example: 9b3680da-0165-44f6-9cff-88e778d98020
-    test_value: ise_network_access_authentication_rule.test.id
+    test_value: ise_network_access_authorization_exception_rule.test.id
   - tf_name: policy_set_id
     type: String
     reference: true
@@ -45,7 +45,7 @@ test_prerequisites: |
     condition_dictionary_name = "DEVICE"
     condition_operator        = "equals"
   }
-  resource "ise_network_access_authentication_rule" "test" {
+  resource "ise_network_access_authorization_exception_rule" "test" {
     policy_set_id             = ise_network_access_policy_set.test.id
     name                      = "Rule1"
     default                   = false
@@ -56,8 +56,6 @@ test_prerequisites: |
     condition_attribute_value = "All Locations"
     condition_dictionary_name = "DEVICE"
     condition_operator        = "equals"
-    identity_source_name      = "Internal Endpoints"
-    if_auth_fail              = "REJECT"
-    if_process_fail           = "DROP"
-    if_user_not_found         = "REJECT"
+    profiles                  = ["PermitAccess"]
+    security_group            = "BYOD"
   }

@@ -29,13 +29,13 @@ import (
 //template:end imports
 
 //template:begin testAcc
-func TestAccIseNetworkAccessAuthenticationRuleUpdateRank(t *testing.T) {
+func TestAccIseNetworkAccessAuthorizationExceptionRuleUpdateRank(t *testing.T) {
 	var checks []resource.TestCheckFunc
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authentication_rule_update_rank.test", "rank", "0"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_exception_rule_update_rank.test", "rank", "0"))
 
 	var steps []resource.TestStep
 	steps = append(steps, resource.TestStep{
-		Config: testAccIseNetworkAccessAuthenticationRuleUpdateRankPrerequisitesConfig + testAccIseNetworkAccessAuthenticationRuleUpdateRankConfig_all(),
+		Config: testAccIseNetworkAccessAuthorizationExceptionRuleUpdateRankPrerequisitesConfig + testAccIseNetworkAccessAuthorizationExceptionRuleUpdateRankConfig_all(),
 		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 
@@ -49,7 +49,7 @@ func TestAccIseNetworkAccessAuthenticationRuleUpdateRank(t *testing.T) {
 //template:end testAcc
 
 //template:begin testPrerequisites
-const testAccIseNetworkAccessAuthenticationRuleUpdateRankPrerequisitesConfig = `
+const testAccIseNetworkAccessAuthorizationExceptionRuleUpdateRankPrerequisitesConfig = `
 resource "ise_network_access_policy_set" "test" {
   name                      = "PolicySet1"
   service_name              = "Default Network Access"
@@ -60,7 +60,7 @@ resource "ise_network_access_policy_set" "test" {
   condition_dictionary_name = "DEVICE"
   condition_operator        = "equals"
 }
-resource "ise_network_access_authentication_rule" "test" {
+resource "ise_network_access_authorization_exception_rule" "test" {
   policy_set_id             = ise_network_access_policy_set.test.id
   name                      = "Rule1"
   default                   = false
@@ -71,19 +71,18 @@ resource "ise_network_access_authentication_rule" "test" {
   condition_attribute_value = "All Locations"
   condition_dictionary_name = "DEVICE"
   condition_operator        = "equals"
-  identity_source_name      = "Internal Endpoints"
-  if_auth_fail              = "REJECT"
-  if_process_fail           = "DROP"
-  if_user_not_found         = "REJECT"
+  profiles                  = ["PermitAccess"]
+  security_group            = "BYOD"
 }
+
 `
 
 //template:end testPrerequisites
 
 //template:begin testAccConfigMinimal
-func testAccIseNetworkAccessAuthenticationRuleUpdateRankConfig_minimum() string {
-	config := `resource "ise_network_access_authentication_rule_update_rank" "test" {` + "\n"
-	config += `	rule_id = ise_network_access_authentication_rule.test.id` + "\n"
+func testAccIseNetworkAccessAuthorizationExceptionRuleUpdateRankConfig_minimum() string {
+	config := `resource "ise_network_access_authorization_exception_rule_update_rank" "test" {` + "\n"
+	config += `	rule_id = ise_network_access_authorization_exception_rule.test.id` + "\n"
 	config += `	policy_set_id = ise_network_access_policy_set.test.id` + "\n"
 	config += `	rank = 0` + "\n"
 	config += `}` + "\n"
@@ -93,9 +92,9 @@ func testAccIseNetworkAccessAuthenticationRuleUpdateRankConfig_minimum() string 
 //template:end testAccConfigMinimal
 
 //template:begin testAccConfigAll
-func testAccIseNetworkAccessAuthenticationRuleUpdateRankConfig_all() string {
-	config := `resource "ise_network_access_authentication_rule_update_rank" "test" {` + "\n"
-	config += `	rule_id = ise_network_access_authentication_rule.test.id` + "\n"
+func testAccIseNetworkAccessAuthorizationExceptionRuleUpdateRankConfig_all() string {
+	config := `resource "ise_network_access_authorization_exception_rule_update_rank" "test" {` + "\n"
+	config += `	rule_id = ise_network_access_authorization_exception_rule.test.id` + "\n"
 	config += `	policy_set_id = ise_network_access_policy_set.test.id` + "\n"
 	config += `	rank = 0` + "\n"
 	config += `}` + "\n"

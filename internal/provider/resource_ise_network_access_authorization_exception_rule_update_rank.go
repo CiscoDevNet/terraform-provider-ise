@@ -42,27 +42,27 @@ import (
 //template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
-var _ resource.Resource = &NetworkAccessAuthenticationRuleUpdateRankResource{}
+var _ resource.Resource = &NetworkAccessAuthorizationExceptionRuleUpdateRankResource{}
 
-func NewNetworkAccessAuthenticationRuleUpdateRankResource() resource.Resource {
-	return &NetworkAccessAuthenticationRuleUpdateRankResource{}
+func NewNetworkAccessAuthorizationExceptionRuleUpdateRankResource() resource.Resource {
+	return &NetworkAccessAuthorizationExceptionRuleUpdateRankResource{}
 }
 
-type NetworkAccessAuthenticationRuleUpdateRankResource struct {
+type NetworkAccessAuthorizationExceptionRuleUpdateRankResource struct {
 	client *ise.Client
 }
 
-func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_network_access_authentication_rule_update_rank"
+func (r *NetworkAccessAuthorizationExceptionRuleUpdateRankResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_network_access_authorization_exception_rule_update_rank"
 }
 
 //template:end header
 
 //template:begin model
-func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *NetworkAccessAuthorizationExceptionRuleUpdateRankResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: helpers.NewAttributeDescription("This resource is used to update rank field in network access authentication rule. It serves as a workaround for the ISE API/Backend limitation which restricts rank assignments to a strictly incremental sequence. By utilizing this resource and network_access_authentication_rule resource, you can bypass the APIs limitation. Creation of this resource is performing PUT operation (Update) and it only tracks rank field. When this resource is destroyed, no action is performed on ISE and resource is just removed from state.").String,
+		MarkdownDescription: helpers.NewAttributeDescription("This resource is used to update rank field in network access authorization exception rule. It serves as a workaround for the ISE API/Backend limitation which restricts rank assignments to a strictly incremental sequence. By utilizing this resource and network_access_authorization_exception_rule resource, you can bypass the APIs limitation. Creation of this resource is performing PUT operation (Update) and it only tracks rank field. When this resource is destroyed, no action is performed on ISE and resource is just removed from state.").String,
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -73,7 +73,7 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Schema(ctx context.C
 				},
 			},
 			"rule_id": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Authentication rule ID").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Authorization exception rule ID").String,
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -97,7 +97,7 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Schema(ctx context.C
 //template:end model
 
 //template:begin configure
-func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+func (r *NetworkAccessAuthorizationExceptionRuleUpdateRankResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -108,9 +108,9 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Configure(_ context.
 //template:end configure
 
 //template:begin create
-func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan NetworkAccessAuthenticationRuleUpdateRank
-	var existingData NetworkAccessAuthenticationRule
+func (r *NetworkAccessAuthorizationExceptionRuleUpdateRankResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan NetworkAccessAuthorizationExceptionRuleUpdateRank
+	var existingData NetworkAccessAuthorizationExceptionRule
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -149,8 +149,8 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Create(ctx context.C
 //template:end create
 
 //template:begin read
-func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state NetworkAccessAuthenticationRuleUpdateRank
+func (r *NetworkAccessAuthorizationExceptionRuleUpdateRankResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state NetworkAccessAuthorizationExceptionRuleUpdateRank
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -185,9 +185,9 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Read(ctx context.Con
 //template:end read
 
 //template:begin update
-func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan, state NetworkAccessAuthenticationRuleUpdateRank
-	var existingData NetworkAccessAuthenticationRule
+func (r *NetworkAccessAuthorizationExceptionRuleUpdateRankResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var plan, state NetworkAccessAuthorizationExceptionRuleUpdateRank
+	var existingData NetworkAccessAuthorizationExceptionRule
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -233,8 +233,8 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Update(ctx context.C
 //template:end update
 
 //template:begin delete
-func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state NetworkAccessAuthenticationRuleUpdateRank
+func (r *NetworkAccessAuthorizationExceptionRuleUpdateRankResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state NetworkAccessAuthorizationExceptionRuleUpdateRank
 
 	// Read state
 	diags := req.State.Get(ctx, &state)

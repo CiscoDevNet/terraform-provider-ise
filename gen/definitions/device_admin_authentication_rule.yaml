@@ -3,6 +3,7 @@ name: Device Admin Authentication Rule
 rest_endpoint: /api/v1/policy/device-admin/policy-set/%v/authentication
 data_source_name_query: true
 id_path: response.rule.id
+update_default: true
 ignore_delete_error: Attempted to delete default
 doc_category: Device Administration
 attributes:

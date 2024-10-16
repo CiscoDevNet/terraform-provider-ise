@@ -2,6 +2,7 @@
 name: str() # Name of the resource
 rest_endpoint: str(required=False) # REST endpoint path
 delete_rest_endpoint: str(required=False) # Override DELETE REST endpoint path
+update_default: bool(required=False)  # Set to true to allow updating the default policy set and rules.
 get_no_id: bool(required=False) # Set to true if the GET request does not require an ID
 no_delete: bool(required=False) # Set to true if the DELETE request is not supported
 no_import: bool(required=False) # Set to true if the resource does not support importing

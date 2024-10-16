@@ -33,7 +33,7 @@ import (
 //template:end imports
 
 //template:begin types
-type NetworkAccessAuthenticationRuleUpdateRank struct {
+type NetworkAccessAuthorizationRuleUpdateRank struct {
 	Id          types.String `tfsdk:"id"`
 	RuleId      types.String `tfsdk:"rule_id"`
 	PolicySetId types.String `tfsdk:"policy_set_id"`
@@ -43,8 +43,8 @@ type NetworkAccessAuthenticationRuleUpdateRank struct {
 //template:end types
 
 //template:begin getPath
-func (data NetworkAccessAuthenticationRuleUpdateRank) getPath() string {
-	return fmt.Sprintf("/api/v1/policy/network-access/policy-set/%v/authentication", url.QueryEscape(data.PolicySetId.ValueString()))
+func (data NetworkAccessAuthorizationRuleUpdateRank) getPath() string {
+	return fmt.Sprintf("/api/v1/policy/network-access/policy-set/%v/authorization", url.QueryEscape(data.PolicySetId.ValueString()))
 }
 
 //template:end getPath
@@ -54,7 +54,7 @@ func (data NetworkAccessAuthenticationRuleUpdateRank) getPath() string {
 //template:end getPathDelete
 
 //template:begin toBody
-func (data NetworkAccessAuthenticationRuleUpdateRank) toBody(ctx context.Context, state NetworkAccessAuthenticationRuleUpdateRank) string {
+func (data NetworkAccessAuthorizationRuleUpdateRank) toBody(ctx context.Context, state NetworkAccessAuthorizationRuleUpdateRank) string {
 	body := ""
 	if !data.RuleId.IsNull() {
 		body, _ = sjson.Set(body, "", data.RuleId.ValueString())
@@ -68,7 +68,7 @@ func (data NetworkAccessAuthenticationRuleUpdateRank) toBody(ctx context.Context
 //template:end toBody
 
 //template:begin fromBody
-func (data *NetworkAccessAuthenticationRuleUpdateRank) fromBody(ctx context.Context, res gjson.Result) {
+func (data *NetworkAccessAuthorizationRuleUpdateRank) fromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("response.rule.rank"); value.Exists() && value.Type != gjson.Null {
 		data.Rank = types.Int64Value(value.Int())
 	} else {
@@ -79,7 +79,7 @@ func (data *NetworkAccessAuthenticationRuleUpdateRank) fromBody(ctx context.Cont
 //template:end fromBody
 
 //template:begin updateFromBody
-func (data *NetworkAccessAuthenticationRuleUpdateRank) updateFromBody(ctx context.Context, res gjson.Result) {
+func (data *NetworkAccessAuthorizationRuleUpdateRank) updateFromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("response.rule.rank"); value.Exists() && !data.Rank.IsNull() {
 		data.Rank = types.Int64Value(value.Int())
 	} else {
@@ -90,7 +90,7 @@ func (data *NetworkAccessAuthenticationRuleUpdateRank) updateFromBody(ctx contex
 //template:end updateFromBody
 
 //template:begin isNull
-func (data *NetworkAccessAuthenticationRuleUpdateRank) isNull(ctx context.Context, res gjson.Result) bool {
+func (data *NetworkAccessAuthorizationRuleUpdateRank) isNull(ctx context.Context, res gjson.Result) bool {
 	if !data.RuleId.IsNull() {
 		return false
 	}

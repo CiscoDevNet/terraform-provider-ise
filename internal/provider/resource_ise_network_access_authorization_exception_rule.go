@@ -37,6 +37,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
+	"github.com/tidwall/sjson"
 )
 
 //template:end imports
@@ -342,6 +343,21 @@ func (r *NetworkAccessAuthorizationExceptionRuleResource) Update(ctx context.Con
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	body := plan.toBody(ctx, state)
+	// Check if resource has rank attribute
+	// Check if plan.Rank is null (i.e., not provided) and set Rank to body from existingData to avoid reordering the rule during update
+	if plan.Rank.IsNull() {
+		var existingData NetworkAccessAuthorizationExceptionRule
+		// Fetch existing data from the API
+		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
+			return
+		}
+		// Populate existingData with current state from the API
+		existingData.fromBody(ctx, res)
+		// Set Rank in the request body from the existing data if it's missing from the plan
+		body, _ = sjson.Set(body, "rule.rank", existingData.Rank.ValueInt64())
+	}
 
 	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
 	if err != nil {
