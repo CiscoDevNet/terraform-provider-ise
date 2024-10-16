@@ -31,7 +31,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -97,10 +96,6 @@ func (r *DeviceAdminPolicySetResource) Schema(ctx context.Context, req resource.
 			"rank": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("The rank (priority) in relation to other policy sets. Lower rank is higher priority.").String,
 				Optional:            true,
-				Computed:            true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
 			},
 			"service_name": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Policy set service identifier. 'Allowed Protocols' or 'Server Sequence'.").String,

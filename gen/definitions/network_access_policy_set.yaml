@@ -23,7 +23,6 @@ attributes:
     example: false
   - model_name: rank
     type: Int64
-    computed: true
     description: The rank (priority) in relation to other policy sets. Lower rank is higher priority.
     example: 0
   - model_name: serviceName

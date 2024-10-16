@@ -470,7 +470,11 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 
 	{{- if strContains (camelCase .Name) "UpdateRank" }}
 	// Read existing attributes from the API
+	{{- if strContains (camelCase .Name) "Rule" }}
 	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.RuleId.ValueString()))
+	{{- else}}
+	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.PolicySetId.ValueString()))
+	{{- end}}
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 		return
@@ -483,18 +487,23 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	// Update rank
 	{{- if strContains (camelCase .Name) "Rule" }}
 	body, _ = sjson.Set(body, "rule.rank", plan.Rank.ValueInt64())
+	res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.RuleId.ValueString()), body)
 	{{- else}}
 	body, _ = sjson.Set(body, "rank", plan.Rank.ValueInt64())
+	res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.PolicySetId.ValueString()), body)
 	{{- end}}
-	res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.RuleId.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
 	}
+	{{- if strContains (camelCase .Name) "Rule" }}
 	plan.Id = types.StringValue(fmt.Sprint(plan.RuleId.ValueString()))
+	{{- else}}
+	plan.Id = types.StringValue(fmt.Sprint(plan.PolicySetId.ValueString()))
+	{{- end}}
 
 	{{- else}}
-	
+
 	// Create object
 	body := plan.toBody(ctx, {{camelCase .Name}}{})
 
@@ -636,7 +645,11 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	{{- if strContains (camelCase .Name) "UpdateRank" }}
 	
 	// Read existing attributes from the API
+	{{- if strContains (camelCase .Name) "Rule" }}
 	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.RuleId.ValueString()))
+	{{- else}}
+	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.PolicySetId.ValueString()))
+	{{- end}}
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 		return
