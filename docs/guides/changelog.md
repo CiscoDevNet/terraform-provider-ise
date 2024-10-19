@@ -9,7 +9,7 @@ description: |-
 
 ## 0.2.3 (unreleased)
 
-- Add resource `network_access_authentication_rule_update_rank` for updating rank under network access authentication rule to bypass API limitation which restricts rank assignments to a strictly incremental sequence
+- Add `network_access_*_update_rank` and `device_admin_*_update_rank` resources to update rank under network access and device admin policy sets to bypass API limitation which restricts rank assignments to a strictly incremental sequence. More detailed information is available [here](https://registry.terraform.io/providers/CiscoDevNet/ise/latest/docs/guides/authentication_rules).
 
 ## 0.2.2
 
