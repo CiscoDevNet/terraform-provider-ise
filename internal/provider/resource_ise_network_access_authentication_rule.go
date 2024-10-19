@@ -275,6 +275,7 @@ func (r *NetworkAccessAuthenticationRuleResource) Configure(_ context.Context, r
 
 //template:end configure
 
+//template:begin create
 func (r *NetworkAccessAuthenticationRuleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan NetworkAccessAuthenticationRule
 
@@ -289,7 +290,6 @@ func (r *NetworkAccessAuthenticationRuleResource) Create(ctx context.Context, re
 
 	// Create object
 	body := plan.toBody(ctx, NetworkAccessAuthenticationRule{})
-
 	if plan.Name.ValueString() != "Default" {
 		res, _, err := r.client.Post(plan.getPath(), body)
 		if err != nil {
@@ -324,6 +324,8 @@ func (r *NetworkAccessAuthenticationRuleResource) Create(ctx context.Context, re
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
+//template:end create
 
 //template:begin read
 func (r *NetworkAccessAuthenticationRuleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -361,8 +363,9 @@ func (r *NetworkAccessAuthenticationRuleResource) Read(ctx context.Context, req 
 
 //template:end read
 
+//template:begin update
 func (r *NetworkAccessAuthenticationRuleResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan, state, existingData NetworkAccessAuthenticationRule
+	var plan, state NetworkAccessAuthenticationRule
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -379,18 +382,19 @@ func (r *NetworkAccessAuthenticationRuleResource) Update(ctx context.Context, re
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	body := plan.toBody(ctx, state)
-
-	// Check if plan.Rank is null (i.e., not provided) and set rank to body from existingData to not reorder rule during update
+	// Check if resource has rank attribute
+	// Check if plan.Rank is null (i.e., not provided) and set Rank to body from existingData to avoid reordering the rule during update
 	if plan.Rank.IsNull() {
-		// Read existing attributes from the API
+		var existingData NetworkAccessAuthenticationRule
+		// Fetch existing data from the API
 		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
 		}
+		// Populate existingData with current state from the API
 		existingData.fromBody(ctx, res)
-
-		// If plan.Rank is not provided, set it from existingData.Rank
+		// Set Rank in the request body from the existing data if it's missing from the plan
 		body, _ = sjson.Set(body, "rule.rank", existingData.Rank.ValueInt64())
 	}
 
@@ -405,6 +409,8 @@ func (r *NetworkAccessAuthenticationRuleResource) Update(ctx context.Context, re
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
+//template:end update
 
 //template:begin delete
 func (r *NetworkAccessAuthenticationRuleResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

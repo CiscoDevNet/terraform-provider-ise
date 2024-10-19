@@ -1,7 +1,5 @@
 ---
 name: Network Access Authentication Rule Update Rank
-# Manual update in Create function in resource file to add AuthRuleId to path
-# and populate attributes from existing resource using GET request in Create and Update functions
 res_description:
   'This resource is used to update rank field in network access authentication rule. It serves as a workaround for the 
   ISE API/Backend limitation which restricts rank assignments to a strictly incremental sequence.
@@ -16,7 +14,7 @@ no_data_source: true
 skip_minimum_test: true
 doc_category: Network Access
 attributes:
-  - tf_name: auth_rule_id
+  - tf_name: rule_id
     type: String
     write_only: true
     mandatory: true

@@ -108,6 +108,7 @@ type YamlConfig struct {
 	PutRead             bool                  `yaml:"put_read"`
 	NoRead              bool                  `yaml:"no_read"`
 	NoUpdate            bool                  `yaml:"no_update"`
+	UpdateDefault       bool                  `yaml:"update_default"`
 	RootList            bool                  `yaml:"root_list"`
 	NoReadPrefix        bool                  `yaml:"no_read_prefix"`
 	NoId                bool                  `yaml:"no_id"`
@@ -341,10 +342,22 @@ func IsNestedSet(attribute YamlConfigAttribute) bool {
 	return false
 }
 
+// Templating helper function to return true if resource has specific attribute
+func HasAttribute(attributes []YamlConfigAttribute, attrName string) bool {
+	for _, attr := range attributes {
+		if attr.TfName == attrName {
+			return true
+		}
+	}
+	return false
+}
+
 // Map of templating functions
 var functions = template.FuncMap{
 	"toGoName":               ToGoName,
 	"camelCase":              CamelCase,
+	"strContains":            strings.Contains,
+	"strReplace":             strings.Replace,
 	"snakeCase":              SnakeCase,
 	"sprintf":                fmt.Sprintf,
 	"toLower":                strings.ToLower,
@@ -364,6 +377,7 @@ var functions = template.FuncMap{
 	"isNestedListSet":        IsNestedListSet,
 	"isNestedList":           IsNestedList,
 	"isNestedSet":            IsNestedSet,
+	"hasAttribute":           HasAttribute,
 }
 
 func augmentAttribute(attr *YamlConfigAttribute) {

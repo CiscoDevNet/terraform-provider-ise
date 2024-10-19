@@ -72,7 +72,7 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Schema(ctx context.C
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"auth_rule_id": schema.StringAttribute{
+			"rule_id": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Authentication rule ID").String,
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
@@ -107,6 +107,7 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Configure(_ context.
 
 //template:end configure
 
+//template:begin create
 func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan NetworkAccessAuthenticationRuleUpdateRank
 	var existingData NetworkAccessAuthenticationRule
@@ -119,9 +120,8 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Create(ctx context.C
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
-
 	// Read existing attributes from the API
-	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.AuthRuleId.ValueString()))
+	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.RuleId.ValueString()))
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 		return
@@ -133,19 +133,20 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Create(ctx context.C
 
 	// Update rank
 	body, _ = sjson.Set(body, "rule.rank", plan.Rank.ValueInt64())
-
-	res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.AuthRuleId.ValueString()), body)
+	res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.RuleId.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
 	}
-	plan.Id = types.StringValue(fmt.Sprint(plan.AuthRuleId.ValueString()))
+	plan.Id = types.StringValue(fmt.Sprint(plan.RuleId.ValueString()))
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
+//template:end create
 
 //template:begin read
 func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -183,6 +184,7 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Read(ctx context.Con
 
 //template:end read
 
+//template:begin update
 func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state NetworkAccessAuthenticationRuleUpdateRank
 	var existingData NetworkAccessAuthenticationRule
@@ -203,7 +205,7 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Update(ctx context.C
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	// Read existing attributes from the API
-	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.AuthRuleId.ValueString()))
+	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.RuleId.ValueString()))
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 		return
@@ -227,6 +229,8 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Update(ctx context.C
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
+//template:end update
 
 //template:begin delete
 func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

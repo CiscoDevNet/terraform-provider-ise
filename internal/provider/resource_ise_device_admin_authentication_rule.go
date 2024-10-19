@@ -38,6 +38,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
 	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
 )
 
 //template:end imports
@@ -274,6 +275,7 @@ func (r *DeviceAdminAuthenticationRuleResource) Configure(_ context.Context, req
 
 //template:end configure
 
+//template:begin create
 func (r *DeviceAdminAuthenticationRuleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan DeviceAdminAuthenticationRule
 
@@ -322,6 +324,8 @@ func (r *DeviceAdminAuthenticationRuleResource) Create(ctx context.Context, req 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
+//template:end create
 
 //template:begin read
 func (r *DeviceAdminAuthenticationRuleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -378,6 +382,21 @@ func (r *DeviceAdminAuthenticationRuleResource) Update(ctx context.Context, req 
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	body := plan.toBody(ctx, state)
+	// Check if resource has rank attribute
+	// Check if plan.Rank is null (i.e., not provided) and set Rank to body from existingData to avoid reordering the rule during update
+	if plan.Rank.IsNull() {
+		var existingData DeviceAdminAuthenticationRule
+		// Fetch existing data from the API
+		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
+			return
+		}
+		// Populate existingData with current state from the API
+		existingData.fromBody(ctx, res)
+		// Set Rank in the request body from the existing data if it's missing from the plan
+		body, _ = sjson.Set(body, "rule.rank", existingData.Rank.ValueInt64())
+	}
 
 	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
 	if err != nil {

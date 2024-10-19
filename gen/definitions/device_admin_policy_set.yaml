@@ -2,6 +2,7 @@
 name: Device Admin Policy Set
 rest_endpoint: /api/v1/policy/device-admin/policy-set
 data_source_name_query: true
+update_default: true
 id_path: response.id
 ignore_delete_error: Attempted to delete default
 doc_category: Device Administration
@@ -22,7 +23,6 @@ attributes:
     example: false
   - model_name: rank
     type: Int64
-    computed: true
     description: The rank (priority) in relation to other policy sets. Lower rank is higher priority.
     example: 0
   - model_name: serviceName

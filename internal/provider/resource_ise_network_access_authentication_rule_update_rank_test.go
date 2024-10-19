@@ -83,7 +83,7 @@ resource "ise_network_access_authentication_rule" "test" {
 //template:begin testAccConfigMinimal
 func testAccIseNetworkAccessAuthenticationRuleUpdateRankConfig_minimum() string {
 	config := `resource "ise_network_access_authentication_rule_update_rank" "test" {` + "\n"
-	config += `	auth_rule_id = ise_network_access_authentication_rule.test.id` + "\n"
+	config += `	rule_id = ise_network_access_authentication_rule.test.id` + "\n"
 	config += `	policy_set_id = ise_network_access_policy_set.test.id` + "\n"
 	config += `	rank = 0` + "\n"
 	config += `}` + "\n"
@@ -95,7 +95,7 @@ func testAccIseNetworkAccessAuthenticationRuleUpdateRankConfig_minimum() string 
 //template:begin testAccConfigAll
 func testAccIseNetworkAccessAuthenticationRuleUpdateRankConfig_all() string {
 	config := `resource "ise_network_access_authentication_rule_update_rank" "test" {` + "\n"
-	config += `	auth_rule_id = ise_network_access_authentication_rule.test.id` + "\n"
+	config += `	rule_id = ise_network_access_authentication_rule.test.id` + "\n"
 	config += `	policy_set_id = ise_network_access_policy_set.test.id` + "\n"
 	config += `	rank = 0` + "\n"
 	config += `}` + "\n"

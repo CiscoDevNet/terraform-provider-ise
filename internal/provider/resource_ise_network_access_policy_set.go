@@ -31,7 +31,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -39,6 +38,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
 	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
 )
 
 //template:end imports
@@ -96,10 +96,6 @@ func (r *NetworkAccessPolicySetResource) Schema(ctx context.Context, req resourc
 			"rank": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("The rank (priority) in relation to other policy sets. Lower rank is higher priority.").String,
 				Optional:            true,
-				Computed:            true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
 			},
 			"service_name": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Policy set service identifier. 'Allowed Protocols' or 'Server Sequence'.").String,
@@ -263,6 +259,7 @@ func (r *NetworkAccessPolicySetResource) Configure(_ context.Context, req resour
 
 //template:end configure
 
+//template:begin create
 func (r *NetworkAccessPolicySetResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan NetworkAccessPolicySet
 
@@ -321,6 +318,8 @@ func (r *NetworkAccessPolicySetResource) Create(ctx context.Context, req resourc
 	resp.Diagnostics.Append(diags...)
 }
 
+//template:end create
+
 //template:begin read
 func (r *NetworkAccessPolicySetResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state NetworkAccessPolicySet
@@ -376,6 +375,21 @@ func (r *NetworkAccessPolicySetResource) Update(ctx context.Context, req resourc
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	body := plan.toBody(ctx, state)
+	// Check if resource has rank attribute
+	// Check if plan.Rank is null (i.e., not provided) and set Rank to body from existingData to avoid reordering the rule during update
+	if plan.Rank.IsNull() {
+		var existingData NetworkAccessPolicySet
+		// Fetch existing data from the API
+		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
+			return
+		}
+		// Populate existingData with current state from the API
+		existingData.fromBody(ctx, res)
+		// Set Rank in the request body from the existing data if it's missing from the plan
+		body, _ = sjson.Set(body, "rank", existingData.Rank.ValueInt64())
+	}
 
 	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
 	if err != nil {

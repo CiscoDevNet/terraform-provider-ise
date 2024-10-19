@@ -24,6 +24,7 @@ All resources and data sources have been tested with the following releases.
 The following guides with examples exist to demonstrate the use of the provider:
 
 - [Getting Started](https://registry.terraform.io/providers/CiscoDevNet/ise/latest/docs/guides/getting_started)
+- [Authentication Rules](https://registry.terraform.io/providers/CiscoDevNet/ise/latest/docs/guides/authentication_rules)
 
 ## Example Usage
 

@@ -124,7 +124,7 @@ func TestAccIse{{camelCase .Name}}(t *testing.T) {
 		Config: {{if .TestPrerequisites}}testAccIse{{camelCase .Name}}PrerequisitesConfig+{{end}}testAccIse{{camelCase .Name}}Config_all(),
 		Check: resource.ComposeTestCheckFunc(checks...),
 	})
-	{{- if not (hasReference .Attributes)}}
+	{{- if and (not .NoImport) (not (hasReference .Attributes))}}
 	steps = append(steps, resource.TestStep{
 		ResourceName:  "ise_{{snakeCase $name}}.test",
 		ImportState:   true,

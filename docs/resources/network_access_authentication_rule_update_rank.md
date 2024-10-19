@@ -14,7 +14,7 @@ This resource is used to update rank field in network access authentication rule
 
 ```terraform
 resource "ise_network_access_authentication_rule_update_rank" "example" {
-  auth_rule_id  = "9b3680da-0165-44f6-9cff-88e778d98020"
+  rule_id       = "9b3680da-0165-44f6-9cff-88e778d98020"
   policy_set_id = "d82952cb-b901-4b09-b363-5ebf39bdbaf9"
   rank          = 0
 }
@@ -25,9 +25,9 @@ resource "ise_network_access_authentication_rule_update_rank" "example" {
 
 ### Required
 
-- `auth_rule_id` (String) Authentication rule ID
 - `policy_set_id` (String) Policy set ID
 - `rank` (Number) The rank (priority) in relation to other rules. Lower rank is higher priority.
+- `rule_id` (String) Authentication rule ID
 
 ### Read-Only
 

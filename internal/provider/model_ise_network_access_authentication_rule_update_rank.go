@@ -35,7 +35,7 @@ import (
 //template:begin types
 type NetworkAccessAuthenticationRuleUpdateRank struct {
 	Id          types.String `tfsdk:"id"`
-	AuthRuleId  types.String `tfsdk:"auth_rule_id"`
+	RuleId      types.String `tfsdk:"rule_id"`
 	PolicySetId types.String `tfsdk:"policy_set_id"`
 	Rank        types.Int64  `tfsdk:"rank"`
 }
@@ -56,8 +56,8 @@ func (data NetworkAccessAuthenticationRuleUpdateRank) getPath() string {
 //template:begin toBody
 func (data NetworkAccessAuthenticationRuleUpdateRank) toBody(ctx context.Context, state NetworkAccessAuthenticationRuleUpdateRank) string {
 	body := ""
-	if !data.AuthRuleId.IsNull() {
-		body, _ = sjson.Set(body, "", data.AuthRuleId.ValueString())
+	if !data.RuleId.IsNull() {
+		body, _ = sjson.Set(body, "", data.RuleId.ValueString())
 	}
 	if !data.Rank.IsNull() {
 		body, _ = sjson.Set(body, "rule.rank", data.Rank.ValueInt64())
@@ -91,7 +91,7 @@ func (data *NetworkAccessAuthenticationRuleUpdateRank) updateFromBody(ctx contex
 
 //template:begin isNull
 func (data *NetworkAccessAuthenticationRuleUpdateRank) isNull(ctx context.Context, res gjson.Result) bool {
-	if !data.AuthRuleId.IsNull() {
+	if !data.RuleId.IsNull() {
 		return false
 	}
 	if !data.Rank.IsNull() {
