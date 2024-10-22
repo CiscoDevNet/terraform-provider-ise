@@ -14,7 +14,6 @@ attributes:
     example: PolicySet1
   - model_name: description
     type: String
-    computed: true
     description: The description of the policy set
     example: My description
   - model_name: isProxy

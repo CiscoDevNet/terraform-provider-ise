@@ -523,14 +523,6 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	}
 	{{- if .IdPath}}
 	plan.Id = types.StringValue(res.Get("{{.IdPath}}").String())
-	{{- if and (not (strContains (camelCase .Name) "Rule")) .UpdateDefault }}
-	if plan.Description.IsUnknown() {
-		plan.Description = types.StringNull()
-	}
-	if plan.Rank.IsUnknown() {
-		plan.Rank = types.Int64Null()
-	}
-	{{- end}}
 	{{- else if hasId .Attributes}}
 		{{- $id := getId .Attributes}}
 	plan.Id = types.StringValue(fmt.Sprint(plan.{{toGoName $id.TfName}}.Value{{$id.Type}}()))
@@ -545,27 +537,38 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve objects, got error: %s", err))
 			return
 		}
-		if value := res.Get("response"); len(value.Array()) > 0 {
-			value.ForEach(func(k, v gjson.Result) bool {
-				{{- if strContains (camelCase .Name) "Rule" }}
-				if v.Get("rule.name").String() == plan.Name.ValueString() {
-					plan.Id = types.StringValue(v.Get("rule.id").String())
-					return false
-				}
-				{{- else}}
-				if v.Get("name").String() == plan.Name.ValueString() {
-					plan.Id = types.StringValue(v.Get("id").String())
-					plan.Description = types.StringValue(v.Get("description").String())
-					plan.Rank = types.Int64Value(v.Get("rank").Int())
-					return false
-				}
-				{{- end}}
-				return true
-			})
-		}
+		// Find id
 		{{- if not (strContains (camelCase .Name) "Rule") }}
-		body = plan.toBody(ctx, {{camelCase .Name}}{})
+		res = res.Get("response.#(name==\"" + plan.Name.ValueString() + "\")")
+		plan.Id = types.StringValue(res.Get("id").String())
+		{{- else}}
+		res = res.Get("response.#(rule.name==\"" + plan.Name.ValueString() + "\")")
+		plan.Id = types.StringValue(res.Get("rule.id").String())
 		{{- end}}
+
+		// Read existing attributes from the API
+		res, err = r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
+			return
+		}
+		var existingData {{camelCase .Name}}
+
+		// Populate existingData with current state from the API
+		existingData.fromBody(ctx, res)
+
+		if plan.Name.ValueString() == "Default" {
+			{{- if not (strContains (camelCase .Name) "Rule") }}
+			// Set Rank and Description in the request body from the existing data for Default Policy Set
+			// Description on Default policy set cannot be modify, hence reading that form existing resource and setting to body
+			body, _ = sjson.Set(body, "description", existingData.Description.ValueString())
+			body, _ = sjson.Set(body, "rank", existingData.Rank.ValueInt64())
+			{{- else}}
+			// Set Rank in the request body from the existing data for Default Auth and Authz Rules
+			body, _ = sjson.Set(body, "rule.rank", existingData.Rank.ValueInt64())	
+			{{- end}}
+		}
+
 		res, err = r.client.Put(plan.getPath()+"/"+plan.Id.ValueString(), body)
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
@@ -693,6 +696,10 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 		body, _ = sjson.Set(body, "rule.rank", existingData.Rank.ValueInt64())
 		{{- else}}
 		body, _ = sjson.Set(body, "rank", existingData.Rank.ValueInt64())
+		// Description on Default policy set cannot be modify, hence reading that form existing resource and setting to body
+		if plan.Name.ValueString() == "Default" {
+			body, _ = sjson.Set(body, "description", existingData.Description.ValueString())
+		}
 		{{- end}}
 	}
 	{{- end}}

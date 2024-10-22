@@ -7,6 +7,10 @@ description: |-
 
 # Changelog
 
+## 0.2.4
+
+- Fix managing `Default` network access and device admin policy_set, authentication_rule and authorization_rule
+
 ## 0.2.3
 
 - Add `network_access_*_update_rank` and `device_admin_*_update_rank` resources to update rank under network access and device admin policy sets to bypass API limitation which restricts rank assignments to a strictly incremental sequence. More detailed information is available [here](https://registry.terraform.io/providers/CiscoDevNet/ise/latest/docs/guides/authentication_rules).
