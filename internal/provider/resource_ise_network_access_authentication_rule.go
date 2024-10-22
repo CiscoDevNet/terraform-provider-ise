@@ -37,7 +37,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
-	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
 
@@ -303,15 +302,26 @@ func (r *NetworkAccessAuthenticationRuleResource) Create(ctx context.Context, re
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve objects, got error: %s", err))
 			return
 		}
-		if value := res.Get("response"); len(value.Array()) > 0 {
-			value.ForEach(func(k, v gjson.Result) bool {
-				if v.Get("rule.name").String() == plan.Name.ValueString() {
-					plan.Id = types.StringValue(v.Get("rule.id").String())
-					return false
-				}
-				return true
-			})
+		// Find id
+		res = res.Get("response.#(rule.name==\"" + plan.Name.ValueString() + "\")")
+		plan.Id = types.StringValue(res.Get("rule.id").String())
+
+		// Read existing attributes from the API
+		res, err = r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
+			return
 		}
+		var existingData NetworkAccessAuthenticationRule
+
+		// Populate existingData with current state from the API
+		existingData.fromBody(ctx, res)
+
+		if plan.Name.ValueString() == "Default" {
+			// Set Rank in the request body from the existing data for Default Auth and Authz Rules
+			body, _ = sjson.Set(body, "rule.rank", existingData.Rank.ValueInt64())
+		}
+
 		res, err = r.client.Put(plan.getPath()+"/"+plan.Id.ValueString(), body)
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))

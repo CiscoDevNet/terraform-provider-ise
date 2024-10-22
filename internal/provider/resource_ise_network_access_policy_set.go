@@ -37,7 +37,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
-	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
 
@@ -84,10 +83,6 @@ func (r *NetworkAccessPolicySetResource) Schema(ctx context.Context, req resourc
 			"description": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("The description of the policy set").String,
 				Optional:            true,
-				Computed:            true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"is_proxy": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Flag which indicates if the policy set service is of type 'Proxy Sequence' or 'Allowed Protocols'").String,
@@ -281,30 +276,34 @@ func (r *NetworkAccessPolicySetResource) Create(ctx context.Context, req resourc
 			return
 		}
 		plan.Id = types.StringValue(res.Get("response.id").String())
-		if plan.Description.IsUnknown() {
-			plan.Description = types.StringNull()
-		}
-		if plan.Rank.IsUnknown() {
-			plan.Rank = types.Int64Null()
-		}
 	} else {
 		res, err := r.client.Get(plan.getPath())
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve objects, got error: %s", err))
 			return
 		}
-		if value := res.Get("response"); len(value.Array()) > 0 {
-			value.ForEach(func(k, v gjson.Result) bool {
-				if v.Get("name").String() == plan.Name.ValueString() {
-					plan.Id = types.StringValue(v.Get("id").String())
-					plan.Description = types.StringValue(v.Get("description").String())
-					plan.Rank = types.Int64Value(v.Get("rank").Int())
-					return false
-				}
-				return true
-			})
+		// Find id
+		res = res.Get("response.#(name==\"" + plan.Name.ValueString() + "\")")
+		plan.Id = types.StringValue(res.Get("id").String())
+
+		// Read existing attributes from the API
+		res, err = r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
+			return
 		}
-		body = plan.toBody(ctx, NetworkAccessPolicySet{})
+		var existingData NetworkAccessPolicySet
+
+		// Populate existingData with current state from the API
+		existingData.fromBody(ctx, res)
+
+		if plan.Name.ValueString() == "Default" {
+			// Set Rank and Description in the request body from the existing data for Default Policy Set
+			// Description on Default policy set cannot be modify, hence reading that form existing resource and setting to body
+			body, _ = sjson.Set(body, "description", existingData.Description.ValueString())
+			body, _ = sjson.Set(body, "rank", existingData.Rank.ValueInt64())
+		}
+
 		res, err = r.client.Put(plan.getPath()+"/"+plan.Id.ValueString(), body)
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
@@ -389,6 +388,10 @@ func (r *NetworkAccessPolicySetResource) Update(ctx context.Context, req resourc
 		existingData.fromBody(ctx, res)
 		// Set Rank in the request body from the existing data if it's missing from the plan
 		body, _ = sjson.Set(body, "rank", existingData.Rank.ValueInt64())
+		// Description on Default policy set cannot be modify, hence reading that form existing resource and setting to body
+		if plan.Name.ValueString() == "Default" {
+			body, _ = sjson.Set(body, "description", existingData.Description.ValueString())
+		}
 	}
 
 	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
