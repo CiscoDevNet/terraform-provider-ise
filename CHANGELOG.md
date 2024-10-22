@@ -1,6 +1,6 @@
-## 0.2.4
+## 0.2.4 (unreleased)
 
-- Fix managing `Default` network access and device admin policy_set, authentication_rule and authorization_rule
+- Fix managing `Default` network access and device administration resources
 
 ## 0.2.3
 
