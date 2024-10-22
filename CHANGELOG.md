@@ -1,4 +1,4 @@
-## 0.2.4 (unreleased)
+## 0.2.4
 
 - Fix managing `Default` network access and device administration resources
 
