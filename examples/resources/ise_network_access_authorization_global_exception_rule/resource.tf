@@ -1,6 +1,5 @@
 resource "ise_network_access_authorization_global_exception_rule" "example" {
   name                      = "Rule1"
-  default                   = false
   rank                      = 0
   state                     = "enabled"
   condition_type            = "ConditionAttributes"

@@ -37,7 +37,6 @@ data "ise_network_access_authorization_global_exception_rule" "example" {
 - `condition_is_negate` (Boolean) Indicates whereas this condition is in negate mode
 - `condition_operator` (String) Equality operator
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
-- `default` (Boolean) Indicates if this rule is the default one
 - `profiles` (Set of String) The authorization profile(s)
 - `rank` (Number) The rank (priority) in relation to other rules. Lower rank is higher priority.
 - `security_group` (String) Security group used in authorization policies

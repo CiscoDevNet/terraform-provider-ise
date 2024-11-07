@@ -11,11 +11,6 @@ attributes:
     mandatory: true
     description: Rule name, [Valid characters are alphanumerics, underscore, hyphen, space, period, parentheses]
     example: Rule1
-  - model_name: default
-    data_path: [rule]
-    type: Bool
-    description: Indicates if this rule is the default one
-    example: false
   - model_name: rank
     data_path: [rule]
     type: Int64

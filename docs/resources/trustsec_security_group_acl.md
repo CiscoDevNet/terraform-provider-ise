@@ -37,7 +37,6 @@ resource "ise_trustsec_security_group_acl" "example" {
   - Choices: `IPV4`, `IPV6`, `IP_AGNOSTIC`
   - Default value: `IP_AGNOSTIC`
 - `read_only` (Boolean) Read-only
-  - Default value: `false`
 
 ### Read-Only
 

@@ -32,7 +32,6 @@ import (
 func TestAccDataSourceIseDeviceAdminAuthorizationGlobalExceptionRule(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_device_admin_authorization_global_exception_rule.test", "name", "Rule1"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_device_admin_authorization_global_exception_rule.test", "default", "false"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_device_admin_authorization_global_exception_rule.test", "rank", "0"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_device_admin_authorization_global_exception_rule.test", "state", "enabled"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_device_admin_authorization_global_exception_rule.test", "condition_type", "ConditionAttributes"))
@@ -75,7 +74,6 @@ resource "ise_device_admin_condition" "test" {
 func testAccDataSourceIseDeviceAdminAuthorizationGlobalExceptionRuleConfig() string {
 	config := `resource "ise_device_admin_authorization_global_exception_rule" "test" {` + "\n"
 	config += `	name = "Rule1"` + "\n"
-	config += `	default = false` + "\n"
 	config += `	rank = 0` + "\n"
 	config += `	state = "enabled"` + "\n"
 	config += `	condition_type = "ConditionAttributes"` + "\n"

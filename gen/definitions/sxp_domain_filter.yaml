@@ -1,0 +1,40 @@
+---
+name: SXP Domain Filter
+rest_endpoint: /ers/config/filterpolicy
+data_source_name_query: true
+skip_minimum_test: true
+doc_category: TrustSec
+attributes:
+  - model_name: name
+    data_path: [ERSFilterPolicy]
+    type: String
+    description: Resource name
+    exclude_test: true
+  - model_name: description
+    data_path: [ERSFilterPolicy]
+    type: String
+    description: Description
+    exclude_test: true
+  - model_name: subnet
+    data_path: [ERSFilterPolicy]
+    type: String
+    description: Subnet for filter policy (hostname is not supported). At least one of subnet or sgt or vn should be defined
+    example: 1.0.0.0/24
+  - model_name: sgt
+    data_path: [ERSFilterPolicy]
+    type: String
+    description: SGT name or ID. At least one of subnet or sgt or vn should be defined
+    write_only: true
+    exclude_test: true
+  - model_name: vn
+    data_path: [ERSFilterPolicy]
+    type: String
+    description: Virtual Network. At least one of subnet or sgt or vn should be defined
+    example: VN1
+    minimum_test_value: VN1
+  - model_name: domains
+    data_path: [ERSFilterPolicy]
+    type: String
+    mandatory: true
+    description: List of SXP Domains, separated with comma
+    example: default

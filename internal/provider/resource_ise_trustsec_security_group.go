@@ -31,7 +31,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -96,10 +95,8 @@ func (r *TrustSecSecurityGroupResource) Schema(ctx context.Context, req resource
 				Optional:            true,
 			},
 			"is_read_only": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Read-only").AddDefaultValueDescription("false").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Read-only").String,
 				Optional:            true,
-				Computed:            true,
-				Default:             booldefault.StaticBool(false),
 			},
 		},
 	}

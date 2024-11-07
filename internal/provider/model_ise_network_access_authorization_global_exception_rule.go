@@ -36,7 +36,6 @@ import (
 type NetworkAccessAuthorizationGlobalExceptionRule struct {
 	Id                       types.String                                            `tfsdk:"id"`
 	Name                     types.String                                            `tfsdk:"name"`
-	Default                  types.Bool                                              `tfsdk:"default"`
 	Rank                     types.Int64                                             `tfsdk:"rank"`
 	State                    types.String                                            `tfsdk:"state"`
 	ConditionType            types.String                                            `tfsdk:"condition_type"`
@@ -93,9 +92,6 @@ func (data NetworkAccessAuthorizationGlobalExceptionRule) toBody(ctx context.Con
 	body := ""
 	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "rule.name", data.Name.ValueString())
-	}
-	if !data.Default.IsNull() {
-		body, _ = sjson.Set(body, "rule.default", data.Default.ValueBool())
 	}
 	if !data.Rank.IsNull() {
 		body, _ = sjson.Set(body, "rule.rank", data.Rank.ValueInt64())
@@ -208,11 +204,6 @@ func (data *NetworkAccessAuthorizationGlobalExceptionRule) fromBody(ctx context.
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
-	}
-	if value := res.Get("response.rule.default"); value.Exists() && value.Type != gjson.Null {
-		data.Default = types.BoolValue(value.Bool())
-	} else {
-		data.Default = types.BoolNull()
 	}
 	if value := res.Get("response.rule.rank"); value.Exists() && value.Type != gjson.Null {
 		data.Rank = types.Int64Value(value.Int())
@@ -380,11 +371,6 @@ func (data *NetworkAccessAuthorizationGlobalExceptionRule) updateFromBody(ctx co
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
-	}
-	if value := res.Get("response.rule.default"); value.Exists() && !data.Default.IsNull() {
-		data.Default = types.BoolValue(value.Bool())
-	} else {
-		data.Default = types.BoolNull()
 	}
 	if value := res.Get("response.rule.rank"); value.Exists() && !data.Rank.IsNull() {
 		data.Rank = types.Int64Value(value.Int())
@@ -581,9 +567,6 @@ func (data *NetworkAccessAuthorizationGlobalExceptionRule) updateFromBody(ctx co
 //template:begin isNull
 func (data *NetworkAccessAuthorizationGlobalExceptionRule) isNull(ctx context.Context, res gjson.Result) bool {
 	if !data.Name.IsNull() {
-		return false
-	}
-	if !data.Default.IsNull() {
 		return false
 	}
 	if !data.Rank.IsNull() {

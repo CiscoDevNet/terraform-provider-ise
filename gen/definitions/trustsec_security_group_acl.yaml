@@ -34,5 +34,4 @@ attributes:
     write_only: true
     type: Bool
     description: Read-only
-    default_value: false
     example: false
