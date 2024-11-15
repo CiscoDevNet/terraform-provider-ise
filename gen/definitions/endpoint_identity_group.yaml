@@ -18,7 +18,7 @@ attributes:
   - model_name: systemDefined
     data_path: [EndPointGroup]
     type: Bool
-    default_value: false
+    #default_value: false
     description: System defined endpoint identity group
     example: false
   - model_name: parentId
