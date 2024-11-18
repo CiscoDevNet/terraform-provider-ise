@@ -7,7 +7,7 @@ description: |-
 
 # Changelog
 
-## 0.2.5 (unreleased)
+## 0.2.5
 
 - Remove default_value from `systemDefined` attribute in `ise_endpoint_identity_group`
 - Remove `default` from `ise_device_admin_authorization_global_exception_rule` and `ise_network_access_authorization_global_exception_rule`
