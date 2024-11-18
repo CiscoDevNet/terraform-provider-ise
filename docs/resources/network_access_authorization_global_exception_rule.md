@@ -15,7 +15,6 @@ This resource can manage a Network Access Authorization Global Exception Rule.
 ```terraform
 resource "ise_network_access_authorization_global_exception_rule" "example" {
   name                      = "Rule1"
-  default                   = false
   rank                      = 0
   state                     = "enabled"
   condition_type            = "ConditionAttributes"
@@ -49,7 +48,6 @@ resource "ise_network_access_authorization_global_exception_rule" "example" {
   - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
   - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
-- `default` (Boolean) Indicates if this rule is the default one
 - `profiles` (Set of String) The authorization profile(s)
 - `rank` (Number) The rank (priority) in relation to other rules. Lower rank is higher priority.
 - `security_group` (String) Security group used in authorization policies

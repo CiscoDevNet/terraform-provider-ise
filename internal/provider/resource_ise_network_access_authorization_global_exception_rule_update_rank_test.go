@@ -52,7 +52,6 @@ func TestAccIseNetworkAccessAuthorizationGlobalExceptionRuleUpdateRank(t *testin
 const testAccIseNetworkAccessAuthorizationGlobalExceptionRuleUpdateRankPrerequisitesConfig = `
 resource "ise_network_access_authorization_global_exception_rule" "test" {
   name                      = "Rule1"
-  default                   = false
   state                     = "enabled"
   condition_type            = "ConditionAttributes"
   condition_is_negate       = false

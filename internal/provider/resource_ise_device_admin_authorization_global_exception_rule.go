@@ -80,10 +80,6 @@ func (r *DeviceAdminAuthorizationGlobalExceptionRuleResource) Schema(ctx context
 				MarkdownDescription: helpers.NewAttributeDescription("Rule name, [Valid characters are alphanumerics, underscore, hyphen, space, period, parentheses]").String,
 				Required:            true,
 			},
-			"default": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Indicates if this rule is the default one").String,
-				Optional:            true,
-			},
 			"rank": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("The rank (priority) in relation to other rules. Lower rank is higher priority.").String,
 				Optional:            true,

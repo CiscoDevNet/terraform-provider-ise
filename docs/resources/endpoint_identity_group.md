@@ -32,7 +32,6 @@ resource "ise_endpoint_identity_group" "example" {
 - `description` (String) Description
 - `parent_endpoint_identity_group_id` (String) Parent endpoint identity group ID
 - `system_defined` (Boolean) System defined endpoint identity group
-  - Default value: `false`
 
 ### Read-Only
 

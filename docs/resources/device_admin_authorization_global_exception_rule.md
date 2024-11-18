@@ -15,7 +15,6 @@ This resource can manage a Device Admin Authorization Global Exception Rule.
 ```terraform
 resource "ise_device_admin_authorization_global_exception_rule" "example" {
   name                      = "Rule1"
-  default                   = false
   rank                      = 0
   state                     = "enabled"
   condition_type            = "ConditionAttributes"
@@ -50,7 +49,6 @@ resource "ise_device_admin_authorization_global_exception_rule" "example" {
   - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
   - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
-- `default` (Boolean) Indicates if this rule is the default one
 - `profile` (String) Device admin profiles control the initial login session of the device administrator
 - `rank` (Number) The rank (priority) in relation to other rules. Lower rank is higher priority.
 - `state` (String) The state that the rule is in. A disabled rule cannot be matched.

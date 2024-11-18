@@ -27,14 +27,11 @@ import (
 	"strings"
 
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
-	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
@@ -45,28 +42,28 @@ import (
 //template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
-var _ resource.Resource = &TrustSecSecurityGroupACLResource{}
-var _ resource.ResourceWithImportState = &TrustSecSecurityGroupACLResource{}
+var _ resource.Resource = &SXPDomainFilterResource{}
+var _ resource.ResourceWithImportState = &SXPDomainFilterResource{}
 
-func NewTrustSecSecurityGroupACLResource() resource.Resource {
-	return &TrustSecSecurityGroupACLResource{}
+func NewSXPDomainFilterResource() resource.Resource {
+	return &SXPDomainFilterResource{}
 }
 
-type TrustSecSecurityGroupACLResource struct {
+type SXPDomainFilterResource struct {
 	client *ise.Client
 }
 
-func (r *TrustSecSecurityGroupACLResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_trustsec_security_group_acl"
+func (r *SXPDomainFilterResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_sxp_domain_filter"
 }
 
 //template:end header
 
 //template:begin model
-func (r *TrustSecSecurityGroupACLResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *SXPDomainFilterResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage a TrustSec Security Group ACL.").String,
+		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage a SXP Domain Filter.").String,
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -77,29 +74,28 @@ func (r *TrustSecSecurityGroupACLResource) Schema(ctx context.Context, req resou
 				},
 			},
 			"name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The name of the security group ACL").String,
-				Required:            true,
+				MarkdownDescription: helpers.NewAttributeDescription("Resource name").String,
+				Optional:            true,
 			},
 			"description": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Description").String,
 				Optional:            true,
 			},
-			"acl_content": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Content of ACL").String,
+			"subnet": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Subnet for filter policy (hostname is not supported). At least one of subnet or sgt or vn should be defined").String,
+				Optional:            true,
+			},
+			"sgt": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("SGT name or ID. At least one of subnet or sgt or vn should be defined").String,
+				Optional:            true,
+			},
+			"vn": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Virtual Network. At least one of subnet or sgt or vn should be defined").String,
+				Optional:            true,
+			},
+			"domains": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("List of SXP Domains, separated with comma").String,
 				Required:            true,
-			},
-			"ip_version": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("IP Version").AddStringEnumDescription("IPV4", "IPV6", "IP_AGNOSTIC").AddDefaultValueDescription("IP_AGNOSTIC").String,
-				Optional:            true,
-				Computed:            true,
-				Validators: []validator.String{
-					stringvalidator.OneOf("IPV4", "IPV6", "IP_AGNOSTIC"),
-				},
-				Default: stringdefault.StaticString("IP_AGNOSTIC"),
-			},
-			"read_only": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Read-only").String,
-				Optional:            true,
 			},
 		},
 	}
@@ -108,7 +104,7 @@ func (r *TrustSecSecurityGroupACLResource) Schema(ctx context.Context, req resou
 //template:end model
 
 //template:begin configure
-func (r *TrustSecSecurityGroupACLResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+func (r *SXPDomainFilterResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -119,8 +115,8 @@ func (r *TrustSecSecurityGroupACLResource) Configure(_ context.Context, req reso
 //template:end configure
 
 //template:begin create
-func (r *TrustSecSecurityGroupACLResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan TrustSecSecurityGroupACL
+func (r *SXPDomainFilterResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan SXPDomainFilter
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -132,7 +128,7 @@ func (r *TrustSecSecurityGroupACLResource) Create(ctx context.Context, req resou
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
 
 	// Create object
-	body := plan.toBody(ctx, TrustSecSecurityGroupACL{})
+	body := plan.toBody(ctx, SXPDomainFilter{})
 	res, location, err := r.client.Post(plan.getPath(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
@@ -150,8 +146,8 @@ func (r *TrustSecSecurityGroupACLResource) Create(ctx context.Context, req resou
 //template:end create
 
 //template:begin read
-func (r *TrustSecSecurityGroupACLResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state TrustSecSecurityGroupACL
+func (r *SXPDomainFilterResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state SXPDomainFilter
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -186,8 +182,8 @@ func (r *TrustSecSecurityGroupACLResource) Read(ctx context.Context, req resourc
 //template:end read
 
 //template:begin update
-func (r *TrustSecSecurityGroupACLResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan, state TrustSecSecurityGroupACL
+func (r *SXPDomainFilterResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var plan, state SXPDomainFilter
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -220,8 +216,8 @@ func (r *TrustSecSecurityGroupACLResource) Update(ctx context.Context, req resou
 //template:end update
 
 //template:begin delete
-func (r *TrustSecSecurityGroupACLResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state TrustSecSecurityGroupACL
+func (r *SXPDomainFilterResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state SXPDomainFilter
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -245,7 +241,7 @@ func (r *TrustSecSecurityGroupACLResource) Delete(ctx context.Context, req resou
 //template:end delete
 
 //template:begin import
-func (r *TrustSecSecurityGroupACLResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *SXPDomainFilterResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 

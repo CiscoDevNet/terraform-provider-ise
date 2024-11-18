@@ -35,7 +35,6 @@ resource "ise_trustsec_security_group" "example" {
 
 - `description` (String) Description
 - `is_read_only` (Boolean) Read-only
-  - Default value: `false`
 - `propogate_to_apic` (Boolean) Propagate to APIC (ACI)
 
 ### Read-Only

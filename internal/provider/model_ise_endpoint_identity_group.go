@@ -87,7 +87,7 @@ func (data *EndpointIdentityGroup) fromBody(ctx context.Context, res gjson.Resul
 	if value := res.Get("EndPointGroup.systemDefined"); value.Exists() && value.Type != gjson.Null {
 		data.SystemDefined = types.BoolValue(value.Bool())
 	} else {
-		data.SystemDefined = types.BoolValue(false)
+		data.SystemDefined = types.BoolNull()
 	}
 	if value := res.Get("EndPointGroup.parentId"); value.Exists() && value.Type != gjson.Null {
 		data.ParentEndpointIdentityGroupId = types.StringValue(value.String())
@@ -112,7 +112,7 @@ func (data *EndpointIdentityGroup) updateFromBody(ctx context.Context, res gjson
 	}
 	if value := res.Get("EndPointGroup.systemDefined"); value.Exists() && !data.SystemDefined.IsNull() {
 		data.SystemDefined = types.BoolValue(value.Bool())
-	} else if data.SystemDefined.ValueBool() != false {
+	} else {
 		data.SystemDefined = types.BoolNull()
 	}
 	if value := res.Get("EndPointGroup.parentId"); value.Exists() && !data.ParentEndpointIdentityGroupId.IsNull() {

@@ -76,10 +76,6 @@ func (d *DeviceAdminAuthorizationGlobalExceptionRuleDataSource) Schema(ctx conte
 				Optional:            true,
 				Computed:            true,
 			},
-			"default": schema.BoolAttribute{
-				MarkdownDescription: "Indicates if this rule is the default one",
-				Computed:            true,
-			},
 			"rank": schema.Int64Attribute{
 				MarkdownDescription: "The rank (priority) in relation to other rules. Lower rank is higher priority.",
 				Computed:            true,

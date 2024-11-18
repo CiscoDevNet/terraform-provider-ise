@@ -52,7 +52,6 @@ func TestAccIseDeviceAdminAuthorizationGlobalExceptionRuleUpdateRank(t *testing.
 const testAccIseDeviceAdminAuthorizationGlobalExceptionRuleUpdateRankPrerequisitesConfig = `
 resource "ise_device_admin_authorization_global_exception_rule" "test" {
   name                      = "Rule1"
-  default                   = false
   rank                      = 0
   state                     = "enabled"
   condition_type            = "ConditionAttributes"
