@@ -3,7 +3,7 @@
 - Remove default_value from `systemDefined` attribute in `ise_endpoint_identity_group`
 - Remove `default` from `ise_device_admin_authorization_global_exception_rule` and `ise_network_access_authorization_global_exception_rule`
 - Remove default_value from `isReadOnly` and `readOnly` attributes in `ise_trustsec_security_group` and `ise_trustsec_security_group_acl`
-- Add `ise_sxp_domain_filter` resource and data_source
+- Add `ise_sxp_domain_filter` resource and data source
 
 ## 0.2.4
 
