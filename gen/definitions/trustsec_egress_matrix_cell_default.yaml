@@ -1,0 +1,54 @@
+---
+name: TrustSec Egress Matrix Cell Default
+rest_endpoint: /ers/config/egressmatrixcell
+doc_category: TrustSec
+res_description: Allows modifications to the default egress policy matrix rule
+no_delete: true
+put_create: true
+put_id_query_path: true
+skip_minimum_test: true
+put_id_include_path: EgressMatrixCell
+attributes:
+  - model_name: id
+    id: true
+    data_path: [EgressMatrixCell]
+    type: String
+    description: Default egress policy matrix rule id
+    value: 92c1a900-8c01-11e6-996c-525400b48521
+    example: 92c1a900-8c01-11e6-996c-525400b48521
+    exclude_test: true
+  - model_name: description
+    data_path: [EgressMatrixCell]
+    type: String
+    description: Description
+    example: Default egress rule
+  - model_name: defaultRule
+    data_path: [EgressMatrixCell]
+    type: String
+    enum_values: [NONE, DENY_IP, PERMIT_IP]
+    description: "Can be used only if sgacls not specified. Final Catch All Rule"
+    example: "PERMIT_IP"
+  - model_name: matrixCellStatus
+    data_path: [EgressMatrixCell]
+    type: String
+    enum_values: [DISABLED, ENABLED, MONITOR]
+    default_value: "DISABLED"
+    example: "ENABLED"
+    description: "Matrix Cell Status"
+  - model_name: sgacls
+    data_path: [EgressMatrixCell]
+    tf_name: sgacls
+    type: Set
+    element_type: String
+    description: List of TrustSec Security Groups ACLs
+    exclude_test: true
+  - model_name: sourceSgtId
+    data_path: [EgressMatrixCell]
+    type: String
+    description: Source Trustsec Security Group ID
+    value: "92bb1950-8c01-11e6-996c-525400b48521"
+  - model_name: destinationSgtId
+    data_path: [EgressMatrixCell]
+    type: String
+    description: Destination Trustsec Security Group ID
+    value: "92bb1950-8c01-11e6-996c-525400b48521"

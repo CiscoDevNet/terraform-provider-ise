@@ -38,6 +38,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
+	"github.com/tidwall/gjson"
 )
 
 //template:end imports
@@ -45,28 +46,28 @@ import (
 //template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
-var _ resource.Resource = &TrustSecEgressMatrixCellResource{}
-var _ resource.ResourceWithImportState = &TrustSecEgressMatrixCellResource{}
+var _ resource.Resource = &TrustSecEgressMatrixCellDefaultResource{}
+var _ resource.ResourceWithImportState = &TrustSecEgressMatrixCellDefaultResource{}
 
-func NewTrustSecEgressMatrixCellResource() resource.Resource {
-	return &TrustSecEgressMatrixCellResource{}
+func NewTrustSecEgressMatrixCellDefaultResource() resource.Resource {
+	return &TrustSecEgressMatrixCellDefaultResource{}
 }
 
-type TrustSecEgressMatrixCellResource struct {
+type TrustSecEgressMatrixCellDefaultResource struct {
 	client *ise.Client
 }
 
-func (r *TrustSecEgressMatrixCellResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_trustsec_egress_matrix_cell"
+func (r *TrustSecEgressMatrixCellDefaultResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_trustsec_egress_matrix_cell_default"
 }
 
 //template:end header
 
 //template:begin model
-func (r *TrustSecEgressMatrixCellResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *TrustSecEgressMatrixCellDefaultResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage a TrustSec Egress Matrix Cell.").String,
+		MarkdownDescription: helpers.NewAttributeDescription("Allows modifications to the default egress policy matrix rule").String,
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -81,13 +82,11 @@ func (r *TrustSecEgressMatrixCellResource) Schema(ctx context.Context, req resou
 				Optional:            true,
 			},
 			"default_rule": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Can be used only if sgacls not specified.").AddStringEnumDescription("NONE", "DENY_IP", "PERMIT_IP").AddDefaultValueDescription("NONE").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Can be used only if sgacls not specified. Final Catch All Rule").AddStringEnumDescription("NONE", "DENY_IP", "PERMIT_IP").String,
 				Optional:            true,
-				Computed:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("NONE", "DENY_IP", "PERMIT_IP"),
 				},
-				Default: stringdefault.StaticString("NONE"),
 			},
 			"matrix_cell_status": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Matrix Cell Status").AddStringEnumDescription("DISABLED", "ENABLED", "MONITOR").AddDefaultValueDescription("DISABLED").String,
@@ -103,14 +102,6 @@ func (r *TrustSecEgressMatrixCellResource) Schema(ctx context.Context, req resou
 				ElementType:         types.StringType,
 				Optional:            true,
 			},
-			"source_sgt_id": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Source Trustsec Security Group ID").String,
-				Required:            true,
-			},
-			"destination_sgt_id": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Destination Trustsec Security Group ID").String,
-				Required:            true,
-			},
 		},
 	}
 }
@@ -118,7 +109,7 @@ func (r *TrustSecEgressMatrixCellResource) Schema(ctx context.Context, req resou
 //template:end model
 
 //template:begin configure
-func (r *TrustSecEgressMatrixCellResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+func (r *TrustSecEgressMatrixCellDefaultResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -129,8 +120,8 @@ func (r *TrustSecEgressMatrixCellResource) Configure(_ context.Context, req reso
 //template:end configure
 
 //template:begin create
-func (r *TrustSecEgressMatrixCellResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan TrustSecEgressMatrixCell
+func (r *TrustSecEgressMatrixCellDefaultResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan TrustSecEgressMatrixCellDefault
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -142,14 +133,15 @@ func (r *TrustSecEgressMatrixCellResource) Create(ctx context.Context, req resou
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
 
 	// Create object
-	body := plan.toBody(ctx, TrustSecEgressMatrixCell{})
-	res, location, err := r.client.Post(plan.getPath(), body)
+	body := plan.toBody(ctx, TrustSecEgressMatrixCellDefault{})
+	params := ""
+	params += "/" + url.QueryEscape(gjson.Get(body, "EgressMatrixCell.id").String())
+	res, err := r.client.Put(plan.getPath()+params, body)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
 	}
-	locationElements := strings.Split(location, "/")
-	plan.Id = types.StringValue(locationElements[len(locationElements)-1])
+	plan.Id = types.StringValue(gjson.Get(body, "EgressMatrixCell.id").String())
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -160,8 +152,8 @@ func (r *TrustSecEgressMatrixCellResource) Create(ctx context.Context, req resou
 //template:end create
 
 //template:begin read
-func (r *TrustSecEgressMatrixCellResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state TrustSecEgressMatrixCell
+func (r *TrustSecEgressMatrixCellDefaultResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state TrustSecEgressMatrixCellDefault
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -196,8 +188,8 @@ func (r *TrustSecEgressMatrixCellResource) Read(ctx context.Context, req resourc
 //template:end read
 
 //template:begin update
-func (r *TrustSecEgressMatrixCellResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan, state TrustSecEgressMatrixCell
+func (r *TrustSecEgressMatrixCellDefaultResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var plan, state TrustSecEgressMatrixCellDefault
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -230,8 +222,8 @@ func (r *TrustSecEgressMatrixCellResource) Update(ctx context.Context, req resou
 //template:end update
 
 //template:begin delete
-func (r *TrustSecEgressMatrixCellResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state TrustSecEgressMatrixCell
+func (r *TrustSecEgressMatrixCellDefaultResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state TrustSecEgressMatrixCellDefault
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -241,11 +233,6 @@ func (r *TrustSecEgressMatrixCellResource) Delete(ctx context.Context, req resou
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()))
-	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
-		return
-	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Delete finished successfully", state.Id.ValueString()))
 
@@ -255,7 +242,7 @@ func (r *TrustSecEgressMatrixCellResource) Delete(ctx context.Context, req resou
 //template:end delete
 
 //template:begin import
-func (r *TrustSecEgressMatrixCellResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *TrustSecEgressMatrixCellDefaultResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
