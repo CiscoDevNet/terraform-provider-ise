@@ -1,3 +1,7 @@
+## 0.2.6 (unreleased)
+
+- Add support for default egress policy matrix rule
+
 ## 0.2.5
 
 - Remove default_value from `systemDefined` attribute in `ise_endpoint_identity_group`

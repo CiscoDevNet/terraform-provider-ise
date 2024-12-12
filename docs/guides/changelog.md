@@ -7,6 +7,10 @@ description: |-
 
 # Changelog
 
+## 0.2.6 (unreleased)
+
+- Add support for ANY-ANY matrix cell modifications
+
 ## 0.2.5
 
 - Remove default_value from `systemDefined` attribute in `ise_endpoint_identity_group`

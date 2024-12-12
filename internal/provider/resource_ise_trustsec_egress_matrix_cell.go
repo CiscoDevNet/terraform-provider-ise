@@ -38,6 +38,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
+	"github.com/tidwall/sjson"
 )
 
 //template:end imports
@@ -128,7 +129,6 @@ func (r *TrustSecEgressMatrixCellResource) Configure(_ context.Context, req reso
 
 //template:end configure
 
-//template:begin create
 func (r *TrustSecEgressMatrixCellResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan TrustSecEgressMatrixCell
 
@@ -143,21 +143,29 @@ func (r *TrustSecEgressMatrixCellResource) Create(ctx context.Context, req resou
 
 	// Create object
 	body := plan.toBody(ctx, TrustSecEgressMatrixCell{})
-	res, location, err := r.client.Post(plan.getPath(), body)
-	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
-		return
+	if plan.DestinationSgtId.ValueString() == "92bb1950-8c01-11e6-996c-525400b48521" && plan.SourceSgtId.ValueString() == "92bb1950-8c01-11e6-996c-525400b48521" {
+		// Set Id
+		body, _ = sjson.Set(body, "EgressMatrixCell.id", "92c1a900-8c01-11e6-996c-525400b48521")
+		plan.Id = types.StringValue("92c1a900-8c01-11e6-996c-525400b48521")
+		res, err := r.client.Put(plan.getPath()+"/"+plan.Id.ValueString(), body)
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
+			return
+		}
+	} else {
+		res, location, err := r.client.Post(plan.getPath(), body)
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
+			return
+		}
+		locationElements := strings.Split(location, "/")
+		plan.Id = types.StringValue(locationElements[len(locationElements)-1])
 	}
-	locationElements := strings.Split(location, "/")
-	plan.Id = types.StringValue(locationElements[len(locationElements)-1])
-
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
-//template:end create
 
 //template:begin read
 func (r *TrustSecEgressMatrixCellResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -229,7 +237,6 @@ func (r *TrustSecEgressMatrixCellResource) Update(ctx context.Context, req resou
 
 //template:end update
 
-//template:begin delete
 func (r *TrustSecEgressMatrixCellResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	var state TrustSecEgressMatrixCell
 
@@ -242,7 +249,7 @@ func (r *TrustSecEgressMatrixCellResource) Delete(ctx context.Context, req resou
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
 	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()))
-	if err != nil {
+	if err != nil && !strings.Contains(res.String(), "can not delete default egress policy matrix rule") {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return
 	}
@@ -251,8 +258,6 @@ func (r *TrustSecEgressMatrixCellResource) Delete(ctx context.Context, req resou
 
 	resp.State.RemoveResource(ctx)
 }
-
-//template:end delete
 
 //template:begin import
 func (r *TrustSecEgressMatrixCellResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
