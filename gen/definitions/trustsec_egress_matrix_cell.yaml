@@ -1,6 +1,5 @@
 ---
 name: TrustSec Egress Matrix Cell
-# manual modifications in Create and Delete functions in resource_trustsec_egress_matrix_cell.go
 rest_endpoint: /ers/config/egressmatrixcell
 doc_category: TrustSec
 put_id_include_path: EgressMatrixCell
