@@ -9,7 +9,7 @@ description: |-
 
 ## 0.2.6 (unreleased)
 
-- Add support for ANY-ANY matrix cell modifications
+- Add support for default egress policy matrix rule
 
 ## 0.2.5
 
