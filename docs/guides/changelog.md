@@ -7,6 +7,10 @@ description: |-
 
 # Changelog
 
+## 0.2.6 (unreleased)
+
+- Add `ise_trustsec_egress_matrix_cell_default` resource to support default egress policy matrix rule modifications
+
 ## 0.2.5
 
 - Remove default_value from `systemDefined` attribute in `ise_endpoint_identity_group`

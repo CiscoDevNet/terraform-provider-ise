@@ -23,17 +23,22 @@ package provider
 import (
 	"context"
 	"fmt"
+	"net/url"
+	"strings"
 
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
+	"github.com/tidwall/gjson"
 )
 
 //template:end imports
@@ -41,27 +46,28 @@ import (
 //template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
-var _ resource.Resource = &ActiveDirectoryAddGroupsResource{}
+var _ resource.Resource = &TrustSecEgressMatrixCellDefaultResource{}
+var _ resource.ResourceWithImportState = &TrustSecEgressMatrixCellDefaultResource{}
 
-func NewActiveDirectoryAddGroupsResource() resource.Resource {
-	return &ActiveDirectoryAddGroupsResource{}
+func NewTrustSecEgressMatrixCellDefaultResource() resource.Resource {
+	return &TrustSecEgressMatrixCellDefaultResource{}
 }
 
-type ActiveDirectoryAddGroupsResource struct {
+type TrustSecEgressMatrixCellDefaultResource struct {
 	client *ise.Client
 }
 
-func (r *ActiveDirectoryAddGroupsResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_active_directory_add_groups"
+func (r *TrustSecEgressMatrixCellDefaultResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_trustsec_egress_matrix_cell_default"
 }
 
 //template:end header
 
 //template:begin model
-func (r *ActiveDirectoryAddGroupsResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *TrustSecEgressMatrixCellDefaultResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage an Active Directory Add Groups.").String,
+		MarkdownDescription: helpers.NewAttributeDescription("Allows modifications to the default egress policy matrix rule").String,
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -71,59 +77,30 @@ func (r *ActiveDirectoryAddGroupsResource) Schema(ctx context.Context, req resou
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"join_point_id": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Active Directory Join Point ID").String,
-				Required:            true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
-				},
-			},
-			"name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The name of the active directory join point").String,
-				Required:            true,
-			},
 			"description": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Join point Description").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Description").String,
 				Optional:            true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
+			},
+			"default_rule": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Can be used only if sgacls not specified. Final Catch All Rule").AddStringEnumDescription("NONE", "DENY_IP", "PERMIT_IP").String,
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("NONE", "DENY_IP", "PERMIT_IP"),
 				},
 			},
-			"domain": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("AD domain associated with the join point").String,
-				Required:            true,
-			},
-			"ad_scopes_names": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("String that contains the names of the scopes that the active directory belongs to. Names are separated by comm").AddDefaultValueDescription("Default_Scope").String,
+			"matrix_cell_status": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Matrix Cell Status").AddStringEnumDescription("DISABLED", "ENABLED", "MONITOR").AddDefaultValueDescription("DISABLED").String,
 				Optional:            true,
 				Computed:            true,
-				Default:             stringdefault.StaticString("Default_Scope"),
-			},
-			"enable_domain_allowed_list": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("").AddDefaultValueDescription("true").String,
-				Optional:            true,
-				Computed:            true,
-				Default:             booldefault.StaticBool(true),
-			},
-			"groups": schema.ListNestedAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("List of AD Groups").String,
-				Optional:            true,
-				NestedObject: schema.NestedAttributeObject{
-					Attributes: map[string]schema.Attribute{
-						"name": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Required for each group in the group list with no duplication between groups").String,
-							Required:            true,
-						},
-						"sid": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Required for each group in the group list with no duplication between groups").String,
-							Required:            true,
-						},
-						"type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("").String,
-							Optional:            true,
-						},
-					},
+				Validators: []validator.String{
+					stringvalidator.OneOf("DISABLED", "ENABLED", "MONITOR"),
 				},
+				Default: stringdefault.StaticString("DISABLED"),
+			},
+			"sgacls": schema.SetAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("List of TrustSec Security Groups ACLs").String,
+				ElementType:         types.StringType,
+				Optional:            true,
 			},
 		},
 	}
@@ -132,7 +109,7 @@ func (r *ActiveDirectoryAddGroupsResource) Schema(ctx context.Context, req resou
 //template:end model
 
 //template:begin configure
-func (r *ActiveDirectoryAddGroupsResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+func (r *TrustSecEgressMatrixCellDefaultResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -143,8 +120,8 @@ func (r *ActiveDirectoryAddGroupsResource) Configure(_ context.Context, req reso
 //template:end configure
 
 //template:begin create
-func (r *ActiveDirectoryAddGroupsResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan ActiveDirectoryAddGroups
+func (r *TrustSecEgressMatrixCellDefaultResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan TrustSecEgressMatrixCellDefault
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -156,14 +133,15 @@ func (r *ActiveDirectoryAddGroupsResource) Create(ctx context.Context, req resou
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
 
 	// Create object
-	body := plan.toBody(ctx, ActiveDirectoryAddGroups{})
+	body := plan.toBody(ctx, TrustSecEgressMatrixCellDefault{})
 	params := ""
+	params += "/" + url.QueryEscape(gjson.Get(body, "EgressMatrixCell.id").String())
 	res, err := r.client.Put(plan.getPath()+params, body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
 	}
-	plan.Id = types.StringValue(fmt.Sprint(plan.JoinPointId.ValueString()))
+	plan.Id = types.StringValue(gjson.Get(body, "EgressMatrixCell.id").String())
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -174,8 +152,8 @@ func (r *ActiveDirectoryAddGroupsResource) Create(ctx context.Context, req resou
 //template:end create
 
 //template:begin read
-func (r *ActiveDirectoryAddGroupsResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state ActiveDirectoryAddGroups
+func (r *TrustSecEgressMatrixCellDefaultResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state TrustSecEgressMatrixCellDefault
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -185,6 +163,21 @@ func (r *ActiveDirectoryAddGroupsResource) Read(ctx context.Context, req resourc
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
+	res, err := r.client.Get(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()))
+	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
+		resp.State.RemoveResource(ctx)
+		return
+	} else if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
+		return
+	}
+
+	// If every attribute is set to null we are dealing with an import operation and therefore reading all attributes
+	if state.isNull(ctx, res) {
+		state.fromBody(ctx, res)
+	} else {
+		state.updateFromBody(ctx, res)
+	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Read finished successfully", state.Id.ValueString()))
 
@@ -195,8 +188,8 @@ func (r *ActiveDirectoryAddGroupsResource) Read(ctx context.Context, req resourc
 //template:end read
 
 //template:begin update
-func (r *ActiveDirectoryAddGroupsResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan, state ActiveDirectoryAddGroups
+func (r *TrustSecEgressMatrixCellDefaultResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var plan, state TrustSecEgressMatrixCellDefault
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -212,6 +205,13 @@ func (r *ActiveDirectoryAddGroupsResource) Update(ctx context.Context, req resou
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
+	body := plan.toBody(ctx, state)
+
+	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
+		return
+	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Update finished successfully", plan.Id.ValueString()))
 
@@ -222,8 +222,8 @@ func (r *ActiveDirectoryAddGroupsResource) Update(ctx context.Context, req resou
 //template:end update
 
 //template:begin delete
-func (r *ActiveDirectoryAddGroupsResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state ActiveDirectoryAddGroups
+func (r *TrustSecEgressMatrixCellDefaultResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state TrustSecEgressMatrixCellDefault
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -242,4 +242,8 @@ func (r *ActiveDirectoryAddGroupsResource) Delete(ctx context.Context, req resou
 //template:end delete
 
 //template:begin import
+func (r *TrustSecEgressMatrixCellDefaultResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+}
+
 //template:end import

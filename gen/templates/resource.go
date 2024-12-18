@@ -511,7 +511,11 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	if plan.Name.ValueString() != "Default" {
 	{{- end}}
 	{{- if .PutCreate}}
-	res, err := r.client.Put(plan.getPath(), body)
+	params := ""
+	{{- if .PutIdQueryPath}}
+	params += "/" + url.QueryEscape(gjson.Get(body, "{{.PutIdIncludePath}}.id").String())
+	{{- end}}
+	res, err := r.client.Put(plan.getPath() + params, body)
 	{{- else if and (isErs .RestEndpoint) (not .IdPath) (not (hasId .Attributes))}}
 	res, location, err := r.client.Post(plan.getPath(), body)
 	{{- else}}
@@ -523,9 +527,11 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	}
 	{{- if .IdPath}}
 	plan.Id = types.StringValue(res.Get("{{.IdPath}}").String())
-	{{- else if hasId .Attributes}}
+	{{- else if and (hasId .Attributes) (not .PutIdQueryPath)}}
 		{{- $id := getId .Attributes}}
 	plan.Id = types.StringValue(fmt.Sprint(plan.{{toGoName $id.TfName}}.Value{{$id.Type}}()))
+	{{- else if .PutIdQueryPath}}
+	plan.Id = types.StringValue(gjson.Get(body, "{{.PutIdIncludePath}}.id").String())
 	{{- else}}
 	locationElements := strings.Split(location, "/")
 	plan.Id = types.StringValue(locationElements[len(locationElements)-1])
