@@ -1,4 +1,4 @@
-## 0.2.6 (unreleased)
+## 0.2.6
 
 - Add `ise_trustsec_egress_matrix_cell_default` resource to support default egress policy matrix rule modifications
 
