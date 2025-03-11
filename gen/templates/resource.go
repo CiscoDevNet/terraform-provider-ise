@@ -455,7 +455,9 @@ func (r *{{camelCase .Name}}Resource) Configure(_ context.Context, req resource.
 //template:begin create
 func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan {{camelCase .Name}}
-	{{- if strContains (camelCase .Name) "UpdateRank" }}
+	{{- if strContains (camelCase .Name) "UpdateRankBulk" }}
+	var existingData {{strReplace (camelCase .Name) "UpdateRankBulk" "" -1}}
+	{{- else if strContains (camelCase .Name) "UpdateRank" }}
 	var existingData {{strReplace (camelCase .Name) "UpdateRank" "" -1}}
 	{{- end}}
 
@@ -467,8 +469,29 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
+	{{- if strContains (camelCase .Name) "UpdateRankBulk" }}
+	for _, rule := range plan.Rules{
+		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.RuleId.ValueString()))
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
+			return
+		}
+		existingData.fromBody(ctx, res)
 
-	{{- if strContains (camelCase .Name) "UpdateRank" }}
+		// Use the `toBody` function to construct the body from existingData
+		body := existingData.toBody(ctx, existingData)
+
+		// Update rank
+		body, _ = sjson.Set(body, "rule.rank", rule.Rank.ValueInt64())
+		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.RuleId.ValueString()), body)
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
+			return
+		}
+		plan.Id = types.StringValue(fmt.Sprint(rule.RuleId.ValueString()))
+	}
+
+	{{- else if strContains (camelCase .Name) "UpdateRank" }}
 	// Read existing attributes from the API
 	{{- if strContains (camelCase .Name) "Rule" }}
 	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.RuleId.ValueString()))
@@ -502,6 +525,8 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	plan.Id = types.StringValue(fmt.Sprint(plan.PolicySetId.ValueString()))
 	{{- end}}
 
+	
+	
 	{{- else}}
 
 	// Create object
@@ -632,7 +657,9 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 //template:begin update
 func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state {{camelCase .Name}}
-	{{- if strContains (camelCase .Name) "UpdateRank" }}
+	{{- if strContains (camelCase .Name) "UpdateRankBulk" }}
+	var existingData {{strReplace (camelCase .Name) "UpdateRankBulk" "" -1}}
+	{{- else if strContains (camelCase .Name) "UpdateRank" }}
 	var existingData {{strReplace (camelCase .Name) "UpdateRank" "" -1}}
 	{{- end}}
 
@@ -650,8 +677,29 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
+	{{- if strContains (camelCase .Name) "UpdateRankBulk" }}
+	for _, rule := range plan.Rules{
+		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.RuleId.ValueString()))
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
+			return
+		}
+		existingData.fromBody(ctx, res)
 
-	{{- if strContains (camelCase .Name) "UpdateRank" }}
+		// Use the `toBody` function to construct the body from existingData
+		body := existingData.toBody(ctx, existingData)
+
+		// Update rank
+		body, _ = sjson.Set(body, "rule.rank", rule.Rank.ValueInt64())
+		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.RuleId.ValueString()), body)
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
+			return
+		}
+		plan.Id = types.StringValue(fmt.Sprint(rule.RuleId.ValueString()))
+	}
+
+	{{- else if strContains (camelCase .Name) "UpdateRank" }}
 	
 	// Read existing attributes from the API
 	{{- if strContains (camelCase .Name) "Rule" }}
