@@ -488,8 +488,8 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 			return
 		}
-		plan.Id = types.StringValue(fmt.Sprint(rule.RuleId.ValueString()))
 	}
+	plan.Id = types.StringValue(fmt.Sprint(plan.PolicySetId.ValueString()))
 
 	{{- else if strContains (camelCase .Name) "UpdateRank" }}
 	// Read existing attributes from the API
@@ -525,7 +525,7 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	plan.Id = types.StringValue(fmt.Sprint(plan.PolicySetId.ValueString()))
 	{{- end}}
 
-	
+
 	
 	{{- else}}
 
@@ -696,8 +696,8 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 			return
 		}
-		plan.Id = types.StringValue(fmt.Sprint(rule.RuleId.ValueString()))
 	}
+	plan.Id = types.StringValue(fmt.Sprint(plan.PolicySetId.ValueString()))
 
 	{{- else if strContains (camelCase .Name) "UpdateRank" }}
 	

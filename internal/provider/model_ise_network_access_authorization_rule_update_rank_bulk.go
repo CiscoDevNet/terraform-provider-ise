@@ -106,15 +106,15 @@ func (data *NetworkAccessAuthorizationRuleUpdateRankBulk) fromBody(ctx context.C
 //template:begin updateFromBody
 func (data *NetworkAccessAuthorizationRuleUpdateRankBulk) updateFromBody(ctx context.Context, res gjson.Result) {
 	for i := range data.Rules {
-		keys := [...]string{"rule_id", "rank"}
+		keys := [...]string{"id", "rank"}
 		keyValues := [...]string{data.Rules[i].RuleId.ValueString(), strconv.FormatInt(data.Rules[i].Rank.ValueInt64(), 10)}
 
 		var r gjson.Result
-		res.Get("response.rules").ForEach(
+		res.Get("response").ForEach(
 			func(_, v gjson.Result) bool {
 				found := false
 				for ik := range keys {
-					if v.Get(keys[ik]).String() == keyValues[ik] {
+					if v.Get("rule").Get(keys[ik]).String() == keyValues[ik] {
 						found = true
 						continue
 					}
@@ -128,7 +128,8 @@ func (data *NetworkAccessAuthorizationRuleUpdateRankBulk) updateFromBody(ctx con
 				return true
 			},
 		)
-		if value := r.Get("rule_id"); value.Exists() && !data.Rules[i].RuleId.IsNull() {
+		r = r.Get("rule")
+		if value := r.Get("id"); value.Exists() && !data.Rules[i].RuleId.IsNull() {
 			data.Rules[i].RuleId = types.StringValue(value.String())
 		} else {
 			data.Rules[i].RuleId = types.StringNull()

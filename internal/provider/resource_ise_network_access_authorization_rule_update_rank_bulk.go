@@ -62,7 +62,7 @@ func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Metadata(ctx cont
 func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: helpers.NewAttributeDescription("This resource is used to update rank field in network access policy set. It serves as a workaround for the ISE API/Backend limitation which restricts rank assignments to a strictly incremental sequence. By utilizing this resource and network_access_policy_set resource, you can bypass the APIs limitation. Creation of this resource is performing PUT operation (Update) and it only tracks rank field. When this resource is destroyed, no action is performed on ISE and resource is just removed from state.").String,
+		MarkdownDescription: helpers.NewAttributeDescription("This resource is used to bulk update rank field in network access policy set. It serves as a workaround for the ISE API/Backend limitation which restricts rank assignments to a strictly incremental sequence. By utilizing this resource and network_access_policy_set resource, you can bypass the APIs limitation. Creation of this resource is performing PUT operation (Update) and it only tracks rank field. When this resource is destroyed, no action is performed on ISE and resource is just removed from state.").String,
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -143,8 +143,8 @@ func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Create(ctx contex
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 			return
 		}
-		plan.Id = types.StringValue(fmt.Sprint(rule.RuleId.ValueString()))
 	}
+	plan.Id = types.StringValue(fmt.Sprint(plan.PolicySetId.ValueString()))
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -166,7 +166,8 @@ func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Read(ctx context.
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
-	res, err := r.client.Get(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()))
+	
+	res, err := r.client.Get(state.getPath())
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
@@ -227,8 +228,8 @@ func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Update(ctx contex
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 			return
 		}
-		plan.Id = types.StringValue(fmt.Sprint(rule.RuleId.ValueString()))
 	}
+	plan.Id = types.StringValue(fmt.Sprint(plan.PolicySetId.ValueString()))
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Update finished successfully", plan.Id.ValueString()))
 

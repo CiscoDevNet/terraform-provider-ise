@@ -3,12 +3,12 @@
 page_title: "ise_network_access_authorization_rule_update_rank_bulk Resource - terraform-provider-ise"
 subcategory: "Network Access"
 description: |-
-  This resource is used to update rank field in network access policy set. It serves as a workaround for the ISE API/Backend limitation which restricts rank assignments to a strictly incremental sequence. By utilizing this resource and network_access_policy_set resource, you can bypass the APIs limitation. Creation of this resource is performing PUT operation (Update) and it only tracks rank field. When this resource is destroyed, no action is performed on ISE and resource is just removed from state.
+  This resource is used to bulk update rank field in network access policy set. It serves as a workaround for the ISE API/Backend limitation which restricts rank assignments to a strictly incremental sequence. By utilizing this resource and network_access_policy_set resource, you can bypass the APIs limitation. Creation of this resource is performing PUT operation (Update) and it only tracks rank field. When this resource is destroyed, no action is performed on ISE and resource is just removed from state.
 ---
 
 # ise_network_access_authorization_rule_update_rank_bulk (Resource)
 
-This resource is used to update rank field in network access policy set. It serves as a workaround for the ISE API/Backend limitation which restricts rank assignments to a strictly incremental sequence. By utilizing this resource and network_access_policy_set resource, you can bypass the APIs limitation. Creation of this resource is performing PUT operation (Update) and it only tracks rank field. When this resource is destroyed, no action is performed on ISE and resource is just removed from state.
+This resource is used to bulk update rank field in network access policy set. It serves as a workaround for the ISE API/Backend limitation which restricts rank assignments to a strictly incremental sequence. By utilizing this resource and network_access_policy_set resource, you can bypass the APIs limitation. Creation of this resource is performing PUT operation (Update) and it only tracks rank field. When this resource is destroyed, no action is performed on ISE and resource is just removed from state.
 
 ## Example Usage
 
@@ -17,8 +17,8 @@ resource "ise_network_access_authorization_rule_update_rank_bulk" "example" {
   policy_set_id = "d82952cb-b901-4b09-b363-5ebf39bdbaf9"
   rules = [
     {
-      rule_id = ""
-      rank    = 0
+      id   = ""
+      rank = 0
     }
   ]
 }
@@ -44,5 +44,5 @@ resource "ise_network_access_authorization_rule_update_rank_bulk" "example" {
 
 Optional:
 
+- `id` (String) UUID for condition
 - `rank` (Number) UUID for condition
-- `rule_id` (String) UUID for condition
