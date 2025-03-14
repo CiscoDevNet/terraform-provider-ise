@@ -31,7 +31,7 @@ import (
 //template:begin testAcc
 func TestAccIseNetworkAccessAuthorizationRuleUpdateRankBulk(t *testing.T) {
 	var checks []resource.TestCheckFunc
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_rule_update_rank_bulk.test", "rules.0.id", ""))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_rule_update_rank_bulk.test", "rules.0.rule_id", ""))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_rule_update_rank_bulk.test", "rules.0.rank", "0"))
 
 	var steps []resource.TestStep
@@ -81,7 +81,7 @@ func testAccIseNetworkAccessAuthorizationRuleUpdateRankBulkConfig_all() string {
 	config := `resource "ise_network_access_authorization_rule_update_rank_bulk" "test" {` + "\n"
 	config += `	policy_set_id = ise_network_access_policy_set.test.id` + "\n"
 	config += `	rules = [{` + "\n"
-	config += `	  id = ""` + "\n"
+	config += `	  rule_id = ""` + "\n"
 	config += `	  rank = 0` + "\n"
 	config += `	}]` + "\n"
 	config += `}` + "\n"

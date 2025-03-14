@@ -24,6 +24,7 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"sort"
 	"strings"
 
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
@@ -125,7 +126,12 @@ func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Create(ctx contex
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
-	for _, rule := range plan.Rules {
+	rules := make([]NetworkAccessAuthorizationRuleUpdateRankBulkRules, len(plan.Rules))
+	copy(rules, plan.Rules)
+	sort.Slice(rules, func(i, j int) bool {
+		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()  
+	})
+	for _, rule := range rules {
 		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.RuleId.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
@@ -208,9 +214,14 @@ func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Update(ctx contex
 	if resp.Diagnostics.HasError() {
 		return
 	}
-
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
-	for _, rule := range plan.Rules {
+
+	rules := make([]NetworkAccessAuthorizationRuleUpdateRankBulkRules, len(plan.Rules))
+	copy(rules, plan.Rules)
+	sort.Slice(rules, func(i, j int) bool {
+		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()  
+	})
+	for _, rule := range rules {
 		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.RuleId.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))

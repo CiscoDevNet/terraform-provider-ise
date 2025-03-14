@@ -25,7 +25,7 @@ attributes:
   - model_name: rules
     type: List
     attributes:
-      - model_name: id
+      - model_name: rule_id
         data_path: [rule]
         type: String
         description: UUID for condition
