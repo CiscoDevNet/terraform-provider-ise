@@ -41,8 +41,8 @@ type NetworkAccessAuthorizationRuleUpdateRankBulk struct {
 }
 
 type NetworkAccessAuthorizationRuleUpdateRankBulkRules struct {
-	RuleId types.String `tfsdk:"rule_id"`
-	Rank   types.Int64  `tfsdk:"rank"`
+	Id   types.String `tfsdk:"id"`
+	Rank types.Int64  `tfsdk:"rank"`
 }
 
 //template:end types
@@ -65,11 +65,11 @@ func (data NetworkAccessAuthorizationRuleUpdateRankBulk) toBody(ctx context.Cont
 		body, _ = sjson.Set(body, "rules", []interface{}{})
 		for _, item := range data.Rules {
 			itemBody := ""
-			if !item.RuleId.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "rule_id", item.RuleId.ValueString())
+			if !item.Id.IsNull() {
+				itemBody, _ = sjson.Set(itemBody, "rule.id", item.Id.ValueString())
 			}
 			if !item.Rank.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "rank", item.Rank.ValueInt64())
+				itemBody, _ = sjson.Set(itemBody, "rule.rank", item.Rank.ValueInt64())
 			}
 			body, _ = sjson.SetRaw(body, "rules.-1", itemBody)
 		}
@@ -85,12 +85,12 @@ func (data *NetworkAccessAuthorizationRuleUpdateRankBulk) fromBody(ctx context.C
 		data.Rules = make([]NetworkAccessAuthorizationRuleUpdateRankBulkRules, 0)
 		value.ForEach(func(k, v gjson.Result) bool {
 			item := NetworkAccessAuthorizationRuleUpdateRankBulkRules{}
-			if cValue := v.Get("rule_id"); cValue.Exists() && cValue.Type != gjson.Null {
-				item.RuleId = types.StringValue(cValue.String())
+			if cValue := v.Get("rule.id"); cValue.Exists() && cValue.Type != gjson.Null {
+				item.Id = types.StringValue(cValue.String())
 			} else {
-				item.RuleId = types.StringNull()
+				item.Id = types.StringNull()
 			}
-			if cValue := v.Get("rank"); cValue.Exists() && cValue.Type != gjson.Null {
+			if cValue := v.Get("rule.rank"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Rank = types.Int64Value(cValue.Int())
 			} else {
 				item.Rank = types.Int64Null()
@@ -106,15 +106,15 @@ func (data *NetworkAccessAuthorizationRuleUpdateRankBulk) fromBody(ctx context.C
 //template:begin updateFromBody
 func (data *NetworkAccessAuthorizationRuleUpdateRankBulk) updateFromBody(ctx context.Context, res gjson.Result) {
 	for i := range data.Rules {
-		keys := [...]string{"id", "rank"}
-		keyValues := [...]string{data.Rules[i].RuleId.ValueString(), strconv.FormatInt(data.Rules[i].Rank.ValueInt64(), 10)}
+		keys := [...]string{"rule.id", "rule.rank"}
+		keyValues := [...]string{data.Rules[i].Id.ValueString(), strconv.FormatInt(data.Rules[i].Rank.ValueInt64(), 10)}
 
 		var r gjson.Result
 		res.Get("response").ForEach(
 			func(_, v gjson.Result) bool {
 				found := false
 				for ik := range keys {
-					if v.Get("rule").Get(keys[ik]).String() == keyValues[ik] {
+					if v.Get(keys[ik]).String() == keyValues[ik] {
 						found = true
 						continue
 					}
@@ -128,13 +128,12 @@ func (data *NetworkAccessAuthorizationRuleUpdateRankBulk) updateFromBody(ctx con
 				return true
 			},
 		)
-		r = r.Get("rule")
-		if value := r.Get("id"); value.Exists() && !data.Rules[i].RuleId.IsNull() {
-			data.Rules[i].RuleId = types.StringValue(value.String())
+		if value := r.Get("rule.id"); value.Exists() && !data.Rules[i].Id.IsNull() {
+			data.Rules[i].Id = types.StringValue(value.String())
 		} else {
-			data.Rules[i].RuleId = types.StringNull()
+			data.Rules[i].Id = types.StringNull()
 		}
-		if value := r.Get("rank"); value.Exists() && !data.Rules[i].Rank.IsNull() {
+		if value := r.Get("rule.rank"); value.Exists() && !data.Rules[i].Rank.IsNull() {
 			data.Rules[i].Rank = types.Int64Value(value.Int())
 		} else {
 			data.Rules[i].Rank = types.Int64Null()

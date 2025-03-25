@@ -30,6 +30,7 @@ import (
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -83,9 +84,12 @@ func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Schema(ctx contex
 			"rules": schema.ListNestedAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("").String,
 				Optional:            true,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifier.RequiresReplace(),
+				},
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
-						"rule_id": schema.StringAttribute{
+						"id": schema.StringAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("UUID for condition").String,
 							Optional:            true,
 						},
@@ -129,10 +133,10 @@ func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Create(ctx contex
 	rules := make([]NetworkAccessAuthorizationRuleUpdateRankBulkRules, len(plan.Rules))
 	copy(rules, plan.Rules)
 	sort.Slice(rules, func(i, j int) bool {
-		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()  
+		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()
 	})
 	for _, rule := range rules {
-		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.RuleId.ValueString()))
+		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
@@ -144,7 +148,7 @@ func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Create(ctx contex
 
 		// Update rank
 		body, _ = sjson.Set(body, "rule.rank", rule.Rank.ValueInt64())
-		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.RuleId.ValueString()), body)
+		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.Id.ValueString()), body)
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 			return
@@ -172,7 +176,6 @@ func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Read(ctx context.
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
-	
 	res, err := r.client.Get(state.getPath())
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
@@ -214,15 +217,15 @@ func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Update(ctx contex
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
+	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	rules := make([]NetworkAccessAuthorizationRuleUpdateRankBulkRules, len(plan.Rules))
 	copy(rules, plan.Rules)
 	sort.Slice(rules, func(i, j int) bool {
-		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()  
+		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()
 	})
 	for _, rule := range rules {
-		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.RuleId.ValueString()))
+		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
@@ -234,7 +237,7 @@ func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Update(ctx contex
 
 		// Update rank
 		body, _ = sjson.Set(body, "rule.rank", rule.Rank.ValueInt64())
-		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.RuleId.ValueString()), body)
+		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.Id.ValueString()), body)
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 			return

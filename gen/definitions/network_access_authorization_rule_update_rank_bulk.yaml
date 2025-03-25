@@ -24,8 +24,9 @@ attributes:
     test_value: ise_network_access_policy_set.test.id
   - model_name: rules
     type: List
+    id: true
     attributes:
-      - model_name: rule_id
+      - model_name: id
         data_path: [rule]
         type: String
         description: UUID for condition
