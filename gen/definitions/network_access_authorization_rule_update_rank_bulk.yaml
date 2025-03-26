@@ -30,6 +30,7 @@ attributes:
         data_path: [rule]
         type: String
         description: UUID for condition
+        example: 3741aca3-db08-4899-af73-2e3f65ec31e1
       - model_name: rank
         data_path: [rule]
         type: Int64
