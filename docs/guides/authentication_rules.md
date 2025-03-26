@@ -43,7 +43,7 @@ resource "ise_network_access_policy_set" "policy_set_1" {
 }
 ```
 
-Next we add the configuration for the authentication rules. We make use of `network_access_authentication_rule` and `network_access_authentication_rule_update_rank` resources. The first resource manages all fields except for the rank, while the second resource specifically updates the rank field. This is a workaround for the ISE API/Backend limitation that enforces strictly incremental rank assignments. By using both resources, you can bypass this limitation. The network_access_authentication_rule_update_rank resource performs a PUT operation to update the rank and only tracks that field. When destroyed, it is simply removed from the state without affecting the ISE configuration. This ensures the correct sequence of resource configuration.
+Next we add the configuration for the authentication rules. We make use of `network_access_authentication_rule` and `network_access_authentication_rule_update_rank_bulk` resources. The first resource manages all fields except for the rank, while the second resource is a single entity that specifically updates the rank field of all rules. This is a workaround for the ISE API/Backend limitation that enforces strictly incremental rank assignments. By using both resources, you can bypass this limitation. The network_access_authentication_rule_update_rank_bulk resource performs a PUT operation to update the ranks of every single rule and only tracks that field. When destroyed, it is simply removed from the state without affecting the ISE configuration. This ensures the correct sequence of resource configuration. Because of incremental rank assign limitation, the resource sets all the rank after every update, to make sure all of them are in right places.
 
 ```hcl
 locals {
@@ -83,10 +83,21 @@ resource "ise_network_access_authentication_rule" "auth_rule" {
   if_user_not_found         = "REJECT"
 }
 
-resource "ise_network_access_authentication_rule_update_rank" "example_with_rank" {
-  for_each      = { for rule in local.rules_with_ranks : rule.name => rule }
-  policy_set_id = ise_network_access_policy_set.policy_set_1.id
-  rule_id       = ise_network_access_authentication_rule.auth_rule[each.value.name].id
-  rank          = each.value.rank
+network_access_authentication_rules_ranks = {
+    for rule in local.network_access_authentication_rules_with_ranks :
+    rule.key => {
+      policy_set_id = rule.policy_set_id
+      generated_rank = rule.generated_rank
+    } if rule.name != "Default"
+  }
+
+resource "ise_network_access_authentication_rule_update_rank_bulk" "network_access_authentication_rule_update_rank_bulk" {
+  policy_set_id = values(local.network_access_authentication_rules_ranks)[0].policy_set_id
+  rules = [
+    for key, rule in local.network_access_authentication_rules_ranks :{
+      id = ise_network_access_authentication_rule.network_access_authentication_rule[key].id
+      rank = rule.generated_rank
+    }
+  ]
 }
 ```

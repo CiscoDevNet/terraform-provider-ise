@@ -275,6 +275,7 @@ func (p *IseProvider) Resources(ctx context.Context) []func() resource.Resource 
 		NewNetworkAccessAuthorizationGlobalExceptionRuleUpdateRankResource,
 		NewNetworkAccessAuthorizationRuleResource,
 		NewNetworkAccessAuthorizationRuleUpdateRankResource,
+		NewNetworkAccessAuthorizationRuleUpdateRankBulkResource,
 		NewNetworkAccessConditionResource,
 		NewNetworkAccessDictionaryResource,
 		NewNetworkAccessPolicySetResource,
