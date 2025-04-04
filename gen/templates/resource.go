@@ -456,8 +456,8 @@ func (r *{{camelCase .Name}}Resource) Configure(_ context.Context, req resource.
 //template:begin create
 func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan {{camelCase .Name}}
-	{{- if strContains (camelCase .Name) "UpdateRankBulk" }}
-	var existingData {{strReplace (camelCase .Name) "UpdateRankBulk" "" -1}}
+	{{- if strContains (camelCase .Name) "UpdateRanks" }}
+	var existingData {{strReplace (camelCase .Name) "UpdateRanks" "" -1}}
 	{{- else if strContains (camelCase .Name) "UpdateRank" }}
 	var existingData {{strReplace (camelCase .Name) "UpdateRank" "" -1}}
 	{{- end}}
@@ -470,7 +470,7 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
-	{{- if strContains (camelCase .Name) "UpdateRankBulk" }}
+	{{- if strContains (camelCase .Name) "UpdateRanks" }}
 	rules := make([]{{camelCase .Name}}Rules, len(plan.Rules))
 	copy(rules, plan.Rules)
 	sort.Slice(rules, func(i, j int) bool {
@@ -636,7 +636,7 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
 	{{- if not .NoRead}}
-	{{- if strContains (camelCase .Name) "UpdateRankBulk" }}
+	{{- if strContains (camelCase .Name) "UpdateRanks" }}
 	res, err := r.client.Get(state.getPath())
 	{{- else}}
 	res, err := r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + url.QueryEscape(state.Id.ValueString()){{end}})
@@ -667,8 +667,8 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 //template:begin update
 func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state {{camelCase .Name}}
-	{{- if strContains (camelCase .Name) "UpdateRankBulk" }}
-	var existingData {{strReplace (camelCase .Name) "UpdateRankBulk" "" -1}}
+	{{- if strContains (camelCase .Name) "UpdateRanks" }}
+	var existingData {{strReplace (camelCase .Name) "UpdateRanks" "" -1}}
 	{{- else if strContains (camelCase .Name) "UpdateRank" }}
 	var existingData {{strReplace (camelCase .Name) "UpdateRank" "" -1}}
 	{{- end}}
@@ -687,7 +687,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
-	{{- if strContains (camelCase .Name) "UpdateRankBulk" }}
+	{{- if strContains (camelCase .Name) "UpdateRanks" }}
 	rules := make([]{{camelCase .Name}}Rules, len(plan.Rules))
 	copy(rules, plan.Rules)
 	sort.Slice(rules, func(i, j int) bool {

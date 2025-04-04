@@ -44,24 +44,24 @@ import (
 //template:begin header
 
 // Ensure provider defined types fully satisfy framework interfaces
-var _ resource.Resource = &NetworkAccessAuthorizationRuleUpdateRankBulkResource{}
+var _ resource.Resource = &NetworkAccessAuthorizationRuleUpdateRanksResource{}
 
-func NewNetworkAccessAuthorizationRuleUpdateRankBulkResource() resource.Resource {
-	return &NetworkAccessAuthorizationRuleUpdateRankBulkResource{}
+func NewNetworkAccessAuthorizationRuleUpdateRanksResource() resource.Resource {
+	return &NetworkAccessAuthorizationRuleUpdateRanksResource{}
 }
 
-type NetworkAccessAuthorizationRuleUpdateRankBulkResource struct {
+type NetworkAccessAuthorizationRuleUpdateRanksResource struct {
 	client *ise.Client
 }
 
-func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_network_access_authorization_rule_update_rank_bulk"
+func (r *NetworkAccessAuthorizationRuleUpdateRanksResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_network_access_authorization_rule_update_ranks"
 }
 
 //template:end header
 
 //template:begin model
-func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *NetworkAccessAuthorizationRuleUpdateRanksResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
 		MarkdownDescription: helpers.NewAttributeDescription("This resource is used to bulk update rank field in network access policy set. It serves as a workaround for the ISE API/Backend limitation which restricts rank assignments to a strictly incremental sequence. By utilizing this resource and network_access_policy_set resource, you can bypass the APIs limitation. Creation of this resource is performing PUT operation (Update) and it only tracks rank field. When this resource is destroyed, no action is performed on ISE and resource is just removed from state.").String,
@@ -107,7 +107,7 @@ func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Schema(ctx contex
 //template:end model
 
 //template:begin configure
-func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+func (r *NetworkAccessAuthorizationRuleUpdateRanksResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -118,8 +118,8 @@ func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Configure(_ conte
 //template:end configure
 
 //template:begin create
-func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan NetworkAccessAuthorizationRuleUpdateRankBulk
+func (r *NetworkAccessAuthorizationRuleUpdateRanksResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan NetworkAccessAuthorizationRuleUpdateRanks
 	var existingData NetworkAccessAuthorizationRule
 
 	// Read plan
@@ -130,7 +130,7 @@ func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Create(ctx contex
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
-	rules := make([]NetworkAccessAuthorizationRuleUpdateRankBulkRules, len(plan.Rules))
+	rules := make([]NetworkAccessAuthorizationRuleUpdateRanksRules, len(plan.Rules))
 	copy(rules, plan.Rules)
 	sort.Slice(rules, func(i, j int) bool {
 		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()
@@ -165,8 +165,8 @@ func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Create(ctx contex
 //template:end create
 
 //template:begin read
-func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state NetworkAccessAuthorizationRuleUpdateRankBulk
+func (r *NetworkAccessAuthorizationRuleUpdateRanksResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state NetworkAccessAuthorizationRuleUpdateRanks
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -201,8 +201,8 @@ func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Read(ctx context.
 //template:end read
 
 //template:begin update
-func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan, state NetworkAccessAuthorizationRuleUpdateRankBulk
+func (r *NetworkAccessAuthorizationRuleUpdateRanksResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var plan, state NetworkAccessAuthorizationRuleUpdateRanks
 	var existingData NetworkAccessAuthorizationRule
 
 	// Read plan
@@ -219,7 +219,7 @@ func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Update(ctx contex
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
-	rules := make([]NetworkAccessAuthorizationRuleUpdateRankBulkRules, len(plan.Rules))
+	rules := make([]NetworkAccessAuthorizationRuleUpdateRanksRules, len(plan.Rules))
 	copy(rules, plan.Rules)
 	sort.Slice(rules, func(i, j int) bool {
 		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()
@@ -254,8 +254,8 @@ func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Update(ctx contex
 //template:end update
 
 //template:begin delete
-func (r *NetworkAccessAuthorizationRuleUpdateRankBulkResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state NetworkAccessAuthorizationRuleUpdateRankBulk
+func (r *NetworkAccessAuthorizationRuleUpdateRanksResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state NetworkAccessAuthorizationRuleUpdateRanks
 
 	// Read state
 	diags := req.State.Get(ctx, &state)

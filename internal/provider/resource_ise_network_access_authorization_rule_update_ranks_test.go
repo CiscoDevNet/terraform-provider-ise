@@ -29,15 +29,14 @@ import (
 //template:end imports
 
 //template:begin testAcc
-func TestAccIseNetworkAccessPolicySetUpdateRankBulk(t *testing.T) {
+func TestAccIseNetworkAccessAuthorizationRuleUpdateRanks(t *testing.T) {
 	var checks []resource.TestCheckFunc
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_policy_set_update_rank_bulk.test", "rules.0.policy_set_id", ""))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_policy_set_update_rank_bulk.test", "rules.0.rule_id", ""))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_policy_set_update_rank_bulk.test", "rules.0.rank", ""))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_rule_update_ranks.test", "rules.0.id", "3741aca3-db08-4899-af73-2e3f65ec31e1"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_rule_update_ranks.test", "rules.0.rank", "0"))
 
 	var steps []resource.TestStep
 	steps = append(steps, resource.TestStep{
-		Config: testAccIseNetworkAccessPolicySetUpdateRankBulkPrerequisitesConfig + testAccIseNetworkAccessPolicySetUpdateRankBulkConfig_all(),
+		Config: testAccIseNetworkAccessAuthorizationRuleUpdateRanksPrerequisitesConfig + testAccIseNetworkAccessAuthorizationRuleUpdateRanksConfig_all(),
 		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 
@@ -51,8 +50,8 @@ func TestAccIseNetworkAccessPolicySetUpdateRankBulk(t *testing.T) {
 //template:end testAcc
 
 //template:begin testPrerequisites
-const testAccIseNetworkAccessPolicySetUpdateRankBulkPrerequisitesConfig = `
-resource "ise_network_access_policy_set_bulk" "test" {
+const testAccIseNetworkAccessAuthorizationRuleUpdateRanksPrerequisitesConfig = `
+resource "ise_network_access_policy_set" "test" {
   name                      = "PolicySet1"
   service_name              = "Default Network Access"
   condition_type            = "ConditionAttributes"
@@ -62,14 +61,30 @@ resource "ise_network_access_policy_set_bulk" "test" {
   condition_dictionary_name = "DEVICE"
   condition_operator        = "equals"
 }
-
+resource "ise_network_access_authorization_rule" "test" {
+  policy_set_id             = ise_network_access_policy_set.test.id
+  name                      = "Rule1"
+  default                   = false
+  state                     = "enabled"
+  condition_type            = "ConditionAttributes"
+  condition_is_negate       = false
+  condition_attribute_name  = "Location"
+  condition_attribute_value = "All Locations"
+  condition_dictionary_name = "DEVICE"
+  condition_operator        = "equals"
+  profiles                  = ["PermitAccess"]
+  security_group            = "BYOD"
+}
 `
 
 //template:end testPrerequisites
 
 //template:begin testAccConfigMinimal
-func testAccIseNetworkAccessPolicySetUpdateRankBulkConfig_minimum() string {
-	config := `resource "ise_network_access_policy_set_update_rank_bulk" "test" {` + "\n"
+func testAccIseNetworkAccessAuthorizationRuleUpdateRanksConfig_minimum() string {
+	config := `resource "ise_network_access_authorization_rule_update_ranks" "test" {` + "\n"
+	config += `	policy_set_id = ise_network_access_policy_set.test.id` + "\n"
+	config += `	rules = [{` + "\n"
+	config += `	}]` + "\n"
 	config += `}` + "\n"
 	return config
 }
@@ -77,12 +92,12 @@ func testAccIseNetworkAccessPolicySetUpdateRankBulkConfig_minimum() string {
 //template:end testAccConfigMinimal
 
 //template:begin testAccConfigAll
-func testAccIseNetworkAccessPolicySetUpdateRankBulkConfig_all() string {
-	config := `resource "ise_network_access_policy_set_update_rank_bulk" "test" {` + "\n"
+func testAccIseNetworkAccessAuthorizationRuleUpdateRanksConfig_all() string {
+	config := `resource "ise_network_access_authorization_rule_update_ranks" "test" {` + "\n"
+	config += `	policy_set_id = ise_network_access_policy_set.test.id` + "\n"
 	config += `	rules = [{` + "\n"
-	config += `	  policy_set_id = ""` + "\n"
-	config += `	  rule_id = ""` + "\n"
-	config += `	  rank = ""` + "\n"
+	config += `	  id = "3741aca3-db08-4899-af73-2e3f65ec31e1"` + "\n"
+	config += `	  rank = 0` + "\n"
 	config += `	}]` + "\n"
 	config += `}` + "\n"
 	return config

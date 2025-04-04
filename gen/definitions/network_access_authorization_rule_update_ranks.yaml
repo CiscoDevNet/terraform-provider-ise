@@ -1,5 +1,5 @@
 ---
-name: Network Access Authorization Rule Update Rank Bulk
+name: Network Access Authorization Rule Update Ranks
 res_description:
   'This resource is used to bulk update rank field in network access policy set. It serves as a workaround for the 
   ISE API/Backend limitation which restricts rank assignments to a strictly incremental sequence.
@@ -37,7 +37,7 @@ attributes:
         description: UUID for condition
         example: 0
 test_prerequisites: |
-  resource "ise_network_access_policy_set_bulk" "test" {
+  resource "ise_network_access_policy_set" "test" {
     name                      = "PolicySet1"
     service_name              = "Default Network Access"
     condition_type            = "ConditionAttributes"
@@ -46,4 +46,18 @@ test_prerequisites: |
     condition_attribute_value = "All Locations"
     condition_dictionary_name = "DEVICE"
     condition_operator        = "equals"
+  }
+  resource "ise_network_access_authorization_rule" "test" {
+    policy_set_id             = ise_network_access_policy_set.test.id
+    name                      = "Rule1"
+    default                   = false
+    state                     = "enabled"
+    condition_type            = "ConditionAttributes"
+    condition_is_negate       = false
+    condition_attribute_name  = "Location"
+    condition_attribute_value = "All Locations"
+    condition_dictionary_name = "DEVICE"
+    condition_operator        = "equals"
+    profiles                  = ["PermitAccess"]
+    security_group            = "BYOD"
   }

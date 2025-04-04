@@ -34,13 +34,13 @@ import (
 //template:end imports
 
 //template:begin types
-type NetworkAccessAuthorizationRuleUpdateRankBulk struct {
-	Id          types.String                                        `tfsdk:"id"`
-	PolicySetId types.String                                        `tfsdk:"policy_set_id"`
-	Rules       []NetworkAccessAuthorizationRuleUpdateRankBulkRules `tfsdk:"rules"`
+type NetworkAccessAuthorizationRuleUpdateRanks struct {
+	Id          types.String                                     `tfsdk:"id"`
+	PolicySetId types.String                                     `tfsdk:"policy_set_id"`
+	Rules       []NetworkAccessAuthorizationRuleUpdateRanksRules `tfsdk:"rules"`
 }
 
-type NetworkAccessAuthorizationRuleUpdateRankBulkRules struct {
+type NetworkAccessAuthorizationRuleUpdateRanksRules struct {
 	Id   types.String `tfsdk:"id"`
 	Rank types.Int64  `tfsdk:"rank"`
 }
@@ -48,7 +48,7 @@ type NetworkAccessAuthorizationRuleUpdateRankBulkRules struct {
 //template:end types
 
 //template:begin getPath
-func (data NetworkAccessAuthorizationRuleUpdateRankBulk) getPath() string {
+func (data NetworkAccessAuthorizationRuleUpdateRanks) getPath() string {
 	return fmt.Sprintf("/api/v1/policy/network-access/policy-set/%v/authorization", url.QueryEscape(data.PolicySetId.ValueString()))
 }
 
@@ -59,7 +59,7 @@ func (data NetworkAccessAuthorizationRuleUpdateRankBulk) getPath() string {
 //template:end getPathDelete
 
 //template:begin toBody
-func (data NetworkAccessAuthorizationRuleUpdateRankBulk) toBody(ctx context.Context, state NetworkAccessAuthorizationRuleUpdateRankBulk) string {
+func (data NetworkAccessAuthorizationRuleUpdateRanks) toBody(ctx context.Context, state NetworkAccessAuthorizationRuleUpdateRanks) string {
 	body := ""
 	if len(data.Rules) > 0 {
 		body, _ = sjson.Set(body, "rules", []interface{}{})
@@ -80,11 +80,11 @@ func (data NetworkAccessAuthorizationRuleUpdateRankBulk) toBody(ctx context.Cont
 //template:end toBody
 
 //template:begin fromBody
-func (data *NetworkAccessAuthorizationRuleUpdateRankBulk) fromBody(ctx context.Context, res gjson.Result) {
+func (data *NetworkAccessAuthorizationRuleUpdateRanks) fromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("response.rules"); value.Exists() {
-		data.Rules = make([]NetworkAccessAuthorizationRuleUpdateRankBulkRules, 0)
+		data.Rules = make([]NetworkAccessAuthorizationRuleUpdateRanksRules, 0)
 		value.ForEach(func(k, v gjson.Result) bool {
-			item := NetworkAccessAuthorizationRuleUpdateRankBulkRules{}
+			item := NetworkAccessAuthorizationRuleUpdateRanksRules{}
 			if cValue := v.Get("rule.id"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Id = types.StringValue(cValue.String())
 			} else {
@@ -104,7 +104,7 @@ func (data *NetworkAccessAuthorizationRuleUpdateRankBulk) fromBody(ctx context.C
 //template:end fromBody
 
 //template:begin updateFromBody
-func (data *NetworkAccessAuthorizationRuleUpdateRankBulk) updateFromBody(ctx context.Context, res gjson.Result) {
+func (data *NetworkAccessAuthorizationRuleUpdateRanks) updateFromBody(ctx context.Context, res gjson.Result) {
 	for i := range data.Rules {
 		keys := [...]string{"rule.id", "rule.rank"}
 		keyValues := [...]string{data.Rules[i].Id.ValueString(), strconv.FormatInt(data.Rules[i].Rank.ValueInt64(), 10)}
@@ -144,7 +144,7 @@ func (data *NetworkAccessAuthorizationRuleUpdateRankBulk) updateFromBody(ctx con
 //template:end updateFromBody
 
 //template:begin isNull
-func (data *NetworkAccessAuthorizationRuleUpdateRankBulk) isNull(ctx context.Context, res gjson.Result) bool {
+func (data *NetworkAccessAuthorizationRuleUpdateRanks) isNull(ctx context.Context, res gjson.Result) bool {
 	if len(data.Rules) > 0 {
 		return false
 	}
