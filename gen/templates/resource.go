@@ -25,6 +25,7 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"sort"
 	"strings"
 	"sync"
 
@@ -455,7 +456,9 @@ func (r *{{camelCase .Name}}Resource) Configure(_ context.Context, req resource.
 //template:begin create
 func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan {{camelCase .Name}}
-	{{- if strContains (camelCase .Name) "UpdateRank" }}
+	{{- if strContains (camelCase .Name) "UpdateRanks" }}
+	var existingData {{strReplace (camelCase .Name) "UpdateRanks" "" -1}}
+	{{- else if strContains (camelCase .Name) "UpdateRank" }}
 	var existingData {{strReplace (camelCase .Name) "UpdateRank" "" -1}}
 	{{- end}}
 
@@ -467,8 +470,34 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
+	{{- if strContains (camelCase .Name) "UpdateRanks" }}
+	rules := make([]{{camelCase .Name}}Rules, len(plan.Rules))
+	copy(rules, plan.Rules)
+	sort.Slice(rules, func(i, j int) bool {
+		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()  
+	})
+	for _, rule := range rules{
+		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
+			return
+		}
+		existingData.fromBody(ctx, res)
 
-	{{- if strContains (camelCase .Name) "UpdateRank" }}
+		// Use the `toBody` function to construct the body from existingData
+		body := existingData.toBody(ctx, existingData)
+
+		// Update rank
+		body, _ = sjson.Set(body, "rule.rank", rule.Rank.ValueInt64())
+		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.Id.ValueString()), body)
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
+			return
+		}
+	}
+	plan.Id = types.StringValue(fmt.Sprint(plan.PolicySetId.ValueString()))
+
+	{{- else if strContains (camelCase .Name) "UpdateRank" }}
 	// Read existing attributes from the API
 	{{- if strContains (camelCase .Name) "Rule" }}
 	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.RuleId.ValueString()))
@@ -502,6 +531,8 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	plan.Id = types.StringValue(fmt.Sprint(plan.PolicySetId.ValueString()))
 	{{- end}}
 
+
+	
 	{{- else}}
 
 	// Create object
@@ -605,7 +636,11 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 
 	{{- if not .NoRead}}
+	{{- if strContains (camelCase .Name) "UpdateRanks" }}
+	res, err := r.client.Get(state.getPath())
+	{{- else}}
 	res, err := r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + url.QueryEscape(state.Id.ValueString()){{end}})
+	{{- end}}
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
@@ -632,7 +667,9 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 //template:begin update
 func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state {{camelCase .Name}}
-	{{- if strContains (camelCase .Name) "UpdateRank" }}
+	{{- if strContains (camelCase .Name) "UpdateRanks" }}
+	var existingData {{strReplace (camelCase .Name) "UpdateRanks" "" -1}}
+	{{- else if strContains (camelCase .Name) "UpdateRank" }}
 	var existingData {{strReplace (camelCase .Name) "UpdateRank" "" -1}}
 	{{- end}}
 
@@ -650,8 +687,34 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
+	{{- if strContains (camelCase .Name) "UpdateRanks" }}
+	rules := make([]{{camelCase .Name}}Rules, len(plan.Rules))
+	copy(rules, plan.Rules)
+	sort.Slice(rules, func(i, j int) bool {
+		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()  
+	})
+	for _, rule := range rules{
+		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
+			return
+		}
+		existingData.fromBody(ctx, res)
 
-	{{- if strContains (camelCase .Name) "UpdateRank" }}
+		// Use the `toBody` function to construct the body from existingData
+		body := existingData.toBody(ctx, existingData)
+
+		// Update rank
+		body, _ = sjson.Set(body, "rule.rank", rule.Rank.ValueInt64())
+		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.Id.ValueString()), body)
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
+			return
+		}
+	}
+	plan.Id = types.StringValue(fmt.Sprint(plan.PolicySetId.ValueString()))
+
+	{{- else if strContains (camelCase .Name) "UpdateRank" }}
 	
 	// Read existing attributes from the API
 	{{- if strContains (camelCase .Name) "Rule" }}
