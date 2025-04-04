@@ -90,11 +90,11 @@ func (r *NetworkAccessAuthorizationRuleUpdateRanksResource) Schema(ctx context.C
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"id": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("UUID for condition").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Authorization rule ID").String,
 							Optional:            true,
 						},
 						"rank": schema.Int64Attribute{
-							MarkdownDescription: helpers.NewAttributeDescription("UUID for condition").String,
+							MarkdownDescription: helpers.NewAttributeDescription("The rank (priority) in relation to other rules. Lower rank is higher priority.").String,
 							Optional:            true,
 						},
 					},

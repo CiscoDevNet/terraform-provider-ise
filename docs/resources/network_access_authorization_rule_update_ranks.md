@@ -44,5 +44,5 @@ resource "ise_network_access_authorization_rule_update_ranks" "example" {
 
 Optional:
 
-- `id` (String) UUID for condition
-- `rank` (Number) UUID for condition
+- `id` (String) Authorization rule ID
+- `rank` (Number) The rank (priority) in relation to other rules. Lower rank is higher priority.

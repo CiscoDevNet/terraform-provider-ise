@@ -29,12 +29,12 @@ attributes:
       - model_name: id
         data_path: [rule]
         type: String
-        description: UUID for condition
+        description: Authorization rule ID
         example: 3741aca3-db08-4899-af73-2e3f65ec31e1
       - model_name: rank
         data_path: [rule]
         type: Int64
-        description: UUID for condition
+        description: The rank (priority) in relation to other rules. Lower rank is higher priority.
         example: 0
 test_prerequisites: |
   resource "ise_network_access_policy_set" "test" {
