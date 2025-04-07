@@ -105,6 +105,7 @@ type YamlConfig struct {
 	PostUpdate          bool                  `yaml:"post_update"`
 	PutCreate           bool                  `yaml:"put_create"`
 	PutIdQueryPath      bool                  `yaml:"put_id_query_path"`
+	PutNoId             bool                  `yaml:"put_no_id"`
 	PutDelete           bool                  `yaml:"put_delete"`
 	PutRead             bool                  `yaml:"put_read"`
 	NoRead              bool                  `yaml:"no_read"`

@@ -4,9 +4,9 @@ rest_endpoint: /ers/config/activedirectory/%v/addGroups
 doc_category: Identity Management
 no_delete: true
 put_create: true
-no_update: true
 no_read: true
 no_import: true
+put_no_id: true
 no_data_source: true
 skip_minimum_test: true
 test_tags: [AD]
