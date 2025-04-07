@@ -9,6 +9,7 @@ description: |-
 
 ## 0.2.7 (unreleased)
 
+- Fix issue with adding new groups to existing `ise_active_directory_add_groups` resource, [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/113)
 - Add `network_access_authorization_rule_update_ranks` resource to update rank on all network access authorization rules under same policy set
 
 ## 0.2.6

@@ -18,6 +18,7 @@ root_list: bool(required=False) # Set to true if the root element of the data st
 no_read_prefix: bool(required=False) # Set to true if it is an Open API endpoint put the response is not embeeded into a "response" element
 no_id: bool(required=False) # Set to true if the data source does not have an ID
 id_path: str(required=False) # Path to the ID in the response (use "." to access nested elements)
+put_no_id: bool(required=False) # Set to true if the PUT request does not require an ID
 put_id_include_path: str(required=False) # If PUT needs to have specific JSON path where ID should be inserted
 put_id_query_path: bool(required=False) # Set to true if PUT request is used to create and required ID in path
 data_source_name_query: bool(required=False) # Set to true if the data source supports name queries
