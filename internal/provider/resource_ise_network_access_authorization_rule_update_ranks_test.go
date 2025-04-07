@@ -31,7 +31,6 @@ import (
 //template:begin testAcc
 func TestAccIseNetworkAccessAuthorizationRuleUpdateRanks(t *testing.T) {
 	var checks []resource.TestCheckFunc
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_rule_update_ranks.test", "rules.0.id", "3741aca3-db08-4899-af73-2e3f65ec31e1"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_rule_update_ranks.test", "rules.0.rank", "0"))
 
 	var steps []resource.TestStep
@@ -96,7 +95,7 @@ func testAccIseNetworkAccessAuthorizationRuleUpdateRanksConfig_all() string {
 	config := `resource "ise_network_access_authorization_rule_update_ranks" "test" {` + "\n"
 	config += `	policy_set_id = ise_network_access_policy_set.test.id` + "\n"
 	config += `	rules = [{` + "\n"
-	config += `	  id = "3741aca3-db08-4899-af73-2e3f65ec31e1"` + "\n"
+	config += `	  id = ise_network_access_authorization_rule.test.id` + "\n"
 	config += `	  rank = 0` + "\n"
 	config += `	}]` + "\n"
 	config += `}` + "\n"

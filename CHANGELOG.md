@@ -1,3 +1,7 @@
+## 0.2.7 (unreleased)
+
+- Add `network_access_authorization_rule_update_ranks` resource to update rank on all network access authorization rules under same policy set
+
 ## 0.2.6
 
 - Add `ise_trustsec_egress_matrix_cell_default` resource to support default egress policy matrix rule modifications

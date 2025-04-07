@@ -84,7 +84,7 @@ attributes:
       - model_name: name
         type: String
         id: true
-        description: Condition name
+        description: Condition name. Required if `condition_type` is `ConditionReference`, if `condition_type` is `ConditionAttributes` then this attribute is not used.
         example: Cond1
       - model_name: description
         type: String
@@ -169,7 +169,7 @@ attributes:
           - model_name: name
             type: String
             id: true
-            description: Condition name
+            description: Condition name. Required if `condition_type` is `ConditionReference`, if `condition_type` is `ConditionAttributes` then this attribute is not used.
             example: Cond1
           - model_name: description
             type: String

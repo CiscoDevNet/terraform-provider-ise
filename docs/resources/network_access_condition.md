@@ -68,7 +68,7 @@ Optional:
 - `dictionary_value` (String) Dictionary value
 - `id` (String) UUID for condition
 - `is_negate` (Boolean) Indicates whereas this condition is in negate mode
-- `name` (String) Condition name
+- `name` (String) Condition name. Required if `condition_type` is `ConditionReference`, if `condition_type` is `ConditionAttributes` then this attribute is not used.
 - `operator` (String) Equality operator
   - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`
 
@@ -89,7 +89,7 @@ Optional:
 - `dictionary_value` (String) Dictionary value
 - `id` (String) UUID for condition
 - `is_negate` (Boolean) Indicates whereas this condition is in negate mode
-- `name` (String) Condition name
+- `name` (String) Condition name. Required if `condition_type` is `ConditionReference`, if `condition_type` is `ConditionAttributes` then this attribute is not used.
 - `operator` (String) Equality operator
   - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`
 

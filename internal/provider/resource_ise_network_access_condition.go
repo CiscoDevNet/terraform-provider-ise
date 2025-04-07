@@ -123,7 +123,7 @@ func (r *NetworkAccessConditionResource) Schema(ctx context.Context, req resourc
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Condition name").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Condition name. Required if `condition_type` is `ConditionReference`, if `condition_type` is `ConditionAttributes` then this attribute is not used.").String,
 							Optional:            true,
 						},
 						"description": schema.StringAttribute{
@@ -174,7 +174,7 @@ func (r *NetworkAccessConditionResource) Schema(ctx context.Context, req resourc
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"name": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Condition name").String,
+										MarkdownDescription: helpers.NewAttributeDescription("Condition name. Required if `condition_type` is `ConditionReference`, if `condition_type` is `ConditionAttributes` then this attribute is not used.").String,
 										Optional:            true,
 									},
 									"description": schema.StringAttribute{
