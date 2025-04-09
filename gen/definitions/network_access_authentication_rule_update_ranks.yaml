@@ -1,0 +1,66 @@
+---
+name: Network Access Authentication Rule Update Ranks
+res_description:
+  'This resource is used to bulk update rank field in network access authentication rule. It serves as a workaround for the 
+  ISE API/Backend limitation which restricts rank assignments to a strictly incremental sequence.
+  By utilizing this resource and network_access_authentication_rule resource, you can bypass the APIs limitation.
+  Creation of this resource is performing PUT operation (Update) and it only tracks rank field.
+  When this resource is destroyed, no action is performed on ISE and resource is just removed from state.'
+rest_endpoint: /api/v1/policy/network-access/policy-set/%v/authentication
+put_create: true
+no_delete: true
+no_import: true
+no_data_source: true
+skip_minimum_test: true
+doc_category: Network Access
+attributes:
+  - tf_name: policy_set_id
+    type: String
+    reference: true
+    description: Policy set ID
+    example: d82952cb-b901-4b09-b363-5ebf39bdbaf9
+    id: true
+    mandatory: true
+    test_value: ise_network_access_policy_set.test.id
+  - model_name: rules
+    type: List
+    id: true
+    attributes:
+      - model_name: id
+        data_path: [rule]
+        type: String
+        description: Authentication rule ID
+        example: 3741aca3-db08-4899-af73-2e3f65ec31e1
+        test_value: ise_network_access_authentication_rule.test.id
+      - model_name: rank
+        data_path: [rule]
+        type: Int64
+        description: The rank (priority) in relation to other rules. Lower rank is higher priority.
+        example: 0
+test_prerequisites: |
+  resource "ise_network_access_policy_set" "test" {
+    name                      = "PolicySet1"
+    service_name              = "Default Network Access"
+    condition_type            = "ConditionAttributes"
+    condition_is_negate       = false
+    condition_attribute_name  = "Location"
+    condition_attribute_value = "All Locations"
+    condition_dictionary_name = "DEVICE"
+    condition_operator        = "equals"
+  }
+  resource "ise_network_access_authentication_rule" "test" {
+    policy_set_id             = ise_network_access_policy_set.test.id
+    name                      = "Rule1"
+    default                   = false
+    state                     = "enabled"
+    condition_type            = "ConditionAttributes"
+    condition_is_negate       = false
+    condition_attribute_name  = "Location"
+    condition_attribute_value = "All Locations"
+    condition_dictionary_name = "DEVICE"
+    condition_operator        = "equals"
+    identity_source_name      = "Internal Endpoints"
+    if_auth_fail              = "REJECT"
+    if_process_fail           = "DROP"
+    if_user_not_found         = "REJECT"
+  }
