@@ -56,7 +56,7 @@ data "ise_network_device" "example" {
 - `trustsec_coa_source_host` (String) CoA source host
 - `trustsec_device_id` (String) TrustSec device ID
 - `trustsec_device_password` (String) TrustSec device password
-- `trustsec_download_enviroment_data_every_x_seconds` (Number) Download environment data every X seconds
+- `trustsec_download_environment_data_every_x_seconds` (Number) Download environment data every X seconds
 - `trustsec_download_peer_authorization_policy_every_x_seconds` (Number) Download peer authorization policy every X seconds
 - `trustsec_download_sgacl_lists_every_x_seconds` (Number) Download SGACL lists every X seconds
 - `trustsec_enable_mode_password` (String) Enable mode password

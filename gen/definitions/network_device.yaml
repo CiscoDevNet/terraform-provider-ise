@@ -232,7 +232,7 @@ attributes:
     example: true
   - model_name: downlaodEnvironmentDataEveryXSeconds
     data_path: [NetworkDevice, trustsecsettings, sgaNotificationAndUpdates]
-    tf_name: trustsec_download_enviroment_data_every_x_seconds
+    tf_name: trustsec_download_environment_data_every_x_seconds
     type: Int64
     description: Download environment data every X seconds
     example: 1000
