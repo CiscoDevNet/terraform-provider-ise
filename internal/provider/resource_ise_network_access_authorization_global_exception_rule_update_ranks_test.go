@@ -82,7 +82,7 @@ func testAccIseNetworkAccessAuthorizationGlobalExceptionRuleUpdateRanksConfig_mi
 func testAccIseNetworkAccessAuthorizationGlobalExceptionRuleUpdateRanksConfig_all() string {
 	config := `resource "ise_network_access_authorization_global_exception_rule_update_ranks" "test" {` + "\n"
 	config += `	rules = [{` + "\n"
-	config += `	  id = ise_network_access_authorization_rule.test.id` + "\n"
+	config += `	  id = ise_network_access_authorization_global_exception_rule.test.id` + "\n"
 	config += `	  rank = 0` + "\n"
 	config += `	}]` + "\n"
 	config += `}` + "\n"

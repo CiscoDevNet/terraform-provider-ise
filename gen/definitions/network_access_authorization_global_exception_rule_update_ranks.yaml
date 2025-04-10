@@ -23,7 +23,7 @@ attributes:
         type: String
         description: Authorization rule ID
         example: 3741aca3-db08-4899-af73-2e3f65ec31e1
-        test_value: ise_network_access_authorization_rule.test.id
+        test_value: ise_network_access_authorization_global_exception_rule.test.id
       - model_name: rank
         data_path: [rule]
         type: Int64

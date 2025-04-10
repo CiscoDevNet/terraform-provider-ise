@@ -85,7 +85,7 @@ resource "ise_device_admin_policy_set" "test" {
 //template:begin testAccConfigMinimal
 func testAccIseDeviceAdminAuthenticationRuleUpdateRanksConfig_minimum() string {
 	config := `resource "ise_device_admin_authentication_rule_update_ranks" "test" {` + "\n"
-	config += `	policy_set_id = ise_network_access_policy_set.test.id` + "\n"
+	config += `	policy_set_id = ise_device_admin_policy_set.test.id` + "\n"
 	config += `	rules = [{` + "\n"
 	config += `	}]` + "\n"
 	config += `}` + "\n"
@@ -97,7 +97,7 @@ func testAccIseDeviceAdminAuthenticationRuleUpdateRanksConfig_minimum() string {
 //template:begin testAccConfigAll
 func testAccIseDeviceAdminAuthenticationRuleUpdateRanksConfig_all() string {
 	config := `resource "ise_device_admin_authentication_rule_update_ranks" "test" {` + "\n"
-	config += `	policy_set_id = ise_network_access_policy_set.test.id` + "\n"
+	config += `	policy_set_id = ise_device_admin_policy_set.test.id` + "\n"
 	config += `	rules = [{` + "\n"
 	config += `	  id = ise_device_admin_authentication_rule.test.id` + "\n"
 	config += `	  rank = 0` + "\n"
