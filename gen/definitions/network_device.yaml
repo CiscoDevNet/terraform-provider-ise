@@ -2,6 +2,7 @@
 name: Network Device
 rest_endpoint: /ers/config/networkdevice
 data_source_name_query: true
+put_id_include_path: NetworkDevice
 doc_category: Network Resources
 attributes:
   - model_name: name
