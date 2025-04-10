@@ -68,7 +68,7 @@ type NetworkDevice struct {
 	TrustsecExecModePassword                             types.String       `tfsdk:"trustsec_exec_mode_password"`
 	TrustsecExecModeUsername                             types.String       `tfsdk:"trustsec_exec_mode_username"`
 	TrustsecIncludeWhenDeployingSgtUpdates               types.Bool         `tfsdk:"trustsec_include_when_deploying_sgt_updates"`
-	TrustsecDownloadEnvironmentDataEveryXSeconds          types.Int64        `tfsdk:"trustsec_download_environment_data_every_x_seconds"`
+	TrustsecDownloadEnvironmentDataEveryXSeconds         types.Int64        `tfsdk:"trustsec_download_environment_data_every_x_seconds"`
 	TrustsecDownloadPeerAuthorizationPolicyEveryXSeconds types.Int64        `tfsdk:"trustsec_download_peer_authorization_policy_every_x_seconds"`
 	TrustsecDownloadSgaclListsEveryXSeconds              types.Int64        `tfsdk:"trustsec_download_sgacl_lists_every_x_seconds"`
 	TrustsecOtherSgaDevicesToTrustThisDevice             types.Bool         `tfsdk:"trustsec_other_sga_devices_to_trust_this_device"`
