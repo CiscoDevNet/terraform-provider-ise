@@ -676,7 +676,7 @@ func (data *NetworkDevice) updateFromBody(ctx context.Context, res gjson.Result)
 	} else {
 		data.TrustsecIncludeWhenDeployingSgtUpdates = types.BoolNull()
 	}
-	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.downloadEnvironmentDataEveryXSeconds"); value.Exists() && !data.TrustsecDownloadEnvironmentDataEveryXSeconds.IsNull() {
+	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.downlaodEnvironmentDataEveryXSeconds"); value.Exists() && !data.TrustsecDownloadEnvironmentDataEveryXSeconds.IsNull() {
 		data.TrustsecDownloadEnvironmentDataEveryXSeconds = types.Int64Value(value.Int())
 	} else {
 		data.TrustsecDownloadEnvironmentDataEveryXSeconds = types.Int64Null()
