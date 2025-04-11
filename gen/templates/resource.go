@@ -496,7 +496,7 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 		}
 	}
 	{{- if strContains (camelCase .Name) "Global" }}
-	plan.Id = types.StringValue("c4e0f930-d354-4e9a-aa25-71b5192ae810")
+	plan.Id = types.StringValue("")
 	{{- else}}
 	plan.Id = types.StringValue(fmt.Sprint(plan.PolicySetId.ValueString()))
 	{{- end}}
@@ -718,7 +718,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 		}
 	}
 	{{- if strContains (camelCase .Name) "Global" }}
-	plan.Id = types.StringValue("c4e0f930-d354-4e9a-aa25-71b5192ae810")
+	plan.Id = types.StringValue("")
 	{{- else}}
 	plan.Id = types.StringValue(fmt.Sprint(plan.PolicySetId.ValueString()))
 	{{- end}}

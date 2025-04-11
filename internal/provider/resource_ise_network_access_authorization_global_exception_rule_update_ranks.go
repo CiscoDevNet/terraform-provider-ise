@@ -147,7 +147,7 @@ func (r *NetworkAccessAuthorizationGlobalExceptionRuleUpdateRanksResource) Creat
 			return
 		}
 	}
-	plan.Id = types.StringValue("c4e0f930-d354-4e9a-aa25-71b5192ae810")
+	plan.Id = types.StringValue("")
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -236,7 +236,7 @@ func (r *NetworkAccessAuthorizationGlobalExceptionRuleUpdateRanksResource) Updat
 			return
 		}
 	}
-	plan.Id = types.StringValue("c4e0f930-d354-4e9a-aa25-71b5192ae810")
+	plan.Id = types.StringValue("")
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Update finished successfully", plan.Id.ValueString()))
 
