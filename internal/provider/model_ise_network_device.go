@@ -68,7 +68,7 @@ type NetworkDevice struct {
 	TrustsecExecModePassword                             types.String       `tfsdk:"trustsec_exec_mode_password"`
 	TrustsecExecModeUsername                             types.String       `tfsdk:"trustsec_exec_mode_username"`
 	TrustsecIncludeWhenDeployingSgtUpdates               types.Bool         `tfsdk:"trustsec_include_when_deploying_sgt_updates"`
-	TrustsecDownloadEnviromentDataEveryXSeconds          types.Int64        `tfsdk:"trustsec_download_enviroment_data_every_x_seconds"`
+	TrustsecDownloadEnvironmentDataEveryXSeconds         types.Int64        `tfsdk:"trustsec_download_environment_data_every_x_seconds"`
 	TrustsecDownloadPeerAuthorizationPolicyEveryXSeconds types.Int64        `tfsdk:"trustsec_download_peer_authorization_policy_every_x_seconds"`
 	TrustsecDownloadSgaclListsEveryXSeconds              types.Int64        `tfsdk:"trustsec_download_sgacl_lists_every_x_seconds"`
 	TrustsecOtherSgaDevicesToTrustThisDevice             types.Bool         `tfsdk:"trustsec_other_sga_devices_to_trust_this_device"`
@@ -217,8 +217,8 @@ func (data NetworkDevice) toBody(ctx context.Context, state NetworkDevice) strin
 	if !data.TrustsecIncludeWhenDeployingSgtUpdates.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.deviceConfigurationDeployment.includeWhenDeployingSGTUpdates", data.TrustsecIncludeWhenDeployingSgtUpdates.ValueBool())
 	}
-	if !data.TrustsecDownloadEnviromentDataEveryXSeconds.IsNull() {
-		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.downlaodEnvironmentDataEveryXSeconds", data.TrustsecDownloadEnviromentDataEveryXSeconds.ValueInt64())
+	if !data.TrustsecDownloadEnvironmentDataEveryXSeconds.IsNull() {
+		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.downlaodEnvironmentDataEveryXSeconds", data.TrustsecDownloadEnvironmentDataEveryXSeconds.ValueInt64())
 	}
 	if !data.TrustsecDownloadPeerAuthorizationPolicyEveryXSeconds.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.downlaodPeerAuthorizationPolicyEveryXSeconds", data.TrustsecDownloadPeerAuthorizationPolicyEveryXSeconds.ValueInt64())
@@ -432,9 +432,9 @@ func (data *NetworkDevice) fromBody(ctx context.Context, res gjson.Result) {
 		data.TrustsecIncludeWhenDeployingSgtUpdates = types.BoolNull()
 	}
 	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.downlaodEnvironmentDataEveryXSeconds"); value.Exists() && value.Type != gjson.Null {
-		data.TrustsecDownloadEnviromentDataEveryXSeconds = types.Int64Value(value.Int())
+		data.TrustsecDownloadEnvironmentDataEveryXSeconds = types.Int64Value(value.Int())
 	} else {
-		data.TrustsecDownloadEnviromentDataEveryXSeconds = types.Int64Null()
+		data.TrustsecDownloadEnvironmentDataEveryXSeconds = types.Int64Null()
 	}
 	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.downlaodPeerAuthorizationPolicyEveryXSeconds"); value.Exists() && value.Type != gjson.Null {
 		data.TrustsecDownloadPeerAuthorizationPolicyEveryXSeconds = types.Int64Value(value.Int())
@@ -676,10 +676,10 @@ func (data *NetworkDevice) updateFromBody(ctx context.Context, res gjson.Result)
 	} else {
 		data.TrustsecIncludeWhenDeployingSgtUpdates = types.BoolNull()
 	}
-	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.downlaodEnvironmentDataEveryXSeconds"); value.Exists() && !data.TrustsecDownloadEnviromentDataEveryXSeconds.IsNull() {
-		data.TrustsecDownloadEnviromentDataEveryXSeconds = types.Int64Value(value.Int())
+	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.downlaodEnvironmentDataEveryXSeconds"); value.Exists() && !data.TrustsecDownloadEnvironmentDataEveryXSeconds.IsNull() {
+		data.TrustsecDownloadEnvironmentDataEveryXSeconds = types.Int64Value(value.Int())
 	} else {
-		data.TrustsecDownloadEnviromentDataEveryXSeconds = types.Int64Null()
+		data.TrustsecDownloadEnvironmentDataEveryXSeconds = types.Int64Null()
 	}
 	if value := res.Get("NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.downlaodPeerAuthorizationPolicyEveryXSeconds"); value.Exists() && !data.TrustsecDownloadPeerAuthorizationPolicyEveryXSeconds.IsNull() {
 		data.TrustsecDownloadPeerAuthorizationPolicyEveryXSeconds = types.Int64Value(value.Int())
@@ -824,7 +824,7 @@ func (data *NetworkDevice) isNull(ctx context.Context, res gjson.Result) bool {
 	if !data.TrustsecIncludeWhenDeployingSgtUpdates.IsNull() {
 		return false
 	}
-	if !data.TrustsecDownloadEnviromentDataEveryXSeconds.IsNull() {
+	if !data.TrustsecDownloadEnvironmentDataEveryXSeconds.IsNull() {
 		return false
 	}
 	if !data.TrustsecDownloadPeerAuthorizationPolicyEveryXSeconds.IsNull() {

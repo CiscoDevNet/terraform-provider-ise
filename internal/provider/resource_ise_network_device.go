@@ -250,7 +250,7 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				MarkdownDescription: helpers.NewAttributeDescription("Include this device when deploying Security Group Tag Mapping Updates").String,
 				Optional:            true,
 			},
-			"trustsec_download_enviroment_data_every_x_seconds": schema.Int64Attribute{
+			"trustsec_download_environment_data_every_x_seconds": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Download environment data every X seconds").String,
 				Optional:            true,
 			},

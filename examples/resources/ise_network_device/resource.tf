@@ -36,7 +36,7 @@ resource "ise_network_device" "example" {
   trustsec_exec_mode_password                                 = "cisco123"
   trustsec_exec_mode_username                                 = "user456"
   trustsec_include_when_deploying_sgt_updates                 = true
-  trustsec_download_enviroment_data_every_x_seconds           = 1000
+  trustsec_download_environment_data_every_x_seconds          = 1000
   trustsec_download_peer_authorization_policy_every_x_seconds = 1000
   trustsec_download_sgacl_lists_every_x_seconds               = 1000
   trustsec_other_sga_devices_to_trust_this_device             = true
