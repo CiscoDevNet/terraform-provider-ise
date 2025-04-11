@@ -100,6 +100,9 @@ func (data NetworkDevice) getPath() string {
 //template:begin toBody
 func (data NetworkDevice) toBody(ctx context.Context, state NetworkDevice) string {
 	body := ""
+	if data.Id.ValueString() != "" {
+		body, _ = sjson.Set(body, "NetworkDevice.id", data.Id.ValueString())
+	}
 	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.name", data.Name.ValueString())
 	}
