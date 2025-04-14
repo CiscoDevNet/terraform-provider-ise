@@ -495,7 +495,11 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 			return
 		}
 	}
+	{{- if strContains (camelCase .Name) "Global" }}
+	plan.Id = types.StringValue("")
+	{{- else}}
 	plan.Id = types.StringValue(fmt.Sprint(plan.PolicySetId.ValueString()))
+	{{- end}}
 
 	{{- else if strContains (camelCase .Name) "UpdateRank" }}
 	// Read existing attributes from the API
@@ -673,6 +677,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	var existingData {{strReplace (camelCase .Name) "UpdateRank" "" -1}}
 	{{- end}}
 
+
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -712,7 +717,12 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 			return
 		}
 	}
+	{{- if strContains (camelCase .Name) "Global" }}
+	plan.Id = types.StringValue("")
+	{{- else}}
 	plan.Id = types.StringValue(fmt.Sprint(plan.PolicySetId.ValueString()))
+	{{- end}}
+
 
 	{{- else if strContains (camelCase .Name) "UpdateRank" }}
 	
