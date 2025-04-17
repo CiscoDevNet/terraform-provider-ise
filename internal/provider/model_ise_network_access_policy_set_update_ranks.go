@@ -63,7 +63,7 @@ func (data NetworkAccessPolicySetUpdateRanks) toBody(ctx context.Context, state 
 		for _, item := range data.Policies {
 			itemBody := ""
 			if !item.Id.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "", item.Id.ValueString())
+				itemBody, _ = sjson.Set(itemBody, "id", item.Id.ValueString())
 			}
 			if !item.Rank.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "rank", item.Rank.ValueInt64())
@@ -82,7 +82,7 @@ func (data *NetworkAccessPolicySetUpdateRanks) fromBody(ctx context.Context, res
 		data.Policies = make([]NetworkAccessPolicySetUpdateRanksPolicies, 0)
 		value.ForEach(func(k, v gjson.Result) bool {
 			item := NetworkAccessPolicySetUpdateRanksPolicies{}
-			if cValue := v.Get(""); cValue.Exists() && cValue.Type != gjson.Null {
+			if cValue := v.Get("id"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.Id = types.StringValue(cValue.String())
 			} else {
 				item.Id = types.StringNull()
@@ -103,7 +103,7 @@ func (data *NetworkAccessPolicySetUpdateRanks) fromBody(ctx context.Context, res
 //template:begin updateFromBody
 func (data *NetworkAccessPolicySetUpdateRanks) updateFromBody(ctx context.Context, res gjson.Result) {
 	for i := range data.Policies {
-		keys := [...]string{"", "rank"}
+		keys := [...]string{"id", "rank"}
 		keyValues := [...]string{data.Policies[i].Id.ValueString(), strconv.FormatInt(data.Policies[i].Rank.ValueInt64(), 10)}
 
 		var r gjson.Result
@@ -125,7 +125,7 @@ func (data *NetworkAccessPolicySetUpdateRanks) updateFromBody(ctx context.Contex
 				return true
 			},
 		)
-		if value := r.Get(""); value.Exists() && !data.Policies[i].Id.IsNull() {
+		if value := r.Get("id"); value.Exists() && !data.Policies[i].Id.IsNull() {
 			data.Policies[i].Id = types.StringValue(value.String())
 		} else {
 			data.Policies[i].Id = types.StringNull()
