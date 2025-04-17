@@ -471,13 +471,25 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
 	{{- if strContains (camelCase .Name) "UpdateRanks" }}
+	{{- if strContains (camelCase .Name) "Rule" }}
 	rules := make([]{{camelCase .Name}}Rules, len(plan.Rules))
 	copy(rules, plan.Rules)
 	sort.Slice(rules, func(i, j int) bool {
 		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()  
 	})
+	{{- else }}
+	rules := make([]{{camelCase .Name}}Policies, len(plan.Policies))
+	copy(rules, plan.Policies)
+	sort.Slice(rules, func(i, j int) bool {
+		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()  
+	})
+	{{- end}}
 	for _, rule := range rules{
+		{{- if strContains (camelCase .Name) "Rule" }}
 		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
+		{{- else }}
+		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
+		{{- end}}
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
@@ -488,16 +500,21 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 		body := existingData.toBody(ctx, existingData)
 
 		// Update rank
+		{{- if strContains (camelCase .Name) "Rule" }}
 		body, _ = sjson.Set(body, "rule.rank", rule.Rank.ValueInt64())
 		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.Id.ValueString()), body)
+		{{- else }}
+		body, _ = sjson.Set(body, "rank", rule.Rank.ValueInt64())
+		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.Id.ValueString()), body)
+		{{- end}}
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 			return
 		}
 	}
-	{{- if strContains (camelCase .Name) "Global" }}
+	{{- if or (strContains (camelCase .Name) "Global") (not (strContains (camelCase .Name) "Rule")) }}
 	plan.Id = types.StringValue("")
-	{{- else}}
+	{{- else }}
 	plan.Id = types.StringValue(fmt.Sprint(plan.PolicySetId.ValueString()))
 	{{- end}}
 
@@ -693,13 +710,25 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	{{- if strContains (camelCase .Name) "UpdateRanks" }}
+	{{- if strContains (camelCase .Name) "Rule" }}
 	rules := make([]{{camelCase .Name}}Rules, len(plan.Rules))
 	copy(rules, plan.Rules)
 	sort.Slice(rules, func(i, j int) bool {
 		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()  
 	})
+	{{- else }}
+	rules := make([]{{camelCase .Name}}Policies, len(plan.Policies))
+	copy(rules, plan.Policies)
+	sort.Slice(rules, func(i, j int) bool {
+		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()  
+	})
+	{{- end}}
 	for _, rule := range rules{
+		{{- if strContains (camelCase .Name) "Rule" }}
 		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
+		{{- else }}
+		res, err := r.client.Get(plan.getPath())
+		{{- end}}
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
@@ -710,16 +739,21 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 		body := existingData.toBody(ctx, existingData)
 
 		// Update rank
+		{{- if strContains (camelCase .Name) "Rule" }}
 		body, _ = sjson.Set(body, "rule.rank", rule.Rank.ValueInt64())
 		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.Id.ValueString()), body)
+		{{- else }}
+		body, _ = sjson.Set(body, "rank", rule.Rank.ValueInt64())
+		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.Id.ValueString()), body)
+		{{- end}}
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 			return
 		}
 	}
-	{{- if strContains (camelCase .Name) "Global" }}
+	{{- if or (strContains (camelCase .Name) "Global") (not (strContains (camelCase .Name) "Rule")) }}
 	plan.Id = types.StringValue("")
-	{{- else}}
+	{{- else }}
 	plan.Id = types.StringValue(fmt.Sprint(plan.PolicySetId.ValueString()))
 	{{- end}}
 
