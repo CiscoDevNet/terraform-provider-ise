@@ -485,11 +485,7 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	})
 	{{- end}}
 	for _, rule := range rules{
-		{{- if strContains (camelCase .Name) "Rule" }}
 		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
-		{{- else }}
-		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
-		{{- end}}
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
@@ -724,11 +720,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	})
 	{{- end}}
 	for _, rule := range rules{
-		{{- if strContains (camelCase .Name) "Rule" }}
 		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
-		{{- else }}
-		res, err := r.client.Get(plan.getPath())
-		{{- end}}
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return

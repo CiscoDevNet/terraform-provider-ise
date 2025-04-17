@@ -129,7 +129,7 @@ func (r *DeviceAdminPolicySetUpdateRanksResource) Create(ctx context.Context, re
 		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()
 	})
 	for _, rule := range rules {
-		res, err := r.client.Get(plan.getPath())
+		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
@@ -218,7 +218,7 @@ func (r *DeviceAdminPolicySetUpdateRanksResource) Update(ctx context.Context, re
 		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()
 	})
 	for _, rule := range rules {
-		res, err := r.client.Get(plan.getPath())
+		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return

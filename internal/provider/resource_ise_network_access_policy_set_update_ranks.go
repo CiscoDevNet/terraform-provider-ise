@@ -129,9 +129,7 @@ func (r *NetworkAccessPolicySetUpdateRanksResource) Create(ctx context.Context, 
 		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()
 	})
 	for _, rule := range rules {
-		aa := plan.getPath()+"/"+url.QueryEscape(rule.Id.ValueString())
-		tflog.Debug(ctx, fmt.Sprintf("%v: 1getting", aa))
-		res, err := r.client.Get(plan.getPath()+"/"+url.QueryEscape(rule.Id.ValueString()))
+		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
@@ -143,7 +141,6 @@ func (r *NetworkAccessPolicySetUpdateRanksResource) Create(ctx context.Context, 
 
 		// Update rank
 		body, _ = sjson.Set(body, "rank", rule.Rank.ValueInt64())
-		tflog.Debug(ctx, fmt.Sprintf("%s: bodyyy1", body))
 		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.Id.ValueString()), body)
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
@@ -221,7 +218,7 @@ func (r *NetworkAccessPolicySetUpdateRanksResource) Update(ctx context.Context, 
 		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()
 	})
 	for _, rule := range rules {
-		res, err := r.client.Get(plan.getPath())
+		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
