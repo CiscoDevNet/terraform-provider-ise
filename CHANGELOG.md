@@ -1,7 +1,7 @@
 ## 0.2.7 (unreleased)
 
+- Add `network_access_*_update_ranks` and `device_admin_*_update_ranks` resources to enable bulk updates of ranks across (Policy Sets, Authentication Rules, Authorization Rules, Authorization Global Exception Rules and Authorization Exception Rules) under Network Access and Device Administration, bypassing an API limitation that restricts rank assignments to a strictly incremental sequence. More detailed information is available [here](https://registry.terraform.io/providers/CiscoDevNet/ise/latest/docs/guides/authentication_rules).
 - Fix issue with adding new groups to existing `ise_active_directory_add_groups` resource, [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/113)
-- Add `network_access_authorization_rule_update_ranks` resource to update rank on all network access authorization rules under same policy set
 
 ## 0.2.6
 
