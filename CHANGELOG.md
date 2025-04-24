@@ -1,5 +1,7 @@
 ## 0.2.7 (unreleased)
 
+- BREAKING CHANGE: Rename `trustsec_download_enviroment_data_every_x_seconds` attribute of `ise_network_device` resource to `trustsec_download_environment_data_every_x_seconds`
+- Fix issue with updating `ise_network_device` with existing TrustSec config, [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/60)
 - Add `network_access_*_update_ranks` and `device_admin_*_update_ranks` resources to enable bulk updates of ranks across (Policy Sets, Authentication Rules, Authorization Rules, Authorization Global Exception Rules and Authorization Exception Rules) under Network Access and Device Administration, bypassing an API limitation that restricts rank assignments to a strictly incremental sequence. More detailed information is available [here](https://registry.terraform.io/providers/CiscoDevNet/ise/latest/docs/guides/authentication_rules).
 - Fix issue with adding new groups to existing `ise_active_directory_add_groups` resource, [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/113)
 
