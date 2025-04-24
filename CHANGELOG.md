@@ -1,4 +1,4 @@
-## 0.2.7 (unreleased)
+## 0.2.7
 
 - BREAKING CHANGE: Rename `trustsec_download_enviroment_data_every_x_seconds` attribute of `ise_network_device` resource to `trustsec_download_environment_data_every_x_seconds`
 - Fix issue with updating `ise_network_device` with existing TrustSec config, [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/60)
