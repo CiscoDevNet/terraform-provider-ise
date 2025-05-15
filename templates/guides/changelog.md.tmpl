@@ -7,6 +7,10 @@ description: |-
 
 # Changelog
 
+## 0.2.8 (unreleased)
+
+- Add `ise_endpoint_custom_attribute` resource and data source
+
 ## 0.2.7
 
 - BREAKING CHANGE: Rename `trustsec_download_enviroment_data_every_x_seconds` attribute of `ise_network_device` resource to `trustsec_download_environment_data_every_x_seconds`

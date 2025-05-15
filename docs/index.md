@@ -18,6 +18,7 @@ All resources and data sources have been tested with the following releases.
 | -------- | ------------- |
 | ISE      | 3.2.0 Patch 4 |
 | ISE      | 3.3.0         |
+| ISE      | 3.4.0         |
 
 ## Getting Started
 

@@ -138,6 +138,7 @@ type YamlConfigAttribute struct {
 	Id               bool                  `yaml:"id"`
 	Reference        bool                  `yaml:"reference"`
 	DataSourceQuery  bool                  `yaml:"data_source_query"`
+	ResponseDataPath string                `yaml:"response_data_path"`
 	Mandatory        bool                  `yaml:"mandatory"`
 	Computed         bool                  `yaml:"computed"`
 	WriteOnly        bool                  `yaml:"write_only"`

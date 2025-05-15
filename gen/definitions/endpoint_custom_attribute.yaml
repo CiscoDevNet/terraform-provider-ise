@@ -1,0 +1,20 @@
+---
+name: Endpoint Custom Attribute
+rest_endpoint: /api/v1/endpoint-custom-attribute
+doc_category: Identity Management
+attributes:
+  - model_name: attributeName
+    response_data_path: attributeName
+    type: String
+    id: true
+    mandatory: true
+    description: The name of the attribute
+    example: isMobile
+  - model_name: attributeType
+    response_data_path: attributeType
+    type: String
+    enum_values: [Boolean, Date, Float, IP, Int, Long, String]
+    mandatory: true
+    description: Attribute type
+    example: Boolean
+
