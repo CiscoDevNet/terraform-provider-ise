@@ -31,6 +31,9 @@ import (
 
 //template:begin testAcc
 func TestAccIseEndpointCustomAttribute(t *testing.T) {
+	if os.Getenv("ISE33") == "" {
+		t.Skip("skipping test, set environment variable ISE33")
+	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("ise_endpoint_custom_attribute.test", "attribute_name", "isMobile"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_endpoint_custom_attribute.test", "attribute_type", "Boolean"))

@@ -2,6 +2,7 @@
 name: Endpoint Custom Attribute
 rest_endpoint: /api/v1/endpoint-custom-attribute
 doc_category: Identity Management
+test_tags: [ISE33]
 attributes:
   - model_name: attributeName
     response_data_path: attributeName
