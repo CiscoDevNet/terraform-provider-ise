@@ -21,6 +21,7 @@ package provider
 
 //template:begin imports
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -30,6 +31,9 @@ import (
 
 //template:begin testAccDataSource
 func TestAccDataSourceIseEndpointCustomAttribute(t *testing.T) {
+	if os.Getenv("ISE33") == "" {
+		t.Skip("skipping test, set environment variable ISE33")
+	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_endpoint_custom_attribute.test", "attribute_name", "isMobile"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_endpoint_custom_attribute.test", "attribute_type", "Boolean"))
