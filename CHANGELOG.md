@@ -1,4 +1,4 @@
-## 0.2.8 (unreleased)
+## 0.2.8
 
 - Add `ise_endpoint_custom_attribute` resource and data source
 
