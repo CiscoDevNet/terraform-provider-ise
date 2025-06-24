@@ -1,3 +1,7 @@
+## 0.2.9 (unreleased)
+
+- Change `children` attribute type from `Attributes Set` to `Attributes List` on all relevant resources
+
 ## 0.2.8
 
 - Add `ise_endpoint_custom_attribute` resource and data source

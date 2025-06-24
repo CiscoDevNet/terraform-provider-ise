@@ -77,7 +77,7 @@ attributes:
     example: equals
     minimum_test_value: '"equals"'
   - model_name: children
-    type: List
+    type: Set
     description: List of child conditions. `condition_type` must be one of `LibraryConditionAndBlock` or `LibraryConditionOrBlock`.
     exclude_test: true
     attributes:
@@ -162,7 +162,7 @@ attributes:
         description: Equality operator
         example: equals
       - model_name: children
-        type: List
+        type: Set
         description: List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.
         exclude_test: true
         attributes:
