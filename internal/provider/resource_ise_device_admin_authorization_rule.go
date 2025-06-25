@@ -140,7 +140,7 @@ func (r *DeviceAdminAuthorizationRuleResource) Schema(ctx context.Context, req r
 					stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
 				},
 			},
-			"children": schema.ListNestedAttribute{
+			"children": schema.SetNestedAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.").String,
 				Optional:            true,
 				NestedObject: schema.NestedAttributeObject{
@@ -183,7 +183,7 @@ func (r *DeviceAdminAuthorizationRuleResource) Schema(ctx context.Context, req r
 								stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
 							},
 						},
-						"children": schema.ListNestedAttribute{
+						"children": schema.SetNestedAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.").String,
 							Optional:            true,
 							NestedObject: schema.NestedAttributeObject{
