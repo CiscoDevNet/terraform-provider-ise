@@ -1,4 +1,4 @@
-## 0.2.9 (unreleased)
+## 0.2.9
 
 - Change `children` attribute type from `Attributes Set` to `Attributes List` on all relevant resources
 
