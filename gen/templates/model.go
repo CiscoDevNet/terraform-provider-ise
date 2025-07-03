@@ -424,6 +424,148 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 }
 //template:end fromBody
 
+{{- range .Attributes}}
+{{- if eq .ModelName "children"}}
+//template:begin helper functions for children
+func {{camelCase $.Name}}HashChildrenChildren(child {{camelCase $.Name}}ChildrenChildren) string {
+    // Hash the current child's fields
+    parts := []string{
+		{{- range .Attributes}}
+		{{- if and (not .Value) (not .WriteOnly) (not .Reference) (not (eq .ModelName "children"))}}
+		{{- if or (eq .Type "Bool")}}
+		strconv.FormatBool(child.{{toGoName .ModelName}}.ValueBool()),
+		{{else}}
+		child.{{toGoName .ModelName}}.ValueString(),
+		{{end}}
+		{{end}}
+		{{end}}
+    }
+
+    concat := strings.Join(parts, "|")
+    hash := sha256.Sum256([]byte(concat))
+    return hex.EncodeToString(hash[:])
+}
+
+
+func {{camelCase $.Name}}HashChildren(child {{camelCase $.Name}}Children) string {
+    // Hash the current child's fields
+    parts := []string{
+		{{- range .Attributes}}
+		{{- if and (not .Value) (not .WriteOnly) (not .Reference) (not (eq .ModelName "children"))}}
+		{{- if or (eq .Type "Bool")}}
+		strconv.FormatBool(child.{{toGoName .ModelName}}.ValueBool()),
+		{{else}}
+		child.{{toGoName .ModelName}}.ValueString(),
+		{{end}}
+		{{end}}
+		{{end}}
+    }
+
+    // Collect hashes of nested children and sort them to ensure consistent order
+    var nestedHashes []string
+    for _, nestedChild := range child.Children {
+        nestedHashes = append(nestedHashes, {{camelCase $.Name}}HashChildrenChildren(nestedChild))
+    }
+    sort.Strings(nestedHashes)
+
+    // Append nested children hashes
+    parts = append(parts, nestedHashes...)
+    concat := strings.Join(parts, "|")
+    hash := sha256.Sum256([]byte(concat))
+    return hex.EncodeToString(hash[:])
+}
+
+
+// Helper function to find matching gjson.Result for a child by comparing hashes
+func {{camelCase $.Name}}FindMatchingChild(res gjson.Result, child {{camelCase $.Name}}Children) []gjson.Result {
+    var matchedResults []gjson.Result
+
+    // res.Get("response.rule.condition.children").ForEach(func(_, v gjson.Result) bool {
+    res.Get(".").ForEach(func(_, v gjson.Result) bool {
+		// Compute hash for child from struct
+		childHash := {{camelCase $.Name}}HashChildren(child)
+
+		// Compute hash for child from JSON result
+		jsonChild := v
+		// Build a NetworkAccessAuthenticationRuleChildren from jsonChild to compute hash
+		jsonChildStruct := {{camelCase $.Name}}Children{
+			{{- range .Attributes}}
+			{{- if and (not .Value) (not .WriteOnly) (not .Reference) (not (eq .ModelName "children")) }}
+			{{- if or (eq .Type "Bool")}}
+			{{toGoName .ModelName}}:	types.BoolValue(jsonChild.Get("{{.ModelName}}").Bool()),
+			{{else}}
+			{{toGoName .ModelName}}:   types.StringValue(jsonChild.Get("{{.ModelName}}").String()),
+			{{end}}
+			{{end}}
+			{{end}}
+		}
+
+		// For nested children, build slice
+		var nestedChildren []{{camelCase $.Name}}ChildrenChildren
+		jsonChild.Get("children").ForEach(func(_, vChild gjson.Result) bool {
+			nestedChild := {{camelCase $.Name}}ChildrenChildren{
+				{{- range .Attributes}}
+				{{- if and (not .Value) (not .WriteOnly) (not .Reference) (not (eq .ModelName "children")) }}
+				{{- if or (eq .Type "Bool")}}
+				{{toGoName .ModelName}}:	types.BoolValue(vChild.Get("{{.ModelName}}").Bool()),
+				{{else}}
+				{{toGoName .ModelName}}:   types.StringValue(vChild.Get("{{.ModelName}}").String()),
+				{{end}}
+				{{end}}
+			{{end}}
+			}
+			nestedChildren = append(nestedChildren, nestedChild)
+			return true
+		})
+		jsonChildStruct.Children = nestedChildren
+
+		jsonChildHash := {{camelCase $.Name}}HashChildren(jsonChildStruct)
+
+		if childHash == jsonChildHash {
+			matchedResults = append(matchedResults, v)
+		}
+        
+        return true
+    })
+
+    return matchedResults
+}
+
+func {{camelCase $.Name}}FindMatchingChildrenChildren(res gjson.Result, child {{camelCase $.Name}}ChildrenChildren) []gjson.Result {
+    var matchedResults []gjson.Result
+
+    res.Get("children").ForEach(func(_, v gjson.Result) bool {
+		childHash := {{camelCase $.Name}}HashChildrenChildren(child)
+
+		jsonChild := v
+		jsonChildStruct := {{camelCase $.Name}}ChildrenChildren{
+			{{- range .Attributes}}
+			{{- if and (not .Value) (not .WriteOnly) (not .Reference) (not (eq .ModelName "children"))}}
+			{{- if or (eq .Type "Bool")}}
+			{{toGoName .ModelName}}:	types.BoolValue(jsonChild.Get("{{.ModelName}}").Bool()),
+			{{else}}
+			{{toGoName .ModelName}}:   types.StringValue(jsonChild.Get("{{.ModelName}}").String()),
+			{{end}}
+			{{end}}
+			{{end}}
+		}
+
+		jsonChildHash := {{camelCase $.Name}}HashChildrenChildren(jsonChildStruct)
+
+		if childHash == jsonChildHash {
+			matchedResults = append(matchedResults, v)
+		}
+        
+        return true
+    })
+
+    return matchedResults
+}
+//template:end helper functions for children
+{{- end}}
+{{- end}}
+
+
 //template:begin updateFromBody
 func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.Result) {
 	{{- range .Attributes}}
@@ -449,9 +591,15 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 	{{- else if isNestedListSet .}}
 	{{- $list := (toGoName .TfName)}}
 	for i := range data.{{toGoName .TfName}} {
+		
+
+		{{- if eq ( .TfName) "children" }}
+		var r gjson.Result
+		r = {{camelCase $.Name}}FindMatchingChild(res.{{if .ModelName}}Get("{{if .ResponseDataPath}}{{.ResponseDataPath}}{{else}}{{if $openApi}}response.{{end}}{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}{{end}}"){{end}}, data.Children[i])[0]
+		{{else}}
 		keys := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if or (eq .Type "Int64") (eq .Type "Bool") (eq .Type "String")}}"{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{end}}{{end}}{{end}} }
 		keyValues := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if eq .Type "Int64"}}strconv.FormatInt(data.{{$list}}[i].{{toGoName .TfName}}.ValueInt64(), 10), {{else if eq .Type "Bool"}}strconv.FormatBool(data.{{$list}}[i].{{toGoName .TfName}}.ValueBool()), {{else if eq .Type "String"}}data.{{$list}}[i].{{toGoName .TfName}}.Value{{.Type}}(), {{end}}{{end}}{{end}} }
-
+		
 		var r gjson.Result
 		{{- if strContains (camelCase $.Name) "UpdateRanks" }}
 		res.Get("response").ForEach(
@@ -474,8 +622,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 				}
 				return true
 			},
-		)
-
+		){{end}}
 		{{- range .Attributes}}
 		{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
 		{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
@@ -499,10 +646,13 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 		{{- else if isNestedListSet .}}
 		{{- $clist := (toGoName .TfName)}}
 		for ci := range data.{{$list}}[i].{{toGoName .TfName}} {
+			
+			var cr gjson.Result
+			{{- if eq ( .TfName) "children" }}
+			cr = {{camelCase $.Name}}FindMatchingChildrenChildren(r, data.Children[i].Children[ci])[0]
+			{{else}}
 			keys := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if or (eq .Type "Int64") (eq .Type "Bool") (eq .Type "String")}}"{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{end}}{{end}}{{end}} }
 			keyValues := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if eq .Type "Int64"}}strconv.FormatInt(data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}}.ValueInt64(), 10), {{else if eq .Type "Bool"}}strconv.FormatBool(data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}}.ValueBool()), {{else if eq .Type "String"}}data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}}.Value{{.Type}}(), {{end}}{{end}}{{end}} }
-
-			var cr gjson.Result
 			r.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").ForEach(
 				func(_, v gjson.Result) bool {
 					found := false
@@ -521,8 +671,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 					return true
 				},
 			)
-
-			{{- range .Attributes}}
+			{{end}}{{- range .Attributes}}
 			{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
 			{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 			if value := cr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}}.IsNull() {
