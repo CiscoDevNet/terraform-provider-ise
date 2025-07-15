@@ -481,7 +481,7 @@ func {{camelCase $.Name}}FindMatchingChild(res gjson.Result, child {{camelCase $
     var matchedResults []gjson.Result
 
     // res.Get("response.rule.condition.children").ForEach(func(_, v gjson.Result) bool {
-    res.Get(".").ForEach(func(_, v gjson.Result) bool {
+    res.ForEach(func(_, v gjson.Result) bool {
 		// Compute hash for child from struct
 		childHash := {{camelCase $.Name}}HashChildren(child)
 

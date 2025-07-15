@@ -448,7 +448,7 @@ func DeviceAdminPolicySetFindMatchingChild(res gjson.Result, child DeviceAdminPo
 	var matchedResults []gjson.Result
 
 	// res.Get("response.rule.condition.children").ForEach(func(_, v gjson.Result) bool {
-	res.Get(".").ForEach(func(_, v gjson.Result) bool {
+	res.ForEach(func(_, v gjson.Result) bool {
 		// Compute hash for child from struct
 		childHash := DeviceAdminPolicySetHashChildren(child)
 
