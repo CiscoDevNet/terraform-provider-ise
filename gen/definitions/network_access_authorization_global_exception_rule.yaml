@@ -4,6 +4,7 @@ rest_endpoint: /api/v1/policy/network-access/policy-set/global-exception
 data_source_name_query: true
 id_path: response.rule.id
 doc_category: Network Access
+immutable: true
 attributes:
   - model_name: name
     data_path: [rule]

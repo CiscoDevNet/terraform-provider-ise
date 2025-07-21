@@ -22,11 +22,6 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
-	"sort"
-	"strconv"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
@@ -365,191 +360,6 @@ func (data *NetworkAccessCondition) fromBody(ctx context.Context, res gjson.Resu
 }
 
 //template:end fromBody
-//template:begin helper functions for children
-func NetworkAccessConditionHashChildrenChildren(child NetworkAccessConditionChildrenChildren) string {
-	// Hash the current child's fields
-	parts := []string{
-		child.Name.ValueString(),
-
-		child.Description.ValueString(),
-
-		child.ConditionType.ValueString(),
-
-		child.Id.ValueString(),
-
-		strconv.FormatBool(child.IsNegate.ValueBool()),
-
-		child.AttributeName.ValueString(),
-
-		child.AttributeValue.ValueString(),
-
-		child.DictionaryName.ValueString(),
-
-		child.DictionaryValue.ValueString(),
-
-		child.Operator.ValueString(),
-	}
-
-	concat := strings.Join(parts, "|")
-	hash := sha256.Sum256([]byte(concat))
-	return hex.EncodeToString(hash[:])
-}
-
-func NetworkAccessConditionHashChildren(child NetworkAccessConditionChildren) string {
-	// Hash the current child's fields
-	parts := []string{
-		child.Name.ValueString(),
-
-		child.Description.ValueString(),
-
-		child.ConditionType.ValueString(),
-
-		child.Id.ValueString(),
-
-		strconv.FormatBool(child.IsNegate.ValueBool()),
-
-		child.AttributeName.ValueString(),
-
-		child.AttributeValue.ValueString(),
-
-		child.DictionaryName.ValueString(),
-
-		child.DictionaryValue.ValueString(),
-
-		child.Operator.ValueString(),
-	}
-
-	// Collect hashes of nested children and sort them to ensure consistent order
-	var nestedHashes []string
-	for _, nestedChild := range child.Children {
-		nestedHashes = append(nestedHashes, NetworkAccessConditionHashChildrenChildren(nestedChild))
-	}
-	sort.Strings(nestedHashes)
-
-	// Append nested children hashes
-	parts = append(parts, nestedHashes...)
-	concat := strings.Join(parts, "|")
-	hash := sha256.Sum256([]byte(concat))
-	return hex.EncodeToString(hash[:])
-}
-
-// Helper function to find matching gjson.Result for a child by comparing hashes
-func NetworkAccessConditionFindMatchingChild(res gjson.Result, child NetworkAccessConditionChildren) []gjson.Result {
-	var matchedResults []gjson.Result
-
-	// res.Get("response.rule.condition.children").ForEach(func(_, v gjson.Result) bool {
-	res.ForEach(func(_, v gjson.Result) bool {
-		// Compute hash for child from struct
-		childHash := NetworkAccessConditionHashChildren(child)
-
-		// Compute hash for child from JSON result
-		jsonChild := v
-		// Build a NetworkAccessAuthenticationRuleChildren from jsonChild to compute hash
-		jsonChildStruct := NetworkAccessConditionChildren{
-			Name: types.StringValue(jsonChild.Get("name").String()),
-
-			Description: types.StringValue(jsonChild.Get("description").String()),
-
-			ConditionType: types.StringValue(jsonChild.Get("conditionType").String()),
-
-			Id: types.StringValue(jsonChild.Get("id").String()),
-
-			IsNegate: types.BoolValue(jsonChild.Get("isNegate").Bool()),
-
-			AttributeName: types.StringValue(jsonChild.Get("attributeName").String()),
-
-			AttributeValue: types.StringValue(jsonChild.Get("attributeValue").String()),
-
-			DictionaryName: types.StringValue(jsonChild.Get("dictionaryName").String()),
-
-			DictionaryValue: types.StringValue(jsonChild.Get("dictionaryValue").String()),
-
-			Operator: types.StringValue(jsonChild.Get("operator").String()),
-		}
-
-		// For nested children, build slice
-		var nestedChildren []NetworkAccessConditionChildrenChildren
-		jsonChild.Get("children").ForEach(func(_, vChild gjson.Result) bool {
-			nestedChild := NetworkAccessConditionChildrenChildren{
-				Name: types.StringValue(vChild.Get("name").String()),
-
-				Description: types.StringValue(vChild.Get("description").String()),
-
-				ConditionType: types.StringValue(vChild.Get("conditionType").String()),
-
-				Id: types.StringValue(vChild.Get("id").String()),
-
-				IsNegate: types.BoolValue(vChild.Get("isNegate").Bool()),
-
-				AttributeName: types.StringValue(vChild.Get("attributeName").String()),
-
-				AttributeValue: types.StringValue(vChild.Get("attributeValue").String()),
-
-				DictionaryName: types.StringValue(vChild.Get("dictionaryName").String()),
-
-				DictionaryValue: types.StringValue(vChild.Get("dictionaryValue").String()),
-
-				Operator: types.StringValue(vChild.Get("operator").String()),
-			}
-			nestedChildren = append(nestedChildren, nestedChild)
-			return true
-		})
-		jsonChildStruct.Children = nestedChildren
-
-		jsonChildHash := NetworkAccessConditionHashChildren(jsonChildStruct)
-
-		if childHash == jsonChildHash {
-			matchedResults = append(matchedResults, v)
-		}
-
-		return true
-	})
-
-	return matchedResults
-}
-
-func NetworkAccessConditionFindMatchingChildrenChildren(res gjson.Result, child NetworkAccessConditionChildrenChildren) []gjson.Result {
-	var matchedResults []gjson.Result
-
-	res.Get("children").ForEach(func(_, v gjson.Result) bool {
-		childHash := NetworkAccessConditionHashChildrenChildren(child)
-
-		jsonChild := v
-		jsonChildStruct := NetworkAccessConditionChildrenChildren{
-			Name: types.StringValue(jsonChild.Get("name").String()),
-
-			Description: types.StringValue(jsonChild.Get("description").String()),
-
-			ConditionType: types.StringValue(jsonChild.Get("conditionType").String()),
-
-			Id: types.StringValue(jsonChild.Get("id").String()),
-
-			IsNegate: types.BoolValue(jsonChild.Get("isNegate").Bool()),
-
-			AttributeName: types.StringValue(jsonChild.Get("attributeName").String()),
-
-			AttributeValue: types.StringValue(jsonChild.Get("attributeValue").String()),
-
-			DictionaryName: types.StringValue(jsonChild.Get("dictionaryName").String()),
-
-			DictionaryValue: types.StringValue(jsonChild.Get("dictionaryValue").String()),
-
-			Operator: types.StringValue(jsonChild.Get("operator").String()),
-		}
-
-		jsonChildHash := NetworkAccessConditionHashChildrenChildren(jsonChildStruct)
-
-		if childHash == jsonChildHash {
-			matchedResults = append(matchedResults, v)
-		}
-
-		return true
-	})
-
-	return matchedResults
-}
-
-//template:end helper functions for children
 
 //template:begin updateFromBody
 func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjson.Result) {
@@ -599,9 +409,28 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 		data.Operator = types.StringNull()
 	}
 	for i := range data.Children {
-		var r gjson.Result
-		r = NetworkAccessConditionFindMatchingChild(res.Get("response.children"), data.Children[i])[0]
+		keys := [...]string{"name", "conditionType", "id", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
+		keyValues := [...]string{data.Children[i].Name.ValueString(), data.Children[i].ConditionType.ValueString(), data.Children[i].Id.ValueString(), data.Children[i].AttributeName.ValueString(), data.Children[i].AttributeValue.ValueString(), data.Children[i].DictionaryName.ValueString(), data.Children[i].DictionaryValue.ValueString(), data.Children[i].Operator.ValueString()}
 
+		var r gjson.Result
+		res.Get("response.children").ForEach(
+			func(_, v gjson.Result) bool {
+				found := false
+				for ik := range keys {
+					if v.Get(keys[ik]).String() == keyValues[ik] {
+						found = true
+						continue
+					}
+					found = false
+					break
+				}
+				if found {
+					r = v
+					return false
+				}
+				return true
+			},
+		)
 		if value := r.Get("name"); value.Exists() && !data.Children[i].Name.IsNull() {
 			data.Children[i].Name = types.StringValue(value.String())
 		} else {
@@ -653,10 +482,28 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 			data.Children[i].Operator = types.StringNull()
 		}
 		for ci := range data.Children[i].Children {
+			keys := [...]string{"name", "conditionType", "id", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
+			keyValues := [...]string{data.Children[i].Children[ci].Name.ValueString(), data.Children[i].Children[ci].ConditionType.ValueString(), data.Children[i].Children[ci].Id.ValueString(), data.Children[i].Children[ci].AttributeName.ValueString(), data.Children[i].Children[ci].AttributeValue.ValueString(), data.Children[i].Children[ci].DictionaryName.ValueString(), data.Children[i].Children[ci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Operator.ValueString()}
 
 			var cr gjson.Result
-			cr = NetworkAccessConditionFindMatchingChildrenChildren(r, data.Children[i].Children[ci])[0]
-
+			r.Get("children").ForEach(
+				func(_, v gjson.Result) bool {
+					found := false
+					for ik := range keys {
+						if v.Get(keys[ik]).String() == keyValues[ik] {
+							found = true
+							continue
+						}
+						found = false
+						break
+					}
+					if found {
+						cr = v
+						return false
+					}
+					return true
+				},
+			)
 			if value := cr.Get("name"); value.Exists() && !data.Children[i].Children[ci].Name.IsNull() {
 				data.Children[i].Children[ci].Name = types.StringValue(value.String())
 			} else {

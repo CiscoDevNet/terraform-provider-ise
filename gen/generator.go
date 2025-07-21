@@ -127,6 +127,7 @@ type YamlConfig struct {
 	Attributes          []YamlConfigAttribute `yaml:"attributes"`
 	TestTags            []string              `yaml:"test_tags"`
 	TestPrerequisites   string                `yaml:"test_prerequisites"`
+	Immutable           bool                  `yaml:"immutable"`
 }
 
 type YamlConfigAttribute struct {

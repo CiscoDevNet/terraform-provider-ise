@@ -31,6 +31,7 @@ ignore_delete_error: str(required=False) # Ignore a specific error message when 
 attributes: list(include('attribute'), required=False) # List of attributes
 test_tags: list(str(), required=False) # List of test tags, tests are only executed if an environment variable with one of these tags is configured
 test_prerequisites: str(required=False) # HCL code that is included in the acceptance tests to define prerequisites
+immutable: bool(required=False) # Always recreate resource from ground up instead of updating it
 ---
 attribute:
   model_name: str(required=False) # Name of the attribute in the model (payload)

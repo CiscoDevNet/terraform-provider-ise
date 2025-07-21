@@ -6,6 +6,7 @@ id_path: response.rule.id
 update_default: true
 ignore_delete_error: Attempted to delete default
 doc_category: Network Access
+immutable: true
 attributes:
   - tf_name: policy_set_id
     type: String

@@ -4,6 +4,7 @@ rest_endpoint: /api/v1/policy/device-admin/policy-set/global-exception
 data_source_name_query: true
 id_path: response.rule.id
 doc_category: Device Administration
+immutable: true
 attributes:
   - model_name: name
     data_path: [rule]

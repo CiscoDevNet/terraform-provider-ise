@@ -22,13 +22,9 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
 	"fmt"
 	"net/url"
-	"sort"
 	"strconv"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
@@ -395,171 +391,6 @@ func (data *DeviceAdminAuthenticationRule) fromBody(ctx context.Context, res gjs
 }
 
 //template:end fromBody
-//template:begin helper functions for children
-func DeviceAdminAuthenticationRuleHashChildrenChildren(child DeviceAdminAuthenticationRuleChildrenChildren) string {
-	// Hash the current child's fields
-	parts := []string{
-		child.ConditionType.ValueString(),
-
-		child.Id.ValueString(),
-
-		strconv.FormatBool(child.IsNegate.ValueBool()),
-
-		child.AttributeName.ValueString(),
-
-		child.AttributeValue.ValueString(),
-
-		child.DictionaryName.ValueString(),
-
-		child.DictionaryValue.ValueString(),
-
-		child.Operator.ValueString(),
-	}
-
-	concat := strings.Join(parts, "|")
-	hash := sha256.Sum256([]byte(concat))
-	return hex.EncodeToString(hash[:])
-}
-
-func DeviceAdminAuthenticationRuleHashChildren(child DeviceAdminAuthenticationRuleChildren) string {
-	// Hash the current child's fields
-	parts := []string{
-		child.ConditionType.ValueString(),
-
-		child.Id.ValueString(),
-
-		strconv.FormatBool(child.IsNegate.ValueBool()),
-
-		child.AttributeName.ValueString(),
-
-		child.AttributeValue.ValueString(),
-
-		child.DictionaryName.ValueString(),
-
-		child.DictionaryValue.ValueString(),
-
-		child.Operator.ValueString(),
-	}
-
-	// Collect hashes of nested children and sort them to ensure consistent order
-	var nestedHashes []string
-	for _, nestedChild := range child.Children {
-		nestedHashes = append(nestedHashes, DeviceAdminAuthenticationRuleHashChildrenChildren(nestedChild))
-	}
-	sort.Strings(nestedHashes)
-
-	// Append nested children hashes
-	parts = append(parts, nestedHashes...)
-	concat := strings.Join(parts, "|")
-	hash := sha256.Sum256([]byte(concat))
-	return hex.EncodeToString(hash[:])
-}
-
-// Helper function to find matching gjson.Result for a child by comparing hashes
-func DeviceAdminAuthenticationRuleFindMatchingChild(res gjson.Result, child DeviceAdminAuthenticationRuleChildren) []gjson.Result {
-	var matchedResults []gjson.Result
-
-	// res.Get("response.rule.condition.children").ForEach(func(_, v gjson.Result) bool {
-	res.ForEach(func(_, v gjson.Result) bool {
-		// Compute hash for child from struct
-		childHash := DeviceAdminAuthenticationRuleHashChildren(child)
-
-		// Compute hash for child from JSON result
-		jsonChild := v
-		// Build a NetworkAccessAuthenticationRuleChildren from jsonChild to compute hash
-		jsonChildStruct := DeviceAdminAuthenticationRuleChildren{
-			ConditionType: types.StringValue(jsonChild.Get("conditionType").String()),
-
-			Id: types.StringValue(jsonChild.Get("id").String()),
-
-			IsNegate: types.BoolValue(jsonChild.Get("isNegate").Bool()),
-
-			AttributeName: types.StringValue(jsonChild.Get("attributeName").String()),
-
-			AttributeValue: types.StringValue(jsonChild.Get("attributeValue").String()),
-
-			DictionaryName: types.StringValue(jsonChild.Get("dictionaryName").String()),
-
-			DictionaryValue: types.StringValue(jsonChild.Get("dictionaryValue").String()),
-
-			Operator: types.StringValue(jsonChild.Get("operator").String()),
-		}
-
-		// For nested children, build slice
-		var nestedChildren []DeviceAdminAuthenticationRuleChildrenChildren
-		jsonChild.Get("children").ForEach(func(_, vChild gjson.Result) bool {
-			nestedChild := DeviceAdminAuthenticationRuleChildrenChildren{
-				ConditionType: types.StringValue(vChild.Get("conditionType").String()),
-
-				Id: types.StringValue(vChild.Get("id").String()),
-
-				IsNegate: types.BoolValue(vChild.Get("isNegate").Bool()),
-
-				AttributeName: types.StringValue(vChild.Get("attributeName").String()),
-
-				AttributeValue: types.StringValue(vChild.Get("attributeValue").String()),
-
-				DictionaryName: types.StringValue(vChild.Get("dictionaryName").String()),
-
-				DictionaryValue: types.StringValue(vChild.Get("dictionaryValue").String()),
-
-				Operator: types.StringValue(vChild.Get("operator").String()),
-			}
-			nestedChildren = append(nestedChildren, nestedChild)
-			return true
-		})
-		jsonChildStruct.Children = nestedChildren
-
-		jsonChildHash := DeviceAdminAuthenticationRuleHashChildren(jsonChildStruct)
-
-		if childHash == jsonChildHash {
-			matchedResults = append(matchedResults, v)
-		}
-
-		return true
-	})
-
-	return matchedResults
-}
-
-func DeviceAdminAuthenticationRuleFindMatchingChildrenChildren(res gjson.Result, child DeviceAdminAuthenticationRuleChildrenChildren) []gjson.Result {
-	var matchedResults []gjson.Result
-
-	res.Get("children").ForEach(func(_, v gjson.Result) bool {
-		childHash := DeviceAdminAuthenticationRuleHashChildrenChildren(child)
-
-		jsonChild := v
-		jsonChildStruct := DeviceAdminAuthenticationRuleChildrenChildren{
-			ConditionType: types.StringValue(jsonChild.Get("conditionType").String()),
-
-			Id: types.StringValue(jsonChild.Get("id").String()),
-
-			IsNegate: types.BoolValue(jsonChild.Get("isNegate").Bool()),
-
-			AttributeName: types.StringValue(jsonChild.Get("attributeName").String()),
-
-			AttributeValue: types.StringValue(jsonChild.Get("attributeValue").String()),
-
-			DictionaryName: types.StringValue(jsonChild.Get("dictionaryName").String()),
-
-			DictionaryValue: types.StringValue(jsonChild.Get("dictionaryValue").String()),
-
-			Operator: types.StringValue(jsonChild.Get("operator").String()),
-		}
-
-		jsonChildHash := DeviceAdminAuthenticationRuleHashChildrenChildren(jsonChildStruct)
-
-		if childHash == jsonChildHash {
-			matchedResults = append(matchedResults, v)
-		}
-
-		return true
-	})
-
-	return matchedResults
-}
-
-//template:end helper functions for children
 
 //template:begin updateFromBody
 func (data *DeviceAdminAuthenticationRule) updateFromBody(ctx context.Context, res gjson.Result) {
@@ -624,9 +455,28 @@ func (data *DeviceAdminAuthenticationRule) updateFromBody(ctx context.Context, r
 		data.ConditionOperator = types.StringNull()
 	}
 	for i := range data.Children {
-		var r gjson.Result
-		r = DeviceAdminAuthenticationRuleFindMatchingChild(res.Get("response.rule.condition.children"), data.Children[i])[0]
+		keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
+		keyValues := [...]string{data.Children[i].ConditionType.ValueString(), data.Children[i].Id.ValueString(), strconv.FormatBool(data.Children[i].IsNegate.ValueBool()), data.Children[i].AttributeName.ValueString(), data.Children[i].AttributeValue.ValueString(), data.Children[i].DictionaryName.ValueString(), data.Children[i].DictionaryValue.ValueString(), data.Children[i].Operator.ValueString()}
 
+		var r gjson.Result
+		res.Get("response.rule.condition.children").ForEach(
+			func(_, v gjson.Result) bool {
+				found := false
+				for ik := range keys {
+					if v.Get(keys[ik]).String() == keyValues[ik] {
+						found = true
+						continue
+					}
+					found = false
+					break
+				}
+				if found {
+					r = v
+					return false
+				}
+				return true
+			},
+		)
 		if value := r.Get("conditionType"); value.Exists() && !data.Children[i].ConditionType.IsNull() {
 			data.Children[i].ConditionType = types.StringValue(value.String())
 		} else {
@@ -668,10 +518,28 @@ func (data *DeviceAdminAuthenticationRule) updateFromBody(ctx context.Context, r
 			data.Children[i].Operator = types.StringNull()
 		}
 		for ci := range data.Children[i].Children {
+			keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
+			keyValues := [...]string{data.Children[i].Children[ci].ConditionType.ValueString(), data.Children[i].Children[ci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].IsNegate.ValueBool()), data.Children[i].Children[ci].AttributeName.ValueString(), data.Children[i].Children[ci].AttributeValue.ValueString(), data.Children[i].Children[ci].DictionaryName.ValueString(), data.Children[i].Children[ci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Operator.ValueString()}
 
 			var cr gjson.Result
-			cr = DeviceAdminAuthenticationRuleFindMatchingChildrenChildren(r, data.Children[i].Children[ci])[0]
-
+			r.Get("children").ForEach(
+				func(_, v gjson.Result) bool {
+					found := false
+					for ik := range keys {
+						if v.Get(keys[ik]).String() == keyValues[ik] {
+							found = true
+							continue
+						}
+						found = false
+						break
+					}
+					if found {
+						cr = v
+						return false
+					}
+					return true
+				},
+			)
 			if value := cr.Get("conditionType"); value.Exists() && !data.Children[i].Children[ci].ConditionType.IsNull() {
 				data.Children[i].Children[ci].ConditionType = types.StringValue(value.String())
 			} else {

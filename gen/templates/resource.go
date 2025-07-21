@@ -667,11 +667,16 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 	}
 
 	// If every attribute is set to null we are dealing with an import operation and therefore reading all attributes
+	{{- if not .Immutable}}
 	if state.isNull(ctx, res) {
 		state.fromBody(ctx, res)
 	} else {
 		state.updateFromBody(ctx, res)
 	}
+	{{- else}}
+	state.fromBody(ctx, res)
+	{{- end}}
+
 	{{- end}}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Read finished successfully", state.Id.ValueString()))

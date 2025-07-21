@@ -6,6 +6,7 @@ update_default: true
 id_path: response.id
 ignore_delete_error: Attempted to delete default
 doc_category: Device Administration
+immutable: true
 attributes:
   - model_name: name
     type: String
