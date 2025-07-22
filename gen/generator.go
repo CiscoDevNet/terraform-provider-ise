@@ -141,6 +141,7 @@ type YamlConfigAttribute struct {
 	ResponseDataPath string                `yaml:"response_data_path"`
 	Mandatory        bool                  `yaml:"mandatory"`
 	Computed         bool                  `yaml:"computed"`
+	Immutable        bool                  `yaml:"immutable"`
 	WriteOnly        bool                  `yaml:"write_only"`
 	WriteChangesOnly bool                  `yaml:"write_changes_only"`
 	ExcludeTest      bool                  `yaml:"exclude_test"`
