@@ -121,6 +121,7 @@ attributes:
     example: equals
   - model_name: children
     type: Set
+    immutable: true
     description: List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.
     exclude_test: true
     data_path: [condition]
