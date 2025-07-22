@@ -7,6 +7,10 @@ description: |-
 
 # Changelog
 
+## 0.2.10 (unreleased)
+
+- Fix issue with children blocks not working properly with List and Set, [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/138)
+
 ## 0.2.9
 
 - Change `children` attribute type from `Attributes Set` to `Attributes List` on all relevant resources
