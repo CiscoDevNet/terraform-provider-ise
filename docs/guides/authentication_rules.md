@@ -53,7 +53,11 @@ locals {
     { name = "rule_2" },
     { name = "rule_3" },
     { name = "rule_4" },
-    { name = "rule_5" }
+    { name = "rule_5" },
+    { name = "rule_6" },
+    { name = "rule_7" },
+    { name = "rule_8" },
+    { name = "rule_9" }
   ]
 }
 
@@ -83,10 +87,13 @@ resource "ise_network_access_authentication_rule" "auth_rule" {
   if_user_not_found         = "REJECT"
 }
 
-resource "ise_network_access_authentication_rule_update_rank" "example_with_rank" {
-  for_each      = { for rule in local.rules_with_ranks : rule.name => rule }
+resource "ise_network_access_authentication_rule_update_ranks" "example_with_ranks" {
   policy_set_id = ise_network_access_policy_set.policy_set_1.id
-  rule_id       = ise_network_access_authentication_rule.auth_rule[each.value.name].id
-  rank          = each.value.rank
+  rules = [for rule in local.rules_with_ranks :
+    {
+      id   = ise_network_access_authentication_rule.auth_rule[rule.name].id
+      rank = rule.rank
+    }
+  ]
 }
 ```
