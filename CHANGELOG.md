@@ -1,4 +1,4 @@
-## 0.2.10 (unreleased)
+## 0.2.10
 
 - Fix issue with children blocks not working properly with List and Set, [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/138)
 
