@@ -43,6 +43,8 @@ resource "ise_network_access_dictionary" "example" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 terraform import ise_network_access_dictionary.example "Dict1"
 ```

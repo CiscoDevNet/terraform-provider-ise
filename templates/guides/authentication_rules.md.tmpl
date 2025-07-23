@@ -59,9 +59,7 @@ locals {
     { name = "rule_8" },
     { name = "rule_9" }
   ]
-}
 
-locals {
   rules_with_ranks = [
     for idx, rule in local.rules : merge(rule, {
       rank = idx

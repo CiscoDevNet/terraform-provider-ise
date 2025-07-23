@@ -41,6 +41,8 @@ resource "ise_trustsec_egress_matrix_cell_default" "example" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 terraform import ise_trustsec_egress_matrix_cell_default.example "92c1a900-8c01-11e6-996c-525400b48521"
 ```
