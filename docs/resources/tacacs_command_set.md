@@ -59,6 +59,8 @@ Required:
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 terraform import ise_tacacs_command_set.example "76d24097-41c4-4558-a4d0-a8c07ac08470"
 ```
