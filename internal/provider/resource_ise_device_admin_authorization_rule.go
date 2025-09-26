@@ -134,10 +134,10 @@ func (r *DeviceAdminAuthorizationRuleResource) Schema(ctx context.Context, req r
 				Optional:            true,
 			},
 			"condition_operator": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
+					stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith"),
 				},
 			},
 			"children": schema.SetNestedAttribute{
@@ -177,10 +177,10 @@ func (r *DeviceAdminAuthorizationRuleResource) Schema(ctx context.Context, req r
 							Optional:            true,
 						},
 						"operator": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith").String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
+								stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith"),
 							},
 						},
 						"children": schema.SetNestedAttribute{
