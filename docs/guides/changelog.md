@@ -7,7 +7,7 @@ description: |-
 
 # Changelog
 
-## 0.2.11 (unreleased)
+## 0.2.11
 
 - Add new condition operators to relevant resources: `macContains`, `macEndsWith`, `macEquals`, `macIn`, `macNotContains`, `macNotEndsWith`, `macNotEquals`, `macNotIn`, `macNotStartsWith`, `macStartsWith`
 
