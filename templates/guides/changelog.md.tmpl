@@ -7,6 +7,10 @@ description: |-
 
 # Changelog
 
+## 0.2.11 (unreleased)
+
+- Add new condition operators to relevant resources: `macContains`, `macEndsWith`, `macEquals`, `macIn`, `macNotContains`, `macNotEndsWith`, `macNotEquals`, `macNotIn`, `macNotStartsWith`, `macStartsWith`
+
 ## 0.2.10
 
 - Fix issue with children blocks not working properly with List and Set, [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/138)
