@@ -1,5 +1,6 @@
 ---
 name: Endpoint
+#manual updates to Create method internal/provider/resource_ise_endpoint.go to update existing resource on create
 rest_endpoint: /ers/config/endpoint
 data_source_name_query: true
 doc_category: Identity Management
