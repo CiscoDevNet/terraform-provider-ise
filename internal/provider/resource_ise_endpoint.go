@@ -200,7 +200,6 @@ func (r *EndpointResource) Configure(_ context.Context, req resource.ConfigureRe
 
 //template:end configure
 
-//template:begin create
 func (r *EndpointResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan Endpoint
 
@@ -215,21 +214,38 @@ func (r *EndpointResource) Create(ctx context.Context, req resource.CreateReques
 
 	// Create object
 	body := plan.toBody(ctx, Endpoint{})
-	res, location, err := r.client.Post(plan.getPath(), body)
-	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
+	_, location, err := r.client.Post(plan.getPath(), body)
+	if err == nil {
+		locationElements := strings.Split(location, "/")
+		plan.Id = types.StringValue(locationElements[len(locationElements)-1])
+
+		tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
+
+		diags = resp.State.Set(ctx, &plan)
+		resp.Diagnostics.Append(diags...)
 		return
+	} else {
+		res, err := r.client.Get(plan.getPath() + "/name/" + url.QueryEscape(plan.Name.ValueString()))
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
+			return
+		}
+		plan.Id = types.StringValue(res.Get("ERSEndPoint.id").String())
+		tflog.Debug(ctx, fmt.Sprintf("%s: Resource already exists, updating existing resource", plan.Id.ValueString()))
+		// Update existing object
+		body := plan.toBody(ctx, Endpoint{})
+		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
+			return
+		}
+
+		tflog.Debug(ctx, fmt.Sprintf("%s: Update finished successfully", plan.Id.ValueString()))
+
+		diags = resp.State.Set(ctx, &plan)
+		resp.Diagnostics.Append(diags...)
 	}
-	locationElements := strings.Split(location, "/")
-	plan.Id = types.StringValue(locationElements[len(locationElements)-1])
-
-	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
-
-	diags = resp.State.Set(ctx, &plan)
-	resp.Diagnostics.Append(diags...)
 }
-
-//template:end create
 
 //template:begin read
 func (r *EndpointResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
