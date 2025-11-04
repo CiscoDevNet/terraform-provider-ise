@@ -1,3 +1,7 @@
+## 0.2.12 (unreleased)
+
+- Enhancement: The `ise_endpoint` resource now performs a PUT update if the endpoint already exists during creation, instead of returning an error
+
 ## 0.2.11
 
 - Add new condition operators to relevant resources: `macContains`, `macEndsWith`, `macEquals`, `macIn`, `macNotContains`, `macNotEndsWith`, `macNotEquals`, `macNotIn`, `macNotStartsWith`, `macStartsWith`
