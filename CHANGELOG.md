@@ -1,4 +1,4 @@
-## 0.2.12 (unreleased)
+## 0.2.12
 
 - Enhancement: The `ise_endpoint` resource now performs a PUT update if the endpoint already exists during creation, instead of returning an error
 
