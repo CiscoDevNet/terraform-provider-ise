@@ -198,6 +198,50 @@ func (d *DeviceAdminAuthorizationRuleDataSource) Schema(ctx context.Context, req
 										MarkdownDescription: "Equality operator",
 										Computed:            true,
 									},
+									"children": schema.SetNestedAttribute{
+										MarkdownDescription: "List of child conditions (recursive)",
+										Computed:            true,
+										NestedObject: schema.NestedAttributeObject{
+											Attributes: map[string]schema.Attribute{
+												"condition_type": schema.StringAttribute{
+													MarkdownDescription: "Condition type.",
+													Computed:            true,
+												},
+												"id": schema.StringAttribute{
+													MarkdownDescription: "UUID for condition",
+													Computed:            true,
+												},
+												"is_negate": schema.BoolAttribute{
+													MarkdownDescription: "Indicates whereas this condition is in negate mode",
+													Computed:            true,
+												},
+												"attribute_name": schema.StringAttribute{
+													MarkdownDescription: "Dictionary attribute name",
+													Computed:            true,
+												},
+												"attribute_value": schema.StringAttribute{
+													MarkdownDescription: "Attribute value for condition",
+													Computed:            true,
+												},
+												"dictionary_name": schema.StringAttribute{
+													MarkdownDescription: "Dictionary name",
+													Computed:            true,
+												},
+												"dictionary_value": schema.StringAttribute{
+													MarkdownDescription: "Dictionary value",
+													Computed:            true,
+												},
+												"operator": schema.StringAttribute{
+													MarkdownDescription: "Equality operator",
+													Computed:            true,
+												},
+												"children": schema.SetNestedAttribute{
+													MarkdownDescription: "List of child conditions (level 5)",
+													Computed:            true,
+												},
+											},
+										},
+									},
 								},
 							},
 						},

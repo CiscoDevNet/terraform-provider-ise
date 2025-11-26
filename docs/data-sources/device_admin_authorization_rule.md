@@ -70,9 +70,28 @@ Read-Only:
 
 - `attribute_name` (String) Dictionary attribute name
 - `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
+- `children` (Attributes Set) List of child conditions (recursive) (see [below for nested schema](#nestedatt--children--children--children))
 - `condition_type` (String) Condition type.
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
 - `id` (String) UUID for condition
 - `is_negate` (Boolean) Indicates whereas this condition is in negate mode
 - `operator` (String) Equality operator
+
+<a id="nestedatt--children--children--children"></a>
+### Nested Schema for `children.children.children`
+
+Read-Only:
+
+- `attribute_name` (String) Dictionary attribute name
+- `attribute_value` (String) Attribute value for condition
+- `children` (Attributes Set) List of child conditions (level 5) (see [below for nested schema](#nestedatt--children--children--children--children))
+- `condition_type` (String) Condition type.
+- `dictionary_name` (String) Dictionary name
+- `dictionary_value` (String) Dictionary value
+- `id` (String) UUID for condition
+- `is_negate` (Boolean) Indicates whereas this condition is in negate mode
+- `operator` (String) Equality operator
+
+<a id="nestedatt--children--children--children--children"></a>
+### Nested Schema for `children.children.children.children`

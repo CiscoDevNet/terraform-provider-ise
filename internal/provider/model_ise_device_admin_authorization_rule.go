@@ -67,6 +67,18 @@ type DeviceAdminAuthorizationRuleChildren struct {
 }
 
 type DeviceAdminAuthorizationRuleChildrenChildren struct {
+	ConditionType   types.String                                           `tfsdk:"condition_type"`
+	Id              types.String                                           `tfsdk:"id"`
+	IsNegate        types.Bool                                             `tfsdk:"is_negate"`
+	AttributeName   types.String                                           `tfsdk:"attribute_name"`
+	AttributeValue  types.String                                           `tfsdk:"attribute_value"`
+	DictionaryName  types.String                                           `tfsdk:"dictionary_name"`
+	DictionaryValue types.String                                           `tfsdk:"dictionary_value"`
+	Operator        types.String                                           `tfsdk:"operator"`
+	Children        []DeviceAdminAuthorizationRuleChildrenChildrenChildren `tfsdk:"children"`
+}
+
+type DeviceAdminAuthorizationRuleChildrenChildrenChildren struct {
 	ConditionType   types.String `tfsdk:"condition_type"`
 	Id              types.String `tfsdk:"id"`
 	IsNegate        types.Bool   `tfsdk:"is_negate"`
@@ -75,6 +87,7 @@ type DeviceAdminAuthorizationRuleChildrenChildren struct {
 	DictionaryName  types.String `tfsdk:"dictionary_name"`
 	DictionaryValue types.String `tfsdk:"dictionary_value"`
 	Operator        types.String `tfsdk:"operator"`
+	Children        types.Set    `tfsdk:"children"`
 }
 
 //template:end types
@@ -184,6 +197,37 @@ func (data DeviceAdminAuthorizationRule) toBody(ctx context.Context, state Devic
 					}
 					if !childItem.Operator.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "operator", childItem.Operator.ValueString())
+					}
+					if len(childItem.Children) > 0 {
+						itemChildBody, _ = sjson.Set(itemChildBody, "children", []interface{}{})
+						for _, childChildItem := range childItem.Children {
+							itemChildChildBody := ""
+							if !childChildItem.ConditionType.IsNull() {
+								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "conditionType", childChildItem.ConditionType.ValueString())
+							}
+							if !childChildItem.Id.IsNull() {
+								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "id", childChildItem.Id.ValueString())
+							}
+							if !childChildItem.IsNegate.IsNull() {
+								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "isNegate", childChildItem.IsNegate.ValueBool())
+							}
+							if !childChildItem.AttributeName.IsNull() {
+								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "attributeName", childChildItem.AttributeName.ValueString())
+							}
+							if !childChildItem.AttributeValue.IsNull() {
+								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "attributeValue", childChildItem.AttributeValue.ValueString())
+							}
+							if !childChildItem.DictionaryName.IsNull() {
+								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "dictionaryName", childChildItem.DictionaryName.ValueString())
+							}
+							if !childChildItem.DictionaryValue.IsNull() {
+								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "dictionaryValue", childChildItem.DictionaryValue.ValueString())
+							}
+							if !childChildItem.Operator.IsNull() {
+								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "operator", childChildItem.Operator.ValueString())
+							}
+							itemChildBody, _ = sjson.SetRaw(itemChildBody, "children.-1", itemChildChildBody)
+						}
 					}
 					itemBody, _ = sjson.SetRaw(itemBody, "children.-1", itemChildBody)
 				}
@@ -353,6 +397,54 @@ func (data *DeviceAdminAuthorizationRule) fromBody(ctx context.Context, res gjso
 						cItem.Operator = types.StringValue(ccValue.String())
 					} else {
 						cItem.Operator = types.StringNull()
+					}
+					if ccValue := cv.Get("children"); ccValue.Exists() {
+						cItem.Children = make([]DeviceAdminAuthorizationRuleChildrenChildrenChildren, 0)
+						ccValue.ForEach(func(cck, ccv gjson.Result) bool {
+							ccItem := DeviceAdminAuthorizationRuleChildrenChildrenChildren{}
+							if cccValue := ccv.Get("conditionType"); cccValue.Exists() && cccValue.Type != gjson.Null {
+								ccItem.ConditionType = types.StringValue(cccValue.String())
+							} else {
+								ccItem.ConditionType = types.StringNull()
+							}
+							if cccValue := ccv.Get("id"); cccValue.Exists() && cccValue.Type != gjson.Null {
+								ccItem.Id = types.StringValue(cccValue.String())
+							} else {
+								ccItem.Id = types.StringNull()
+							}
+							if cccValue := ccv.Get("isNegate"); cccValue.Exists() && cccValue.Type != gjson.Null {
+								ccItem.IsNegate = types.BoolValue(cccValue.Bool())
+							} else {
+								ccItem.IsNegate = types.BoolNull()
+							}
+							if cccValue := ccv.Get("attributeName"); cccValue.Exists() && cccValue.Type != gjson.Null {
+								ccItem.AttributeName = types.StringValue(cccValue.String())
+							} else {
+								ccItem.AttributeName = types.StringNull()
+							}
+							if cccValue := ccv.Get("attributeValue"); cccValue.Exists() && cccValue.Type != gjson.Null {
+								ccItem.AttributeValue = types.StringValue(cccValue.String())
+							} else {
+								ccItem.AttributeValue = types.StringNull()
+							}
+							if cccValue := ccv.Get("dictionaryName"); cccValue.Exists() && cccValue.Type != gjson.Null {
+								ccItem.DictionaryName = types.StringValue(cccValue.String())
+							} else {
+								ccItem.DictionaryName = types.StringNull()
+							}
+							if cccValue := ccv.Get("dictionaryValue"); cccValue.Exists() && cccValue.Type != gjson.Null {
+								ccItem.DictionaryValue = types.StringValue(cccValue.String())
+							} else {
+								ccItem.DictionaryValue = types.StringNull()
+							}
+							if cccValue := ccv.Get("operator"); cccValue.Exists() && cccValue.Type != gjson.Null {
+								ccItem.Operator = types.StringValue(cccValue.String())
+							} else {
+								ccItem.Operator = types.StringNull()
+							}
+							cItem.Children = append(cItem.Children, ccItem)
+							return true
+						})
 					}
 					item.Children = append(item.Children, cItem)
 					return true
@@ -525,6 +617,54 @@ func (data *DeviceAdminAuthorizationRule) updateFromBody(ctx context.Context, re
 						cItem.Operator = types.StringValue(ccValue.String())
 					} else {
 						cItem.Operator = types.StringNull()
+					}
+					if ccValue := cv.Get("children"); ccValue.Exists() {
+						cItem.Children = make([]DeviceAdminAuthorizationRuleChildrenChildrenChildren, 0)
+						ccValue.ForEach(func(cck, ccv gjson.Result) bool {
+							ccItem := DeviceAdminAuthorizationRuleChildrenChildrenChildren{}
+							if cccValue := ccv.Get("conditionType"); cccValue.Exists() && cccValue.Type != gjson.Null {
+								ccItem.ConditionType = types.StringValue(cccValue.String())
+							} else {
+								ccItem.ConditionType = types.StringNull()
+							}
+							if cccValue := ccv.Get("id"); cccValue.Exists() && cccValue.Type != gjson.Null {
+								ccItem.Id = types.StringValue(cccValue.String())
+							} else {
+								ccItem.Id = types.StringNull()
+							}
+							if cccValue := ccv.Get("isNegate"); cccValue.Exists() && cccValue.Type != gjson.Null {
+								ccItem.IsNegate = types.BoolValue(cccValue.Bool())
+							} else {
+								ccItem.IsNegate = types.BoolNull()
+							}
+							if cccValue := ccv.Get("attributeName"); cccValue.Exists() && cccValue.Type != gjson.Null {
+								ccItem.AttributeName = types.StringValue(cccValue.String())
+							} else {
+								ccItem.AttributeName = types.StringNull()
+							}
+							if cccValue := ccv.Get("attributeValue"); cccValue.Exists() && cccValue.Type != gjson.Null {
+								ccItem.AttributeValue = types.StringValue(cccValue.String())
+							} else {
+								ccItem.AttributeValue = types.StringNull()
+							}
+							if cccValue := ccv.Get("dictionaryName"); cccValue.Exists() && cccValue.Type != gjson.Null {
+								ccItem.DictionaryName = types.StringValue(cccValue.String())
+							} else {
+								ccItem.DictionaryName = types.StringNull()
+							}
+							if cccValue := ccv.Get("dictionaryValue"); cccValue.Exists() && cccValue.Type != gjson.Null {
+								ccItem.DictionaryValue = types.StringValue(cccValue.String())
+							} else {
+								ccItem.DictionaryValue = types.StringNull()
+							}
+							if cccValue := ccv.Get("operator"); cccValue.Exists() && cccValue.Type != gjson.Null {
+								ccItem.Operator = types.StringValue(cccValue.String())
+							} else {
+								ccItem.Operator = types.StringNull()
+							}
+							cItem.Children = append(cItem.Children, ccItem)
+							return true
+						})
 					}
 					item.Children = append(item.Children, cItem)
 					return true

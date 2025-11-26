@@ -78,12 +78,13 @@ Optional:
 Required:
 
 - `condition_type` (String) Condition type.
-  - Choices: `ConditionAttributes`, `ConditionReference`
+  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
 
 Optional:
 
 - `attribute_name` (String) Dictionary attribute name
 - `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
+- `children` (Attributes Set) List of child conditions (recursive) (see [below for nested schema](#nestedatt--children--children--children))
 - `description` (String) Condition description
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
@@ -92,6 +93,29 @@ Optional:
 - `name` (String) Condition name. Required if `condition_type` is `ConditionReference`, if `condition_type` is `ConditionAttributes` then this attribute is not used.
 - `operator` (String) Equality operator
   - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`
+
+<a id="nestedatt--children--children--children"></a>
+### Nested Schema for `children.children.children`
+
+Required:
+
+- `condition_type` (String) Condition type.
+  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
+
+Optional:
+
+- `attribute_name` (String) Dictionary attribute name
+- `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
+- `children` (Attributes Set) List of child conditions (level 5) (see [below for nested schema](#nestedatt--children--children--children--children))
+- `dictionary_name` (String) Dictionary name
+- `dictionary_value` (String) Dictionary value
+- `id` (String) UUID for condition
+- `is_negate` (Boolean) Indicates whereas this condition is in negate mode
+- `operator` (String) Equality operator
+  - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`
+
+<a id="nestedatt--children--children--children--children"></a>
+### Nested Schema for `children.children.children.children`
 
 ## Import
 
