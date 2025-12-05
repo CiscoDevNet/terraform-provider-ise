@@ -31,7 +31,7 @@ resource "ise_device_admin_condition" "example" {
 ### Required
 
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
-  - Choices: `LibraryConditionAndBlock`, `LibraryConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `LibraryConditionOrBlock`
+  - Choices: `LibraryConditionAndBlock`, `LibraryConditionAttributes`, `LibraryConditionOrBlock`
 - `name` (String) Condition name
 
 ### Optional
@@ -116,6 +116,22 @@ Optional:
 
 <a id="nestedatt--children--children--children--children"></a>
 ### Nested Schema for `children.children.children.children`
+
+Required:
+
+- `condition_type` (String) Condition type.
+  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
+
+Optional:
+
+- `attribute_name` (String) Dictionary attribute name
+- `attribute_value` (String) Attribute value for condition
+- `dictionary_name` (String) Dictionary name
+- `dictionary_value` (String) Dictionary value
+- `id` (String) UUID for condition
+- `is_negate` (Boolean) Indicates whereas this condition is in negate mode
+- `operator` (String) Equality operator
+  - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`
 
 ## Import
 

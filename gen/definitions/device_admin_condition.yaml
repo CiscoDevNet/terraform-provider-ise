@@ -20,9 +20,7 @@ attributes:
     enum_values:
       [
         LibraryConditionAndBlock,
-        LibraryConditionAndBlock,
-                ConditionAttributes,
-                ConditionOrBlock,
+        LibraryConditionAttributes,
         LibraryConditionOrBlock,
       ]
     description: Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.

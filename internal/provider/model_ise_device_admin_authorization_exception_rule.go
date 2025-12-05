@@ -79,6 +79,18 @@ type DeviceAdminAuthorizationExceptionRuleChildrenChildren struct {
 }
 
 type DeviceAdminAuthorizationExceptionRuleChildrenChildrenChildren struct {
+	ConditionType   types.String                                                            `tfsdk:"condition_type"`
+	Id              types.String                                                            `tfsdk:"id"`
+	IsNegate        types.Bool                                                              `tfsdk:"is_negate"`
+	AttributeName   types.String                                                            `tfsdk:"attribute_name"`
+	AttributeValue  types.String                                                            `tfsdk:"attribute_value"`
+	DictionaryName  types.String                                                            `tfsdk:"dictionary_name"`
+	DictionaryValue types.String                                                            `tfsdk:"dictionary_value"`
+	Operator        types.String                                                            `tfsdk:"operator"`
+	Children        []DeviceAdminAuthorizationExceptionRuleChildrenChildrenChildrenChildren `tfsdk:"children"`
+}
+
+type DeviceAdminAuthorizationExceptionRuleChildrenChildrenChildrenChildren struct {
 	ConditionType   types.String `tfsdk:"condition_type"`
 	Id              types.String `tfsdk:"id"`
 	IsNegate        types.Bool   `tfsdk:"is_negate"`
@@ -87,7 +99,6 @@ type DeviceAdminAuthorizationExceptionRuleChildrenChildrenChildren struct {
 	DictionaryName  types.String `tfsdk:"dictionary_name"`
 	DictionaryValue types.String `tfsdk:"dictionary_value"`
 	Operator        types.String `tfsdk:"operator"`
-	Children        types.Set    `tfsdk:"children"`
 }
 
 //template:end types
@@ -225,6 +236,37 @@ func (data DeviceAdminAuthorizationExceptionRule) toBody(ctx context.Context, st
 							}
 							if !childChildItem.Operator.IsNull() {
 								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "operator", childChildItem.Operator.ValueString())
+							}
+							if len(childChildItem.Children) > 0 {
+								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "children", []interface{}{})
+								for _, childChildChildItem := range childChildItem.Children {
+									itemChildChildChildBody := ""
+									if !childChildChildItem.ConditionType.IsNull() {
+										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "conditionType", childChildChildItem.ConditionType.ValueString())
+									}
+									if !childChildChildItem.Id.IsNull() {
+										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "id", childChildChildItem.Id.ValueString())
+									}
+									if !childChildChildItem.IsNegate.IsNull() {
+										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "isNegate", childChildChildItem.IsNegate.ValueBool())
+									}
+									if !childChildChildItem.AttributeName.IsNull() {
+										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "attributeName", childChildChildItem.AttributeName.ValueString())
+									}
+									if !childChildChildItem.AttributeValue.IsNull() {
+										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "attributeValue", childChildChildItem.AttributeValue.ValueString())
+									}
+									if !childChildChildItem.DictionaryName.IsNull() {
+										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "dictionaryName", childChildChildItem.DictionaryName.ValueString())
+									}
+									if !childChildChildItem.DictionaryValue.IsNull() {
+										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "dictionaryValue", childChildChildItem.DictionaryValue.ValueString())
+									}
+									if !childChildChildItem.Operator.IsNull() {
+										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "operator", childChildChildItem.Operator.ValueString())
+									}
+									itemChildChildBody, _ = sjson.SetRaw(itemChildChildBody, "children.-1", itemChildChildChildBody)
+								}
 							}
 							itemChildBody, _ = sjson.SetRaw(itemChildBody, "children.-1", itemChildChildBody)
 						}

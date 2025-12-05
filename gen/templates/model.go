@@ -99,6 +99,7 @@ type {{$name}}{{$childName}}{{toGoName .TfName}} struct {
 {{- end}}
 {{ end}}
 
+{{- /* Level 3 types - with proper handling for level 4 children */}}
 {{ range .Attributes}}
 {{- if not .Value}}
 {{- $childName := toGoName .TfName}}
@@ -109,14 +110,220 @@ type {{$name}}{{$childName}}{{toGoName .TfName}} struct {
 {{- if isNestedListSet .}}
 {{ range .Attributes}}
 {{- if not .Value}}
+{{- $childChildChildName := toGoName .TfName}}
 {{- if isNestedListSet .}}
-type {{$name}}{{$childName}}{{$childChildName}}{{toGoName .TfName}} struct {
+type {{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}} struct {
+{{- range .Attributes}}
+{{- if not .Value}}
+{{- if isNestedListSet .}}
+	{{toGoName .TfName}} []{{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}}{{toGoName .TfName}} `tfsdk:"{{.TfName}}"`
+{{- else}}
+	{{toGoName .TfName}} types.{{.Type}} `tfsdk:"{{.TfName}}"`
+{{- end}}
+{{- end}}
+{{- end}}
+}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{ end}}
+
+{{- /* Level 4 types - iterates 4 levels deep for proper type naming */}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- $childName := toGoName .TfName}}
+{{- if isNestedListSet .}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- $childChildName := toGoName .TfName}}
+{{- if isNestedListSet .}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- $childChildChildName := toGoName .TfName}}
+{{- if isNestedListSet .}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- $childChildChildChildName := toGoName .TfName}}
+{{- if isNestedListSet .}}
+type {{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}}{{$childChildChildChildName}} struct {
+{{- range .Attributes}}
+{{- if not .Value}}
+{{- if isNestedListSet .}}
+	{{toGoName .TfName}} []{{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}}{{$childChildChildChildName}}{{toGoName .TfName}} `tfsdk:"{{.TfName}}"`
+{{- else}}
+	{{toGoName .TfName}} types.{{.Type}} `tfsdk:"{{.TfName}}"`
+{{- end}}
+{{- end}}
+{{- end}}
+}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{ end}}
+
+{{- /* Level 5 types - iterates 5 levels deep for proper type naming */}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- $childName := toGoName .TfName}}
+{{- if isNestedListSet .}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- $childChildName := toGoName .TfName}}
+{{- if isNestedListSet .}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- $childChildChildName := toGoName .TfName}}
+{{- if isNestedListSet .}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- $childChildChildChildName := toGoName .TfName}}
+{{- if isNestedListSet .}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- $childChildChildChildChildName := toGoName .TfName}}
+{{- if isNestedListSet .}}
+type {{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}}{{$childChildChildChildName}}{{$childChildChildChildChildName}} struct {
+{{- range .Attributes}}
+{{- if not .Value}}
+{{- if isNestedListSet .}}
+	{{toGoName .TfName}} []{{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}}{{$childChildChildChildName}}{{$childChildChildChildChildName}}{{toGoName .TfName}} `tfsdk:"{{.TfName}}"`
+{{- else}}
+	{{toGoName .TfName}} types.{{.Type}} `tfsdk:"{{.TfName}}"`
+{{- end}}
+{{- end}}
+{{- end}}
+}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{ end}}
+
+{{- /* Level 6 types - iterates 6 levels deep for proper type naming */}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- $childName := toGoName .TfName}}
+{{- if isNestedListSet .}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- $childChildName := toGoName .TfName}}
+{{- if isNestedListSet .}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- $childChildChildName := toGoName .TfName}}
+{{- if isNestedListSet .}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- $childChildChildChildName := toGoName .TfName}}
+{{- if isNestedListSet .}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- $childChildChildChildChildName := toGoName .TfName}}
+{{- if isNestedListSet .}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- $childChildChildChildChildChildName := toGoName .TfName}}
+{{- if isNestedListSet .}}
+type {{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}}{{$childChildChildChildName}}{{$childChildChildChildChildName}}{{$childChildChildChildChildChildName}} struct {
+{{- range .Attributes}}
+{{- if not .Value}}
+{{- if isNestedListSet .}}
+	{{toGoName .TfName}} []{{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}}{{$childChildChildChildName}}{{$childChildChildChildChildName}}{{$childChildChildChildChildChildName}}{{toGoName .TfName}} `tfsdk:"{{.TfName}}"`
+{{- else}}
+	{{toGoName .TfName}} types.{{.Type}} `tfsdk:"{{.TfName}}"`
+{{- end}}
+{{- end}}
+{{- end}}
+}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{ end}}
+
+{{- /* Level 7 types - TERMINAL - iterates 7 levels deep, no nested children */}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- $childName := toGoName .TfName}}
+{{- if isNestedListSet .}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- $childChildName := toGoName .TfName}}
+{{- if isNestedListSet .}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- $childChildChildName := toGoName .TfName}}
+{{- if isNestedListSet .}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- $childChildChildChildName := toGoName .TfName}}
+{{- if isNestedListSet .}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- $childChildChildChildChildName := toGoName .TfName}}
+{{- if isNestedListSet .}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- $childChildChildChildChildChildName := toGoName .TfName}}
+{{- if isNestedListSet .}}
+{{ range .Attributes}}
+{{- if not .Value}}
+{{- if isNestedListSet .}}
+type {{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}}{{$childChildChildChildName}}{{$childChildChildChildChildName}}{{$childChildChildChildChildChildName}}{{toGoName .TfName}} struct {
 {{- range .Attributes}}
 {{- if not .Value}}
 	{{toGoName .TfName}} types.{{.Type}} `tfsdk:"{{.TfName}}"`
 {{- end}}
 {{- end}}
 }
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
+{{- end}}
 {{- end}}
 {{- end}}
 {{- end}}
@@ -256,6 +463,99 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 								var values map[string]string
 								childChildItem.{{toGoName .TfName}}.ElementsAs(ctx, &values, false)
 								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}", values)
+							}
+							{{- else if isNestedListSet .}}
+							if len(childChildItem.{{toGoName .TfName}}) > 0 {
+								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", []interface{}{})
+								for _, childChildChildItem := range childChildItem.{{toGoName .TfName}} {
+									itemChildChildChildBody := ""
+									{{- range .Attributes}}
+									{{- if .Value}}
+									itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if eq .Type "String"}}"{{end}}{{.Value}}{{if eq .Type "String"}}"{{end}})
+									{{- else if not .Reference}}
+									{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
+									if !childChildChildItem.{{toGoName .TfName}}.IsNull() {
+										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", childChildChildItem.{{toGoName .TfName}}.Value{{.Type}}())
+									}
+									{{- else if isListSet .}}
+									if !childChildChildItem.{{toGoName .TfName}}.IsNull() {
+										var values []{{if isStringListSet .}}string{{else if isInt64ListSet .}}int64{{end}}
+										childChildChildItem.{{toGoName .TfName}}.ElementsAs(ctx, &values, false)
+										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", values)
+									}
+									{{- else if eq .Type "Map"}}
+									if !childChildChildItem.{{toGoName .TfName}}.IsNull() {
+										var values map[string]string
+										childChildChildItem.{{toGoName .TfName}}.ElementsAs(ctx, &values, false)
+										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}", values)
+									}
+									{{- else if isNestedListSet .}}
+									if len(childChildChildItem.{{toGoName .TfName}}) > 0 {
+										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", []interface{}{})
+										for _, childChildChildChildItem := range childChildChildItem.{{toGoName .TfName}} {
+											itemChildChildChildChildBody := ""
+											{{- range .Attributes}}
+											{{- if .Value}}
+											itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if eq .Type "String"}}"{{end}}{{.Value}}{{if eq .Type "String"}}"{{end}})
+											{{- else if not .Reference}}
+											{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
+											if !childChildChildChildItem.{{toGoName .TfName}}.IsNull() {
+												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", childChildChildChildItem.{{toGoName .TfName}}.Value{{.Type}}())
+											}
+											{{- else if isListSet .}}
+											if !childChildChildChildItem.{{toGoName .TfName}}.IsNull() {
+												var values []{{if isStringListSet .}}string{{else if isInt64ListSet .}}int64{{end}}
+												childChildChildChildItem.{{toGoName .TfName}}.ElementsAs(ctx, &values, false)
+												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", values)
+											}
+											{{- else if eq .Type "Map"}}
+											if !childChildChildChildItem.{{toGoName .TfName}}.IsNull() {
+												var values map[string]string
+												childChildChildChildItem.{{toGoName .TfName}}.ElementsAs(ctx, &values, false)
+												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}", values)
+											}
+											{{- else if isNestedListSet .}}
+											if len(childChildChildChildItem.{{toGoName .TfName}}) > 0 {
+												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", []interface{}{})
+												for _, childChildChildChildChildItem := range childChildChildChildItem.{{toGoName .TfName}} {
+													itemChildChildChildChildChildBody := ""
+													{{- range .Attributes}}
+													{{- if .Value}}
+													itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if eq .Type "String"}}"{{end}}{{.Value}}{{if eq .Type "String"}}"{{end}})
+													{{- else if not .Reference}}
+													{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
+													if !childChildChildChildChildItem.{{toGoName .TfName}}.IsNull() {
+														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", childChildChildChildChildItem.{{toGoName .TfName}}.Value{{.Type}}())
+													}
+													{{- else if isListSet .}}
+													if !childChildChildChildChildItem.{{toGoName .TfName}}.IsNull() {
+														var values []{{if isStringListSet .}}string{{else if isInt64ListSet .}}int64{{end}}
+														childChildChildChildChildItem.{{toGoName .TfName}}.ElementsAs(ctx, &values, false)
+														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", values)
+													}
+													{{- else if eq .Type "Map"}}
+													if !childChildChildChildChildItem.{{toGoName .TfName}}.IsNull() {
+														var values map[string]string
+														childChildChildChildChildItem.{{toGoName .TfName}}.ElementsAs(ctx, &values, false)
+														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}", values)
+													}
+													{{- end}}
+													{{- end}}
+													{{- end}}
+													itemChildChildChildChildBody, _ = sjson.SetRaw(itemChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}.-1", itemChildChildChildChildChildBody)
+												}
+											}
+											{{- end}}
+											{{- end}}
+											{{- end}}
+											itemChildChildChildBody, _ = sjson.SetRaw(itemChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}.-1", itemChildChildChildChildBody)
+										}
+									}
+									{{- end}}
+									{{- end}}
+									{{- end}}
+									itemChildChildBody, _ = sjson.SetRaw(itemChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}.-1", itemChildChildChildBody)
+								}
 							}
 							{{- end}}
 							{{- end}}
