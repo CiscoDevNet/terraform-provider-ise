@@ -116,7 +116,7 @@ func (d *NetworkAccessAuthorizationGlobalExceptionRuleDataSource) Schema(ctx con
 				MarkdownDescription: "Equality operator",
 				Computed:            true,
 			},
-			"children": schema.SetNestedAttribute{
+			"children": schema.ListNestedAttribute{
 				MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.",
 				Computed:            true,
 				NestedObject: schema.NestedAttributeObject{
@@ -153,7 +153,7 @@ func (d *NetworkAccessAuthorizationGlobalExceptionRuleDataSource) Schema(ctx con
 							MarkdownDescription: "Equality operator",
 							Computed:            true,
 						},
-						"children": schema.SetNestedAttribute{
+						"children": schema.ListNestedAttribute{
 							MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.",
 							Computed:            true,
 							NestedObject: schema.NestedAttributeObject{
@@ -190,7 +190,7 @@ func (d *NetworkAccessAuthorizationGlobalExceptionRuleDataSource) Schema(ctx con
 										MarkdownDescription: "Equality operator",
 										Computed:            true,
 									},
-									"children": schema.SetNestedAttribute{
+									"children": schema.ListNestedAttribute{
 										MarkdownDescription: "List of child conditions (recursive)",
 										Computed:            true,
 										NestedObject: schema.NestedAttributeObject{
@@ -227,7 +227,7 @@ func (d *NetworkAccessAuthorizationGlobalExceptionRuleDataSource) Schema(ctx con
 													MarkdownDescription: "Equality operator",
 													Computed:            true,
 												},
-												"children": schema.SetNestedAttribute{
+												"children": schema.ListNestedAttribute{
 													MarkdownDescription: "List of child conditions (level 5)",
 													Computed:            true,
 												},
@@ -240,7 +240,7 @@ func (d *NetworkAccessAuthorizationGlobalExceptionRuleDataSource) Schema(ctx con
 					},
 				},
 			},
-			"profiles": schema.SetAttribute{
+			"profiles": schema.ListAttribute{
 				MarkdownDescription: "The authorization profile(s)",
 				ElementType:         types.StringType,
 				Computed:            true,

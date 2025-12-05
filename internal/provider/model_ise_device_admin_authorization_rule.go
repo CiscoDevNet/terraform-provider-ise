@@ -103,6 +103,18 @@ type DeviceAdminAuthorizationRuleChildrenChildrenChildrenChildren struct {
 }
 
 type DeviceAdminAuthorizationRuleChildrenChildrenChildrenChildrenChildren struct {
+	ConditionType   types.String                                                                   `tfsdk:"condition_type"`
+	Id              types.String                                                                   `tfsdk:"id"`
+	IsNegate        types.Bool                                                                     `tfsdk:"is_negate"`
+	AttributeName   types.String                                                                   `tfsdk:"attribute_name"`
+	AttributeValue  types.String                                                                   `tfsdk:"attribute_value"`
+	DictionaryName  types.String                                                                   `tfsdk:"dictionary_name"`
+	DictionaryValue types.String                                                                   `tfsdk:"dictionary_value"`
+	Operator        types.String                                                                   `tfsdk:"operator"`
+	Children        []DeviceAdminAuthorizationRuleChildrenChildrenChildrenChildrenChildrenChildren `tfsdk:"children"`
+}
+
+type DeviceAdminAuthorizationRuleChildrenChildrenChildrenChildrenChildrenChildren struct {
 	ConditionType   types.String `tfsdk:"condition_type"`
 	Id              types.String `tfsdk:"id"`
 	IsNegate        types.Bool   `tfsdk:"is_negate"`
@@ -304,6 +316,37 @@ func (data DeviceAdminAuthorizationRule) toBody(ctx context.Context, state Devic
 											}
 											if !childChildChildChildItem.Operator.IsNull() {
 												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "operator", childChildChildChildItem.Operator.ValueString())
+											}
+											if len(childChildChildChildItem.Children) > 0 {
+												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "children", []interface{}{})
+												for _, childChildChildChildChildItem := range childChildChildChildItem.Children {
+													itemChildChildChildChildChildBody := ""
+													if !childChildChildChildChildItem.ConditionType.IsNull() {
+														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "conditionType", childChildChildChildChildItem.ConditionType.ValueString())
+													}
+													if !childChildChildChildChildItem.Id.IsNull() {
+														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "id", childChildChildChildChildItem.Id.ValueString())
+													}
+													if !childChildChildChildChildItem.IsNegate.IsNull() {
+														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "isNegate", childChildChildChildChildItem.IsNegate.ValueBool())
+													}
+													if !childChildChildChildChildItem.AttributeName.IsNull() {
+														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "attributeName", childChildChildChildChildItem.AttributeName.ValueString())
+													}
+													if !childChildChildChildChildItem.AttributeValue.IsNull() {
+														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "attributeValue", childChildChildChildChildItem.AttributeValue.ValueString())
+													}
+													if !childChildChildChildChildItem.DictionaryName.IsNull() {
+														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "dictionaryName", childChildChildChildChildItem.DictionaryName.ValueString())
+													}
+													if !childChildChildChildChildItem.DictionaryValue.IsNull() {
+														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "dictionaryValue", childChildChildChildChildItem.DictionaryValue.ValueString())
+													}
+													if !childChildChildChildChildItem.Operator.IsNull() {
+														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "operator", childChildChildChildChildItem.Operator.ValueString())
+													}
+													itemChildChildChildChildBody, _ = sjson.SetRaw(itemChildChildChildChildBody, "children.-1", itemChildChildChildChildChildBody)
+												}
 											}
 											itemChildChildChildBody, _ = sjson.SetRaw(itemChildChildChildBody, "children.-1", itemChildChildChildChildBody)
 										}

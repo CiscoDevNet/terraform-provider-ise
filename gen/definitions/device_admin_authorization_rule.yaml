@@ -391,13 +391,19 @@ attributes:
                       ]
                     description: Equality operator
                   - model_name: children
-                    type: Set
+                    type: List
                     description: List of child conditions (level 5)
                     attributes:
                       - model_name: conditionType
                         mandatory: true
                         type: String
-                        enum_values: [ConditionAttributes, ConditionReference]
+                        enum_values:
+                          [
+                            ConditionAndBlock,
+                            ConditionAttributes,
+                            ConditionOrBlock,
+                            ConditionReference,
+                          ]
                         description: Condition type.
                       - model_name: id
                         type: String
@@ -421,6 +427,59 @@ attributes:
                         type: String
                         enum_values: [contains, endsWith, equals, greaterOrEquals, greaterThan, in, ipEquals, ipGreaterThan, ipLessThan, ipNotEquals, lessOrEquals, lessThan, matches, notContains, notEndsWith, notEquals, notIn, notStartsWith, startsWith]
                         description: Equality operator
+                      - model_name: children
+                        type: List
+                        description: List of child conditions (level 6 - terminal)
+                        attributes:
+                          - model_name: conditionType
+                            mandatory: true
+                            type: String
+                            enum_values: [ConditionAttributes, ConditionReference]
+                            description: Condition type (terminal level - only leaf types allowed).
+                            example: ConditionAttributes
+                          - model_name: id
+                            type: String
+                            description: UUID for condition
+                          - model_name: isNegate
+                            type: Bool
+                            description: Indicates whereas this condition is in negate mode
+                          - model_name: attributeName
+                            type: String
+                            description: Dictionary attribute name
+                          - model_name: attributeValue
+                            type: String
+                            description: Attribute value for condition
+                          - model_name: dictionaryName
+                            type: String
+                            description: Dictionary name
+                          - model_name: dictionaryValue
+                            type: String
+                            description: Dictionary value
+                          - model_name: operator
+                            type: String
+                            enum_values:
+                              [
+                                contains,
+                                endsWith,
+                                equals,
+                                greaterOrEquals,
+                                greaterThan,
+                                in,
+                                ipEquals,
+                                ipGreaterThan,
+                                ipLessThan,
+                                ipNotEquals,
+                                lessOrEquals,
+                                lessThan,
+                                matches,
+                                notContains,
+                                notEndsWith,
+                                notEquals,
+                                notIn,
+                                notStartsWith,
+                                startsWith,
+                              ]
+                            description: Equality operator
   - model_name: commands
     tf_name: command_sets
     type: Set

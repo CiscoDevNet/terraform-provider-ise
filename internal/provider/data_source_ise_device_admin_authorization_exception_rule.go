@@ -124,7 +124,7 @@ func (d *DeviceAdminAuthorizationExceptionRuleDataSource) Schema(ctx context.Con
 				MarkdownDescription: "Equality operator",
 				Computed:            true,
 			},
-			"children": schema.SetNestedAttribute{
+			"children": schema.ListNestedAttribute{
 				MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.",
 				Computed:            true,
 				NestedObject: schema.NestedAttributeObject{
@@ -161,7 +161,7 @@ func (d *DeviceAdminAuthorizationExceptionRuleDataSource) Schema(ctx context.Con
 							MarkdownDescription: "Equality operator",
 							Computed:            true,
 						},
-						"children": schema.SetNestedAttribute{
+						"children": schema.ListNestedAttribute{
 							MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.",
 							Computed:            true,
 							NestedObject: schema.NestedAttributeObject{
@@ -198,7 +198,7 @@ func (d *DeviceAdminAuthorizationExceptionRuleDataSource) Schema(ctx context.Con
 										MarkdownDescription: "Equality operator",
 										Computed:            true,
 									},
-									"children": schema.SetNestedAttribute{
+									"children": schema.ListNestedAttribute{
 										MarkdownDescription: "List of child conditions (recursive)",
 										Computed:            true,
 										NestedObject: schema.NestedAttributeObject{
@@ -235,7 +235,7 @@ func (d *DeviceAdminAuthorizationExceptionRuleDataSource) Schema(ctx context.Con
 													MarkdownDescription: "Equality operator",
 													Computed:            true,
 												},
-												"children": schema.SetNestedAttribute{
+												"children": schema.ListNestedAttribute{
 													MarkdownDescription: "List of child conditions (level 5)",
 													Computed:            true,
 												},
@@ -248,7 +248,7 @@ func (d *DeviceAdminAuthorizationExceptionRuleDataSource) Schema(ctx context.Con
 					},
 				},
 			},
-			"command_sets": schema.SetAttribute{
+			"command_sets": schema.ListAttribute{
 				MarkdownDescription: "Command sets enforce the specified list of commands that can be executed by a device administrator",
 				ElementType:         types.StringType,
 				Computed:            true,

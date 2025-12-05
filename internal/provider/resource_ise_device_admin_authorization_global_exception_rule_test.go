@@ -41,6 +41,7 @@ func TestAccIseDeviceAdminAuthorizationGlobalExceptionRule(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_authorization_global_exception_rule.test", "condition_attribute_value", "All Locations"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_authorization_global_exception_rule.test", "condition_dictionary_name", "DEVICE"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_authorization_global_exception_rule.test", "condition_operator", "equals"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_authorization_global_exception_rule.test", "command_sets.0", "DenyAllCommands"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_device_admin_authorization_global_exception_rule.test", "profile", "Default Shell Profile"))
 
 	var steps []resource.TestStep
