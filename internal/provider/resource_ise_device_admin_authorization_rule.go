@@ -140,7 +140,7 @@ func (r *DeviceAdminAuthorizationRuleResource) Schema(ctx context.Context, req r
 					stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith"),
 				},
 			},
-			"children": schema.SetNestedAttribute{
+			"children": schema.ListNestedAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.").String,
 				Optional:            true,
 				NestedObject: schema.NestedAttributeObject{
@@ -183,7 +183,7 @@ func (r *DeviceAdminAuthorizationRuleResource) Schema(ctx context.Context, req r
 								stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith"),
 							},
 						},
-						"children": schema.SetNestedAttribute{
+						"children": schema.ListNestedAttribute{
 							MarkdownDescription: helpers.NewAttributeDescription("List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.").String,
 							Optional:            true,
 							NestedObject: schema.NestedAttributeObject{
@@ -226,7 +226,7 @@ func (r *DeviceAdminAuthorizationRuleResource) Schema(ctx context.Context, req r
 											stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
 										},
 									},
-									"children": schema.SetNestedAttribute{
+									"children": schema.ListNestedAttribute{
 										MarkdownDescription: helpers.NewAttributeDescription("List of child conditions (recursive)").String,
 										Optional:            true,
 										NestedObject: schema.NestedAttributeObject{
@@ -269,7 +269,7 @@ func (r *DeviceAdminAuthorizationRuleResource) Schema(ctx context.Context, req r
 														stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
 													},
 												},
-												"children": schema.SetNestedAttribute{
+												"children": schema.ListNestedAttribute{
 													MarkdownDescription: helpers.NewAttributeDescription("List of child conditions (level 5)").String,
 													Optional:            true,
 													NestedObject: schema.NestedAttributeObject{

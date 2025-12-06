@@ -128,7 +128,7 @@ attributes:
     description: Equality operator
     example: equals
   - model_name: children
-    type: Set
+    type: List
     immutable: true
     description: List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.
     exclude_test: true
@@ -209,7 +209,7 @@ attributes:
         description: Equality operator
         example: equals
       - model_name: children
-        type: Set
+        type: List
         description: List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.
         attributes:
           - model_name: conditionType
@@ -275,7 +275,7 @@ attributes:
             description: Equality operator
             example: equals
           - model_name: children
-            type: Set
+            type: List
             description: List of child conditions (recursive)
             attributes:
               - model_name: conditionType
@@ -333,7 +333,7 @@ attributes:
                   ]
                 description: Equality operator
               - model_name: children
-                type: Set
+                type: List
                 description: List of child conditions (level 5)
                 attributes:
                   - model_name: conditionType
