@@ -40,8 +40,8 @@ resource "ise_device_admin_authorization_exception_rule" "example" {
 
 ### Optional
 
-- `children` (Attributes Set) List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`. (see [below for nested schema](#nestedatt--children))
-- `command_sets` (Set of String) Command sets enforce the specified list of commands that can be executed by a device administrator
+- `children` (Attributes List) List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`. (see [below for nested schema](#nestedatt--children))
+- `command_sets` (List of String) Command sets enforce the specified list of commands that can be executed by a device administrator
 - `condition_attribute_name` (String) Dictionary attribute name
 - `condition_attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
 - `condition_dictionary_name` (String) Dictionary name
@@ -74,7 +74,7 @@ Optional:
 
 - `attribute_name` (String) Dictionary attribute name
 - `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
-- `children` (Attributes Set) List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`. (see [below for nested schema](#nestedatt--children--children))
+- `children` (Attributes List) List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`. (see [below for nested schema](#nestedatt--children--children))
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
 - `id` (String) UUID for condition
@@ -94,7 +94,7 @@ Optional:
 
 - `attribute_name` (String) Dictionary attribute name
 - `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
-- `children` (Attributes Set) List of child conditions (recursive) (see [below for nested schema](#nestedatt--children--children--children))
+- `children` (Attributes List) List of child conditions (recursive) (see [below for nested schema](#nestedatt--children--children--children))
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
 - `id` (String) UUID for condition
@@ -114,7 +114,7 @@ Optional:
 
 - `attribute_name` (String) Dictionary attribute name
 - `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
-- `children` (Attributes Set) List of child conditions (level 5) (see [below for nested schema](#nestedatt--children--children--children--children))
+- `children` (Attributes List) List of child conditions (level 5) (see [below for nested schema](#nestedatt--children--children--children--children))
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
 - `id` (String) UUID for condition
@@ -124,6 +124,46 @@ Optional:
 
 <a id="nestedatt--children--children--children--children"></a>
 ### Nested Schema for `children.children.children.children`
+
+Required:
+
+- `condition_type` (String) Condition type.
+  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
+
+Optional:
+
+- `attribute_name` (String) Dictionary attribute name
+- `attribute_value` (String) Attribute value for condition
+- `children` (Attributes List) List of child conditions (level 6) (see [below for nested schema](#nestedatt--children--children--children--children--children))
+- `dictionary_name` (String) Dictionary name
+- `dictionary_value` (String) Dictionary value
+- `id` (String) UUID for condition
+- `is_negate` (Boolean) Indicates whereas this condition is in negate mode
+- `operator` (String) Equality operator
+  - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`
+
+<a id="nestedatt--children--children--children--children--children"></a>
+### Nested Schema for `children.children.children.children.children`
+
+Required:
+
+- `condition_type` (String) Condition type.
+  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
+
+Optional:
+
+- `attribute_name` (String) Dictionary attribute name
+- `attribute_value` (String) Attribute value for condition
+- `children` (Attributes List) List of child conditions (level 7 - terminal) (see [below for nested schema](#nestedatt--children--children--children--children--children--children))
+- `dictionary_name` (String) Dictionary name
+- `dictionary_value` (String) Dictionary value
+- `id` (String) UUID for condition
+- `is_negate` (Boolean) Indicates whereas this condition is in negate mode
+- `operator` (String) Equality operator
+  - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`
+
+<a id="nestedatt--children--children--children--children--children--children"></a>
+### Nested Schema for `children.children.children.children.children.children`
 
 Required:
 

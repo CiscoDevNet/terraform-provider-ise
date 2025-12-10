@@ -87,22 +87,22 @@ func (p *IseProvider) Schema(ctx context.Context, req provider.SchemaRequest, re
 				MarkdownDescription: "Allow insecure HTTPS client. This can also be set as the ISE_INSECURE environment variable. Defaults to `true`.",
 				Optional:            true,
 			},
-		"retries": schema.Int64Attribute{
-			MarkdownDescription: "Number of retries for REST API calls. This can also be set as the ISE_RETRIES environment variable. Defaults to `3`.",
-			Optional:            true,
-			Validators: []validator.Int64{
-				int64validator.Between(0, 9),
+			"retries": schema.Int64Attribute{
+				MarkdownDescription: "Number of retries for REST API calls. This can also be set as the ISE_RETRIES environment variable. Defaults to `3`.",
+				Optional:            true,
+				Validators: []validator.Int64{
+					int64validator.Between(0, 9),
+				},
+			},
+			"request_timeout": schema.Int64Attribute{
+				MarkdownDescription: "HTTP request timeout in seconds for REST API calls. This can also be set as the ISE_REQUEST_TIMEOUT environment variable. Defaults to `60`. Increase this value when working with complex nested policy conditions (e.g., 7-level nesting may require 180-300 seconds).",
+				Optional:            true,
+				Validators: []validator.Int64{
+					int64validator.Between(60, 600),
+				},
 			},
 		},
-		"request_timeout": schema.Int64Attribute{
-			MarkdownDescription: "HTTP request timeout in seconds for REST API calls. This can also be set as the ISE_REQUEST_TIMEOUT environment variable. Defaults to `60`. Increase this value when working with complex nested policy conditions (e.g., 7-level nesting may require 180-300 seconds).",
-			Optional:            true,
-			Validators: []validator.Int64{
-				int64validator.Between(60, 600),
-			},
-		},
-	},
-}
+	}
 }
 
 func (p *IseProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
@@ -255,7 +255,7 @@ func (p *IseProvider) Configure(ctx context.Context, req provider.ConfigureReque
 		requestTimeout = config.RequestTimeout.ValueInt64()
 	}
 
-	// Create a new ISE client and set it to the provider client
+	// Create a new NX-OS client and set it to the provider client
 	c, err := ise.NewClient(url, username, password, ise.Insecure(insecure), ise.MaxRetries(int(retries)), ise.RequestTimeout(time.Duration(requestTimeout)))
 	if err != nil {
 		resp.Diagnostics.AddError(

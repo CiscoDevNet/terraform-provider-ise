@@ -44,6 +44,7 @@ provider "ise" {
 
 - `insecure` (Boolean) Allow insecure HTTPS client. This can also be set as the ISE_INSECURE environment variable. Defaults to `true`.
 - `password` (String, Sensitive) Password for the ISE instance. This can also be set as the ISE_PASSWORD environment variable.
+- `request_timeout` (Number) HTTP request timeout in seconds for REST API calls. This can also be set as the ISE_REQUEST_TIMEOUT environment variable. Defaults to `60`. Increase this value when working with complex nested policy conditions (e.g., 7-level nesting may require 180-300 seconds).
 - `retries` (Number) Number of retries for REST API calls. This can also be set as the ISE_RETRIES environment variable. Defaults to `3`.
 - `url` (String) URL of the Cisco ISE instance. This can also be set as the ISE_URL environment variable.
 - `username` (String) Username for the ISE instance. This can also be set as the ISE_USERNAME environment variable.
