@@ -58,6 +58,12 @@ type NetworkDevice struct {
 	SnmpPollingInterval                                  types.Int64        `tfsdk:"snmp_polling_interval"`
 	SnmpRoCommunity                                      types.String       `tfsdk:"snmp_ro_community"`
 	SnmpVersion                                          types.String       `tfsdk:"snmp_version"`
+	SnmpUsername                                         types.String       `tfsdk:"snmp_username"`
+	SnmpSecurityLevel                                    types.String       `tfsdk:"snmp_security_level"`
+	SnmpAuthProtocol                                     types.String       `tfsdk:"snmp_auth_protocol"`
+	SnmpAuthPassword                                     types.String       `tfsdk:"snmp_auth_password"`
+	SnmpPrivacyProtocol                                  types.String       `tfsdk:"snmp_privacy_protocol"`
+	SnmpPrivacyPassword                                  types.String       `tfsdk:"snmp_privacy_password"`
 	TacacsConnectModeOptions                             types.String       `tfsdk:"tacacs_connect_mode_options"`
 	TacacsSharedSecret                                   types.String       `tfsdk:"tacacs_shared_secret"`
 	TrustsecDeviceId                                     types.String       `tfsdk:"trustsec_device_id"`
@@ -189,6 +195,24 @@ func (data NetworkDevice) toBody(ctx context.Context, state NetworkDevice) strin
 	}
 	if !data.SnmpVersion.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.version", data.SnmpVersion.ValueString())
+	}
+	if !data.SnmpUsername.IsNull() {
+		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.username", data.SnmpUsername.ValueString())
+	}
+	if !data.SnmpSecurityLevel.IsNull() {
+		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.securityLevel", data.SnmpSecurityLevel.ValueString())
+	}
+	if !data.SnmpAuthProtocol.IsNull() {
+		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.authProtocol", data.SnmpAuthProtocol.ValueString())
+	}
+	if !data.SnmpAuthPassword.IsNull() {
+		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.authPassword", data.SnmpAuthPassword.ValueString())
+	}
+	if !data.SnmpPrivacyProtocol.IsNull() {
+		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.privacyProtocol", data.SnmpPrivacyProtocol.ValueString())
+	}
+	if !data.SnmpPrivacyPassword.IsNull() {
+		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.privacyPassword", data.SnmpPrivacyPassword.ValueString())
 	}
 	if !data.TacacsConnectModeOptions.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.tacacsSettings.connectModeOptions", data.TacacsConnectModeOptions.ValueString())
@@ -388,6 +412,36 @@ func (data *NetworkDevice) fromBody(ctx context.Context, res gjson.Result) {
 		data.SnmpVersion = types.StringValue(value.String())
 	} else {
 		data.SnmpVersion = types.StringNull()
+	}
+	if value := res.Get("NetworkDevice.snmpsettings.username"); value.Exists() && value.Type != gjson.Null {
+		data.SnmpUsername = types.StringValue(value.String())
+	} else {
+		data.SnmpUsername = types.StringNull()
+	}
+	if value := res.Get("NetworkDevice.snmpsettings.securityLevel"); value.Exists() && value.Type != gjson.Null {
+		data.SnmpSecurityLevel = types.StringValue(value.String())
+	} else {
+		data.SnmpSecurityLevel = types.StringNull()
+	}
+	if value := res.Get("NetworkDevice.snmpsettings.authProtocol"); value.Exists() && value.Type != gjson.Null {
+		data.SnmpAuthProtocol = types.StringValue(value.String())
+	} else {
+		data.SnmpAuthProtocol = types.StringNull()
+	}
+	if value := res.Get("NetworkDevice.snmpsettings.authPassword"); value.Exists() && value.Type != gjson.Null {
+		data.SnmpAuthPassword = types.StringValue(value.String())
+	} else {
+		data.SnmpAuthPassword = types.StringNull()
+	}
+	if value := res.Get("NetworkDevice.snmpsettings.privacyProtocol"); value.Exists() && value.Type != gjson.Null {
+		data.SnmpPrivacyProtocol = types.StringValue(value.String())
+	} else {
+		data.SnmpPrivacyProtocol = types.StringNull()
+	}
+	if value := res.Get("NetworkDevice.snmpsettings.privacyPassword"); value.Exists() && value.Type != gjson.Null {
+		data.SnmpPrivacyPassword = types.StringValue(value.String())
+	} else {
+		data.SnmpPrivacyPassword = types.StringNull()
 	}
 	if value := res.Get("NetworkDevice.tacacsSettings.connectModeOptions"); value.Exists() && value.Type != gjson.Null {
 		data.TacacsConnectModeOptions = types.StringValue(value.String())
@@ -634,6 +688,36 @@ func (data *NetworkDevice) updateFromBody(ctx context.Context, res gjson.Result)
 	} else {
 		data.SnmpVersion = types.StringNull()
 	}
+	if value := res.Get("NetworkDevice.snmpsettings.username"); value.Exists() && !data.SnmpUsername.IsNull() {
+		data.SnmpUsername = types.StringValue(value.String())
+	} else {
+		data.SnmpUsername = types.StringNull()
+	}
+	if value := res.Get("NetworkDevice.snmpsettings.securityLevel"); value.Exists() && !data.SnmpSecurityLevel.IsNull() {
+		data.SnmpSecurityLevel = types.StringValue(value.String())
+	} else {
+		data.SnmpSecurityLevel = types.StringNull()
+	}
+	if value := res.Get("NetworkDevice.snmpsettings.authProtocol"); value.Exists() && !data.SnmpAuthProtocol.IsNull() {
+		data.SnmpAuthProtocol = types.StringValue(value.String())
+	} else {
+		data.SnmpAuthProtocol = types.StringNull()
+	}
+	if value := res.Get("NetworkDevice.snmpsettings.authPassword"); value.Exists() && !data.SnmpAuthPassword.IsNull() {
+		data.SnmpAuthPassword = types.StringValue(value.String())
+	} else {
+		data.SnmpAuthPassword = types.StringNull()
+	}
+	if value := res.Get("NetworkDevice.snmpsettings.privacyProtocol"); value.Exists() && !data.SnmpPrivacyProtocol.IsNull() {
+		data.SnmpPrivacyProtocol = types.StringValue(value.String())
+	} else {
+		data.SnmpPrivacyProtocol = types.StringNull()
+	}
+	if value := res.Get("NetworkDevice.snmpsettings.privacyPassword"); value.Exists() && !data.SnmpPrivacyPassword.IsNull() {
+		data.SnmpPrivacyPassword = types.StringValue(value.String())
+	} else {
+		data.SnmpPrivacyPassword = types.StringNull()
+	}
 	if value := res.Get("NetworkDevice.tacacsSettings.connectModeOptions"); value.Exists() && !data.TacacsConnectModeOptions.IsNull() {
 		data.TacacsConnectModeOptions = types.StringValue(value.String())
 	} else {
@@ -795,6 +879,24 @@ func (data *NetworkDevice) isNull(ctx context.Context, res gjson.Result) bool {
 		return false
 	}
 	if !data.SnmpVersion.IsNull() {
+		return false
+	}
+	if !data.SnmpUsername.IsNull() {
+		return false
+	}
+	if !data.SnmpSecurityLevel.IsNull() {
+		return false
+	}
+	if !data.SnmpAuthProtocol.IsNull() {
+		return false
+	}
+	if !data.SnmpAuthPassword.IsNull() {
+		return false
+	}
+	if !data.SnmpPrivacyProtocol.IsNull() {
+		return false
+	}
+	if !data.SnmpPrivacyPassword.IsNull() {
 		return false
 	}
 	if !data.TacacsConnectModeOptions.IsNull() {
