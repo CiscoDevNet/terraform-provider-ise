@@ -52,8 +52,13 @@ func TestAccDataSourceIseNetworkDevice(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "snmp_link_trap_query", "true"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "snmp_mac_trap_query", "true"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "snmp_polling_interval", "1200"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "snmp_ro_community", "rocom"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "snmp_version", "TWO_C"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "snmp_version", "THREE"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "snmp_username", "user123"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "snmp_security_level", "PRIV"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "snmp_auth_protocol", "SHA2"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "snmp_auth_password", "Cisco123"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "snmp_privacy_protocol", "AES256"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "snmp_privacy_password", "Cisco12345"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "tacacs_connect_mode_options", "OFF"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "tacacs_shared_secret", "cisco123"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "trustsec_device_id", "device123"))
@@ -113,8 +118,13 @@ func testAccDataSourceIseNetworkDeviceConfig() string {
 	config += `	snmp_link_trap_query = true` + "\n"
 	config += `	snmp_mac_trap_query = true` + "\n"
 	config += `	snmp_polling_interval = 1200` + "\n"
-	config += `	snmp_ro_community = "rocom"` + "\n"
-	config += `	snmp_version = "TWO_C"` + "\n"
+	config += `	snmp_version = "THREE"` + "\n"
+	config += `	snmp_username = "user123"` + "\n"
+	config += `	snmp_security_level = "PRIV"` + "\n"
+	config += `	snmp_auth_protocol = "SHA2"` + "\n"
+	config += `	snmp_auth_password = "Cisco123"` + "\n"
+	config += `	snmp_privacy_protocol = "AES256"` + "\n"
+	config += `	snmp_privacy_password = "Cisco12345"` + "\n"
 	config += `	tacacs_connect_mode_options = "OFF"` + "\n"
 	config += `	tacacs_shared_secret = "cisco123"` + "\n"
 	config += `	trustsec_device_id = "device123"` + "\n"

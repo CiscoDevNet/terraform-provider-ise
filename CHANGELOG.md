@@ -1,3 +1,7 @@
+## 0.2.13 (unreleased)
+
+- Add SNMPv3 support to `ise_network_device` resource and data source
+
 ## 0.2.12
 
 - Enhancement: The `ise_endpoint` resource now performs a PUT update if the endpoint already exists during creation, instead of returning an error

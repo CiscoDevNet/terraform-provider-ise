@@ -39,8 +39,13 @@ resource "ise_network_device" "example" {
   snmp_link_trap_query                                        = true
   snmp_mac_trap_query                                         = true
   snmp_polling_interval                                       = 1200
-  snmp_ro_community                                           = "rocom"
-  snmp_version                                                = "TWO_C"
+  snmp_version                                                = "THREE"
+  snmp_username                                               = "user123"
+  snmp_security_level                                         = "PRIV"
+  snmp_auth_protocol                                          = "SHA2"
+  snmp_auth_password                                          = "Cisco123"
+  snmp_privacy_protocol                                       = "AES256"
+  snmp_privacy_password                                       = "Cisco12345"
   tacacs_connect_mode_options                                 = "OFF"
   tacacs_shared_secret                                        = "cisco123"
   trustsec_device_id                                          = "device123"
@@ -90,12 +95,21 @@ resource "ise_network_device" "example" {
 - `network_device_groups` (Set of String) List of network device groups, e.g. `Device Type#All Device Types#ACCESS`
 - `profile_name` (String) Profile name
   - Default value: `Cisco`
+- `snmp_auth_password` (String) SNMP authentication password. Required for snmp version 3 and securityLevel AUTH or PRIV.
+- `snmp_auth_protocol` (String) SNMP authentication protocol. Required for snmp version 3 and securityLevel AUTH or PRIV.
+  - Choices: `MD5`, `SHA`, `SHA2`
 - `snmp_link_trap_query` (Boolean) SNMP link Trap Query
 - `snmp_mac_trap_query` (Boolean) SNMP MAC Trap Query
 - `snmp_originating_policy_service_node` (String) Originating Policy Services Node
 - `snmp_polling_interval` (Number) SNMP Polling Interval in seconds
   - Range: `600`-`86400`
+- `snmp_privacy_password` (String) SNMP privacy password. Required for snmp version 3 and securityLevel PRIV
+- `snmp_privacy_protocol` (String) SNMP privacy protocol. Required for snmp version 3 and securityLevel PRIV.
+  - Choices: `DES`, `AES128`, `AES192`, `AES256`, `3DES`
 - `snmp_ro_community` (String) SNMP RO Community
+- `snmp_security_level` (String) SNMP security level. Required for snmp version 3.
+  - Choices: `NO_AUTH`, `AUTH`, `PRIV`
+- `snmp_username` (String) SNMP username. Required for snmp version 3.
 - `snmp_version` (String) SNMP version
   - Choices: `ONE`, `TWO_C`, `THREE`
 - `software_version` (String) Software version

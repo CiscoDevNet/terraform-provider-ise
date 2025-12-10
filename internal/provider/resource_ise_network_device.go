@@ -207,6 +207,39 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 					stringvalidator.OneOf("ONE", "TWO_C", "THREE"),
 				},
 			},
+			"snmp_username": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("SNMP username. Required for snmp version 3.").String,
+				Optional:            true,
+			},
+			"snmp_security_level": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("SNMP security level. Required for snmp version 3.").AddStringEnumDescription("NO_AUTH", "AUTH", "PRIV").String,
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("NO_AUTH", "AUTH", "PRIV"),
+				},
+			},
+			"snmp_auth_protocol": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("SNMP authentication protocol. Required for snmp version 3 and securityLevel AUTH or PRIV.").AddStringEnumDescription("MD5", "SHA", "SHA2").String,
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("MD5", "SHA", "SHA2"),
+				},
+			},
+			"snmp_auth_password": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("SNMP authentication password. Required for snmp version 3 and securityLevel AUTH or PRIV.").String,
+				Optional:            true,
+			},
+			"snmp_privacy_protocol": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("SNMP privacy protocol. Required for snmp version 3 and securityLevel PRIV.").AddStringEnumDescription("DES", "AES128", "AES192", "AES256", "3DES").String,
+				Optional:            true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("DES", "AES128", "AES192", "AES256", "3DES"),
+				},
+			},
+			"snmp_privacy_password": schema.StringAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("SNMP privacy password. Required for snmp version 3 and securityLevel PRIV").String,
+				Optional:            true,
+			},
 			"tacacs_connect_mode_options": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Connect mode options").AddStringEnumDescription("OFF", "ON_LEGACY", "ON_DRAFT_COMPLIANT").String,
 				Optional:            true,

@@ -162,13 +162,53 @@ attributes:
     type: String
     description: SNMP RO Community
     example: rocom
+    exclude_test: true
   - model_name: version
     data_path: [NetworkDevice, snmpsettings]
     tf_name: snmp_version
     type: String
     enum_values: [ONE, TWO_C, THREE]
     description: SNMP version
-    example: TWO_C
+    example: THREE
+  - model_name: username
+    data_path: [NetworkDevice, snmpsettings]
+    tf_name: snmp_username
+    type: String
+    description: SNMP username. Required for snmp version 3.
+    example: user123
+  - model_name: securityLevel
+    data_path: [NetworkDevice, snmpsettings]
+    tf_name: snmp_security_level
+    type: String
+    enum_values: [NO_AUTH, AUTH, PRIV]
+    description: SNMP security level. Required for snmp version 3.
+    example: PRIV
+  - model_name: authProtocol
+    data_path: [NetworkDevice, snmpsettings]
+    tf_name: snmp_auth_protocol
+    type: String
+    enum_values: [MD5, SHA, SHA2]
+    description: SNMP authentication protocol. Required for snmp version 3 and securityLevel AUTH or PRIV.
+    example: SHA2
+  - model_name: authPassword
+    data_path: [NetworkDevice, snmpsettings]
+    tf_name: snmp_auth_password
+    type: String
+    description: SNMP authentication password. Required for snmp version 3 and securityLevel AUTH or PRIV.
+    example: Cisco123
+  - model_name: privacyProtocol
+    data_path: [NetworkDevice, snmpsettings]
+    tf_name: snmp_privacy_protocol
+    type: String
+    enum_values: [DES, AES128, AES192, AES256, 3DES]
+    description: SNMP privacy protocol. Required for snmp version 3 and securityLevel PRIV.
+    example: AES256
+  - model_name: privacyPassword
+    data_path: [NetworkDevice, snmpsettings]
+    tf_name: snmp_privacy_password
+    type: String
+    description: SNMP privacy password. Required for snmp version 3 and securityLevel PRIV
+    example: Cisco12345
   - model_name: connectModeOptions
     data_path: [NetworkDevice, tacacsSettings]
     tf_name: tacacs_connect_mode_options
