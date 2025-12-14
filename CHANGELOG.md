@@ -1,4 +1,4 @@
-## 0.2.13 (unreleased)
+## 0.2.13
 
 - Add SNMPv3 support to `ise_network_device` resource and data source
 
