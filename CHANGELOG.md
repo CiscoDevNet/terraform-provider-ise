@@ -1,3 +1,7 @@
+## 0.2.14 (unreleased)
+
+- Add destroy support for `ise_certificate_authentication_profile` (requires ISE 3.4 or later)
+
 ## 0.2.13
 
 - Add SNMPv3 support to `ise_network_device` resource and data source
