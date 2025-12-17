@@ -3,6 +3,7 @@ name: Certificate Authentication Profile
 rest_endpoint: /ers/config/certificateprofile
 data_source_name_query: true
 doc_category: Identity Management
+ignore_delete_error: "Unsupported method exception"
 test_tags: [CERT_PROFILE] # excluded by default as cert auth profiles cannot be deleted via API
 attributes:
   - model_name: name
