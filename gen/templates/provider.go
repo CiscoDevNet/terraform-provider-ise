@@ -26,6 +26,7 @@ import (
 	"os"
 	"strconv"
 	"sync"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -47,11 +48,12 @@ type IseProvider struct {
 
 // IseProviderModel describes the provider data model.
 type IseProviderModel struct {
-	Username types.String `tfsdk:"username"`
-	Password types.String `tfsdk:"password"`
-	URL      types.String `tfsdk:"url"`
-	Insecure types.Bool   `tfsdk:"insecure"`
-	Retries  types.Int64  `tfsdk:"retries"`
+	Username       types.String `tfsdk:"username"`
+	Password       types.String `tfsdk:"password"`
+	URL            types.String `tfsdk:"url"`
+	Insecure       types.Bool   `tfsdk:"insecure"`
+	Retries        types.Int64  `tfsdk:"retries"`
+	RequestTimeout types.Int64  `tfsdk:"request_timeout"`
 }
 
 // IseProviderData describes the data maintained by the provider.
@@ -91,6 +93,13 @@ func (p *IseProvider) Schema(ctx context.Context, req provider.SchemaRequest, re
 				Optional:            true,
 				Validators: []validator.Int64{
 					int64validator.Between(0, 9),
+				},
+			},
+			"request_timeout": schema.Int64Attribute{
+				MarkdownDescription: "HTTP request timeout in seconds for REST API calls. This can also be set as the ISE_REQUEST_TIMEOUT environment variable. Defaults to `60`. Increase this value when working with complex nested policy conditions (e.g., 7-level nesting may require 180-300 seconds).",
+				Optional:            true,
+				Validators: []validator.Int64{
+					int64validator.Between(60, 600),
 				},
 			},
 		},
@@ -226,8 +235,29 @@ func (p *IseProvider) Configure(ctx context.Context, req provider.ConfigureReque
 		retries = config.Retries.ValueInt64()
 	}
 
+	var requestTimeout int64
+	if config.RequestTimeout.IsUnknown() {
+		// Cannot connect to client with an unknown value
+		resp.Diagnostics.AddWarning(
+			"Unable to create client",
+			"Cannot use unknown value as request_timeout",
+		)
+		return
+	}
+
+	if config.RequestTimeout.IsNull() {
+		timeoutStr := os.Getenv("ISE_REQUEST_TIMEOUT")
+		if timeoutStr == "" {
+			requestTimeout = 60
+		} else {
+			requestTimeout, _ = strconv.ParseInt(timeoutStr, 0, 64)
+		}
+	} else {
+		requestTimeout = config.RequestTimeout.ValueInt64()
+	}
+
 	// Create a new NX-OS client and set it to the provider client
-	c, err := ise.NewClient(url, username, password, ise.Insecure(insecure), ise.MaxRetries(int(retries)))
+	c, err := ise.NewClient(url, username, password, ise.Insecure(insecure), ise.MaxRetries(int(retries)), ise.RequestTimeout(time.Duration(requestTimeout)))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to create client",
