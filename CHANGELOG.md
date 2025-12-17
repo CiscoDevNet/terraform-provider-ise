@@ -1,4 +1,4 @@
-## 0.2.14 (unreleased)
+## 0.2.14
 
 - Add `ise_trustsec_egress_push_matrix` resource to enable deploying the full matrix to TrustSec devices
 - Add destroy support for `ise_certificate_authentication_profile` (requires ISE 3.4 or later)
