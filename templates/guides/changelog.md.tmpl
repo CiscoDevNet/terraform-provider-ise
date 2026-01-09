@@ -7,6 +7,10 @@ description: |-
 
 # Changelog
 
+## Unreleased
+
+- Add Software Bill of Materials (SBOM) generation in SPDX and CycloneDX formats during releases
+
 ## 0.2.14
 
 - Add `ise_trustsec_egress_push_matrix` resource to enable deploying the full matrix to TrustSec devices

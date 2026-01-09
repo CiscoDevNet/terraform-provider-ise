@@ -35,3 +35,6 @@ website/vendor
 *.winfile eol=crlf
 
 .envrc
+
+# SBOM files generated during release
+*_sbom.*.json
