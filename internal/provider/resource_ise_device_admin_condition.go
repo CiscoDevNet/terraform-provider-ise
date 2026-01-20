@@ -118,7 +118,7 @@ func (r *DeviceAdminConditionResource) Schema(ctx context.Context, req resource.
 				},
 			},
 			"children": schema.ListNestedAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("List of child conditions. `condition_type` must be one of `LibraryConditionAndBlock` or `LibraryConditionOrBlock`.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("List of child conditions").String,
 				Optional:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{

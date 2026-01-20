@@ -39,7 +39,7 @@ resource "ise_device_admin_policy_set" "example" {
 
 ### Optional
 
-- `children` (Attributes List) List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`. (see [below for nested schema](#nestedatt--children))
+- `children` (Attributes List) List of child conditions (see [below for nested schema](#nestedatt--children))
 - `condition_attribute_name` (String) Dictionary attribute name
 - `condition_attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
 - `condition_dictionary_name` (String) Dictionary name
@@ -49,7 +49,7 @@ resource "ise_device_admin_policy_set" "example" {
 - `condition_operator` (String) Equality operator
   - Choices: `contains`, `endsWith`, `equals`, `greaterOrEquals`, `greaterThan`, `in`, `ipEquals`, `ipGreaterThan`, `ipLessThan`, `ipNotEquals`, `lessOrEquals`, `lessThan`, `matches`, `notContains`, `notEndsWith`, `notEquals`, `notIn`, `notStartsWith`, `startsWith`, `macContains`, `macEndsWith`, `macEquals`, `macIn`, `macNotContains`, `macNotEndsWith`, `macNotEquals`, `macNotIn`, `macNotStartsWith`, `macStartsWith`
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
-  - Choices: `ConditionAndBlock`, `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionOrBlock`, `ConditionReference`
+  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
 - `default` (Boolean) Indicates if this policy set is the default one
 - `description` (String) The description of the policy set
 - `is_proxy` (Boolean) Flag which indicates if the policy set service is of type 'Proxy Sequence' or 'Allowed Protocols'
@@ -67,13 +67,13 @@ resource "ise_device_admin_policy_set" "example" {
 Required:
 
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
-  - Choices: `ConditionAndBlock`, `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionOrBlock`, `ConditionReference`
+  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
 
 Optional:
 
 - `attribute_name` (String) Dictionary attribute name
 - `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
-- `children` (Attributes List) List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`. (see [below for nested schema](#nestedatt--children--children))
+- `children` (Attributes List) List of child conditions (see [below for nested schema](#nestedatt--children--children))
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
 - `id` (String) UUID for condition
@@ -93,7 +93,7 @@ Optional:
 
 - `attribute_name` (String) Dictionary attribute name
 - `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
-- `children` (Attributes List) List of child conditions (recursive) (see [below for nested schema](#nestedatt--children--children--children))
+- `children` (Attributes List) List of child conditions (see [below for nested schema](#nestedatt--children--children--children))
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
 - `id` (String) UUID for condition
@@ -113,7 +113,7 @@ Optional:
 
 - `attribute_name` (String) Dictionary attribute name
 - `attribute_value` (String) Attribute value for condition
-- `children` (Attributes List) List of child conditions (level 5) (see [below for nested schema](#nestedatt--children--children--children--children))
+- `children` (Attributes List) List of child conditions (see [below for nested schema](#nestedatt--children--children--children--children))
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
 - `id` (String) UUID for condition
@@ -133,7 +133,7 @@ Optional:
 
 - `attribute_name` (String) Dictionary attribute name
 - `attribute_value` (String) Attribute value for condition
-- `children` (Attributes List) List of child conditions (level 6) (see [below for nested schema](#nestedatt--children--children--children--children--children))
+- `children` (Attributes List) List of child conditions (see [below for nested schema](#nestedatt--children--children--children--children--children))
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
 - `id` (String) UUID for condition
@@ -153,7 +153,7 @@ Optional:
 
 - `attribute_name` (String) Dictionary attribute name
 - `attribute_value` (String) Attribute value for condition
-- `children` (Attributes List) List of child conditions (level 7 - terminal) (see [below for nested schema](#nestedatt--children--children--children--children--children--children))
+- `children` (Attributes List) List of child conditions (see [below for nested schema](#nestedatt--children--children--children--children--children--children))
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
 - `id` (String) UUID for condition
@@ -167,7 +167,7 @@ Optional:
 Required:
 
 - `condition_type` (String) Condition type.
-  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
+  - Choices: `ConditionAttributes`, `ConditionReference`
 
 Optional:
 

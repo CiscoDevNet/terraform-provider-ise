@@ -109,7 +109,7 @@ func (d *DeviceAdminConditionDataSource) Schema(ctx context.Context, req datasou
 				Computed:            true,
 			},
 			"children": schema.ListNestedAttribute{
-				MarkdownDescription: "List of child conditions. `condition_type` must be one of `LibraryConditionAndBlock` or `LibraryConditionOrBlock`.",
+				MarkdownDescription: "List of child conditions",
 				Computed:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{

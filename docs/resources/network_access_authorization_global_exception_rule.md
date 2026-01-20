@@ -37,7 +37,7 @@ resource "ise_network_access_authorization_global_exception_rule" "example" {
 
 ### Optional
 
-- `children` (Attributes List) List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`. (see [below for nested schema](#nestedatt--children))
+- `children` (Attributes List) List of child conditions (see [below for nested schema](#nestedatt--children))
 - `condition_attribute_name` (String) Dictionary attribute name
 - `condition_attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
 - `condition_dictionary_name` (String) Dictionary name
@@ -70,7 +70,7 @@ Optional:
 
 - `attribute_name` (String) Dictionary attribute name
 - `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
-- `children` (Attributes List) List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`. (see [below for nested schema](#nestedatt--children--children))
+- `children` (Attributes List) List of child conditions (see [below for nested schema](#nestedatt--children--children))
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
 - `id` (String) UUID for condition
@@ -90,7 +90,7 @@ Optional:
 
 - `attribute_name` (String) Dictionary attribute name
 - `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
-- `children` (Attributes List) List of child conditions (recursive) (see [below for nested schema](#nestedatt--children--children--children))
+- `children` (Attributes List) List of child conditions (see [below for nested schema](#nestedatt--children--children--children))
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
 - `id` (String) UUID for condition
@@ -110,7 +110,7 @@ Optional:
 
 - `attribute_name` (String) Dictionary attribute name
 - `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
-- `children` (Attributes List) List of child conditions (level 5) (see [below for nested schema](#nestedatt--children--children--children--children))
+- `children` (Attributes List) List of child conditions (see [below for nested schema](#nestedatt--children--children--children--children))
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
 - `id` (String) UUID for condition
@@ -130,7 +130,7 @@ Optional:
 
 - `attribute_name` (String) Dictionary attribute name
 - `attribute_value` (String) Attribute value for condition
-- `children` (Attributes List) List of child conditions (level 6) (see [below for nested schema](#nestedatt--children--children--children--children--children))
+- `children` (Attributes List) List of child conditions (see [below for nested schema](#nestedatt--children--children--children--children--children))
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
 - `id` (String) UUID for condition
@@ -150,7 +150,7 @@ Optional:
 
 - `attribute_name` (String) Dictionary attribute name
 - `attribute_value` (String) Attribute value for condition
-- `children` (Attributes List) List of child conditions (level 7 - terminal) (see [below for nested schema](#nestedatt--children--children--children--children--children--children))
+- `children` (Attributes List) List of child conditions (see [below for nested schema](#nestedatt--children--children--children--children--children--children))
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
 - `id` (String) UUID for condition
@@ -164,7 +164,7 @@ Optional:
 Required:
 
 - `condition_type` (String) Condition type.
-  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
+  - Choices: `ConditionAttributes`, `ConditionReference`
 
 Optional:
 

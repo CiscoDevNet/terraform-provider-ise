@@ -88,7 +88,7 @@ attributes:
     minimum_test_value: '"equals"'
   - model_name: children
     type: List
-    description: List of child conditions. `condition_type` must be one of `LibraryConditionAndBlock` or `LibraryConditionOrBlock`.
+    description: List of child conditions.
     exclude_test: true
     attributes:
       - model_name: name

@@ -109,7 +109,7 @@ func (d *NetworkAccessConditionDataSource) Schema(ctx context.Context, req datas
 				Computed:            true,
 			},
 			"children": schema.ListNestedAttribute{
-				MarkdownDescription: "List of child conditions. `condition_type` must be one of `LibraryConditionAndBlock` or `LibraryConditionOrBlock`.",
+				MarkdownDescription: "List of child conditions.",
 				Computed:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
