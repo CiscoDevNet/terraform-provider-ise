@@ -476,7 +476,7 @@ attributes:
 
   - model_name: commands
     tf_name: command_sets
-    type: List
+    type: Set
     element_type: String
     description: Command sets enforce the specified list of commands that can be executed by a device administrator
     example: DenyAllCommands

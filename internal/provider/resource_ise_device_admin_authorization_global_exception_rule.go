@@ -405,7 +405,7 @@ func (r *DeviceAdminAuthorizationGlobalExceptionRuleResource) Schema(ctx context
 					},
 				},
 			},
-			"command_sets": schema.ListAttribute{
+			"command_sets": schema.SetAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Command sets enforce the specified list of commands that can be executed by a device administrator").String,
 				ElementType:         types.StringType,
 				Optional:            true,
