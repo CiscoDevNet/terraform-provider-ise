@@ -108,7 +108,7 @@ func (d *DeviceAdminConditionDataSource) Schema(ctx context.Context, req datasou
 				MarkdownDescription: "Equality operator",
 				Computed:            true,
 			},
-			"children": schema.SetNestedAttribute{
+			"children": schema.ListNestedAttribute{
 				MarkdownDescription: "List of child conditions. `condition_type` must be one of `LibraryConditionAndBlock` or `LibraryConditionOrBlock`.",
 				Computed:            true,
 				NestedObject: schema.NestedAttributeObject{
@@ -153,7 +153,7 @@ func (d *DeviceAdminConditionDataSource) Schema(ctx context.Context, req datasou
 							MarkdownDescription: "Equality operator",
 							Computed:            true,
 						},
-						"children": schema.SetNestedAttribute{
+						"children": schema.ListNestedAttribute{
 							MarkdownDescription: "List of child conditions",
 							Computed:            true,
 							NestedObject: schema.NestedAttributeObject{
@@ -198,7 +198,7 @@ func (d *DeviceAdminConditionDataSource) Schema(ctx context.Context, req datasou
 										MarkdownDescription: "Equality operator",
 										Computed:            true,
 									},
-									"children": schema.SetNestedAttribute{
+									"children": schema.ListNestedAttribute{
 										MarkdownDescription: "List of child conditions",
 										Computed:            true,
 										NestedObject: schema.NestedAttributeObject{
@@ -235,7 +235,7 @@ func (d *DeviceAdminConditionDataSource) Schema(ctx context.Context, req datasou
 													MarkdownDescription: "Equality operator",
 													Computed:            true,
 												},
-												"children": schema.SetNestedAttribute{
+												"children": schema.ListNestedAttribute{
 													MarkdownDescription: "List of child conditions",
 													Computed:            true,
 												},
