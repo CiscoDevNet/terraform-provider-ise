@@ -133,7 +133,7 @@ func (d *DeviceAdminPolicySetDataSource) Schema(ctx context.Context, req datasou
 				Computed:            true,
 			},
 			"children": schema.ListNestedAttribute{
-				MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.",
+				MarkdownDescription: "List of child conditions",
 				Computed:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -170,7 +170,7 @@ func (d *DeviceAdminPolicySetDataSource) Schema(ctx context.Context, req datasou
 							Computed:            true,
 						},
 						"children": schema.ListNestedAttribute{
-							MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.",
+							MarkdownDescription: "List of child conditions",
 							Computed:            true,
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
@@ -207,7 +207,7 @@ func (d *DeviceAdminPolicySetDataSource) Schema(ctx context.Context, req datasou
 										Computed:            true,
 									},
 									"children": schema.ListNestedAttribute{
-										MarkdownDescription: "List of child conditions (recursive)",
+										MarkdownDescription: "List of child conditions",
 										Computed:            true,
 										NestedObject: schema.NestedAttributeObject{
 											Attributes: map[string]schema.Attribute{
@@ -244,7 +244,7 @@ func (d *DeviceAdminPolicySetDataSource) Schema(ctx context.Context, req datasou
 													Computed:            true,
 												},
 												"children": schema.ListNestedAttribute{
-													MarkdownDescription: "List of child conditions (level 5)",
+													MarkdownDescription: "List of child conditions",
 													Computed:            true,
 												},
 											},

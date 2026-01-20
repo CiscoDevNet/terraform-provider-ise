@@ -114,8 +114,7 @@ attributes:
     example: equals
   - model_name: children
     type: List
-    immutable: true
-    description: List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.
+    description: List of child conditions
     exclude_test: true
     data_path: [rule, condition]
     attributes:
@@ -193,7 +192,7 @@ attributes:
         example: equals
       - model_name: children
         type: List
-        description: List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.
+        description: List of child conditions
         attributes:
           - model_name: conditionType
             mandatory: true
@@ -259,7 +258,7 @@ attributes:
             example: equals
           - model_name: children
             type: List
-            description: List of child conditions (recursive)
+            description: List of child conditions
             attributes:
               - model_name: conditionType
                 mandatory: true
@@ -325,7 +324,7 @@ attributes:
                 example: equals
               - model_name: children
                 type: List
-                description: List of child conditions (level 5)
+                description: List of child conditions
                 attributes:
                   - model_name: conditionType
                     mandatory: true
@@ -384,7 +383,7 @@ attributes:
                     description: Equality operator
                   - model_name: children
                     type: List
-                    description: List of child conditions (level 6)
+                    description: List of child conditions
                     attributes:
                       - model_name: conditionType
                         mandatory: true
@@ -443,18 +442,12 @@ attributes:
                         description: Equality operator
                       - model_name: children
                         type: List
-                        description: List of child conditions (level 7 - terminal)
+                        description: List of child conditions
                         attributes:
                           - model_name: conditionType
                             mandatory: true
                             type: String
-                            enum_values:
-                              [
-                                ConditionAndBlock,
-                                ConditionAttributes,
-                                ConditionOrBlock,
-                                ConditionReference,
-                              ]
+                            enum_values: [ConditionAttributes, ConditionReference]
                             description: Condition type.
                             example: ConditionAttributes
                           - model_name: id

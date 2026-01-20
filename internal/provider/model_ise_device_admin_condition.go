@@ -22,6 +22,7 @@ package provider
 //template:begin imports
 import (
 	"context"
+	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
@@ -542,169 +543,217 @@ func (data *DeviceAdminCondition) updateFromBody(ctx context.Context, res gjson.
 	} else {
 		data.Operator = types.StringNull()
 	}
-	if value := res.Get("response.children"); value.Exists() {
-		data.Children = make([]DeviceAdminConditionChildren, 0)
-		value.ForEach(func(k, v gjson.Result) bool {
-			item := DeviceAdminConditionChildren{}
-			if cValue := v.Get("name"); cValue.Exists() && cValue.Type != gjson.Null {
-				item.Name = types.StringValue(cValue.String())
-			} else {
-				item.Name = types.StringNull()
-			}
-			if cValue := v.Get("description"); cValue.Exists() && cValue.Type != gjson.Null {
-				item.Description = types.StringValue(cValue.String())
-			} else {
-				item.Description = types.StringNull()
-			}
-			if cValue := v.Get("conditionType"); cValue.Exists() && cValue.Type != gjson.Null {
-				item.ConditionType = types.StringValue(cValue.String())
-			} else {
-				item.ConditionType = types.StringNull()
-			}
-			if cValue := v.Get("id"); cValue.Exists() && cValue.Type != gjson.Null {
-				item.Id = types.StringValue(cValue.String())
-			} else {
-				item.Id = types.StringNull()
-			}
-			if cValue := v.Get("isNegate"); cValue.Exists() && cValue.Type != gjson.Null {
-				item.IsNegate = types.BoolValue(cValue.Bool())
-			} else {
-				item.IsNegate = types.BoolNull()
-			}
-			if cValue := v.Get("attributeName"); cValue.Exists() && cValue.Type != gjson.Null {
-				item.AttributeName = types.StringValue(cValue.String())
-			} else {
-				item.AttributeName = types.StringNull()
-			}
-			if cValue := v.Get("attributeValue"); cValue.Exists() && cValue.Type != gjson.Null {
-				item.AttributeValue = types.StringValue(cValue.String())
-			} else {
-				item.AttributeValue = types.StringNull()
-			}
-			if cValue := v.Get("dictionaryName"); cValue.Exists() && cValue.Type != gjson.Null {
-				item.DictionaryName = types.StringValue(cValue.String())
-			} else {
-				item.DictionaryName = types.StringNull()
-			}
-			if cValue := v.Get("dictionaryValue"); cValue.Exists() && cValue.Type != gjson.Null {
-				item.DictionaryValue = types.StringValue(cValue.String())
-			} else {
-				item.DictionaryValue = types.StringNull()
-			}
-			if cValue := v.Get("operator"); cValue.Exists() && cValue.Type != gjson.Null {
-				item.Operator = types.StringValue(cValue.String())
-			} else {
-				item.Operator = types.StringNull()
-			}
-			if cValue := v.Get("children"); cValue.Exists() {
-				item.Children = make([]DeviceAdminConditionChildrenChildren, 0)
-				cValue.ForEach(func(ck, cv gjson.Result) bool {
-					cItem := DeviceAdminConditionChildrenChildren{}
-					if ccValue := cv.Get("name"); ccValue.Exists() && ccValue.Type != gjson.Null {
-						cItem.Name = types.StringValue(ccValue.String())
-					} else {
-						cItem.Name = types.StringNull()
+	for i := range data.Children {
+		keys := [...]string{"name", "conditionType", "id", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
+		keyValues := [...]string{data.Children[i].Name.ValueString(), data.Children[i].ConditionType.ValueString(), data.Children[i].Id.ValueString(), data.Children[i].AttributeName.ValueString(), data.Children[i].AttributeValue.ValueString(), data.Children[i].DictionaryName.ValueString(), data.Children[i].DictionaryValue.ValueString(), data.Children[i].Operator.ValueString()}
+
+		var r gjson.Result
+		res.Get("response.children").ForEach(
+			func(_, v gjson.Result) bool {
+				found := false
+				for ik := range keys {
+					if v.Get(keys[ik]).String() == keyValues[ik] {
+						found = true
+						continue
 					}
-					if ccValue := cv.Get("description"); ccValue.Exists() && ccValue.Type != gjson.Null {
-						cItem.Description = types.StringValue(ccValue.String())
-					} else {
-						cItem.Description = types.StringNull()
+					found = false
+					break
+				}
+				if found {
+					r = v
+					return false
+				}
+				return true
+			},
+		)
+		if value := r.Get("name"); value.Exists() && !data.Children[i].Name.IsNull() {
+			data.Children[i].Name = types.StringValue(value.String())
+		} else {
+			data.Children[i].Name = types.StringNull()
+		}
+		if value := r.Get("description"); value.Exists() && !data.Children[i].Description.IsNull() {
+			data.Children[i].Description = types.StringValue(value.String())
+		} else {
+			data.Children[i].Description = types.StringNull()
+		}
+		if value := r.Get("conditionType"); value.Exists() && !data.Children[i].ConditionType.IsNull() {
+			data.Children[i].ConditionType = types.StringValue(value.String())
+		} else {
+			data.Children[i].ConditionType = types.StringNull()
+		}
+		if value := r.Get("id"); value.Exists() && !data.Children[i].Id.IsNull() {
+			data.Children[i].Id = types.StringValue(value.String())
+		} else {
+			data.Children[i].Id = types.StringNull()
+		}
+		if value := r.Get("isNegate"); value.Exists() && !data.Children[i].IsNegate.IsNull() {
+			data.Children[i].IsNegate = types.BoolValue(value.Bool())
+		} else {
+			data.Children[i].IsNegate = types.BoolNull()
+		}
+		if value := r.Get("attributeName"); value.Exists() && !data.Children[i].AttributeName.IsNull() {
+			data.Children[i].AttributeName = types.StringValue(value.String())
+		} else {
+			data.Children[i].AttributeName = types.StringNull()
+		}
+		if value := r.Get("attributeValue"); value.Exists() && !data.Children[i].AttributeValue.IsNull() {
+			data.Children[i].AttributeValue = types.StringValue(value.String())
+		} else {
+			data.Children[i].AttributeValue = types.StringNull()
+		}
+		if value := r.Get("dictionaryName"); value.Exists() && !data.Children[i].DictionaryName.IsNull() {
+			data.Children[i].DictionaryName = types.StringValue(value.String())
+		} else {
+			data.Children[i].DictionaryName = types.StringNull()
+		}
+		if value := r.Get("dictionaryValue"); value.Exists() && !data.Children[i].DictionaryValue.IsNull() {
+			data.Children[i].DictionaryValue = types.StringValue(value.String())
+		} else {
+			data.Children[i].DictionaryValue = types.StringNull()
+		}
+		if value := r.Get("operator"); value.Exists() && !data.Children[i].Operator.IsNull() {
+			data.Children[i].Operator = types.StringValue(value.String())
+		} else {
+			data.Children[i].Operator = types.StringNull()
+		}
+		for ci := range data.Children[i].Children {
+			keys := [...]string{"name", "conditionType", "id", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
+			keyValues := [...]string{data.Children[i].Children[ci].Name.ValueString(), data.Children[i].Children[ci].ConditionType.ValueString(), data.Children[i].Children[ci].Id.ValueString(), data.Children[i].Children[ci].AttributeName.ValueString(), data.Children[i].Children[ci].AttributeValue.ValueString(), data.Children[i].Children[ci].DictionaryName.ValueString(), data.Children[i].Children[ci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Operator.ValueString()}
+
+			var cr gjson.Result
+			r.Get("children").ForEach(
+				func(_, v gjson.Result) bool {
+					found := false
+					for ik := range keys {
+						if v.Get(keys[ik]).String() == keyValues[ik] {
+							found = true
+							continue
+						}
+						found = false
+						break
 					}
-					if ccValue := cv.Get("conditionType"); ccValue.Exists() && ccValue.Type != gjson.Null {
-						cItem.ConditionType = types.StringValue(ccValue.String())
-					} else {
-						cItem.ConditionType = types.StringNull()
+					if found {
+						cr = v
+						return false
 					}
-					if ccValue := cv.Get("id"); ccValue.Exists() && ccValue.Type != gjson.Null {
-						cItem.Id = types.StringValue(ccValue.String())
-					} else {
-						cItem.Id = types.StringNull()
-					}
-					if ccValue := cv.Get("isNegate"); ccValue.Exists() && ccValue.Type != gjson.Null {
-						cItem.IsNegate = types.BoolValue(ccValue.Bool())
-					} else {
-						cItem.IsNegate = types.BoolNull()
-					}
-					if ccValue := cv.Get("attributeName"); ccValue.Exists() && ccValue.Type != gjson.Null {
-						cItem.AttributeName = types.StringValue(ccValue.String())
-					} else {
-						cItem.AttributeName = types.StringNull()
-					}
-					if ccValue := cv.Get("attributeValue"); ccValue.Exists() && ccValue.Type != gjson.Null {
-						cItem.AttributeValue = types.StringValue(ccValue.String())
-					} else {
-						cItem.AttributeValue = types.StringNull()
-					}
-					if ccValue := cv.Get("dictionaryName"); ccValue.Exists() && ccValue.Type != gjson.Null {
-						cItem.DictionaryName = types.StringValue(ccValue.String())
-					} else {
-						cItem.DictionaryName = types.StringNull()
-					}
-					if ccValue := cv.Get("dictionaryValue"); ccValue.Exists() && ccValue.Type != gjson.Null {
-						cItem.DictionaryValue = types.StringValue(ccValue.String())
-					} else {
-						cItem.DictionaryValue = types.StringNull()
-					}
-					if ccValue := cv.Get("operator"); ccValue.Exists() && ccValue.Type != gjson.Null {
-						cItem.Operator = types.StringValue(ccValue.String())
-					} else {
-						cItem.Operator = types.StringNull()
-					}
-					if ccValue := cv.Get("children"); ccValue.Exists() {
-						cItem.Children = make([]DeviceAdminConditionChildrenChildrenChildren, 0)
-						ccValue.ForEach(func(cck, ccv gjson.Result) bool {
-							ccItem := DeviceAdminConditionChildrenChildrenChildren{}
-							if cccValue := ccv.Get("conditionType"); cccValue.Exists() && cccValue.Type != gjson.Null {
-								ccItem.ConditionType = types.StringValue(cccValue.String())
-							} else {
-								ccItem.ConditionType = types.StringNull()
-							}
-							if cccValue := ccv.Get("id"); cccValue.Exists() && cccValue.Type != gjson.Null {
-								ccItem.Id = types.StringValue(cccValue.String())
-							} else {
-								ccItem.Id = types.StringNull()
-							}
-							if cccValue := ccv.Get("isNegate"); cccValue.Exists() && cccValue.Type != gjson.Null {
-								ccItem.IsNegate = types.BoolValue(cccValue.Bool())
-							} else {
-								ccItem.IsNegate = types.BoolNull()
-							}
-							if cccValue := ccv.Get("attributeName"); cccValue.Exists() && cccValue.Type != gjson.Null {
-								ccItem.AttributeName = types.StringValue(cccValue.String())
-							} else {
-								ccItem.AttributeName = types.StringNull()
-							}
-							if cccValue := ccv.Get("attributeValue"); cccValue.Exists() && cccValue.Type != gjson.Null {
-								ccItem.AttributeValue = types.StringValue(cccValue.String())
-							} else {
-								ccItem.AttributeValue = types.StringNull()
-							}
-							if cccValue := ccv.Get("dictionaryName"); cccValue.Exists() && cccValue.Type != gjson.Null {
-								ccItem.DictionaryName = types.StringValue(cccValue.String())
-							} else {
-								ccItem.DictionaryName = types.StringNull()
-							}
-							if cccValue := ccv.Get("dictionaryValue"); cccValue.Exists() && cccValue.Type != gjson.Null {
-								ccItem.DictionaryValue = types.StringValue(cccValue.String())
-							} else {
-								ccItem.DictionaryValue = types.StringNull()
-							}
-							if cccValue := ccv.Get("operator"); cccValue.Exists() && cccValue.Type != gjson.Null {
-								ccItem.Operator = types.StringValue(cccValue.String())
-							} else {
-								ccItem.Operator = types.StringNull()
-							}
-							cItem.Children = append(cItem.Children, ccItem)
-							return true
-						})
-					}
-					item.Children = append(item.Children, cItem)
 					return true
-				})
+				},
+			)
+			if value := cr.Get("name"); value.Exists() && !data.Children[i].Children[ci].Name.IsNull() {
+				data.Children[i].Children[ci].Name = types.StringValue(value.String())
+			} else {
+				data.Children[i].Children[ci].Name = types.StringNull()
 			}
-			data.Children = append(data.Children, item)
-			return true
-		})
+			if value := cr.Get("description"); value.Exists() && !data.Children[i].Children[ci].Description.IsNull() {
+				data.Children[i].Children[ci].Description = types.StringValue(value.String())
+			} else {
+				data.Children[i].Children[ci].Description = types.StringNull()
+			}
+			if value := cr.Get("conditionType"); value.Exists() && !data.Children[i].Children[ci].ConditionType.IsNull() {
+				data.Children[i].Children[ci].ConditionType = types.StringValue(value.String())
+			} else {
+				data.Children[i].Children[ci].ConditionType = types.StringNull()
+			}
+			if value := cr.Get("id"); value.Exists() && !data.Children[i].Children[ci].Id.IsNull() {
+				data.Children[i].Children[ci].Id = types.StringValue(value.String())
+			} else {
+				data.Children[i].Children[ci].Id = types.StringNull()
+			}
+			if value := cr.Get("isNegate"); value.Exists() && !data.Children[i].Children[ci].IsNegate.IsNull() {
+				data.Children[i].Children[ci].IsNegate = types.BoolValue(value.Bool())
+			} else {
+				data.Children[i].Children[ci].IsNegate = types.BoolNull()
+			}
+			if value := cr.Get("attributeName"); value.Exists() && !data.Children[i].Children[ci].AttributeName.IsNull() {
+				data.Children[i].Children[ci].AttributeName = types.StringValue(value.String())
+			} else {
+				data.Children[i].Children[ci].AttributeName = types.StringNull()
+			}
+			if value := cr.Get("attributeValue"); value.Exists() && !data.Children[i].Children[ci].AttributeValue.IsNull() {
+				data.Children[i].Children[ci].AttributeValue = types.StringValue(value.String())
+			} else {
+				data.Children[i].Children[ci].AttributeValue = types.StringNull()
+			}
+			if value := cr.Get("dictionaryName"); value.Exists() && !data.Children[i].Children[ci].DictionaryName.IsNull() {
+				data.Children[i].Children[ci].DictionaryName = types.StringValue(value.String())
+			} else {
+				data.Children[i].Children[ci].DictionaryName = types.StringNull()
+			}
+			if value := cr.Get("dictionaryValue"); value.Exists() && !data.Children[i].Children[ci].DictionaryValue.IsNull() {
+				data.Children[i].Children[ci].DictionaryValue = types.StringValue(value.String())
+			} else {
+				data.Children[i].Children[ci].DictionaryValue = types.StringNull()
+			}
+			if value := cr.Get("operator"); value.Exists() && !data.Children[i].Children[ci].Operator.IsNull() {
+				data.Children[i].Children[ci].Operator = types.StringValue(value.String())
+			} else {
+				data.Children[i].Children[ci].Operator = types.StringNull()
+			}
+			for cci := range data.Children[i].Children[ci].Children {
+				keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
+				keyValues := [...]string{data.Children[i].Children[ci].Children[cci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Operator.ValueString()}
+
+				var ccr gjson.Result
+				cr.Get("children").ForEach(
+					func(_, v gjson.Result) bool {
+						found := false
+						for ik := range keys {
+							if v.Get(keys[ik]).String() == keyValues[ik] {
+								found = true
+								continue
+							}
+							found = false
+							break
+						}
+						if found {
+							ccr = v
+							return false
+						}
+						return true
+					},
+				)
+				if value := ccr.Get("conditionType"); value.Exists() && !data.Children[i].Children[ci].Children[cci].ConditionType.IsNull() {
+					data.Children[i].Children[ci].Children[cci].ConditionType = types.StringValue(value.String())
+				} else {
+					data.Children[i].Children[ci].Children[cci].ConditionType = types.StringNull()
+				}
+				if value := ccr.Get("id"); value.Exists() && !data.Children[i].Children[ci].Children[cci].Id.IsNull() {
+					data.Children[i].Children[ci].Children[cci].Id = types.StringValue(value.String())
+				} else {
+					data.Children[i].Children[ci].Children[cci].Id = types.StringNull()
+				}
+				if value := ccr.Get("isNegate"); value.Exists() && !data.Children[i].Children[ci].Children[cci].IsNegate.IsNull() {
+					data.Children[i].Children[ci].Children[cci].IsNegate = types.BoolValue(value.Bool())
+				} else {
+					data.Children[i].Children[ci].Children[cci].IsNegate = types.BoolNull()
+				}
+				if value := ccr.Get("attributeName"); value.Exists() && !data.Children[i].Children[ci].Children[cci].AttributeName.IsNull() {
+					data.Children[i].Children[ci].Children[cci].AttributeName = types.StringValue(value.String())
+				} else {
+					data.Children[i].Children[ci].Children[cci].AttributeName = types.StringNull()
+				}
+				if value := ccr.Get("attributeValue"); value.Exists() && !data.Children[i].Children[ci].Children[cci].AttributeValue.IsNull() {
+					data.Children[i].Children[ci].Children[cci].AttributeValue = types.StringValue(value.String())
+				} else {
+					data.Children[i].Children[ci].Children[cci].AttributeValue = types.StringNull()
+				}
+				if value := ccr.Get("dictionaryName"); value.Exists() && !data.Children[i].Children[ci].Children[cci].DictionaryName.IsNull() {
+					data.Children[i].Children[ci].Children[cci].DictionaryName = types.StringValue(value.String())
+				} else {
+					data.Children[i].Children[ci].Children[cci].DictionaryName = types.StringNull()
+				}
+				if value := ccr.Get("dictionaryValue"); value.Exists() && !data.Children[i].Children[ci].Children[cci].DictionaryValue.IsNull() {
+					data.Children[i].Children[ci].Children[cci].DictionaryValue = types.StringValue(value.String())
+				} else {
+					data.Children[i].Children[ci].Children[cci].DictionaryValue = types.StringNull()
+				}
+				if value := ccr.Get("operator"); value.Exists() && !data.Children[i].Children[ci].Children[cci].Operator.IsNull() {
+					data.Children[i].Children[ci].Children[cci].Operator = types.StringValue(value.String())
+				} else {
+					data.Children[i].Children[ci].Children[cci].Operator = types.StringNull()
+				}
+			}
+		}
 	}
 }
 

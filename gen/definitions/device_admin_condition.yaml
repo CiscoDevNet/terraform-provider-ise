@@ -88,7 +88,6 @@ attributes:
     minimum_test_value: '"equals"'
   - model_name: children
     type: Set
-    immutable: true
     description: List of child conditions. `condition_type` must be one of `LibraryConditionAndBlock` or `LibraryConditionOrBlock`.
     exclude_test: true
     attributes:
@@ -105,15 +104,7 @@ attributes:
         type: String
         id: true
         mandatory: true
-        enum_values:
-          [
-            ConditionAndBlock,
-            ConditionAndBlock,
-                ConditionAttributes,
-                ConditionOrBlock,
-            ConditionOrBlock,
-            ConditionReference,
-          ]
+        enum_values: [ConditionAndBlock, ConditionAttributes, ConditionOrBlock, ConditionReference]
         description: Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
         example: ConditionAttributes
       - model_name: id
@@ -186,7 +177,7 @@ attributes:
         example: equals
       - model_name: children
         type: Set
-        description: List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.
+        description: List of child conditions
         exclude_test: true
         attributes:
           - model_name: name
@@ -271,7 +262,7 @@ attributes:
             example: equals
           - model_name: children
             type: Set
-            description: List of child conditions (recursive)
+            description: List of child conditions
             attributes:
               - model_name: conditionType
                 mandatory: true
@@ -329,18 +320,12 @@ attributes:
                 description: Equality operator
               - model_name: children
                 type: Set
-                description: List of child conditions (level 5)
+                description: List of child conditions
                 attributes:
                   - model_name: conditionType
                     mandatory: true
                     type: String
-                    enum_values:
-                      [
-                        ConditionAndBlock,
-                        ConditionAttributes,
-                        ConditionOrBlock,
-                        ConditionReference,
-                      ]
+                    enum_values: [ConditionAttributes, ConditionReference]
                     description: Condition type.
                   - model_name: id
                     type: String

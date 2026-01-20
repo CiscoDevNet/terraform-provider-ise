@@ -146,7 +146,7 @@ func (r *NetworkAccessPolicySetResource) Schema(ctx context.Context, req resourc
 				},
 			},
 			"children": schema.ListNestedAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("List of child conditions").String,
 				Optional:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -189,7 +189,7 @@ func (r *NetworkAccessPolicySetResource) Schema(ctx context.Context, req resourc
 							},
 						},
 						"children": schema.ListNestedAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.").String,
+							MarkdownDescription: helpers.NewAttributeDescription("List of child conditions").String,
 							Optional:            true,
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
@@ -232,7 +232,7 @@ func (r *NetworkAccessPolicySetResource) Schema(ctx context.Context, req resourc
 										},
 									},
 									"children": schema.ListNestedAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("List of child conditions (recursive)").String,
+										MarkdownDescription: helpers.NewAttributeDescription("List of child conditions").String,
 										Optional:            true,
 										NestedObject: schema.NestedAttributeObject{
 											Attributes: map[string]schema.Attribute{
@@ -275,7 +275,7 @@ func (r *NetworkAccessPolicySetResource) Schema(ctx context.Context, req resourc
 													},
 												},
 												"children": schema.ListNestedAttribute{
-													MarkdownDescription: helpers.NewAttributeDescription("List of child conditions (level 5)").String,
+													MarkdownDescription: helpers.NewAttributeDescription("List of child conditions").String,
 													Optional:            true,
 													NestedObject: schema.NestedAttributeObject{
 														Attributes: map[string]schema.Attribute{
@@ -318,7 +318,7 @@ func (r *NetworkAccessPolicySetResource) Schema(ctx context.Context, req resourc
 																},
 															},
 															"children": schema.ListNestedAttribute{
-																MarkdownDescription: helpers.NewAttributeDescription("List of child conditions (level 6)").String,
+																MarkdownDescription: helpers.NewAttributeDescription("List of child conditions").String,
 																Optional:            true,
 																NestedObject: schema.NestedAttributeObject{
 																	Attributes: map[string]schema.Attribute{
@@ -361,15 +361,15 @@ func (r *NetworkAccessPolicySetResource) Schema(ctx context.Context, req resourc
 																			},
 																		},
 																		"children": schema.ListNestedAttribute{
-																			MarkdownDescription: helpers.NewAttributeDescription("List of child conditions (level 7 - terminal)").String,
+																			MarkdownDescription: helpers.NewAttributeDescription("List of child conditions").String,
 																			Optional:            true,
 																			NestedObject: schema.NestedAttributeObject{
 																				Attributes: map[string]schema.Attribute{
 																					"condition_type": schema.StringAttribute{
-																						MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference").String,
+																						MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAttributes", "ConditionReference").String,
 																						Required:            true,
 																						Validators: []validator.String{
-																							stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference"),
+																							stringvalidator.OneOf("ConditionAttributes", "ConditionReference"),
 																						},
 																					},
 																					"id": schema.StringAttribute{

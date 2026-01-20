@@ -117,7 +117,7 @@ func (d *NetworkAccessAuthorizationGlobalExceptionRuleDataSource) Schema(ctx con
 				Computed:            true,
 			},
 			"children": schema.ListNestedAttribute{
-				MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.",
+				MarkdownDescription: "List of child conditions",
 				Computed:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -154,7 +154,7 @@ func (d *NetworkAccessAuthorizationGlobalExceptionRuleDataSource) Schema(ctx con
 							Computed:            true,
 						},
 						"children": schema.ListNestedAttribute{
-							MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.",
+							MarkdownDescription: "List of child conditions",
 							Computed:            true,
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
@@ -191,7 +191,7 @@ func (d *NetworkAccessAuthorizationGlobalExceptionRuleDataSource) Schema(ctx con
 										Computed:            true,
 									},
 									"children": schema.ListNestedAttribute{
-										MarkdownDescription: "List of child conditions (recursive)",
+										MarkdownDescription: "List of child conditions",
 										Computed:            true,
 										NestedObject: schema.NestedAttributeObject{
 											Attributes: map[string]schema.Attribute{
@@ -228,7 +228,7 @@ func (d *NetworkAccessAuthorizationGlobalExceptionRuleDataSource) Schema(ctx con
 													Computed:            true,
 												},
 												"children": schema.ListNestedAttribute{
-													MarkdownDescription: "List of child conditions (level 5)",
+													MarkdownDescription: "List of child conditions",
 													Computed:            true,
 												},
 											},
