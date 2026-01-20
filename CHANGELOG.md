@@ -1,3 +1,16 @@
+## Unreleased
+
+- Add Software Bill of Materials (SBOM) generation in SPDX and CycloneDX formats during releases
+
+## 0.2.14
+
+- Add `ise_trustsec_egress_push_matrix` resource to enable deploying the full matrix to TrustSec devices
+- Add destroy support for `ise_certificate_authentication_profile` (requires ISE 3.4 or later)
+
+## 0.2.13
+
+- Add SNMPv3 support to `ise_network_device` resource and data source
+
 ## 0.2.12
 
 - Enhancement: The `ise_endpoint` resource now performs a PUT update if the endpoint already exists during creation, instead of returning an error

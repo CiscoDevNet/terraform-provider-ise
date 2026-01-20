@@ -24,8 +24,13 @@ resource "ise_network_device" "example" {
   snmp_link_trap_query                                        = true
   snmp_mac_trap_query                                         = true
   snmp_polling_interval                                       = 1200
-  snmp_ro_community                                           = "rocom"
-  snmp_version                                                = "TWO_C"
+  snmp_version                                                = "THREE"
+  snmp_username                                               = "user123"
+  snmp_security_level                                         = "PRIV"
+  snmp_auth_protocol                                          = "SHA2"
+  snmp_auth_password                                          = "Cisco123"
+  snmp_privacy_protocol                                       = "AES256"
+  snmp_privacy_password                                       = "Cisco12345"
   tacacs_connect_mode_options                                 = "OFF"
   tacacs_shared_secret                                        = "cisco123"
   trustsec_device_id                                          = "device123"

@@ -329,6 +329,7 @@ func (p *IseProvider) Resources(ctx context.Context) []func() resource.Resource 
 		NewTACACSProfileResource,
 		NewTrustSecEgressMatrixCellResource,
 		NewTrustSecEgressMatrixCellDefaultResource,
+		NewTrustSecEgressPushMatrixResource,
 		NewTrustSecIPToSGTMappingResource,
 		NewTrustSecIPToSGTMappingGroupResource,
 		NewTrustSecSecurityGroupResource,

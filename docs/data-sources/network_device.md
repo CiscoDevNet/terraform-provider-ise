@@ -44,11 +44,17 @@ data "ise_network_device" "example" {
 - `model_name` (String) Model name
 - `network_device_groups` (Set of String) List of network device groups, e.g. `Device Type#All Device Types#ACCESS`
 - `profile_name` (String) Profile name
+- `snmp_auth_password` (String) SNMP authentication password. Required for snmp version 3 and securityLevel AUTH or PRIV.
+- `snmp_auth_protocol` (String) SNMP authentication protocol. Required for snmp version 3 and securityLevel AUTH or PRIV.
 - `snmp_link_trap_query` (Boolean) SNMP link Trap Query
 - `snmp_mac_trap_query` (Boolean) SNMP MAC Trap Query
 - `snmp_originating_policy_service_node` (String) Originating Policy Services Node
 - `snmp_polling_interval` (Number) SNMP Polling Interval in seconds
+- `snmp_privacy_password` (String) SNMP privacy password. Required for snmp version 3 and securityLevel PRIV
+- `snmp_privacy_protocol` (String) SNMP privacy protocol. Required for snmp version 3 and securityLevel PRIV.
 - `snmp_ro_community` (String) SNMP RO Community
+- `snmp_security_level` (String) SNMP security level. Required for snmp version 3.
+- `snmp_username` (String) SNMP username. Required for snmp version 3.
 - `snmp_version` (String) SNMP version
 - `software_version` (String) Software version
 - `tacacs_connect_mode_options` (String) Connect mode options

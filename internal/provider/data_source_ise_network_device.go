@@ -185,6 +185,30 @@ func (d *NetworkDeviceDataSource) Schema(ctx context.Context, req datasource.Sch
 				MarkdownDescription: "SNMP version",
 				Computed:            true,
 			},
+			"snmp_username": schema.StringAttribute{
+				MarkdownDescription: "SNMP username. Required for snmp version 3.",
+				Computed:            true,
+			},
+			"snmp_security_level": schema.StringAttribute{
+				MarkdownDescription: "SNMP security level. Required for snmp version 3.",
+				Computed:            true,
+			},
+			"snmp_auth_protocol": schema.StringAttribute{
+				MarkdownDescription: "SNMP authentication protocol. Required for snmp version 3 and securityLevel AUTH or PRIV.",
+				Computed:            true,
+			},
+			"snmp_auth_password": schema.StringAttribute{
+				MarkdownDescription: "SNMP authentication password. Required for snmp version 3 and securityLevel AUTH or PRIV.",
+				Computed:            true,
+			},
+			"snmp_privacy_protocol": schema.StringAttribute{
+				MarkdownDescription: "SNMP privacy protocol. Required for snmp version 3 and securityLevel PRIV.",
+				Computed:            true,
+			},
+			"snmp_privacy_password": schema.StringAttribute{
+				MarkdownDescription: "SNMP privacy password. Required for snmp version 3 and securityLevel PRIV",
+				Computed:            true,
+			},
 			"tacacs_connect_mode_options": schema.StringAttribute{
 				MarkdownDescription: "Connect mode options",
 				Computed:            true,
