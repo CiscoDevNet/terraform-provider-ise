@@ -113,15 +113,15 @@ type DeviceAdminPolicySetChildrenChildrenChildrenChildrenChildren struct {
 }
 
 type DeviceAdminPolicySetChildrenChildrenChildrenChildrenChildrenChildren struct {
-	ConditionType   types.String `tfsdk:"condition_type"`
-	Id              types.String `tfsdk:"id"`
-	IsNegate        types.Bool   `tfsdk:"is_negate"`
-	AttributeName   types.String `tfsdk:"attribute_name"`
-	AttributeValue  types.String `tfsdk:"attribute_value"`
-	DictionaryName  types.String `tfsdk:"dictionary_name"`
-	DictionaryValue types.String `tfsdk:"dictionary_value"`
-	Operator        types.String `tfsdk:"operator"`
-}
+	ConditionType   types.String                                                                   `tfsdk:"condition_type"`
+	Id              types.String                                                                   `tfsdk:"id"`
+	IsNegate        types.Bool                                                                     `tfsdk:"is_negate"`
+	AttributeName   types.String                                                                   `tfsdk:"attribute_name"`
+	AttributeValue  types.String                                                                   `tfsdk:"attribute_value"`
+	DictionaryName  types.String                                                                   `tfsdk:"dictionary_name"`
+	DictionaryValue types.String                                                                   `tfsdk:"dictionary_value"`
+	Operator        types.String                                                                   `tfsdk:"operator"`}
+
 
 //template:end types
 
@@ -583,6 +583,150 @@ func (data *DeviceAdminPolicySet) fromBody(ctx context.Context, res gjson.Result
 								ccItem.Operator = types.StringValue(cccValue.String())
 							} else {
 								ccItem.Operator = types.StringNull()
+							if cccValue := ccv.Get("children"); cccValue.Exists() {
+								ccItem.Children = make([]DeviceAdminPolicySetChildrenChildrenChildrenChildren, 0)
+								cccValue.ForEach(func(ccck, cccv gjson.Result) bool {
+									cccItem := DeviceAdminPolicySetChildrenChildrenChildrenChildren{}
+									if ccccValue := cccv.Get("conditionType"); ccccValue.Exists() && ccccValue.Type != gjson.Null {
+										cccItem.ConditionType = types.StringValue(ccccValue.String())
+									} else {
+										cccItem.ConditionType = types.StringNull()
+									}
+									if ccccValue := cccv.Get("id"); ccccValue.Exists() && ccccValue.Type != gjson.Null {
+										cccItem.Id = types.StringValue(ccccValue.String())
+									} else {
+										cccItem.Id = types.StringNull()
+									}
+									if ccccValue := cccv.Get("isNegate"); ccccValue.Exists() && ccccValue.Type != gjson.Null {
+										cccItem.IsNegate = types.BoolValue(ccccValue.Bool())
+									} else {
+										cccItem.IsNegate = types.BoolNull()
+									}
+									if ccccValue := cccv.Get("attributeName"); ccccValue.Exists() && ccccValue.Type != gjson.Null {
+										cccItem.AttributeName = types.StringValue(ccccValue.String())
+									} else {
+										cccItem.AttributeName = types.StringNull()
+									}
+									if ccccValue := cccv.Get("attributeValue"); ccccValue.Exists() && ccccValue.Type != gjson.Null {
+										cccItem.AttributeValue = types.StringValue(ccccValue.String())
+									} else {
+										cccItem.AttributeValue = types.StringNull()
+									}
+									if ccccValue := cccv.Get("dictionaryName"); ccccValue.Exists() && ccccValue.Type != gjson.Null {
+										cccItem.DictionaryName = types.StringValue(ccccValue.String())
+									} else {
+										cccItem.DictionaryName = types.StringNull()
+									}
+									if ccccValue := cccv.Get("dictionaryValue"); ccccValue.Exists() && ccccValue.Type != gjson.Null {
+										cccItem.DictionaryValue = types.StringValue(ccccValue.String())
+									} else {
+										cccItem.DictionaryValue = types.StringNull()
+									}
+									if ccccValue := cccv.Get("operator"); ccccValue.Exists() && ccccValue.Type != gjson.Null {
+										cccItem.Operator = types.StringValue(ccccValue.String())
+									} else {
+										cccItem.Operator = types.StringNull()
+									}
+									if ccccValue := cccv.Get("children"); ccccValue.Exists() {
+										cccItem.Children = make([]DeviceAdminPolicySetChildrenChildrenChildrenChildrenChildren, 0)
+										ccccValue.ForEach(func(cccck, ccccv gjson.Result) bool {
+											ccccItem := DeviceAdminPolicySetChildrenChildrenChildrenChildrenChildren{}
+											if cccccValue := ccccv.Get("conditionType"); cccccValue.Exists() && cccccValue.Type != gjson.Null {
+												ccccItem.ConditionType = types.StringValue(cccccValue.String())
+											} else {
+												ccccItem.ConditionType = types.StringNull()
+											}
+											if cccccValue := ccccv.Get("id"); cccccValue.Exists() && cccccValue.Type != gjson.Null {
+												ccccItem.Id = types.StringValue(cccccValue.String())
+											} else {
+												ccccItem.Id = types.StringNull()
+											}
+											if cccccValue := ccccv.Get("isNegate"); cccccValue.Exists() && cccccValue.Type != gjson.Null {
+												ccccItem.IsNegate = types.BoolValue(cccccValue.Bool())
+											} else {
+												ccccItem.IsNegate = types.BoolNull()
+											}
+											if cccccValue := ccccv.Get("attributeName"); cccccValue.Exists() && cccccValue.Type != gjson.Null {
+												ccccItem.AttributeName = types.StringValue(cccccValue.String())
+											} else {
+												ccccItem.AttributeName = types.StringNull()
+											}
+											if cccccValue := ccccv.Get("attributeValue"); cccccValue.Exists() && cccccValue.Type != gjson.Null {
+												ccccItem.AttributeValue = types.StringValue(cccccValue.String())
+											} else {
+												ccccItem.AttributeValue = types.StringNull()
+											}
+											if cccccValue := ccccv.Get("dictionaryName"); cccccValue.Exists() && cccccValue.Type != gjson.Null {
+												ccccItem.DictionaryName = types.StringValue(cccccValue.String())
+											} else {
+												ccccItem.DictionaryName = types.StringNull()
+											}
+											if cccccValue := ccccv.Get("dictionaryValue"); cccccValue.Exists() && cccccValue.Type != gjson.Null {
+												ccccItem.DictionaryValue = types.StringValue(cccccValue.String())
+											} else {
+												ccccItem.DictionaryValue = types.StringNull()
+											}
+											if cccccValue := ccccv.Get("operator"); cccccValue.Exists() && cccccValue.Type != gjson.Null {
+												ccccItem.Operator = types.StringValue(cccccValue.String())
+											} else {
+												ccccItem.Operator = types.StringNull()
+											}
+											if cccccValue := ccccv.Get("children"); cccccValue.Exists() {
+												ccccItem.Children = make([]DeviceAdminPolicySetChildrenChildrenChildrenChildrenChildrenChildren, 0)
+												cccccValue.ForEach(func(ccccck, cccccv gjson.Result) bool {
+													cccccItem := DeviceAdminPolicySetChildrenChildrenChildrenChildrenChildrenChildren{}
+													if ccccccValue := cccccv.Get("conditionType"); ccccccValue.Exists() && ccccccValue.Type != gjson.Null {
+														cccccItem.ConditionType = types.StringValue(ccccccValue.String())
+													} else {
+														cccccItem.ConditionType = types.StringNull()
+													}
+													if ccccccValue := cccccv.Get("id"); ccccccValue.Exists() && ccccccValue.Type != gjson.Null {
+														cccccItem.Id = types.StringValue(ccccccValue.String())
+													} else {
+														cccccItem.Id = types.StringNull()
+													}
+													if ccccccValue := cccccv.Get("isNegate"); ccccccValue.Exists() && ccccccValue.Type != gjson.Null {
+														cccccItem.IsNegate = types.BoolValue(ccccccValue.Bool())
+													} else {
+														cccccItem.IsNegate = types.BoolNull()
+													}
+													if ccccccValue := cccccv.Get("attributeName"); ccccccValue.Exists() && ccccccValue.Type != gjson.Null {
+														cccccItem.AttributeName = types.StringValue(ccccccValue.String())
+													} else {
+														cccccItem.AttributeName = types.StringNull()
+													}
+													if ccccccValue := cccccv.Get("attributeValue"); ccccccValue.Exists() && ccccccValue.Type != gjson.Null {
+														cccccItem.AttributeValue = types.StringValue(ccccccValue.String())
+													} else {
+														cccccItem.AttributeValue = types.StringNull()
+													}
+													if ccccccValue := cccccv.Get("dictionaryName"); ccccccValue.Exists() && ccccccValue.Type != gjson.Null {
+														cccccItem.DictionaryName = types.StringValue(ccccccValue.String())
+													} else {
+														cccccItem.DictionaryName = types.StringNull()
+													}
+													if ccccccValue := cccccv.Get("dictionaryValue"); ccccccValue.Exists() && ccccccValue.Type != gjson.Null {
+														cccccItem.DictionaryValue = types.StringValue(ccccccValue.String())
+													} else {
+														cccccItem.DictionaryValue = types.StringNull()
+													}
+													if ccccccValue := cccccv.Get("operator"); ccccccValue.Exists() && ccccccValue.Type != gjson.Null {
+														cccccItem.Operator = types.StringValue(ccccccValue.String())
+													} else {
+														cccccItem.Operator = types.StringNull()
+													}
+													ccccItem.Children = append(ccccItem.Children, cccccItem)
+													return true
+												})
+											}
+											cccItem.Children = append(cccItem.Children, ccccItem)
+											return true
+										})
+									}
+									ccItem.Children = append(ccItem.Children, cccItem)
+									return true
+								})
+							}
 							}
 							cItem.Children = append(cItem.Children, ccItem)
 							return true

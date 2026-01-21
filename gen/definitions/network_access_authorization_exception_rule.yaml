@@ -504,7 +504,6 @@ attributes:
                                 startsWith,
                               ]
                             description: Equality operator
-
   - model_name: profile
     tf_name: profiles
     type: List

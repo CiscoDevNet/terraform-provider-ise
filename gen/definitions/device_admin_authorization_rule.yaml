@@ -380,7 +380,7 @@ attributes:
                       - model_name: conditionType
                         mandatory: true
                         type: String
-                        enum_values: [ConditionAttributes, ConditionReference]
+                        enum_values: [ConditionAndBlock, ConditionAttributes, ConditionOrBlock, ConditionReference]
                         description: Condition type.
                       - model_name: id
                         type: String

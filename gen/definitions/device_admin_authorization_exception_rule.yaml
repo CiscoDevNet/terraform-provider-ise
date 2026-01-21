@@ -504,7 +504,6 @@ attributes:
                                 startsWith,
                               ]
                             description: Equality operator
-
   - model_name: commands
     tf_name: command_sets
     type: Set

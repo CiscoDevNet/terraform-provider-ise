@@ -321,7 +321,7 @@ func (r *DeviceAdminAuthorizationRuleResource) Schema(ctx context.Context, req r
 																			MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAttributes", "ConditionReference").String,
 																			Required:            true,
 																			Validators: []validator.String{
-																				stringvalidator.OneOf("ConditionAttributes", "ConditionReference"),
+																				stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference"),
 																			},
 																		},
 																		"id": schema.StringAttribute{

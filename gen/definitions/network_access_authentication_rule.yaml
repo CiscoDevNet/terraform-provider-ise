@@ -506,7 +506,6 @@ attributes:
                                 startsWith,
                               ]
                             description: Equality operator
-
   - model_name: identitySourceName
     type: String
     description: Identity source name from the identity stores
