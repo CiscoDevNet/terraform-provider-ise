@@ -130,9 +130,8 @@ attributes:
     description: Equality operator
     example: equals
   - model_name: children
-    type: Set
-    immutable: true
-    description: List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.
+    type: List
+    description: List of child conditions
     exclude_test: true
     data_path: [condition]
     attributes:
@@ -211,15 +210,17 @@ attributes:
         description: Equality operator
         example: equals
       - model_name: children
-        type: Set
-        description: List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.
+        type: List
+        description: List of child conditions
         attributes:
           - model_name: conditionType
             mandatory: true
             type: String
             enum_values:
               [
+                ConditionAndBlock,
                 ConditionAttributes,
+                ConditionOrBlock,
                 ConditionReference,
               ]
             description: Condition type.
@@ -276,6 +277,243 @@ attributes:
               ]
             description: Equality operator
             example: equals
+          - model_name: children
+            type: List
+            description: List of child conditions
+            attributes:
+              - model_name: conditionType
+                mandatory: true
+                type: String
+                enum_values:
+                  [
+                    ConditionAndBlock,
+                    ConditionAttributes,
+                    ConditionOrBlock,
+                    ConditionReference,
+                  ]
+                description: Condition type.
+                example: ConditionAttributes
+              - model_name: id
+                type: String
+                description: UUID for condition
+                example: 12345678-f0e7-456b-a2d1-876543320123
+              - model_name: isNegate
+                type: Bool
+                description: Indicates whereas this condition is in negate mode
+                example: false
+              - model_name: attributeName
+                type: String
+                description: Dictionary attribute name
+                example: Location
+              - model_name: attributeValue
+                type: String
+                description: Attribute value for condition. Value type is specified in dictionary object.
+                example: All Locations
+              - model_name: dictionaryName
+                type: String
+                description: Dictionary name
+                example: DEVICE
+              - model_name: dictionaryValue
+                type: String
+                description: Dictionary value
+                example: abc
+              - model_name: operator
+                type: String
+                enum_values:
+                  [
+                    contains,
+                    endsWith,
+                    equals,
+                    greaterOrEquals,
+                    greaterThan,
+                    in,
+                    ipEquals,
+                    ipGreaterThan,
+                    ipLessThan,
+                    ipNotEquals,
+                    lessOrEquals,
+                    lessThan,
+                    matches,
+                    notContains,
+                    notEndsWith,
+                    notEquals,
+                    notIn,
+                    notStartsWith,
+                    startsWith,
+                  ]
+                description: Equality operator
+                example: equals
+              - model_name: children
+                type: List
+                description: List of child conditions
+                attributes:
+                  - model_name: conditionType
+                    mandatory: true
+                    type: String
+                    enum_values:
+                      [
+                        ConditionAndBlock,
+                        ConditionAttributes,
+                        ConditionOrBlock,
+                        ConditionReference,
+                      ]
+                    description: Condition type.
+                    example: ConditionAttributes
+                  - model_name: id
+                    type: String
+                    description: UUID for condition
+                  - model_name: isNegate
+                    type: Bool
+                    description: Indicates whereas this condition is in negate mode
+                  - model_name: attributeName
+                    type: String
+                    description: Dictionary attribute name
+                  - model_name: attributeValue
+                    type: String
+                    description: Attribute value for condition
+                  - model_name: dictionaryName
+                    type: String
+                    description: Dictionary name
+                  - model_name: dictionaryValue
+                    type: String
+                    description: Dictionary value
+                  - model_name: operator
+                    type: String
+                    enum_values:
+                      [
+                        contains,
+                        endsWith,
+                        equals,
+                        greaterOrEquals,
+                        greaterThan,
+                        in,
+                        ipEquals,
+                        ipGreaterThan,
+                        ipLessThan,
+                        ipNotEquals,
+                        lessOrEquals,
+                        lessThan,
+                        matches,
+                        notContains,
+                        notEndsWith,
+                        notEquals,
+                        notIn,
+                        notStartsWith,
+                        startsWith,
+                      ]
+                    description: Equality operator
+                  - model_name: children
+                    type: List
+                    description: List of child conditions
+                    attributes:
+                      - model_name: conditionType
+                        mandatory: true
+                        type: String
+                        enum_values:
+                          [
+                            ConditionAndBlock,
+                            ConditionAttributes,
+                            ConditionOrBlock,
+                            ConditionReference,
+                          ]
+                        description: Condition type.
+                        example: ConditionAttributes
+                      - model_name: id
+                        type: String
+                        description: UUID for condition
+                      - model_name: isNegate
+                        type: Bool
+                        description: Indicates whereas this condition is in negate mode
+                      - model_name: attributeName
+                        type: String
+                        description: Dictionary attribute name
+                      - model_name: attributeValue
+                        type: String
+                        description: Attribute value for condition
+                      - model_name: dictionaryName
+                        type: String
+                        description: Dictionary name
+                      - model_name: dictionaryValue
+                        type: String
+                        description: Dictionary value
+                      - model_name: operator
+                        type: String
+                        enum_values:
+                          [
+                            contains,
+                            endsWith,
+                            equals,
+                            greaterOrEquals,
+                            greaterThan,
+                            in,
+                            ipEquals,
+                            ipGreaterThan,
+                            ipLessThan,
+                            ipNotEquals,
+                            lessOrEquals,
+                            lessThan,
+                            matches,
+                            notContains,
+                            notEndsWith,
+                            notEquals,
+                            notIn,
+                            notStartsWith,
+                            startsWith,
+                          ]
+                        description: Equality operator
+                      - model_name: children
+                        type: List
+                        description: List of child conditions
+                        attributes:
+                          - model_name: conditionType
+                            mandatory: true
+                            type: String
+                            enum_values: [ConditionAttributes, ConditionReference]
+                            description: Condition type.
+                            example: ConditionAttributes
+                          - model_name: id
+                            type: String
+                            description: UUID for condition
+                          - model_name: isNegate
+                            type: Bool
+                            description: Indicates whereas this condition is in negate mode
+                          - model_name: attributeName
+                            type: String
+                            description: Dictionary attribute name
+                          - model_name: attributeValue
+                            type: String
+                            description: Attribute value for condition
+                          - model_name: dictionaryName
+                            type: String
+                            description: Dictionary name
+                          - model_name: dictionaryValue
+                            type: String
+                            description: Dictionary value
+                          - model_name: operator
+                            type: String
+                            enum_values:
+                              [
+                                contains,
+                                endsWith,
+                                equals,
+                                greaterOrEquals,
+                                greaterThan,
+                                in,
+                                ipEquals,
+                                ipGreaterThan,
+                                ipLessThan,
+                                ipNotEquals,
+                                lessOrEquals,
+                                lessThan,
+                                matches,
+                                notContains,
+                                notEndsWith,
+                                notEquals,
+                                notIn,
+                                notStartsWith,
+                                startsWith,
+                              ]
+                            description: Equality operator
 test_prerequisites: |
   resource "ise_network_access_condition" "test" {
     name            = "Cond1"
