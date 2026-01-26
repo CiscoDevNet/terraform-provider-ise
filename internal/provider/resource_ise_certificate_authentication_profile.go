@@ -98,13 +98,11 @@ func (r *CertificateAuthenticationProfileResource) Schema(ctx context.Context, r
 				Default:             stringdefault.StaticString("[not applicable]"),
 			},
 			"certificate_attribute_name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Attribute name of the Certificate Profile - used only when CERTIFICATE is chosen in `username_from`.").AddStringEnumDescription("SUBJECT_COMMON_NAME", "SUBJECT_ALTERNATIVE_NAME", "SUBJECT_SERIAL_NUMBER", "SUBJECT", "SUBJECT_ALTERNATIVE_NAME_OTHER_NAME", "SUBJECT_ALTERNATIVE_NAME_EMAIL", "SUBJECT_ALTERNATIVE_NAME_DNS").AddDefaultValueDescription("SUBJECT_COMMON_NAME").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Attribute name of the Certificate Profile - used only when CERTIFICATE is chosen in `username_from`. When `username_from` is set to UPN, ISE automatically sets this to ALL_SUBJECT_AND_ALTERNATIVE_NAMES.").AddStringEnumDescription("SUBJECT_COMMON_NAME", "SUBJECT_ALTERNATIVE_NAME", "SUBJECT_SERIAL_NUMBER", "SUBJECT", "SUBJECT_ALTERNATIVE_NAME_OTHER_NAME", "SUBJECT_ALTERNATIVE_NAME_EMAIL", "SUBJECT_ALTERNATIVE_NAME_DNS", "ALL_SUBJECT_AND_ALTERNATIVE_NAMES").String,
 				Optional:            true,
-				Computed:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("SUBJECT_COMMON_NAME", "SUBJECT_ALTERNATIVE_NAME", "SUBJECT_SERIAL_NUMBER", "SUBJECT", "SUBJECT_ALTERNATIVE_NAME_OTHER_NAME", "SUBJECT_ALTERNATIVE_NAME_EMAIL", "SUBJECT_ALTERNATIVE_NAME_DNS"),
+					stringvalidator.OneOf("SUBJECT_COMMON_NAME", "SUBJECT_ALTERNATIVE_NAME", "SUBJECT_SERIAL_NUMBER", "SUBJECT", "SUBJECT_ALTERNATIVE_NAME_OTHER_NAME", "SUBJECT_ALTERNATIVE_NAME_EMAIL", "SUBJECT_ALTERNATIVE_NAME_DNS", "ALL_SUBJECT_AND_ALTERNATIVE_NAMES"),
 				},
-				Default: stringdefault.StaticString("SUBJECT_COMMON_NAME"),
 			},
 			"match_mode": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Match mode of the Certificate Profile. Allowed values: NEVER, RESOLVE_IDENTITY_AMBIGUITY, BINARY_COMPARISON").AddStringEnumDescription("NEVER", "RESOLVE_IDENTITY_AMBIGUITY", "BINARY_COMPARISON").AddDefaultValueDescription("NEVER").String,

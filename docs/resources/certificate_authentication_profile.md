@@ -35,9 +35,8 @@ resource "ise_certificate_authentication_profile" "example" {
 
 - `allowed_as_user_name` (Boolean) Allow as username
   - Default value: `false`
-- `certificate_attribute_name` (String) Attribute name of the Certificate Profile - used only when CERTIFICATE is chosen in `username_from`.
-  - Choices: `SUBJECT_COMMON_NAME`, `SUBJECT_ALTERNATIVE_NAME`, `SUBJECT_SERIAL_NUMBER`, `SUBJECT`, `SUBJECT_ALTERNATIVE_NAME_OTHER_NAME`, `SUBJECT_ALTERNATIVE_NAME_EMAIL`, `SUBJECT_ALTERNATIVE_NAME_DNS`
-  - Default value: `SUBJECT_COMMON_NAME`
+- `certificate_attribute_name` (String) Attribute name of the Certificate Profile - used only when CERTIFICATE is chosen in `username_from`. When `username_from` is set to UPN, ISE automatically sets this to ALL_SUBJECT_AND_ALTERNATIVE_NAMES.
+  - Choices: `SUBJECT_COMMON_NAME`, `SUBJECT_ALTERNATIVE_NAME`, `SUBJECT_SERIAL_NUMBER`, `SUBJECT`, `SUBJECT_ALTERNATIVE_NAME_OTHER_NAME`, `SUBJECT_ALTERNATIVE_NAME_EMAIL`, `SUBJECT_ALTERNATIVE_NAME_DNS`, `ALL_SUBJECT_AND_ALTERNATIVE_NAMES`
 - `description` (String) Description
 - `external_identity_store_name` (String) Referred IDStore name for the Certificate Profile or `[not applicable]` in case no identity store is chosen
   - Default value: `[not applicable]`

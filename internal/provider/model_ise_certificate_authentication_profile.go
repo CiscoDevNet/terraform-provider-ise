@@ -109,7 +109,7 @@ func (data *CertificateAuthenticationProfile) fromBody(ctx context.Context, res 
 	if value := res.Get("CertificateProfile.certificateAttributeName"); value.Exists() && value.Type != gjson.Null {
 		data.CertificateAttributeName = types.StringValue(value.String())
 	} else {
-		data.CertificateAttributeName = types.StringValue("SUBJECT_COMMON_NAME")
+		data.CertificateAttributeName = types.StringNull()
 	}
 	if value := res.Get("CertificateProfile.matchMode"); value.Exists() && value.Type != gjson.Null {
 		data.MatchMode = types.StringValue(value.String())
@@ -149,7 +149,7 @@ func (data *CertificateAuthenticationProfile) updateFromBody(ctx context.Context
 	}
 	if value := res.Get("CertificateProfile.certificateAttributeName"); value.Exists() && !data.CertificateAttributeName.IsNull() {
 		data.CertificateAttributeName = types.StringValue(value.String())
-	} else if data.CertificateAttributeName.ValueString() != "SUBJECT_COMMON_NAME" {
+	} else {
 		data.CertificateAttributeName = types.StringNull()
 	}
 	if value := res.Get("CertificateProfile.matchMode"); value.Exists() && !data.MatchMode.IsNull() {

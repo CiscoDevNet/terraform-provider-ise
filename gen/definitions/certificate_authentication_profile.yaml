@@ -41,9 +41,9 @@ attributes:
         SUBJECT_ALTERNATIVE_NAME_OTHER_NAME,
         SUBJECT_ALTERNATIVE_NAME_EMAIL,
         SUBJECT_ALTERNATIVE_NAME_DNS,
+        ALL_SUBJECT_AND_ALTERNATIVE_NAMES,
       ]
-    description: "Attribute name of the Certificate Profile - used only when CERTIFICATE is chosen in `username_from`."
-    default_value: SUBJECT_COMMON_NAME
+    description: "Attribute name of the Certificate Profile - used only when CERTIFICATE is chosen in `username_from`. When `username_from` is set to UPN, ISE automatically sets this to ALL_SUBJECT_AND_ALTERNATIVE_NAMES."
     example: SUBJECT_COMMON_NAME
   - model_name: matchMode
     data_path: [CertificateProfile]

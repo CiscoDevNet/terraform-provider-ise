@@ -29,7 +29,7 @@ data "ise_certificate_authentication_profile" "example" {
 ### Read-Only
 
 - `allowed_as_user_name` (Boolean) Allow as username
-- `certificate_attribute_name` (String) Attribute name of the Certificate Profile - used only when CERTIFICATE is chosen in `username_from`.
+- `certificate_attribute_name` (String) Attribute name of the Certificate Profile - used only when CERTIFICATE is chosen in `username_from`. When `username_from` is set to UPN, ISE automatically sets this to ALL_SUBJECT_AND_ALTERNATIVE_NAMES.
 - `description` (String) Description
 - `external_identity_store_name` (String) Referred IDStore name for the Certificate Profile or `[not applicable]` in case no identity store is chosen
 - `match_mode` (String) Match mode of the Certificate Profile. Allowed values: NEVER, RESOLVE_IDENTITY_AMBIGUITY, BINARY_COMPARISON

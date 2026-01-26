@@ -89,7 +89,7 @@ func (d *CertificateAuthenticationProfileDataSource) Schema(ctx context.Context,
 				Computed:            true,
 			},
 			"certificate_attribute_name": schema.StringAttribute{
-				MarkdownDescription: "Attribute name of the Certificate Profile - used only when CERTIFICATE is chosen in `username_from`.",
+				MarkdownDescription: "Attribute name of the Certificate Profile - used only when CERTIFICATE is chosen in `username_from`. When `username_from` is set to UPN, ISE automatically sets this to ALL_SUBJECT_AND_ALTERNATIVE_NAMES.",
 				Computed:            true,
 			},
 			"match_mode": schema.StringAttribute{
