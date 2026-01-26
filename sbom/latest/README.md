@@ -42,9 +42,9 @@ git push
 
 ## Current Version
 
-**Provider Version**: (pending first release with SBOM)
-**Generated**: (pending first release with SBOM)
-**Syft Version**: (pending first release with SBOM)
+**Provider Version**: v0.2.15
+**Generated**: 2026-01-26
+**Syft Version**: v1.40.1
 
 ## Usage
 
