@@ -3,12 +3,12 @@
 page_title: "ise_trustsec_egress_push_matrix Resource - terraform-provider-ise"
 subcategory: "TrustSec"
 description: |-
-  This resource triggers a TrustSec Egress Matrix Push operation to all TrustSec devices.
+  This resource triggers a CoA notification on TrustSec Policy, SGACL, or TrustSec Environment Data updates
 ---
 
 # ise_trustsec_egress_push_matrix (Resource)
 
-This resource triggers a TrustSec Egress Matrix Push operation to all TrustSec devices.
+This resource triggers a CoA notification on TrustSec Policy, SGACL, or TrustSec Environment Data updates
 
 ## Example Usage
 

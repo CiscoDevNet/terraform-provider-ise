@@ -62,7 +62,7 @@ func (r *TrustSecEgressPushMatrixResource) Metadata(ctx context.Context, req res
 func (r *TrustSecEgressPushMatrixResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: helpers.NewAttributeDescription("This resource triggers a TrustSec Egress Matrix Push operation to all TrustSec devices.").String,
+		MarkdownDescription: helpers.NewAttributeDescription("This resource triggers a CoA notification on TrustSec Policy, SGACL, or TrustSec Environment Data updates").String,
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{

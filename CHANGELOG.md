@@ -1,4 +1,4 @@
-## 0.2.15 (unreleased)
+## 0.2.15
 
   - Add `ALL_SUBJECT_AND_ALTERNATIVE_NAMES` option to `certificate_attribute_name` attribute in `ise_certificate_authentication_profile` resource
   - Remove default value from `certificate_attribute_name` attribute to align with ISE API behavior when using UPN authentication

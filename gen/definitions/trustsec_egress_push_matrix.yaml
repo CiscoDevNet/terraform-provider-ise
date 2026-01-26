@@ -1,7 +1,7 @@
 ---
 name: TrustSec Egress Push Matrix
 rest_endpoint: /ers/config/op/trustsec/egresspushmatrix
-res_description: This resource triggers a TrustSec Egress Matrix Push operation to all TrustSec devices.
+res_description: "This resource triggers a CoA notification on TrustSec Policy, SGACL, or TrustSec Environment Data updates"
 doc_category: TrustSec
 put_delete: true
 no_read: true
