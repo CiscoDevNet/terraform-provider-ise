@@ -132,8 +132,8 @@ func (d *NetworkAccessPolicySetDataSource) Schema(ctx context.Context, req datas
 				MarkdownDescription: "Equality operator",
 				Computed:            true,
 			},
-			"children": schema.SetNestedAttribute{
-				MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.",
+			"children": schema.ListNestedAttribute{
+				MarkdownDescription: "List of child conditions",
 				Computed:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -169,8 +169,8 @@ func (d *NetworkAccessPolicySetDataSource) Schema(ctx context.Context, req datas
 							MarkdownDescription: "Equality operator",
 							Computed:            true,
 						},
-						"children": schema.SetNestedAttribute{
-							MarkdownDescription: "List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.",
+						"children": schema.ListNestedAttribute{
+							MarkdownDescription: "List of child conditions",
 							Computed:            true,
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
@@ -205,6 +205,130 @@ func (d *NetworkAccessPolicySetDataSource) Schema(ctx context.Context, req datas
 									"operator": schema.StringAttribute{
 										MarkdownDescription: "Equality operator",
 										Computed:            true,
+									},
+									"children": schema.ListNestedAttribute{
+										MarkdownDescription: "List of child conditions",
+										Computed:            true,
+										NestedObject: schema.NestedAttributeObject{
+											Attributes: map[string]schema.Attribute{
+												"condition_type": schema.StringAttribute{
+													MarkdownDescription: "Condition type.",
+													Computed:            true,
+												},
+												"id": schema.StringAttribute{
+													MarkdownDescription: "UUID for condition",
+													Computed:            true,
+												},
+												"is_negate": schema.BoolAttribute{
+													MarkdownDescription: "Indicates whereas this condition is in negate mode",
+													Computed:            true,
+												},
+												"attribute_name": schema.StringAttribute{
+													MarkdownDescription: "Dictionary attribute name",
+													Computed:            true,
+												},
+												"attribute_value": schema.StringAttribute{
+													MarkdownDescription: "Attribute value for condition. Value type is specified in dictionary object.",
+													Computed:            true,
+												},
+												"dictionary_name": schema.StringAttribute{
+													MarkdownDescription: "Dictionary name",
+													Computed:            true,
+												},
+												"dictionary_value": schema.StringAttribute{
+													MarkdownDescription: "Dictionary value",
+													Computed:            true,
+												},
+												"operator": schema.StringAttribute{
+													MarkdownDescription: "Equality operator",
+													Computed:            true,
+												},
+												"children": schema.ListNestedAttribute{
+													MarkdownDescription: "List of child conditions",
+													Computed:            true,
+													NestedObject: schema.NestedAttributeObject{
+														Attributes: map[string]schema.Attribute{
+															"condition_type": schema.StringAttribute{
+																MarkdownDescription: "Condition type.",
+																Computed:            true,
+															},
+															"id": schema.StringAttribute{
+																MarkdownDescription: "UUID for condition",
+																Computed:            true,
+															},
+															"is_negate": schema.BoolAttribute{
+																MarkdownDescription: "Indicates whereas this condition is in negate mode",
+																Computed:            true,
+															},
+															"attribute_name": schema.StringAttribute{
+																MarkdownDescription: "Dictionary attribute name",
+																Computed:            true,
+															},
+															"attribute_value": schema.StringAttribute{
+																MarkdownDescription: "Attribute value for condition",
+																Computed:            true,
+															},
+															"dictionary_name": schema.StringAttribute{
+																MarkdownDescription: "Dictionary name",
+																Computed:            true,
+															},
+															"dictionary_value": schema.StringAttribute{
+																MarkdownDescription: "Dictionary value",
+																Computed:            true,
+															},
+															"operator": schema.StringAttribute{
+																MarkdownDescription: "Equality operator",
+																Computed:            true,
+															},
+															"children": schema.ListNestedAttribute{
+																MarkdownDescription: "List of child conditions",
+																Computed:            true,
+																NestedObject: schema.NestedAttributeObject{
+																	Attributes: map[string]schema.Attribute{
+																		"condition_type": schema.StringAttribute{
+																			MarkdownDescription: "Condition type.",
+																			Computed:            true,
+																		},
+																		"id": schema.StringAttribute{
+																			MarkdownDescription: "UUID for condition",
+																			Computed:            true,
+																		},
+																		"is_negate": schema.BoolAttribute{
+																			MarkdownDescription: "Indicates whereas this condition is in negate mode",
+																			Computed:            true,
+																		},
+																		"attribute_name": schema.StringAttribute{
+																			MarkdownDescription: "Dictionary attribute name",
+																			Computed:            true,
+																		},
+																		"attribute_value": schema.StringAttribute{
+																			MarkdownDescription: "Attribute value for condition",
+																			Computed:            true,
+																		},
+																		"dictionary_name": schema.StringAttribute{
+																			MarkdownDescription: "Dictionary name",
+																			Computed:            true,
+																		},
+																		"dictionary_value": schema.StringAttribute{
+																			MarkdownDescription: "Dictionary value",
+																			Computed:            true,
+																		},
+																		"operator": schema.StringAttribute{
+																			MarkdownDescription: "Equality operator",
+																			Computed:            true,
+																		},
+																		"children": schema.ListNestedAttribute{
+																			MarkdownDescription: "List of child conditions",
+																			Computed:            true,
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
 									},
 								},
 							},

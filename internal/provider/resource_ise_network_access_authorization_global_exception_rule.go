@@ -129,8 +129,8 @@ func (r *NetworkAccessAuthorizationGlobalExceptionRuleResource) Schema(ctx conte
 					stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith"),
 				},
 			},
-			"children": schema.SetNestedAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.").String,
+			"children": schema.ListNestedAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("List of child conditions").String,
 				Optional:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -172,16 +172,16 @@ func (r *NetworkAccessAuthorizationGlobalExceptionRuleResource) Schema(ctx conte
 								stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith"),
 							},
 						},
-						"children": schema.SetNestedAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`.").String,
+						"children": schema.ListNestedAttribute{
+							MarkdownDescription: helpers.NewAttributeDescription("List of child conditions").String,
 							Optional:            true,
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"condition_type": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAttributes", "ConditionReference").String,
+										MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference").String,
 										Required:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("ConditionAttributes", "ConditionReference"),
+											stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference"),
 										},
 									},
 									"id": schema.StringAttribute{
@@ -215,13 +215,197 @@ func (r *NetworkAccessAuthorizationGlobalExceptionRuleResource) Schema(ctx conte
 											stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
 										},
 									},
+									"children": schema.ListNestedAttribute{
+										MarkdownDescription: helpers.NewAttributeDescription("List of child conditions").String,
+										Optional:            true,
+										NestedObject: schema.NestedAttributeObject{
+											Attributes: map[string]schema.Attribute{
+												"condition_type": schema.StringAttribute{
+													MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference").String,
+													Required:            true,
+													Validators: []validator.String{
+														stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference"),
+													},
+												},
+												"id": schema.StringAttribute{
+													MarkdownDescription: helpers.NewAttributeDescription("UUID for condition").String,
+													Optional:            true,
+												},
+												"is_negate": schema.BoolAttribute{
+													MarkdownDescription: helpers.NewAttributeDescription("Indicates whereas this condition is in negate mode").String,
+													Optional:            true,
+												},
+												"attribute_name": schema.StringAttribute{
+													MarkdownDescription: helpers.NewAttributeDescription("Dictionary attribute name").String,
+													Optional:            true,
+												},
+												"attribute_value": schema.StringAttribute{
+													MarkdownDescription: helpers.NewAttributeDescription("Attribute value for condition. Value type is specified in dictionary object.").String,
+													Optional:            true,
+												},
+												"dictionary_name": schema.StringAttribute{
+													MarkdownDescription: helpers.NewAttributeDescription("Dictionary name").String,
+													Optional:            true,
+												},
+												"dictionary_value": schema.StringAttribute{
+													MarkdownDescription: helpers.NewAttributeDescription("Dictionary value").String,
+													Optional:            true,
+												},
+												"operator": schema.StringAttribute{
+													MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith").String,
+													Optional:            true,
+													Validators: []validator.String{
+														stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
+													},
+												},
+												"children": schema.ListNestedAttribute{
+													MarkdownDescription: helpers.NewAttributeDescription("List of child conditions").String,
+													Optional:            true,
+													NestedObject: schema.NestedAttributeObject{
+														Attributes: map[string]schema.Attribute{
+															"condition_type": schema.StringAttribute{
+																MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference").String,
+																Required:            true,
+																Validators: []validator.String{
+																	stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference"),
+																},
+															},
+															"id": schema.StringAttribute{
+																MarkdownDescription: helpers.NewAttributeDescription("UUID for condition").String,
+																Optional:            true,
+															},
+															"is_negate": schema.BoolAttribute{
+																MarkdownDescription: helpers.NewAttributeDescription("Indicates whereas this condition is in negate mode").String,
+																Optional:            true,
+															},
+															"attribute_name": schema.StringAttribute{
+																MarkdownDescription: helpers.NewAttributeDescription("Dictionary attribute name").String,
+																Optional:            true,
+															},
+															"attribute_value": schema.StringAttribute{
+																MarkdownDescription: helpers.NewAttributeDescription("Attribute value for condition").String,
+																Optional:            true,
+															},
+															"dictionary_name": schema.StringAttribute{
+																MarkdownDescription: helpers.NewAttributeDescription("Dictionary name").String,
+																Optional:            true,
+															},
+															"dictionary_value": schema.StringAttribute{
+																MarkdownDescription: helpers.NewAttributeDescription("Dictionary value").String,
+																Optional:            true,
+															},
+															"operator": schema.StringAttribute{
+																MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith").String,
+																Optional:            true,
+																Validators: []validator.String{
+																	stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
+																},
+															},
+															"children": schema.ListNestedAttribute{
+																MarkdownDescription: helpers.NewAttributeDescription("List of child conditions").String,
+																Optional:            true,
+																NestedObject: schema.NestedAttributeObject{
+																	Attributes: map[string]schema.Attribute{
+																		"condition_type": schema.StringAttribute{
+																			MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference").String,
+																			Required:            true,
+																			Validators: []validator.String{
+																				stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference"),
+																			},
+																		},
+																		"id": schema.StringAttribute{
+																			MarkdownDescription: helpers.NewAttributeDescription("UUID for condition").String,
+																			Optional:            true,
+																		},
+																		"is_negate": schema.BoolAttribute{
+																			MarkdownDescription: helpers.NewAttributeDescription("Indicates whereas this condition is in negate mode").String,
+																			Optional:            true,
+																		},
+																		"attribute_name": schema.StringAttribute{
+																			MarkdownDescription: helpers.NewAttributeDescription("Dictionary attribute name").String,
+																			Optional:            true,
+																		},
+																		"attribute_value": schema.StringAttribute{
+																			MarkdownDescription: helpers.NewAttributeDescription("Attribute value for condition").String,
+																			Optional:            true,
+																		},
+																		"dictionary_name": schema.StringAttribute{
+																			MarkdownDescription: helpers.NewAttributeDescription("Dictionary name").String,
+																			Optional:            true,
+																		},
+																		"dictionary_value": schema.StringAttribute{
+																			MarkdownDescription: helpers.NewAttributeDescription("Dictionary value").String,
+																			Optional:            true,
+																		},
+																		"operator": schema.StringAttribute{
+																			MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith").String,
+																			Optional:            true,
+																			Validators: []validator.String{
+																				stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
+																			},
+																		},
+																		"children": schema.ListNestedAttribute{
+																			MarkdownDescription: helpers.NewAttributeDescription("List of child conditions").String,
+																			Optional:            true,
+																			NestedObject: schema.NestedAttributeObject{
+																				Attributes: map[string]schema.Attribute{
+																					"condition_type": schema.StringAttribute{
+																						MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAttributes", "ConditionReference").String,
+																						Required:            true,
+																						Validators: []validator.String{
+																							stringvalidator.OneOf("ConditionAttributes", "ConditionReference"),
+																						},
+																					},
+																					"id": schema.StringAttribute{
+																						MarkdownDescription: helpers.NewAttributeDescription("UUID for condition").String,
+																						Optional:            true,
+																					},
+																					"is_negate": schema.BoolAttribute{
+																						MarkdownDescription: helpers.NewAttributeDescription("Indicates whereas this condition is in negate mode").String,
+																						Optional:            true,
+																					},
+																					"attribute_name": schema.StringAttribute{
+																						MarkdownDescription: helpers.NewAttributeDescription("Dictionary attribute name").String,
+																						Optional:            true,
+																					},
+																					"attribute_value": schema.StringAttribute{
+																						MarkdownDescription: helpers.NewAttributeDescription("Attribute value for condition").String,
+																						Optional:            true,
+																					},
+																					"dictionary_name": schema.StringAttribute{
+																						MarkdownDescription: helpers.NewAttributeDescription("Dictionary name").String,
+																						Optional:            true,
+																					},
+																					"dictionary_value": schema.StringAttribute{
+																						MarkdownDescription: helpers.NewAttributeDescription("Dictionary value").String,
+																						Optional:            true,
+																					},
+																					"operator": schema.StringAttribute{
+																						MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith").String,
+																						Optional:            true,
+																						Validators: []validator.String{
+																							stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
+																						},
+																					},
+																				},
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
 								},
 							},
 						},
 					},
 				},
 			},
-			"profiles": schema.SetAttribute{
+			"profiles": schema.ListAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("The authorization profile(s)").String,
 				ElementType:         types.StringType,
 				Optional:            true,
