@@ -148,7 +148,7 @@ Optional:
 Required:
 
 - `condition_type` (String) Condition type.
-  - Choices: `ConditionAttributes`, `ConditionReference`
+  - Choices: `ConditionAndBlock`, `ConditionAttributes`, `ConditionOrBlock`, `ConditionReference`
 
 Optional:
 

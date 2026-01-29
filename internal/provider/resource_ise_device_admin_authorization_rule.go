@@ -318,7 +318,7 @@ func (r *DeviceAdminAuthorizationRuleResource) Schema(ctx context.Context, req r
 																NestedObject: schema.NestedAttributeObject{
 																	Attributes: map[string]schema.Attribute{
 																		"condition_type": schema.StringAttribute{
-																			MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAttributes", "ConditionReference").String,
+																			MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference").String,
 																			Required:            true,
 																			Validators: []validator.String{
 																				stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference"),
