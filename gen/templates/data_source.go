@@ -30,12 +30,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-framework-validators/datasourcevalidator"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
-	"github.com/tidwall/gjson"
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 )
 //template:end imports
@@ -140,8 +137,46 @@ func (d *{{camelCase .Name}}DataSource) Schema(ctx context.Context, req datasour
 													MarkdownDescription: "{{.Description}}",
 													{{- if isListSet .}}
 													ElementType:         types.{{.ElementType}}Type,
+													{{- else if eq .Type "Map"}}
+													ElementType:         types.StringType,
 													{{- end}}
 													Computed:            true,
+													{{- if isNestedListSet .}}
+													NestedObject: schema.NestedAttributeObject{
+														Attributes: map[string]schema.Attribute{
+															{{- range  .Attributes}}
+															{{- if not .Value}}
+															"{{.TfName}}": schema.{{if isNestedListSet .}}{{.Type}}Nested{{else if isList .}}List{{else if isSet .}}Set{{else if eq .Type "Versions"}}List{{else if eq .Type "Version"}}Int64{{else}}{{.Type}}{{end}}Attribute{
+																MarkdownDescription: "{{.Description}}",
+																{{- if isListSet .}}
+																ElementType:         types.{{.ElementType}}Type,
+																{{- else if eq .Type "Map"}}
+																ElementType:         types.StringType,
+																{{- end}}
+																Computed:            true,
+																{{- if isNestedListSet .}}
+																NestedObject: schema.NestedAttributeObject{
+																	Attributes: map[string]schema.Attribute{
+																		{{- range  .Attributes}}
+																		{{- if not .Value}}
+																		"{{.TfName}}": schema.{{if isNestedListSet .}}{{.Type}}Nested{{else if isList .}}List{{else if isSet .}}Set{{else if eq .Type "Versions"}}List{{else if eq .Type "Version"}}Int64{{else}}{{.Type}}{{end}}Attribute{
+																			MarkdownDescription: "{{.Description}}",
+																			{{- if isListSet .}}
+																			ElementType:         types.{{.ElementType}}Type,
+																			{{- end}}
+																			Computed:            true,
+																		},
+																		{{- end}}
+																		{{- end}}
+																	},
+																},
+																{{- end}}
+															},
+															{{- end}}
+															{{- end}}
+														},
+													},
+													{{- end}}
 												},
 												{{- end}}
 												{{- end}}
