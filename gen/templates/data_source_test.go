@@ -134,6 +134,7 @@ const testAccDataSourceIse{{camelCase .Name}}PrerequisitesConfig = `
 
 //template:begin testAccDataSourceConfig
 func testAccDataSourceIse{{camelCase .Name}}Config() string {
+	{{- if not .NoResource}}
 	config := `resource "ise_{{snakeCase $name}}" "test" {` + "\n"
 	{{- range  .Attributes}}
 	{{- if and (not .ExcludeTest) (not .Value)}}
@@ -213,6 +214,10 @@ func testAccDataSourceIse{{camelCase .Name}}Config() string {
 	{{- end}}
 	{{- end}}
 	config += `}` + "\n"
+	{{- end}}
+	{{- if .NoResource}}
+	config := ""
+	{{- end}}
 	
 	config += `
 		data "ise_{{snakeCase .Name}}" "test" {

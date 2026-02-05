@@ -340,6 +340,7 @@ func (p *IseProvider) DataSources(ctx context.Context) []func() datasource.DataS
 		NewNetworkAccessTimeAndDateConditionDataSource,
 		NewNetworkDeviceDataSource,
 		NewNetworkDeviceGroupDataSource,
+		NewProfilerProfileDataSource,
 		NewRepositoryDataSource,
 		NewSXPDomainFilterDataSource,
 		NewTACACSCommandSetDataSource,
