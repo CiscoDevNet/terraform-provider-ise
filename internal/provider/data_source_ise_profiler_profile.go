@@ -63,7 +63,7 @@ func (d *ProfilerProfileDataSource) Metadata(_ context.Context, req datasource.M
 func (d *ProfilerProfileDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: "This data source can read a profiler profile.",
+		MarkdownDescription: "This data source can read profiling policies.",
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{

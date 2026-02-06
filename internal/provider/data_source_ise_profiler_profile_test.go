@@ -21,6 +21,7 @@ package provider
 
 //template:begin imports
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -30,6 +31,9 @@ import (
 
 //template:begin testAccDataSource
 func TestAccDataSourceIseProfilerProfile(t *testing.T) {
+	if os.Getenv("PROFILE") == "" {
+		t.Skip("skipping test, set environment variable PROFILE")
+	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_profiler_profile.test", "name", "Polycom-Device"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_profiler_profile.test", "description", "Generic policy for Polycom devices"))

@@ -3,12 +3,12 @@
 page_title: "ise_profiler_profile Data Source - terraform-provider-ise"
 subcategory: "Profiling"
 description: |-
-  This data source can read a profiler profile.
+  This data source can read profiling policies.
 ---
 
 # ise_profiler_profile (Data Source)
 
-This data source can read a profiler profile.
+This data source can read profiling policies.
 
 ## Example Usage
 

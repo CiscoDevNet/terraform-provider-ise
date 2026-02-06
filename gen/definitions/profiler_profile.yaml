@@ -3,7 +3,8 @@ name: Profiler Profile
 rest_endpoint: /ers/config/profilerprofile
 no_resource: true
 data_source_name_query: true
-ds_description: This data source can read a profiler profile.
+ds_description: This data source can read profiling policies.
+test_tags: [PROFILE]
 doc_category: Profiling
 attributes:
   - model_name: name
