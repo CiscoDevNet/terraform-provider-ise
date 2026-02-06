@@ -7,7 +7,7 @@ description: |-
 
 # Changelog
 
-## Unreleased
+## 0.2.16
 
 - Add `ise_profiler_profile` data source
 
