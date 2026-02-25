@@ -1,0 +1,33 @@
+---
+name: TrustSec Matrix
+rest_endpoint: /api/v1/trustsec/matrix
+data_source_name_query: true
+doc_category: TrustSec
+id_path: response.matrixUuId
+skip_minimum_test: true
+attributes:
+  - model_name: name
+    type: String
+    mandatory: true
+    description: The name of the TrustSec Matrix policy. Must be unique across all matrices.
+    example: MyMatrix
+  - model_name: description
+    type: String
+    description: Description of the TrustSec Matrix
+    example: My TrustSec Matrix Policy
+  - model_name: defconLevel
+    type: String
+    enum_values: [DEFCON1_CRITICAL, DEFCON2_SEVERE, DEFCON3_SUBSTANTIAL, DEFCON4_MODERATE, DEFCON5_NORMAL]
+    description: DEFCON Level for the TrustSec Matrix
+    example: DEFCON1_CRITICAL
+    exclude_test: true
+  - model_name: matrixPolicyType
+    type: String
+    enum_values: [TRAFFIC_STEERING_POLICY, TRUSTSEC_POLICY]
+    description: Trustsec Matrix Policy Type
+    example: TRUSTSEC_POLICY
+  - model_name: copyPolicyFrom
+    type: String
+    description: Policy UUID from which the TrustSec Policies needs to be copied. The default value is empty means it will create a new Matrix without any policies
+    example: "7c9484cf-0ebc-47ad-a9ef-bc12729ed73b"
+    exclude_test: true

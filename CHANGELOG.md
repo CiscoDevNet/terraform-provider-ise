@@ -1,3 +1,8 @@
+## 0.2.17 (unreleased)
+
+- Add `ise_trustsec_matrix` resource and data source
+
+
 ## 0.2.16
 
 - Add `ise_profiler_profile` data source
