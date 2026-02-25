@@ -1,0 +1,28 @@
+---
+name: TrustSec Work Process Settings
+rest_endpoint: /api/v1/trustsec/matrix-workflow-settings
+doc_category: TrustSec
+put_create: true
+get_no_id: true
+put_no_id: true
+no_delete: true
+no_import: true
+no_data_source: true
+skip_minimum_test: true
+attributes:
+  - model_name: matrixMode
+    type: String
+    id: true
+    description: TrustSec Matrix Mode
+    enum_values: [SINGLE_MATRIX, MULTIPLE_MATRICES]
+    example: MULTIPLE_MATRICES
+  - model_name: useDefcons
+    type: Bool
+    description: Whether to use DEFCON levels in the TrustSec Matrix
+    example: false
+  - model_name: enableApprovalWorkflow
+    data_path: [approvalWorkflow]
+    type: Bool
+    description: Whether to enable approval workflow for TrustSec Matrix changes
+    example: false
+    default_value: false

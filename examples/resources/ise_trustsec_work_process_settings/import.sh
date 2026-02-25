@@ -1,0 +1,1 @@
+terraform import ise_trustsec_work_process_settings.example "MULTIPLE_MATRICES"

@@ -305,6 +305,7 @@ func (p *IseProvider) Resources(ctx context.Context) []func() resource.Resource 
 		NewTrustSecMatrixResource,
 		NewTrustSecSecurityGroupResource,
 		NewTrustSecSecurityGroupACLResource,
+		NewTrustSecWorkProcessSettingsResource,
 		NewUserIdentityGroupResource,
 	}
 }

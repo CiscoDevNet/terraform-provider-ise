@@ -1,7 +1,7 @@
 ## 0.2.17 (unreleased)
 
+- Add `ise_trustsec_work_process_settings` resource
 - Add `ise_trustsec_matrix` resource and data source
-
 
 ## 0.2.16
 
