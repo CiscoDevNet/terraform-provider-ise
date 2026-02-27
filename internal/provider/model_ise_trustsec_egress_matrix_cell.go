@@ -40,6 +40,7 @@ type TrustSecEgressMatrixCell struct {
 	Sgacls           types.Set    `tfsdk:"sgacls"`
 	SourceSgtId      types.String `tfsdk:"source_sgt_id"`
 	DestinationSgtId types.String `tfsdk:"destination_sgt_id"`
+	MatrixId         types.String `tfsdk:"matrix_id"`
 }
 
 //template:end types
@@ -81,6 +82,9 @@ func (data TrustSecEgressMatrixCell) toBody(ctx context.Context, state TrustSecE
 	if !data.DestinationSgtId.IsNull() {
 		body, _ = sjson.Set(body, "EgressMatrixCell.destinationSgtId", data.DestinationSgtId.ValueString())
 	}
+	if !data.MatrixId.IsNull() {
+		body, _ = sjson.Set(body, "EgressMatrixCell.matrixId", data.MatrixId.ValueString())
+	}
 	return body
 }
 
@@ -118,6 +122,11 @@ func (data *TrustSecEgressMatrixCell) fromBody(ctx context.Context, res gjson.Re
 	} else {
 		data.DestinationSgtId = types.StringNull()
 	}
+	if value := res.Get("EgressMatrixCell.matrixId"); value.Exists() && value.Type != gjson.Null {
+		data.MatrixId = types.StringValue(value.String())
+	} else {
+		data.MatrixId = types.StringNull()
+	}
 }
 
 //template:end fromBody
@@ -154,6 +163,11 @@ func (data *TrustSecEgressMatrixCell) updateFromBody(ctx context.Context, res gj
 	} else {
 		data.DestinationSgtId = types.StringNull()
 	}
+	if value := res.Get("EgressMatrixCell.matrixId"); value.Exists() && !data.MatrixId.IsNull() {
+		data.MatrixId = types.StringValue(value.String())
+	} else {
+		data.MatrixId = types.StringNull()
+	}
 }
 
 //template:end updateFromBody
@@ -176,6 +190,9 @@ func (data *TrustSecEgressMatrixCell) isNull(ctx context.Context, res gjson.Resu
 		return false
 	}
 	if !data.DestinationSgtId.IsNull() {
+		return false
+	}
+	if !data.MatrixId.IsNull() {
 		return false
 	}
 	return true

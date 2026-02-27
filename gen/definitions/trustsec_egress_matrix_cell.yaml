@@ -46,7 +46,12 @@ attributes:
     test_value: ise_trustsec_security_group.test.id
     example: "93e1bf00-8c01-11e6-996c-525400b48521"
     description: Destination Trustsec Security Group ID
-
+  - model_name: matrixId
+    data_path: [EgressMatrixCell]
+    type: String
+    description: Matrix ID. Default value is Production Matrix Id, when no value is provided during creation. (works with ISE 3.4 p2 and above)
+    example: "93e1bf00-8c01-11e6-996c-525400b48521"
+    exclude_test: true
 test_prerequisites: |
   resource "ise_trustsec_security_group" "test" {
     name              = "SGT1234"

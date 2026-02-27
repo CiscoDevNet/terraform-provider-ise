@@ -98,11 +98,6 @@ func (data *TrustSecMatrix) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.MatrixPolicyType = types.StringNull()
 	}
-	if value := res.Get("response.copyPolicyFrom"); value.Exists() && value.Type != gjson.Null {
-		data.CopyPolicyFrom = types.StringValue(value.String())
-	} else {
-		data.CopyPolicyFrom = types.StringNull()
-	}
 }
 
 //template:end fromBody
@@ -128,11 +123,6 @@ func (data *TrustSecMatrix) updateFromBody(ctx context.Context, res gjson.Result
 		data.MatrixPolicyType = types.StringValue(value.String())
 	} else {
 		data.MatrixPolicyType = types.StringNull()
-	}
-	if value := res.Get("response.copyPolicyFrom"); value.Exists() && !data.CopyPolicyFrom.IsNull() {
-		data.CopyPolicyFrom = types.StringValue(value.String())
-	} else {
-		data.CopyPolicyFrom = types.StringNull()
 	}
 }
 

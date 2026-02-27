@@ -92,6 +92,10 @@ func (d *TrustSecEgressMatrixCellDataSource) Schema(ctx context.Context, req dat
 				MarkdownDescription: "Destination Trustsec Security Group ID",
 				Computed:            true,
 			},
+			"matrix_id": schema.StringAttribute{
+				MarkdownDescription: "Matrix ID. Default value is Production Matrix Id, when no value is provided during creation. (works with ISE 3.4 p2 and above)",
+				Computed:            true,
+			},
 		},
 	}
 }

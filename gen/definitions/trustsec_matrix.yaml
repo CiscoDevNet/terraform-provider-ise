@@ -29,6 +29,7 @@ attributes:
     example: TRUSTSEC_POLICY
   - model_name: copyPolicyFrom
     type: String
+    write_only: true
     description: Policy UUID from which the TrustSec Policies needs to be copied. The default value is empty means it will create a new Matrix without any policies
     example: "7c9484cf-0ebc-47ad-a9ef-bc12729ed73b"
     exclude_test: true

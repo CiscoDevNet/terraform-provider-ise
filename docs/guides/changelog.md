@@ -9,6 +9,7 @@ description: |-
 
 ## 0.2.17 (unreleased)
 
+- Add `matrix_id` attribute to `trustsec_egress_matrix_cell` resource (requires ISE 3.4 patch 2 or later)
 - Add `ise_trustsec_work_process_settings` resource
 - Add `ise_trustsec_matrix` resource and data source
 

@@ -40,6 +40,7 @@ resource "ise_trustsec_egress_matrix_cell" "example" {
 - `matrix_cell_status` (String) Matrix Cell Status
   - Choices: `DISABLED`, `ENABLED`, `MONITOR`
   - Default value: `DISABLED`
+- `matrix_id` (String) Matrix ID. Default value is Production Matrix Id, when no value is provided during creation. (works with ISE 3.4 p2 and above)
 - `sgacls` (Set of String) List of TrustSec Security Groups ACLs
 
 ### Read-Only
