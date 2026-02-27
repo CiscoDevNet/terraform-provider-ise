@@ -5,6 +5,7 @@ data_source_name_query: true
 doc_category: TrustSec
 id_path: response.matrixUuId
 skip_minimum_test: true
+test_tags: [ISE35]
 attributes:
   - model_name: name
     type: String
@@ -31,3 +32,9 @@ attributes:
     description: Policy UUID from which the TrustSec Policies needs to be copied. The default value is empty means it will create a new Matrix without any policies
     example: "7c9484cf-0ebc-47ad-a9ef-bc12729ed73b"
     exclude_test: true
+test_prerequisites: |
+  resource "ise_trustsec_work_process_settings" "test" {
+    matrix_mode              = "MULTIPLE_MATRICES"
+    use_defcons              = false
+    enable_approval_workflow = false
+  }

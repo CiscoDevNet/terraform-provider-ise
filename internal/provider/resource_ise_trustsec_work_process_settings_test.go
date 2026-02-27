@@ -21,6 +21,7 @@ package provider
 
 //template:begin imports
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -30,6 +31,9 @@ import (
 
 //template:begin testAcc
 func TestAccIseTrustSecWorkProcessSettings(t *testing.T) {
+	if os.Getenv("ISE35") == "" {
+		t.Skip("skipping test, set environment variable ISE35")
+	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("ise_trustsec_work_process_settings.test", "matrix_mode", "MULTIPLE_MATRICES"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_trustsec_work_process_settings.test", "use_defcons", "false"))

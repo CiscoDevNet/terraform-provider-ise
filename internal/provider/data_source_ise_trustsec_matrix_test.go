@@ -21,6 +21,7 @@ package provider
 
 //template:begin imports
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -30,6 +31,9 @@ import (
 
 //template:begin testAccDataSource
 func TestAccDataSourceIseTrustSecMatrix(t *testing.T) {
+	if os.Getenv("ISE35") == "" {
+		t.Skip("skipping test, set environment variable ISE35")
+	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_trustsec_matrix.test", "name", "MyMatrix"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_trustsec_matrix.test", "description", "My TrustSec Matrix Policy"))
@@ -39,7 +43,7 @@ func TestAccDataSourceIseTrustSecMatrix(t *testing.T) {
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceIseTrustSecMatrixConfig(),
+				Config: testAccDataSourceIseTrustSecMatrixPrerequisitesConfig + testAccDataSourceIseTrustSecMatrixConfig(),
 				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
@@ -49,6 +53,15 @@ func TestAccDataSourceIseTrustSecMatrix(t *testing.T) {
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
+const testAccDataSourceIseTrustSecMatrixPrerequisitesConfig = `
+resource "ise_trustsec_work_process_settings" "test" {
+  matrix_mode              = "MULTIPLE_MATRICES"
+  use_defcons              = false
+  enable_approval_workflow = false
+}
+
+`
+
 //template:end testPrerequisites
 
 //template:begin testAccDataSourceConfig

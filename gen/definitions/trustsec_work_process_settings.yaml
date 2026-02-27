@@ -9,6 +9,7 @@ no_delete: true
 no_import: true
 no_data_source: true
 skip_minimum_test: true
+test_tags: [ISE35]
 attributes:
   - model_name: matrixMode
     type: String
