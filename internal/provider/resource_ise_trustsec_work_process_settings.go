@@ -223,10 +223,20 @@ func (r *TrustSecWorkProcessSettingsResource) Delete(ctx context.Context, req re
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
 
-	// ISE does not support deleting work process settings; revert to the ISE
-	// default of SINGLE_MATRIX instead.
-	body := `{"matrixMode":"SINGLE_MATRIX","useDefcons":false,"approvalWorkflow":{"enableApprovalWorkflow":false}}`
-	res, err := r.client.Put(state.getPath(), body)
+	res, err := r.client.Get(state.getPath())
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
+		return
+	}
+
+	currentMode := res.Get("response.matrixMode").String()
+	newMode := "MULTIPLE_MATRICES"
+	if currentMode == "MULTIPLE_MATRICES" {
+		newMode = "SINGLE_MATRIX"
+	}
+
+	body := fmt.Sprintf(`{"matrixMode":"%s","useDefcons":false,"approvalWorkflow":{"enableApprovalWorkflow":false}}`, newMode)
+	res, err = r.client.Put(state.getPath(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to reset object to defaults (PUT), got error: %s, %s", err, res.String()))
 		return
