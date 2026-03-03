@@ -65,7 +65,7 @@ func (data TrustSecEgressMatrixCell) toBody(ctx context.Context, state TrustSecE
 	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "EgressMatrixCell.description", data.Description.ValueString())
 	}
-	if !data.DefaultRule.IsNull() {
+	if !data.DefaultRule.IsNull() && state.Id.ValueString() == "" {
 		body, _ = sjson.Set(body, "EgressMatrixCell.defaultRule", data.DefaultRule.ValueString())
 	}
 	if !data.MatrixCellStatus.IsNull() {

@@ -17,6 +17,7 @@ attributes:
     example: "NONE"
     default_value: "NONE"
     minimum_test_value: '"PERMIT_IP"'
+    exclude_update: true
   - model_name: matrixCellStatus
     data_path: [EgressMatrixCell]
     type: String

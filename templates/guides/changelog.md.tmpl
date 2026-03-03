@@ -7,6 +7,10 @@ description: |-
 
 # Changelog
 
+## (unreleased)
+
+- Fix issue with `trustsec_egress_matrix_cell` updates while using `DENY_IP` or `PERMIT_IP` sgacl
+
 ## 0.2.17
 
 - Add `matrix_id` attribute to `trustsec_egress_matrix_cell` resource (requires ISE 3.4 patch 2 or later)
