@@ -7,8 +7,11 @@ description: |-
 
 # Changelog
 
-## (unreleased)
+## 0.3.0 (unreleased)
 
+- Added `request_timeout` provider attribute (60–600 seconds, default 60) to handle ISE API latency for deeply nested condition processing. Configurable via `ISE_REQUEST_TIMEOUT` environment variable
+- Change `children` attribute type from `Set` to `List` in all policy condition resources
+- Extended policy condition nesting support from 3 to 7 levels (1 root + 6 nested children) for all 12 Network Access and Device Admin policy resources
 - Fix issue with `trustsec_egress_matrix_cell` updates while using `DENY_IP` or `PERMIT_IP` sgacl
 
 ## 0.2.17
