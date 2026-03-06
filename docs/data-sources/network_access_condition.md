@@ -30,7 +30,7 @@ data "ise_network_access_condition" "example" {
 
 - `attribute_name` (String) Dictionary attribute name
 - `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
-- `children` (Attributes Set) List of child conditions. `condition_type` must be one of `LibraryConditionAndBlock` or `LibraryConditionOrBlock`. (see [below for nested schema](#nestedatt--children))
+- `children` (Attributes List) List of child conditions. (see [below for nested schema](#nestedatt--children))
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
 - `description` (String) Condition description
 - `dictionary_name` (String) Dictionary name
@@ -45,7 +45,7 @@ Read-Only:
 
 - `attribute_name` (String) Dictionary attribute name
 - `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
-- `children` (Attributes Set) List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`. (see [below for nested schema](#nestedatt--children--children))
+- `children` (Attributes List) List of child conditions (see [below for nested schema](#nestedatt--children--children))
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
 - `description` (String) Condition description
 - `dictionary_name` (String) Dictionary name
@@ -62,6 +62,7 @@ Read-Only:
 
 - `attribute_name` (String) Dictionary attribute name
 - `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
+- `children` (Attributes List) List of child conditions (see [below for nested schema](#nestedatt--children--children--children))
 - `condition_type` (String) Condition type.
 - `description` (String) Condition description
 - `dictionary_name` (String) Dictionary name
@@ -69,4 +70,33 @@ Read-Only:
 - `id` (String) UUID for condition
 - `is_negate` (Boolean) Indicates whereas this condition is in negate mode
 - `name` (String) Condition name. Required if `condition_type` is `ConditionReference`, if `condition_type` is `ConditionAttributes` then this attribute is not used.
+- `operator` (String) Equality operator
+
+<a id="nestedatt--children--children--children"></a>
+### Nested Schema for `children.children.children`
+
+Read-Only:
+
+- `attribute_name` (String) Dictionary attribute name
+- `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
+- `children` (Attributes List) List of child conditions (see [below for nested schema](#nestedatt--children--children--children--children))
+- `condition_type` (String) Condition type.
+- `dictionary_name` (String) Dictionary name
+- `dictionary_value` (String) Dictionary value
+- `id` (String) UUID for condition
+- `is_negate` (Boolean) Indicates whereas this condition is in negate mode
+- `operator` (String) Equality operator
+
+<a id="nestedatt--children--children--children--children"></a>
+### Nested Schema for `children.children.children.children`
+
+Read-Only:
+
+- `attribute_name` (String) Dictionary attribute name
+- `attribute_value` (String) Attribute value for condition
+- `condition_type` (String) Condition type.
+- `dictionary_name` (String) Dictionary name
+- `dictionary_value` (String) Dictionary value
+- `id` (String) UUID for condition
+- `is_negate` (Boolean) Indicates whereas this condition is in negate mode
 - `operator` (String) Equality operator

@@ -28,7 +28,7 @@ data "ise_network_access_authorization_global_exception_rule" "example" {
 
 ### Read-Only
 
-- `children` (Attributes Set) List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`. (see [below for nested schema](#nestedatt--children))
+- `children` (Attributes List) List of child conditions (see [below for nested schema](#nestedatt--children))
 - `condition_attribute_name` (String) Dictionary attribute name
 - `condition_attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
 - `condition_dictionary_name` (String) Dictionary name
@@ -37,7 +37,7 @@ data "ise_network_access_authorization_global_exception_rule" "example" {
 - `condition_is_negate` (Boolean) Indicates whereas this condition is in negate mode
 - `condition_operator` (String) Equality operator
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
-- `profiles` (Set of String) The authorization profile(s)
+- `profiles` (List of String) The authorization profile(s)
 - `rank` (Number) The rank (priority) in relation to other rules. Lower rank is higher priority.
 - `security_group` (String) Security group used in authorization policies
 - `state` (String) The state that the rule is in. A disabled rule cannot be matched.
@@ -49,7 +49,7 @@ Read-Only:
 
 - `attribute_name` (String) Dictionary attribute name
 - `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
-- `children` (Attributes Set) List of child conditions. `condition_type` must be one of `ConditionAndBlock` or `ConditionOrBlock`. (see [below for nested schema](#nestedatt--children--children))
+- `children` (Attributes List) List of child conditions (see [below for nested schema](#nestedatt--children--children))
 - `condition_type` (String) Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
@@ -64,9 +64,58 @@ Read-Only:
 
 - `attribute_name` (String) Dictionary attribute name
 - `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
+- `children` (Attributes List) List of child conditions (see [below for nested schema](#nestedatt--children--children--children))
 - `condition_type` (String) Condition type.
 - `dictionary_name` (String) Dictionary name
 - `dictionary_value` (String) Dictionary value
 - `id` (String) UUID for condition
 - `is_negate` (Boolean) Indicates whereas this condition is in negate mode
 - `operator` (String) Equality operator
+
+<a id="nestedatt--children--children--children"></a>
+### Nested Schema for `children.children.children`
+
+Read-Only:
+
+- `attribute_name` (String) Dictionary attribute name
+- `attribute_value` (String) Attribute value for condition. Value type is specified in dictionary object.
+- `children` (Attributes List) List of child conditions (see [below for nested schema](#nestedatt--children--children--children--children))
+- `condition_type` (String) Condition type.
+- `dictionary_name` (String) Dictionary name
+- `dictionary_value` (String) Dictionary value
+- `id` (String) UUID for condition
+- `is_negate` (Boolean) Indicates whereas this condition is in negate mode
+- `operator` (String) Equality operator
+
+<a id="nestedatt--children--children--children--children"></a>
+### Nested Schema for `children.children.children.children`
+
+Read-Only:
+
+- `attribute_name` (String) Dictionary attribute name
+- `attribute_value` (String) Attribute value for condition
+- `children` (Attributes List) List of child conditions (see [below for nested schema](#nestedatt--children--children--children--children--children))
+- `condition_type` (String) Condition type.
+- `dictionary_name` (String) Dictionary name
+- `dictionary_value` (String) Dictionary value
+- `id` (String) UUID for condition
+- `is_negate` (Boolean) Indicates whereas this condition is in negate mode
+- `operator` (String) Equality operator
+
+<a id="nestedatt--children--children--children--children--children"></a>
+### Nested Schema for `children.children.children.children.children`
+
+Read-Only:
+
+- `attribute_name` (String) Dictionary attribute name
+- `attribute_value` (String) Attribute value for condition
+- `children` (Attributes List) List of child conditions (see [below for nested schema](#nestedatt--children--children--children--children--children--children))
+- `condition_type` (String) Condition type.
+- `dictionary_name` (String) Dictionary name
+- `dictionary_value` (String) Dictionary value
+- `id` (String) UUID for condition
+- `is_negate` (Boolean) Indicates whereas this condition is in negate mode
+- `operator` (String) Equality operator
+
+<a id="nestedatt--children--children--children--children--children--children"></a>
+### Nested Schema for `children.children.children.children.children.children`

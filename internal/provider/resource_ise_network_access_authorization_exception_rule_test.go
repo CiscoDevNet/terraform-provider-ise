@@ -42,6 +42,7 @@ func TestAccIseNetworkAccessAuthorizationExceptionRule(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_exception_rule.test", "condition_attribute_value", "All Locations"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_exception_rule.test", "condition_dictionary_name", "DEVICE"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_exception_rule.test", "condition_operator", "equals"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_exception_rule.test", "profiles.0", "PermitAccess"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_authorization_exception_rule.test", "security_group", "BYOD"))
 
 	var steps []resource.TestStep
