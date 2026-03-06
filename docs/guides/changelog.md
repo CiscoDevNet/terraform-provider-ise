@@ -7,7 +7,7 @@ description: |-
 
 # Changelog
 
-## 0.3.0 (unreleased)
+## 0.3.0
 
 - Added `request_timeout` provider attribute (60–600 seconds, default 60) to handle ISE API latency for deeply nested condition processing. Configurable via `ISE_REQUEST_TIMEOUT` environment variable
 - Change `children` attribute type from `Set` to `List` in all policy condition resources
