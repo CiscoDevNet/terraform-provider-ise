@@ -14,8 +14,8 @@ This data source can read the Network Access Dictionary Attribute.
 
 ```terraform
 data "ise_network_access_dictionary_attribute" "example" {
-  id              = "Network_Physics-Attribute"
-  dictionary_name = "Opnet"
+  id              = "Custom-Attr"
+  dictionary_name = "CustomDict"
 }
 ```
 

@@ -1,1 +1,1 @@
-terraform import ise_network_access_dictionary_attribute.example "Network_Physics-Attribute"
+terraform import ise_network_access_dictionary_attribute.example "Custom-Attr"

@@ -32,12 +32,12 @@ import (
 //template:begin testAcc
 func TestAccIseNetworkAccessDictionaryAttribute(t *testing.T) {
 	var checks []resource.TestCheckFunc
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_dictionary_attribute.test", "dictionary_name", "Opnet"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_dictionary_attribute.test", "name", "Network_Physics-Attribute"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_dictionary_attribute.test", "description", "Network Physics Attribute for ARX appliances"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_dictionary_attribute.test", "dictionary_name", "CustomDict"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_dictionary_attribute.test", "name", "Custom-Attr"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_dictionary_attribute.test", "description", "My custom dictionary attribute"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_dictionary_attribute.test", "data_type", "STRING"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_dictionary_attribute.test", "direction_type", "BOTH"))
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_dictionary_attribute.test", "internal_name", "Network_Physics-Attribute"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_dictionary_attribute.test", "internal_name", "Custom-Attr"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_dictionary_attribute.test", "allowed_values.0.key", "key1"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_dictionary_attribute.test", "allowed_values.0.value", "value1"))
 
@@ -67,8 +67,8 @@ func TestAccIseNetworkAccessDictionaryAttribute(t *testing.T) {
 //template:begin testAccConfigMinimal
 func testAccIseNetworkAccessDictionaryAttributeConfig_minimum() string {
 	config := `resource "ise_network_access_dictionary_attribute" "test" {` + "\n"
-	config += `	dictionary_name = "Opnet"` + "\n"
-	config += `	name = "Network_Physics-Attribute"` + "\n"
+	config += `	dictionary_name = "CustomDict"` + "\n"
+	config += `	name = "Custom-Attr"` + "\n"
 	config += `	data_type = "STRING"` + "\n"
 	config += `}` + "\n"
 	return config
@@ -79,12 +79,12 @@ func testAccIseNetworkAccessDictionaryAttributeConfig_minimum() string {
 //template:begin testAccConfigAll
 func testAccIseNetworkAccessDictionaryAttributeConfig_all() string {
 	config := `resource "ise_network_access_dictionary_attribute" "test" {` + "\n"
-	config += `	dictionary_name = "Opnet"` + "\n"
-	config += `	name = "Network_Physics-Attribute"` + "\n"
-	config += `	description = "Network Physics Attribute for ARX appliances"` + "\n"
+	config += `	dictionary_name = "CustomDict"` + "\n"
+	config += `	name = "Custom-Attr"` + "\n"
+	config += `	description = "My custom dictionary attribute"` + "\n"
 	config += `	data_type = "STRING"` + "\n"
 	config += `	direction_type = "BOTH"` + "\n"
-	config += `	internal_name = "Network_Physics-Attribute"` + "\n"
+	config += `	internal_name = "Custom-Attr"` + "\n"
 	config += `	allowed_values = [{` + "\n"
 	config += `	  key = "key1"` + "\n"
 	config += `	  value = "value1"` + "\n"

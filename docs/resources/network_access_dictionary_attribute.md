@@ -14,12 +14,12 @@ This resource can manage a Network Access Dictionary Attribute.
 
 ```terraform
 resource "ise_network_access_dictionary_attribute" "example" {
-  dictionary_name = "Opnet"
-  name            = "Network_Physics-Attribute"
-  description     = "Network Physics Attribute for ARX appliances"
+  dictionary_name = "CustomDict"
+  name            = "Custom-Attr"
+  description     = "My custom dictionary attribute"
   data_type       = "STRING"
   direction_type  = "BOTH"
-  internal_name   = "Network_Physics-Attribute"
+  internal_name   = "Custom-Attr"
   allowed_values = [
     {
       key   = "key1"
@@ -66,5 +66,5 @@ Import is supported using the following syntax:
 The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
-terraform import ise_network_access_dictionary_attribute.example "Network_Physics-Attribute"
+terraform import ise_network_access_dictionary_attribute.example "Custom-Attr"
 ```

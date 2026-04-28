@@ -8,17 +8,17 @@ attributes:
     type: String
     reference: true
     description: The name of the dictionary the attribute belongs to
-    example: Opnet
+    example: CustomDict
   - model_name: name
     type: String
     id: true
     mandatory: true
     description: The dictionary attribute name
-    example: Network_Physics-Attribute
+    example: Custom-Attr
   - model_name: description
     type: String
     description: The description of the dictionary attribute
-    example: Network Physics Attribute for ARX appliances
+    example: My custom dictionary attribute
   - model_name: dataType
     type: String
     mandatory: true
@@ -33,7 +33,7 @@ attributes:
   - model_name: internalName
     type: String
     description: The internal name of the dictionary attribute
-    example: Network_Physics-Attribute
+    example: Custom-Attr
   - model_name: allowedValues
     type: List
     description: List of allowed values for the attribute

@@ -31,12 +31,12 @@ import (
 //template:begin testAccDataSource
 func TestAccDataSourceIseNetworkAccessDictionaryAttribute(t *testing.T) {
 	var checks []resource.TestCheckFunc
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_dictionary_attribute.test", "dictionary_name", "Opnet"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_dictionary_attribute.test", "name", "Network_Physics-Attribute"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_dictionary_attribute.test", "description", "Network Physics Attribute for ARX appliances"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_dictionary_attribute.test", "dictionary_name", "CustomDict"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_dictionary_attribute.test", "name", "Custom-Attr"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_dictionary_attribute.test", "description", "My custom dictionary attribute"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_dictionary_attribute.test", "data_type", "STRING"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_dictionary_attribute.test", "direction_type", "BOTH"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_dictionary_attribute.test", "internal_name", "Network_Physics-Attribute"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_dictionary_attribute.test", "internal_name", "Custom-Attr"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_dictionary_attribute.test", "allowed_values.0.key", "key1"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_dictionary_attribute.test", "allowed_values.0.value", "value1"))
 	resource.Test(t, resource.TestCase{
@@ -59,12 +59,12 @@ func TestAccDataSourceIseNetworkAccessDictionaryAttribute(t *testing.T) {
 //template:begin testAccDataSourceConfig
 func testAccDataSourceIseNetworkAccessDictionaryAttributeConfig() string {
 	config := `resource "ise_network_access_dictionary_attribute" "test" {` + "\n"
-	config += `	dictionary_name = "Opnet"` + "\n"
-	config += `	name = "Network_Physics-Attribute"` + "\n"
-	config += `	description = "Network Physics Attribute for ARX appliances"` + "\n"
+	config += `	dictionary_name = "CustomDict"` + "\n"
+	config += `	name = "Custom-Attr"` + "\n"
+	config += `	description = "My custom dictionary attribute"` + "\n"
 	config += `	data_type = "STRING"` + "\n"
 	config += `	direction_type = "BOTH"` + "\n"
-	config += `	internal_name = "Network_Physics-Attribute"` + "\n"
+	config += `	internal_name = "Custom-Attr"` + "\n"
 	config += `	allowed_values = [{` + "\n"
 	config += `	  key = "key1"` + "\n"
 	config += `	  value = "value1"` + "\n"
@@ -74,7 +74,7 @@ func testAccDataSourceIseNetworkAccessDictionaryAttributeConfig() string {
 	config += `
 		data "ise_network_access_dictionary_attribute" "test" {
 			id = ise_network_access_dictionary_attribute.test.id
-			dictionary_name = "Opnet"
+			dictionary_name = "CustomDict"
 		}
 	`
 	return config
