@@ -1,0 +1,48 @@
+---
+name: Network Access Dictionary Attribute
+rest_endpoint: /api/v1/policy/network-access/dictionaries/%v/attribute
+data_source_name_query: true
+doc_category: Network Access
+attributes:
+  - tf_name: dictionary_name
+    type: String
+    reference: true
+    description: The name of the dictionary the attribute belongs to
+    example: CustomDict
+  - model_name: name
+    type: String
+    id: true
+    mandatory: true
+    description: The dictionary attribute name
+    example: Custom-Attr
+  - model_name: description
+    type: String
+    description: The description of the dictionary attribute
+    example: My custom dictionary attribute
+  - model_name: dataType
+    type: String
+    mandatory: true
+    enum_values: [BOOLEAN, DATE, FLOAT, INT, IP, IPv4, IPv6, IPV6PREFIX, LONG, OCTET_STRING, STRING, UNIT32, UNIT64]
+    description: The data type for the dictionary attribute
+    example: STRING
+  - model_name: directionType
+    type: String
+    enum_values: [BOTH, IN, NONE, OUT]
+    description: The direction type for the dictionary attribute
+    example: BOTH
+  - model_name: internalName
+    type: String
+    description: The internal name of the dictionary attribute
+    example: Custom-Attr
+  - model_name: allowedValues
+    type: List
+    description: List of allowed values for the attribute
+    attributes:
+      - model_name: key
+        type: String
+        description: The allowed value key
+        example: key1
+      - model_name: value
+        type: String
+        description: The allowed value
+        example: value1
