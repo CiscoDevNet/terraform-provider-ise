@@ -548,24 +548,26 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 		keyValues := [...]string{data.Children[i].Name.ValueString(), data.Children[i].ConditionType.ValueString(), data.Children[i].Id.ValueString(), data.Children[i].AttributeName.ValueString(), data.Children[i].AttributeValue.ValueString(), data.Children[i].DictionaryName.ValueString(), data.Children[i].DictionaryValue.ValueString(), data.Children[i].Operator.ValueString()}
 
 		var r gjson.Result
-		res.Get("response.children").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() == keyValues[ik] {
-						found = true
-						continue
-					}
-					found = false
-					break
+		parentItems := res.Get("response.children").Array()
+		matchCount := 0
+		for _, v := range parentItems {
+			found := false
+			for ik := range keys {
+				if v.Get(keys[ik]).String() == keyValues[ik] {
+					found = true
+					continue
 				}
-				if found {
-					r = v
-					return false
-				}
-				return true
-			},
-		)
+				found = false
+				break
+			}
+			if found {
+				r = v
+				matchCount++
+			}
+		}
+		if matchCount > 1 && i < len(parentItems) {
+			r = parentItems[i]
+		}
 		if value := r.Get("name"); value.Exists() && !data.Children[i].Name.IsNull() {
 			data.Children[i].Name = types.StringValue(value.String())
 		} else {
@@ -621,24 +623,26 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 			keyValues := [...]string{data.Children[i].Children[ci].Name.ValueString(), data.Children[i].Children[ci].ConditionType.ValueString(), data.Children[i].Children[ci].Id.ValueString(), data.Children[i].Children[ci].AttributeName.ValueString(), data.Children[i].Children[ci].AttributeValue.ValueString(), data.Children[i].Children[ci].DictionaryName.ValueString(), data.Children[i].Children[ci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Operator.ValueString()}
 
 			var cr gjson.Result
-			r.Get("children").ForEach(
-				func(_, v gjson.Result) bool {
-					found := false
-					for ik := range keys {
-						if v.Get(keys[ik]).String() == keyValues[ik] {
-							found = true
-							continue
-						}
-						found = false
-						break
+			childItems := r.Get("children").Array()
+			matchCount := 0
+			for _, v := range childItems {
+				found := false
+				for ik := range keys {
+					if v.Get(keys[ik]).String() == keyValues[ik] {
+						found = true
+						continue
 					}
-					if found {
-						cr = v
-						return false
-					}
-					return true
-				},
-			)
+					found = false
+					break
+				}
+				if found {
+					cr = v
+					matchCount++
+				}
+			}
+			if matchCount > 1 && ci < len(childItems) {
+				cr = childItems[ci]
+			}
 			if value := cr.Get("name"); value.Exists() && !data.Children[i].Children[ci].Name.IsNull() {
 				data.Children[i].Children[ci].Name = types.StringValue(value.String())
 			} else {
@@ -694,24 +698,26 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 				keyValues := [...]string{data.Children[i].Children[ci].Children[cci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Operator.ValueString()}
 
 				var ccr gjson.Result
-				cr.Get("children").ForEach(
-					func(_, v gjson.Result) bool {
-						found := false
-						for ik := range keys {
-							if v.Get(keys[ik]).String() == keyValues[ik] {
-								found = true
-								continue
-							}
-							found = false
-							break
+				cciItems := cr.Get("children").Array()
+				matchCount = 0
+				for _, v := range cciItems {
+					found := false
+					for ik := range keys {
+						if v.Get(keys[ik]).String() == keyValues[ik] {
+							found = true
+							continue
 						}
-						if found {
-							ccr = v
-							return false
-						}
-						return true
-					},
-				)
+						found = false
+						break
+					}
+					if found {
+						ccr = v
+						matchCount++
+					}
+				}
+				if matchCount > 1 && cci < len(cciItems) {
+					ccr = cciItems[cci]
+				}
 				if value := ccr.Get("conditionType"); value.Exists() && !data.Children[i].Children[ci].Children[cci].ConditionType.IsNull() {
 					data.Children[i].Children[ci].Children[cci].ConditionType = types.StringValue(value.String())
 				} else {
@@ -757,24 +763,26 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 					keyValues := [...]string{data.Children[i].Children[ci].Children[cci].Children[ccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Operator.ValueString()}
 
 					var cccr gjson.Result
-					ccr.Get("children").ForEach(
-						func(_, v gjson.Result) bool {
-							found := false
-							for ik := range keys {
-								if v.Get(keys[ik]).String() == keyValues[ik] {
-									found = true
-									continue
-								}
-								found = false
-								break
+					ccciItems := ccr.Get("children").Array()
+					matchCount = 0
+					for _, v := range ccciItems {
+						found := false
+						for ik := range keys {
+							if v.Get(keys[ik]).String() == keyValues[ik] {
+								found = true
+								continue
 							}
-							if found {
-								cccr = v
-								return false
-							}
-							return true
-						},
-					)
+							found = false
+							break
+						}
+						if found {
+							cccr = v
+							matchCount++
+						}
+					}
+					if matchCount > 1 && ccci < len(ccciItems) {
+						cccr = ccciItems[ccci]
+					}
 					if value := cccr.Get("conditionType"); value.Exists() && !data.Children[i].Children[ci].Children[cci].Children[ccci].ConditionType.IsNull() {
 						data.Children[i].Children[ci].Children[cci].Children[ccci].ConditionType = types.StringValue(value.String())
 					} else {

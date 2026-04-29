@@ -761,27 +761,31 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 
 		var r gjson.Result
 		{{- if strContains (camelCase $.Name) "UpdateRanks" }}
-		res.Get("response").ForEach(
+		parentItems := res.Get("response").Array()
+		{{- else if .ModelName}}
+		parentItems := res.Get("{{if .ResponseDataPath}}{{.ResponseDataPath}}{{else}}{{if $openApi}}response.{{end}}{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}{{end}}").Array()
 		{{- else}}
-		res.{{if .ModelName}}Get("{{if .ResponseDataPath}}{{.ResponseDataPath}}{{else}}{{if $openApi}}response.{{end}}{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}{{end}}").{{end}}ForEach(
+		parentItems := res.Array()
 		{{- end}}
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() == keyValues[ik] {
-						found = true
-						continue
-					}
-					found = false
-					break
+		matchCount := 0
+		for _, v := range parentItems {
+			found := false
+			for ik := range keys {
+				if v.Get(keys[ik]).String() == keyValues[ik] {
+					found = true
+					continue
 				}
-				if found {
-					r = v
-					return false
-				}
-				return true
-			},
-		)
+				found = false
+				break
+			}
+			if found {
+				r = v
+				matchCount++
+			}
+		}
+		if matchCount > 1 && i < len(parentItems) {
+			r = parentItems[i]
+		}
 
 		{{- range .Attributes}}
 		{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
@@ -810,24 +814,26 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 			keyValues := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if eq .Type "Int64"}}strconv.FormatInt(data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}}.ValueInt64(), 10), {{else if eq .Type "Bool"}}strconv.FormatBool(data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}}.ValueBool()), {{else if eq .Type "String"}}data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}}.Value{{.Type}}(), {{end}}{{end}}{{end}} }
 
 			var cr gjson.Result
-			r.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").ForEach(
-				func(_, v gjson.Result) bool {
-					found := false
-					for ik := range keys {
-						if v.Get(keys[ik]).String() == keyValues[ik] {
-							found = true
-							continue
-						}
-						found = false
-						break
+			childItems := r.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").Array()
+			matchCount := 0
+			for _, v := range childItems {
+				found := false
+				for ik := range keys {
+					if v.Get(keys[ik]).String() == keyValues[ik] {
+						found = true
+						continue
 					}
-					if found {
-						cr = v
-						return false
-					}
-					return true
-				},
-			)
+					found = false
+					break
+				}
+				if found {
+					cr = v
+					matchCount++
+				}
+			}
+			if matchCount > 1 && ci < len(childItems) {
+				cr = childItems[ci]
+			}
 
 			{{- range .Attributes}}
 			{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
@@ -856,24 +862,26 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 				keyValues := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if eq .Type "Int64"}}strconv.FormatInt(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}}.ValueInt64(), 10), {{else if eq .Type "Bool"}}strconv.FormatBool(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}}.ValueBool()), {{else if eq .Type "String"}}data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}}.Value{{.Type}}(), {{end}}{{end}}{{end}} }
 
 				var ccr gjson.Result
-				cr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").ForEach(
-					func(_, v gjson.Result) bool {
-						found := false
-						for ik := range keys {
-							if v.Get(keys[ik]).String() == keyValues[ik] {
-								found = true
-								continue
-							}
-							found = false
-							break
+				cciItems := cr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").Array()
+				matchCount = 0
+				for _, v := range cciItems {
+					found := false
+					for ik := range keys {
+						if v.Get(keys[ik]).String() == keyValues[ik] {
+							found = true
+							continue
 						}
-						if found {
-							ccr = v
-							return false
-						}
-						return true
-					},
-				)
+						found = false
+						break
+					}
+					if found {
+						ccr = v
+						matchCount++
+					}
+				}
+				if matchCount > 1 && cci < len(cciItems) {
+					ccr = cciItems[cci]
+				}
 
 				{{- range .Attributes}}
 				{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
@@ -902,24 +910,26 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 					keyValues := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if eq .Type "Int64"}}strconv.FormatInt(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}}.ValueInt64(), 10), {{else if eq .Type "Bool"}}strconv.FormatBool(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}}.ValueBool()), {{else if eq .Type "String"}}data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}}.Value{{.Type}}(), {{end}}{{end}}{{end}} }
 
 					var cccr gjson.Result
-					ccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").ForEach(
-						func(_, v gjson.Result) bool {
-							found := false
-							for ik := range keys {
-								if v.Get(keys[ik]).String() == keyValues[ik] {
-									found = true
-									continue
-								}
-								found = false
-								break
+					ccciItems := ccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").Array()
+					matchCount = 0
+					for _, v := range ccciItems {
+						found := false
+						for ik := range keys {
+							if v.Get(keys[ik]).String() == keyValues[ik] {
+								found = true
+								continue
 							}
-							if found {
-								cccr = v
-								return false
-							}
-							return true
-						},
-					)
+							found = false
+							break
+						}
+						if found {
+							cccr = v
+							matchCount++
+						}
+					}
+					if matchCount > 1 && ccci < len(ccciItems) {
+						cccr = ccciItems[ccci]
+					}
 
 					{{- range .Attributes}}
 					{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
@@ -948,24 +958,26 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 						keyValues := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if eq .Type "Int64"}}strconv.FormatInt(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}}.ValueInt64(), 10), {{else if eq .Type "Bool"}}strconv.FormatBool(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}}.ValueBool()), {{else if eq .Type "String"}}data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}}.Value{{.Type}}(), {{end}}{{end}}{{end}} }
 
 						var ccccr gjson.Result
-						cccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").ForEach(
-							func(_, v gjson.Result) bool {
-								found := false
-								for ik := range keys {
-									if v.Get(keys[ik]).String() == keyValues[ik] {
-										found = true
-										continue
-									}
-									found = false
-									break
+						cccciItems := cccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").Array()
+						matchCount = 0
+						for _, v := range cccciItems {
+							found := false
+							for ik := range keys {
+								if v.Get(keys[ik]).String() == keyValues[ik] {
+									found = true
+									continue
 								}
-								if found {
-									ccccr = v
-									return false
-								}
-								return true
-							},
-						)
+								found = false
+								break
+							}
+							if found {
+								ccccr = v
+								matchCount++
+							}
+						}
+						if matchCount > 1 && cccci < len(cccciItems) {
+							ccccr = cccciItems[cccci]
+						}
 
 						{{- range .Attributes}}
 						{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
@@ -994,24 +1006,26 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 							keyValues := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if eq .Type "Int64"}}strconv.FormatInt(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}}.ValueInt64(), 10), {{else if eq .Type "Bool"}}strconv.FormatBool(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}}.ValueBool()), {{else if eq .Type "String"}}data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}}.Value{{.Type}}(), {{end}}{{end}}{{end}} }
 
 							var cccccr gjson.Result
-							ccccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").ForEach(
-								func(_, v gjson.Result) bool {
-									found := false
-									for ik := range keys {
-										if v.Get(keys[ik]).String() == keyValues[ik] {
-											found = true
-											continue
-										}
-										found = false
-										break
+							ccccciItems := ccccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").Array()
+							matchCount = 0
+							for _, v := range ccccciItems {
+								found := false
+								for ik := range keys {
+									if v.Get(keys[ik]).String() == keyValues[ik] {
+										found = true
+										continue
 									}
-									if found {
-										cccccr = v
-										return false
-									}
-									return true
-								},
-							)
+									found = false
+									break
+								}
+								if found {
+									cccccr = v
+									matchCount++
+								}
+							}
+							if matchCount > 1 && ccccci < len(ccccciItems) {
+								cccccr = ccccciItems[ccccci]
+							}
 
 							{{- range .Attributes}}
 							{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}

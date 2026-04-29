@@ -143,24 +143,26 @@ func (data *TACACSProfile) updateFromBody(ctx context.Context, res gjson.Result)
 		keyValues := [...]string{data.SessionAttributes[i].Type.ValueString(), data.SessionAttributes[i].Name.ValueString(), data.SessionAttributes[i].Value.ValueString()}
 
 		var r gjson.Result
-		res.Get("TacacsProfile.sessionAttributes.sessionAttributeList").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() == keyValues[ik] {
-						found = true
-						continue
-					}
-					found = false
-					break
+		parentItems := res.Get("TacacsProfile.sessionAttributes.sessionAttributeList").Array()
+		matchCount := 0
+		for _, v := range parentItems {
+			found := false
+			for ik := range keys {
+				if v.Get(keys[ik]).String() == keyValues[ik] {
+					found = true
+					continue
 				}
-				if found {
-					r = v
-					return false
-				}
-				return true
-			},
-		)
+				found = false
+				break
+			}
+			if found {
+				r = v
+				matchCount++
+			}
+		}
+		if matchCount > 1 && i < len(parentItems) {
+			r = parentItems[i]
+		}
 		if value := r.Get("type"); value.Exists() && !data.SessionAttributes[i].Type.IsNull() {
 			data.SessionAttributes[i].Type = types.StringValue(value.String())
 		} else {
