@@ -113,24 +113,26 @@ func (data *ActiveDirectoryJoinDomainWithAllNodes) updateFromBody(ctx context.Co
 		keyValues := [...]string{data.AdditionalData[i].Name.ValueString()}
 
 		var r gjson.Result
-		res.Get("OperationAdditionalData.additionalData").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() == keyValues[ik] {
-						found = true
-						continue
-					}
-					found = false
-					break
+		parentItems := res.Get("OperationAdditionalData.additionalData").Array()
+		matchCount := 0
+		for _, v := range parentItems {
+			found := false
+			for ik := range keys {
+				if v.Get(keys[ik]).String() == keyValues[ik] {
+					found = true
+					continue
 				}
-				if found {
-					r = v
-					return false
-				}
-				return true
-			},
-		)
+				found = false
+				break
+			}
+			if found {
+				r = v
+				matchCount++
+			}
+		}
+		if matchCount > 1 && i < len(parentItems) {
+			r = parentItems[i]
+		}
 		if value := r.Get("name"); value.Exists() && !data.AdditionalData[i].Name.IsNull() {
 			data.AdditionalData[i].Name = types.StringValue(value.String())
 		} else {

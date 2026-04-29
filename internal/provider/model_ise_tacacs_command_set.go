@@ -157,24 +157,26 @@ func (data *TACACSCommandSet) updateFromBody(ctx context.Context, res gjson.Resu
 		keyValues := [...]string{data.Commands[i].Grant.ValueString(), data.Commands[i].Command.ValueString(), data.Commands[i].Arguments.ValueString()}
 
 		var r gjson.Result
-		res.Get("TacacsCommandSets.commands.commandList").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() == keyValues[ik] {
-						found = true
-						continue
-					}
-					found = false
-					break
+		parentItems := res.Get("TacacsCommandSets.commands.commandList").Array()
+		matchCount := 0
+		for _, v := range parentItems {
+			found := false
+			for ik := range keys {
+				if v.Get(keys[ik]).String() == keyValues[ik] {
+					found = true
+					continue
 				}
-				if found {
-					r = v
-					return false
-				}
-				return true
-			},
-		)
+				found = false
+				break
+			}
+			if found {
+				r = v
+				matchCount++
+			}
+		}
+		if matchCount > 1 && i < len(parentItems) {
+			r = parentItems[i]
+		}
 		if value := r.Get("grant"); value.Exists() && !data.Commands[i].Grant.IsNull() {
 			data.Commands[i].Grant = types.StringValue(value.String())
 		} else {
