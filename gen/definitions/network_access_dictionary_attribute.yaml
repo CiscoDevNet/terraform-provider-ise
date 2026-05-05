@@ -2,6 +2,8 @@
 name: Network Access Dictionary Attribute
 rest_endpoint: /api/v1/policy/network-access/dictionaries/%v/attribute
 data_source_name_query: true
+id_path: response.name
+id_example: Custom-Attr
 doc_category: Network Access
 attributes:
   - tf_name: dictionary_name
@@ -11,7 +13,7 @@ attributes:
     example: CustomDict
   - model_name: name
     type: String
-    id: true
+    requires_replace: true
     mandatory: true
     description: The dictionary attribute name
     example: Custom-Attr
