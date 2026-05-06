@@ -819,7 +819,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 
 			var cr gjson.Result
 			childItems := r.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").Array()
-			matchCount := 0
+			cMatchCount := 0
 			for _, v := range childItems {
 				found := false
 				for ik := range keys {
@@ -832,14 +832,14 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 				}
 				if found {
 					cr = v
-					matchCount++
+					cMatchCount++
 				}
 			}
 			// Positional fallback: when multiple items share identical key signatures (e.g.,
 			// ConditionAndBlock children with no distinguishing attributes), key-based matching
 			// is ambiguous. Fall back to index-based matching, which assumes the API returns
 			// items in the same order as Terraform state.
-			if matchCount > 1 && ci < len(childItems) {
+			if cMatchCount > 1 && ci < len(childItems) {
 				cr = childItems[ci]
 			}
 
@@ -871,7 +871,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 
 				var ccr gjson.Result
 				cciItems := cr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").Array()
-				matchCount = 0
+				ccMatchCount := 0
 				for _, v := range cciItems {
 					found := false
 					for ik := range keys {
@@ -884,14 +884,14 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 					}
 					if found {
 						ccr = v
-						matchCount++
+						ccMatchCount++
 					}
 				}
 				// Positional fallback: when multiple items share identical key signatures (e.g.,
 				// ConditionAndBlock children with no distinguishing attributes), key-based matching
 				// is ambiguous. Fall back to index-based matching, which assumes the API returns
 				// items in the same order as Terraform state.
-				if matchCount > 1 && cci < len(cciItems) {
+				if ccMatchCount > 1 && cci < len(cciItems) {
 					ccr = cciItems[cci]
 				}
 
@@ -923,7 +923,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 
 					var cccr gjson.Result
 					ccciItems := ccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").Array()
-					matchCount = 0
+					cccMatchCount := 0
 					for _, v := range ccciItems {
 						found := false
 						for ik := range keys {
@@ -936,14 +936,14 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 						}
 						if found {
 							cccr = v
-							matchCount++
+							cccMatchCount++
 						}
 					}
 					// Positional fallback: when multiple items share identical key signatures (e.g.,
 					// ConditionAndBlock children with no distinguishing attributes), key-based matching
 					// is ambiguous. Fall back to index-based matching, which assumes the API returns
 					// items in the same order as Terraform state.
-					if matchCount > 1 && ccci < len(ccciItems) {
+					if cccMatchCount > 1 && ccci < len(ccciItems) {
 						cccr = ccciItems[ccci]
 					}
 
@@ -975,7 +975,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 
 						var ccccr gjson.Result
 						cccciItems := cccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").Array()
-						matchCount = 0
+						ccccMatchCount := 0
 						for _, v := range cccciItems {
 							found := false
 							for ik := range keys {
@@ -988,14 +988,14 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 							}
 							if found {
 								ccccr = v
-								matchCount++
+								ccccMatchCount++
 							}
 						}
 						// Positional fallback: when multiple items share identical key signatures (e.g.,
 						// ConditionAndBlock children with no distinguishing attributes), key-based matching
 						// is ambiguous. Fall back to index-based matching, which assumes the API returns
 						// items in the same order as Terraform state.
-						if matchCount > 1 && cccci < len(cccciItems) {
+						if ccccMatchCount > 1 && cccci < len(cccciItems) {
 							ccccr = cccciItems[cccci]
 						}
 
@@ -1027,7 +1027,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 
 							var cccccr gjson.Result
 							ccccciItems := ccccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").Array()
-							matchCount = 0
+							cccccMatchCount := 0
 							for _, v := range ccccciItems {
 								found := false
 								for ik := range keys {
@@ -1040,14 +1040,14 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 								}
 								if found {
 									cccccr = v
-									matchCount++
+									cccccMatchCount++
 								}
 							}
 							// Positional fallback: when multiple items share identical key signatures (e.g.,
 							// ConditionAndBlock children with no distinguishing attributes), key-based matching
 							// is ambiguous. Fall back to index-based matching, which assumes the API returns
 							// items in the same order as Terraform state.
-							if matchCount > 1 && ccccci < len(ccccciItems) {
+							if cccccMatchCount > 1 && ccccci < len(ccccciItems) {
 								cccccr = ccccciItems[ccccci]
 							}
 

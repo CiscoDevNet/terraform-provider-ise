@@ -714,7 +714,7 @@ func (data *DeviceAdminCondition) updateFromBody(ctx context.Context, res gjson.
 
 			var cr gjson.Result
 			childItems := r.Get("children").Array()
-			matchCount := 0
+			cMatchCount := 0
 			for _, v := range childItems {
 				found := false
 				for ik := range keys {
@@ -727,14 +727,14 @@ func (data *DeviceAdminCondition) updateFromBody(ctx context.Context, res gjson.
 				}
 				if found {
 					cr = v
-					matchCount++
+					cMatchCount++
 				}
 			}
 			// Positional fallback: when multiple items share identical key signatures (e.g.,
 			// ConditionAndBlock children with no distinguishing attributes), key-based matching
 			// is ambiguous. Fall back to index-based matching, which assumes the API returns
 			// items in the same order as Terraform state.
-			if matchCount > 1 && ci < len(childItems) {
+			if cMatchCount > 1 && ci < len(childItems) {
 				cr = childItems[ci]
 			}
 			if value := cr.Get("name"); value.Exists() && !data.Children[i].Children[ci].Name.IsNull() {
@@ -793,7 +793,7 @@ func (data *DeviceAdminCondition) updateFromBody(ctx context.Context, res gjson.
 
 				var ccr gjson.Result
 				cciItems := cr.Get("children").Array()
-				matchCount = 0
+				ccMatchCount := 0
 				for _, v := range cciItems {
 					found := false
 					for ik := range keys {
@@ -806,14 +806,14 @@ func (data *DeviceAdminCondition) updateFromBody(ctx context.Context, res gjson.
 					}
 					if found {
 						ccr = v
-						matchCount++
+						ccMatchCount++
 					}
 				}
 				// Positional fallback: when multiple items share identical key signatures (e.g.,
 				// ConditionAndBlock children with no distinguishing attributes), key-based matching
 				// is ambiguous. Fall back to index-based matching, which assumes the API returns
 				// items in the same order as Terraform state.
-				if matchCount > 1 && cci < len(cciItems) {
+				if ccMatchCount > 1 && cci < len(cciItems) {
 					ccr = cciItems[cci]
 				}
 				if value := ccr.Get("conditionType"); value.Exists() && !data.Children[i].Children[ci].Children[cci].ConditionType.IsNull() {
@@ -862,7 +862,7 @@ func (data *DeviceAdminCondition) updateFromBody(ctx context.Context, res gjson.
 
 					var cccr gjson.Result
 					ccciItems := ccr.Get("children").Array()
-					matchCount = 0
+					cccMatchCount := 0
 					for _, v := range ccciItems {
 						found := false
 						for ik := range keys {
@@ -875,14 +875,14 @@ func (data *DeviceAdminCondition) updateFromBody(ctx context.Context, res gjson.
 						}
 						if found {
 							cccr = v
-							matchCount++
+							cccMatchCount++
 						}
 					}
 					// Positional fallback: when multiple items share identical key signatures (e.g.,
 					// ConditionAndBlock children with no distinguishing attributes), key-based matching
 					// is ambiguous. Fall back to index-based matching, which assumes the API returns
 					// items in the same order as Terraform state.
-					if matchCount > 1 && ccci < len(ccciItems) {
+					if cccMatchCount > 1 && ccci < len(ccciItems) {
 						cccr = ccciItems[ccci]
 					}
 					if value := cccr.Get("conditionType"); value.Exists() && !data.Children[i].Children[ci].Children[cci].Children[ccci].ConditionType.IsNull() {
