@@ -179,24 +179,30 @@ func (data *NetworkAccessDictionaryAttribute) updateFromBody(ctx context.Context
 		keyValues := [...]string{data.AllowedValues[i].Key.ValueString(), data.AllowedValues[i].Value.ValueString()}
 
 		var r gjson.Result
-		res.Get("response.allowedValues").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() == keyValues[ik] {
-						found = true
-						continue
-					}
-					found = false
-					break
+		parentItems := res.Get("response.allowedValues").Array()
+		matchCount := 0
+		for _, v := range parentItems {
+			found := false
+			for ik := range keys {
+				if v.Get(keys[ik]).String() == keyValues[ik] {
+					found = true
+					continue
 				}
-				if found {
-					r = v
-					return false
-				}
-				return true
-			},
-		)
+				found = false
+				break
+			}
+			if found {
+				r = v
+				matchCount++
+			}
+		}
+		// Positional fallback: when multiple items share identical key signatures (e.g.,
+		// ConditionAndBlock children with no distinguishing attributes), key-based matching
+		// is ambiguous. Fall back to index-based matching, which assumes the API returns
+		// items in the same order as Terraform state.
+		if matchCount > 1 && i < len(parentItems) {
+			r = parentItems[i]
+		}
 		if value := r.Get("key"); value.Exists() && !data.AllowedValues[i].Key.IsNull() {
 			data.AllowedValues[i].Key = types.StringValue(value.String())
 		} else {

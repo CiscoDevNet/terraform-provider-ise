@@ -930,24 +930,30 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 						keyValues := [...]string{data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator.ValueString()}
 
 						var ccccr gjson.Result
-						cccr.Get("children").ForEach(
-							func(_, v gjson.Result) bool {
-								found := false
-								for ik := range keys {
-									if v.Get(keys[ik]).String() == keyValues[ik] {
-										found = true
-										continue
-									}
-									found = false
-									break
+						cccciItems := cccr.Get("children").Array()
+						ccccMatchCount := 0
+						for _, v := range cccciItems {
+							found := false
+							for ik := range keys {
+								if v.Get(keys[ik]).String() == keyValues[ik] {
+									found = true
+									continue
 								}
-								if found {
-									ccccr = v
-									return false
-								}
-								return true
-							},
-						)
+								found = false
+								break
+							}
+							if found {
+								ccccr = v
+								ccccMatchCount++
+							}
+						}
+						// Positional fallback: when multiple items share identical key signatures (e.g.,
+						// ConditionAndBlock children with no distinguishing attributes), key-based matching
+						// is ambiguous. Fall back to index-based matching, which assumes the API returns
+						// items in the same order as Terraform state.
+						if ccccMatchCount > 1 && cccci < len(cccciItems) {
+							ccccr = cccciItems[cccci]
+						}
 						if value := ccccr.Get("conditionType"); value.Exists() && !data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].ConditionType.IsNull() {
 							data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].ConditionType = types.StringValue(value.String())
 						} else {
@@ -993,24 +999,30 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 							keyValues := [...]string{data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Operator.ValueString()}
 
 							var cccccr gjson.Result
-							ccccr.Get("children").ForEach(
-								func(_, v gjson.Result) bool {
-									found := false
-									for ik := range keys {
-										if v.Get(keys[ik]).String() == keyValues[ik] {
-											found = true
-											continue
-										}
-										found = false
-										break
+							ccccciItems := ccccr.Get("children").Array()
+							cccccMatchCount := 0
+							for _, v := range ccccciItems {
+								found := false
+								for ik := range keys {
+									if v.Get(keys[ik]).String() == keyValues[ik] {
+										found = true
+										continue
 									}
-									if found {
-										cccccr = v
-										return false
-									}
-									return true
-								},
-							)
+									found = false
+									break
+								}
+								if found {
+									cccccr = v
+									cccccMatchCount++
+								}
+							}
+							// Positional fallback: when multiple items share identical key signatures (e.g.,
+							// ConditionAndBlock children with no distinguishing attributes), key-based matching
+							// is ambiguous. Fall back to index-based matching, which assumes the API returns
+							// items in the same order as Terraform state.
+							if cccccMatchCount > 1 && ccccci < len(ccccciItems) {
+								cccccr = ccccciItems[ccccci]
+							}
 							if value := cccccr.Get("conditionType"); value.Exists() && !data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].ConditionType.IsNull() {
 								data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].ConditionType = types.StringValue(value.String())
 							} else {
