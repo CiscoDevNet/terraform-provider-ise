@@ -115,6 +115,7 @@ type YamlConfig struct {
 	NoReadPrefix        bool                  `yaml:"no_read_prefix"`
 	NoId                bool                  `yaml:"no_id"`
 	IdPath              string                `yaml:"id_path"`
+	IdExample           string                `yaml:"id_example"`
 	PutIdIncludePath    string                `yaml:"put_id_include_path"`
 	DataSourceNameQuery bool                  `yaml:"data_source_name_query"`
 	MinimumVersion      string                `yaml:"minimum_version"`
