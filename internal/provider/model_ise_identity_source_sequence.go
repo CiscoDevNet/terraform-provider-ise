@@ -180,6 +180,10 @@ func (data *IdentitySourceSequence) updateFromBody(ctx context.Context, res gjso
 				matchCount++
 			}
 		}
+		// Positional fallback: when multiple items share identical key signatures (e.g.,
+		// ConditionAndBlock children with no distinguishing attributes), key-based matching
+		// is ambiguous. Fall back to index-based matching, which assumes the API returns
+		// items in the same order as Terraform state.
 		if matchCount > 1 && i < len(parentItems) {
 			r = parentItems[i]
 		}
