@@ -1,4 +1,4 @@
-## 0.3.1 (unreleased)
+## 0.3.1
 
 - Add `ise_network_access_dictionary_attribute` resource and data source
 - Fix issue with duplicate key matching in `updateFromBody` causing permanent idempotency failure when resource attributes share overlapping key names [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/205)
