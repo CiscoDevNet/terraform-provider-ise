@@ -163,24 +163,30 @@ func (data *IdentitySourceSequence) updateFromBody(ctx context.Context, res gjso
 		keyValues := [...]string{data.IdentitySources[i].Name.ValueString(), strconv.FormatInt(data.IdentitySources[i].Order.ValueInt64(), 10)}
 
 		var r gjson.Result
-		res.Get("IdStoreSequence.idSeqItem").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() == keyValues[ik] {
-						found = true
-						continue
-					}
-					found = false
-					break
+		parentItems := res.Get("IdStoreSequence.idSeqItem").Array()
+		matchCount := 0
+		for _, v := range parentItems {
+			found := false
+			for ik := range keys {
+				if v.Get(keys[ik]).String() == keyValues[ik] {
+					found = true
+					continue
 				}
-				if found {
-					r = v
-					return false
-				}
-				return true
-			},
-		)
+				found = false
+				break
+			}
+			if found {
+				r = v
+				matchCount++
+			}
+		}
+		// Positional fallback: when multiple items share identical key signatures (e.g.,
+		// ConditionAndBlock children with no distinguishing attributes), key-based matching
+		// is ambiguous. Fall back to index-based matching, which assumes the API returns
+		// items in the same order as Terraform state.
+		if matchCount > 1 && i < len(parentItems) {
+			r = parentItems[i]
+		}
 		if value := r.Get("idstore"); value.Exists() && !data.IdentitySources[i].Name.IsNull() {
 			data.IdentitySources[i].Name = types.StringValue(value.String())
 		} else {

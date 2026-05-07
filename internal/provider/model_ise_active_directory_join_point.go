@@ -506,24 +506,30 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 		keyValues := [...]string{data.Groups[i].Sid.ValueString()}
 
 		var r gjson.Result
-		res.Get("ERSActiveDirectory.adgroups.groups").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() == keyValues[ik] {
-						found = true
-						continue
-					}
-					found = false
-					break
+		parentItems := res.Get("ERSActiveDirectory.adgroups.groups").Array()
+		matchCount := 0
+		for _, v := range parentItems {
+			found := false
+			for ik := range keys {
+				if v.Get(keys[ik]).String() == keyValues[ik] {
+					found = true
+					continue
 				}
-				if found {
-					r = v
-					return false
-				}
-				return true
-			},
-		)
+				found = false
+				break
+			}
+			if found {
+				r = v
+				matchCount++
+			}
+		}
+		// Positional fallback: when multiple items share identical key signatures (e.g.,
+		// ConditionAndBlock children with no distinguishing attributes), key-based matching
+		// is ambiguous. Fall back to index-based matching, which assumes the API returns
+		// items in the same order as Terraform state.
+		if matchCount > 1 && i < len(parentItems) {
+			r = parentItems[i]
+		}
 		if value := r.Get("name"); value.Exists() && !data.Groups[i].Name.IsNull() {
 			data.Groups[i].Name = types.StringValue(value.String())
 		} else {
@@ -540,24 +546,30 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 		keyValues := [...]string{data.Attributes[i].Name.ValueString(), data.Attributes[i].Type.ValueString(), data.Attributes[i].InternalName.ValueString(), data.Attributes[i].DefaultValue.ValueString()}
 
 		var r gjson.Result
-		res.Get("ERSActiveDirectory.adAttributes.attributes").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() == keyValues[ik] {
-						found = true
-						continue
-					}
-					found = false
-					break
+		parentItems := res.Get("ERSActiveDirectory.adAttributes.attributes").Array()
+		matchCount := 0
+		for _, v := range parentItems {
+			found := false
+			for ik := range keys {
+				if v.Get(keys[ik]).String() == keyValues[ik] {
+					found = true
+					continue
 				}
-				if found {
-					r = v
-					return false
-				}
-				return true
-			},
-		)
+				found = false
+				break
+			}
+			if found {
+				r = v
+				matchCount++
+			}
+		}
+		// Positional fallback: when multiple items share identical key signatures (e.g.,
+		// ConditionAndBlock children with no distinguishing attributes), key-based matching
+		// is ambiguous. Fall back to index-based matching, which assumes the API returns
+		// items in the same order as Terraform state.
+		if matchCount > 1 && i < len(parentItems) {
+			r = parentItems[i]
+		}
 		if value := r.Get("name"); value.Exists() && !data.Attributes[i].Name.IsNull() {
 			data.Attributes[i].Name = types.StringValue(value.String())
 		} else {
@@ -584,24 +596,30 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 		keyValues := [...]string{data.RewriteRules[i].RowId.ValueString(), data.RewriteRules[i].RewriteMatch.ValueString(), data.RewriteRules[i].RewriteResult.ValueString()}
 
 		var r gjson.Result
-		res.Get("ERSActiveDirectory.advancedSettings.rewriteRules").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() == keyValues[ik] {
-						found = true
-						continue
-					}
-					found = false
-					break
+		parentItems := res.Get("ERSActiveDirectory.advancedSettings.rewriteRules").Array()
+		matchCount := 0
+		for _, v := range parentItems {
+			found := false
+			for ik := range keys {
+				if v.Get(keys[ik]).String() == keyValues[ik] {
+					found = true
+					continue
 				}
-				if found {
-					r = v
-					return false
-				}
-				return true
-			},
-		)
+				found = false
+				break
+			}
+			if found {
+				r = v
+				matchCount++
+			}
+		}
+		// Positional fallback: when multiple items share identical key signatures (e.g.,
+		// ConditionAndBlock children with no distinguishing attributes), key-based matching
+		// is ambiguous. Fall back to index-based matching, which assumes the API returns
+		// items in the same order as Terraform state.
+		if matchCount > 1 && i < len(parentItems) {
+			r = parentItems[i]
+		}
 		if value := r.Get("rowId"); value.Exists() && !data.RewriteRules[i].RowId.IsNull() {
 			data.RewriteRules[i].RowId = types.StringValue(value.String())
 		} else {

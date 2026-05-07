@@ -582,24 +582,30 @@ func (data *AuthorizationProfile) updateFromBody(ctx context.Context, res gjson.
 		keyValues := [...]string{data.AdvancedAttributes[i].AttributeLeftDictionaryName.ValueString(), data.AdvancedAttributes[i].AttributeLeftName.ValueString(), data.AdvancedAttributes[i].AttributeRightValueType.ValueString(), data.AdvancedAttributes[i].AttributeRightValue.ValueString(), data.AdvancedAttributes[i].AttributeRightDictionaryName.ValueString(), data.AdvancedAttributes[i].AttributeRightName.ValueString()}
 
 		var r gjson.Result
-		res.Get("AuthorizationProfile.advancedAttributes").ForEach(
-			func(_, v gjson.Result) bool {
-				found := false
-				for ik := range keys {
-					if v.Get(keys[ik]).String() == keyValues[ik] {
-						found = true
-						continue
-					}
-					found = false
-					break
+		parentItems := res.Get("AuthorizationProfile.advancedAttributes").Array()
+		matchCount := 0
+		for _, v := range parentItems {
+			found := false
+			for ik := range keys {
+				if v.Get(keys[ik]).String() == keyValues[ik] {
+					found = true
+					continue
 				}
-				if found {
-					r = v
-					return false
-				}
-				return true
-			},
-		)
+				found = false
+				break
+			}
+			if found {
+				r = v
+				matchCount++
+			}
+		}
+		// Positional fallback: when multiple items share identical key signatures (e.g.,
+		// ConditionAndBlock children with no distinguishing attributes), key-based matching
+		// is ambiguous. Fall back to index-based matching, which assumes the API returns
+		// items in the same order as Terraform state.
+		if matchCount > 1 && i < len(parentItems) {
+			r = parentItems[i]
+		}
 		if value := r.Get("leftHandSideDictionaryAttribue.dictionaryName"); value.Exists() && !data.AdvancedAttributes[i].AttributeLeftDictionaryName.IsNull() {
 			data.AdvancedAttributes[i].AttributeLeftDictionaryName = types.StringValue(value.String())
 		} else {
