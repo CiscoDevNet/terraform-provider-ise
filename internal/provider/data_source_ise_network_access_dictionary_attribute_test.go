@@ -31,7 +31,6 @@ import (
 //template:begin testAccDataSource
 func TestAccDataSourceIseNetworkAccessDictionaryAttribute(t *testing.T) {
 	var checks []resource.TestCheckFunc
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_dictionary_attribute.test", "dictionary_name", "CustomDict"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_dictionary_attribute.test", "name", "Custom-Attr"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_dictionary_attribute.test", "description", "My custom dictionary attribute"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_access_dictionary_attribute.test", "data_type", "STRING"))
@@ -44,7 +43,7 @@ func TestAccDataSourceIseNetworkAccessDictionaryAttribute(t *testing.T) {
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceIseNetworkAccessDictionaryAttributeConfig(),
+				Config: testAccDataSourceIseNetworkAccessDictionaryAttributePrerequisitesConfig + testAccDataSourceIseNetworkAccessDictionaryAttributeConfig(),
 				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
@@ -54,12 +53,22 @@ func TestAccDataSourceIseNetworkAccessDictionaryAttribute(t *testing.T) {
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
+const testAccDataSourceIseNetworkAccessDictionaryAttributePrerequisitesConfig = `
+resource "ise_network_access_dictionary" "test" {
+  name                 = "CustomDict"
+  description          = "My description"
+  version              = "1.1"
+  dictionary_attr_type = "ENTITY_ATTR"
+}
+
+`
+
 //template:end testPrerequisites
 
 //template:begin testAccDataSourceConfig
 func testAccDataSourceIseNetworkAccessDictionaryAttributeConfig() string {
 	config := `resource "ise_network_access_dictionary_attribute" "test" {` + "\n"
-	config += `	dictionary_name = "CustomDict"` + "\n"
+	config += `	dictionary_name = ise_network_access_dictionary.test.id` + "\n"
 	config += `	name = "Custom-Attr"` + "\n"
 	config += `	description = "My custom dictionary attribute"` + "\n"
 	config += `	data_type = "STRING"` + "\n"
@@ -74,7 +83,7 @@ func testAccDataSourceIseNetworkAccessDictionaryAttributeConfig() string {
 	config += `
 		data "ise_network_access_dictionary_attribute" "test" {
 			id = ise_network_access_dictionary_attribute.test.id
-			dictionary_name = "CustomDict"
+			dictionary_name = ise_network_access_dictionary.test.id
 		}
 	`
 	return config

@@ -21,7 +21,6 @@ package provider
 
 //template:begin imports
 import (
-	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -32,7 +31,6 @@ import (
 //template:begin testAcc
 func TestAccIseNetworkAccessDictionaryAttribute(t *testing.T) {
 	var checks []resource.TestCheckFunc
-	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_dictionary_attribute.test", "dictionary_name", "CustomDict"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_dictionary_attribute.test", "name", "Custom-Attr"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_dictionary_attribute.test", "description", "My custom dictionary attribute"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_dictionary_attribute.test", "data_type", "STRING"))
@@ -42,13 +40,8 @@ func TestAccIseNetworkAccessDictionaryAttribute(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_network_access_dictionary_attribute.test", "allowed_values.0.value", "value1"))
 
 	var steps []resource.TestStep
-	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
-		steps = append(steps, resource.TestStep{
-			Config: testAccIseNetworkAccessDictionaryAttributeConfig_minimum(),
-		})
-	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccIseNetworkAccessDictionaryAttributeConfig_all(),
+		Config: testAccIseNetworkAccessDictionaryAttributePrerequisitesConfig + testAccIseNetworkAccessDictionaryAttributeConfig_all(),
 		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 
@@ -62,12 +55,22 @@ func TestAccIseNetworkAccessDictionaryAttribute(t *testing.T) {
 //template:end testAcc
 
 //template:begin testPrerequisites
+const testAccIseNetworkAccessDictionaryAttributePrerequisitesConfig = `
+resource "ise_network_access_dictionary" "test" {
+  name                 = "CustomDict"
+  description          = "My description"
+  version              = "1.1"
+  dictionary_attr_type = "ENTITY_ATTR"
+}
+
+`
+
 //template:end testPrerequisites
 
 //template:begin testAccConfigMinimal
 func testAccIseNetworkAccessDictionaryAttributeConfig_minimum() string {
 	config := `resource "ise_network_access_dictionary_attribute" "test" {` + "\n"
-	config += `	dictionary_name = "CustomDict"` + "\n"
+	config += `	dictionary_name = ise_network_access_dictionary.test.id` + "\n"
 	config += `	name = "Custom-Attr"` + "\n"
 	config += `	data_type = "STRING"` + "\n"
 	config += `}` + "\n"
@@ -79,7 +82,7 @@ func testAccIseNetworkAccessDictionaryAttributeConfig_minimum() string {
 //template:begin testAccConfigAll
 func testAccIseNetworkAccessDictionaryAttributeConfig_all() string {
 	config := `resource "ise_network_access_dictionary_attribute" "test" {` + "\n"
-	config += `	dictionary_name = "CustomDict"` + "\n"
+	config += `	dictionary_name = ise_network_access_dictionary.test.id` + "\n"
 	config += `	name = "Custom-Attr"` + "\n"
 	config += `	description = "My custom dictionary attribute"` + "\n"
 	config += `	data_type = "STRING"` + "\n"
