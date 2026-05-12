@@ -501,13 +501,20 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 	} else if data.EnableDomainAllowedList.ValueBool() != true {
 		data.EnableDomainAllowedList = types.BoolNull()
 	}
+	rUsedGroups := make(map[int]bool)
 	for i := range data.Groups {
 		keys := [...]string{"sid"}
 		keyValues := [...]string{data.Groups[i].Sid.ValueString()}
 
 		var r gjson.Result
+		rIdx := -1
+		rSearchIdx := 0
 		res.Get("ERSActiveDirectory.adgroups.groups").ForEach(
 			func(_, v gjson.Result) bool {
+				if rUsedGroups[rSearchIdx] {
+					rSearchIdx++
+					return true
+				}
 				found := false
 				for ik := range keys {
 					if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -519,11 +526,17 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 				}
 				if found {
 					r = v
+					rIdx = rSearchIdx
+					rSearchIdx++
 					return false
 				}
+				rSearchIdx++
 				return true
 			},
 		)
+		if rIdx >= 0 {
+			rUsedGroups[rIdx] = true
+		}
 		if value := r.Get("name"); value.Exists() && !data.Groups[i].Name.IsNull() {
 			data.Groups[i].Name = types.StringValue(value.String())
 		} else {
@@ -535,13 +548,20 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 			data.Groups[i].Sid = types.StringNull()
 		}
 	}
+	rUsedAttributes := make(map[int]bool)
 	for i := range data.Attributes {
 		keys := [...]string{"name", "type", "internalName", "defaultValue"}
 		keyValues := [...]string{data.Attributes[i].Name.ValueString(), data.Attributes[i].Type.ValueString(), data.Attributes[i].InternalName.ValueString(), data.Attributes[i].DefaultValue.ValueString()}
 
 		var r gjson.Result
+		rIdx := -1
+		rSearchIdx := 0
 		res.Get("ERSActiveDirectory.adAttributes.attributes").ForEach(
 			func(_, v gjson.Result) bool {
+				if rUsedAttributes[rSearchIdx] {
+					rSearchIdx++
+					return true
+				}
 				found := false
 				for ik := range keys {
 					if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -553,11 +573,17 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 				}
 				if found {
 					r = v
+					rIdx = rSearchIdx
+					rSearchIdx++
 					return false
 				}
+				rSearchIdx++
 				return true
 			},
 		)
+		if rIdx >= 0 {
+			rUsedAttributes[rIdx] = true
+		}
 		if value := r.Get("name"); value.Exists() && !data.Attributes[i].Name.IsNull() {
 			data.Attributes[i].Name = types.StringValue(value.String())
 		} else {
@@ -579,13 +605,20 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 			data.Attributes[i].DefaultValue = types.StringNull()
 		}
 	}
+	rUsedRewriteRules := make(map[int]bool)
 	for i := range data.RewriteRules {
 		keys := [...]string{"rowId", "rewriteMatch", "rewriteResult"}
 		keyValues := [...]string{data.RewriteRules[i].RowId.ValueString(), data.RewriteRules[i].RewriteMatch.ValueString(), data.RewriteRules[i].RewriteResult.ValueString()}
 
 		var r gjson.Result
+		rIdx := -1
+		rSearchIdx := 0
 		res.Get("ERSActiveDirectory.advancedSettings.rewriteRules").ForEach(
 			func(_, v gjson.Result) bool {
+				if rUsedRewriteRules[rSearchIdx] {
+					rSearchIdx++
+					return true
+				}
 				found := false
 				for ik := range keys {
 					if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -597,11 +630,17 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 				}
 				if found {
 					r = v
+					rIdx = rSearchIdx
+					rSearchIdx++
 					return false
 				}
+				rSearchIdx++
 				return true
 			},
 		)
+		if rIdx >= 0 {
+			rUsedRewriteRules[rIdx] = true
+		}
 		if value := r.Get("rowId"); value.Exists() && !data.RewriteRules[i].RowId.IsNull() {
 			data.RewriteRules[i].RowId = types.StringValue(value.String())
 		} else {

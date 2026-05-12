@@ -755,17 +755,24 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 	}
 	{{- else if and (isNestedListSet .) (not .Immutable) }}
 	{{- $list := (toGoName .TfName)}}
+	rUsed{{$list}} := make(map[int]bool)
 	for i := range data.{{toGoName .TfName}} {
 		keys := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if or (eq .Type "Int64") (eq .Type "Bool") (eq .Type "String")}}"{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{end}}{{end}}{{end}} }
 		keyValues := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if eq .Type "Int64"}}strconv.FormatInt(data.{{$list}}[i].{{toGoName .TfName}}.ValueInt64(), 10), {{else if eq .Type "Bool"}}strconv.FormatBool(data.{{$list}}[i].{{toGoName .TfName}}.ValueBool()), {{else if eq .Type "String"}}data.{{$list}}[i].{{toGoName .TfName}}.Value{{.Type}}(), {{end}}{{end}}{{end}} }
 
 		var r gjson.Result
+		rIdx := -1
+		rSearchIdx := 0
 		{{- if strContains (camelCase $.Name) "UpdateRanks" }}
 		res.Get("response").ForEach(
 		{{- else}}
 		res.{{if .ModelName}}Get("{{if .ResponseDataPath}}{{.ResponseDataPath}}{{else}}{{if $openApi}}response.{{end}}{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}{{end}}").{{end}}ForEach(
 		{{- end}}
 			func(_, v gjson.Result) bool {
+				if rUsed{{$list}}[rSearchIdx] {
+					rSearchIdx++
+					return true
+				}
 				found := false
 				for ik := range keys {
 					if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -777,11 +784,17 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 				}
 				if found {
 					r = v
+					rIdx = rSearchIdx
+					rSearchIdx++
 					return false
 				}
+				rSearchIdx++
 				return true
 			},
 		)
+		if rIdx >= 0 {
+			rUsed{{$list}}[rIdx] = true
+		}
 
 		{{- range .Attributes}}
 		{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
@@ -805,13 +818,20 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 		}
 		{{- else if isNestedListSet .}}
 		{{- $clist := (toGoName .TfName)}}
+		crUsed := make(map[int]bool)
 		for ci := range data.{{$list}}[i].{{toGoName .TfName}} {
 			keys := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if or (eq .Type "Int64") (eq .Type "Bool") (eq .Type "String")}}"{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{end}}{{end}}{{end}} }
 			keyValues := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if eq .Type "Int64"}}strconv.FormatInt(data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}}.ValueInt64(), 10), {{else if eq .Type "Bool"}}strconv.FormatBool(data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}}.ValueBool()), {{else if eq .Type "String"}}data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}}.Value{{.Type}}(), {{end}}{{end}}{{end}} }
 
 			var cr gjson.Result
+			crIdx := -1
+			crSearchIdx := 0
 			r.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").ForEach(
 				func(_, v gjson.Result) bool {
+					if crUsed[crSearchIdx] {
+						crSearchIdx++
+						return true
+					}
 					found := false
 					for ik := range keys {
 						if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -823,11 +843,17 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 					}
 					if found {
 						cr = v
+						crIdx = crSearchIdx
+						crSearchIdx++
 						return false
 					}
+					crSearchIdx++
 					return true
 				},
 			)
+			if crIdx >= 0 {
+				crUsed[crIdx] = true
+			}
 
 			{{- range .Attributes}}
 			{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
@@ -851,13 +877,20 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 			}
 			{{- else if isNestedListSet .}}
 			{{- $cclist := (toGoName .TfName)}}
+			ccrUsed := make(map[int]bool)
 			for cci := range data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}} {
 				keys := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if or (eq .Type "Int64") (eq .Type "Bool") (eq .Type "String")}}"{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{end}}{{end}}{{end}} }
 				keyValues := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if eq .Type "Int64"}}strconv.FormatInt(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}}.ValueInt64(), 10), {{else if eq .Type "Bool"}}strconv.FormatBool(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}}.ValueBool()), {{else if eq .Type "String"}}data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}}.Value{{.Type}}(), {{end}}{{end}}{{end}} }
 
 				var ccr gjson.Result
+				ccrIdx := -1
+				ccrSearchIdx := 0
 				cr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").ForEach(
 					func(_, v gjson.Result) bool {
+						if ccrUsed[ccrSearchIdx] {
+							ccrSearchIdx++
+							return true
+						}
 						found := false
 						for ik := range keys {
 							if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -869,11 +902,17 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 						}
 						if found {
 							ccr = v
+							ccrIdx = ccrSearchIdx
+							ccrSearchIdx++
 							return false
 						}
+						ccrSearchIdx++
 						return true
 					},
 				)
+				if ccrIdx >= 0 {
+					ccrUsed[ccrIdx] = true
+				}
 
 				{{- range .Attributes}}
 				{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
@@ -897,13 +936,20 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 				}
 				{{- else if isNestedListSet .}}
 				{{- $ccclist := (toGoName .TfName)}}
+				cccrUsed := make(map[int]bool)
 				for ccci := range data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}} {
 					keys := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if or (eq .Type "Int64") (eq .Type "Bool") (eq .Type "String")}}"{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{end}}{{end}}{{end}} }
 					keyValues := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if eq .Type "Int64"}}strconv.FormatInt(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}}.ValueInt64(), 10), {{else if eq .Type "Bool"}}strconv.FormatBool(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}}.ValueBool()), {{else if eq .Type "String"}}data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}}.Value{{.Type}}(), {{end}}{{end}}{{end}} }
 
 					var cccr gjson.Result
+					cccrIdx := -1
+					cccrSearchIdx := 0
 					ccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").ForEach(
 						func(_, v gjson.Result) bool {
+							if cccrUsed[cccrSearchIdx] {
+								cccrSearchIdx++
+								return true
+							}
 							found := false
 							for ik := range keys {
 								if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -915,11 +961,17 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 							}
 							if found {
 								cccr = v
+								cccrIdx = cccrSearchIdx
+								cccrSearchIdx++
 								return false
 							}
+							cccrSearchIdx++
 							return true
 						},
 					)
+					if cccrIdx >= 0 {
+						cccrUsed[cccrIdx] = true
+					}
 
 					{{- range .Attributes}}
 					{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
@@ -943,13 +995,20 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 					}
 					{{- else if isNestedListSet .}}
 					{{- $cccclist := (toGoName .TfName)}}
+					ccccrUsed := make(map[int]bool)
 					for cccci := range data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}} {
 						keys := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if or (eq .Type "Int64") (eq .Type "Bool") (eq .Type "String")}}"{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{end}}{{end}}{{end}} }
 						keyValues := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if eq .Type "Int64"}}strconv.FormatInt(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}}.ValueInt64(), 10), {{else if eq .Type "Bool"}}strconv.FormatBool(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}}.ValueBool()), {{else if eq .Type "String"}}data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}}.Value{{.Type}}(), {{end}}{{end}}{{end}} }
 
 						var ccccr gjson.Result
+						ccccrIdx := -1
+						ccccrSearchIdx := 0
 						cccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").ForEach(
 							func(_, v gjson.Result) bool {
+								if ccccrUsed[ccccrSearchIdx] {
+									ccccrSearchIdx++
+									return true
+								}
 								found := false
 								for ik := range keys {
 									if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -961,11 +1020,17 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 								}
 								if found {
 									ccccr = v
+									ccccrIdx = ccccrSearchIdx
+									ccccrSearchIdx++
 									return false
 								}
+								ccccrSearchIdx++
 								return true
 							},
 						)
+						if ccccrIdx >= 0 {
+							ccccrUsed[ccccrIdx] = true
+						}
 
 						{{- range .Attributes}}
 						{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
@@ -989,13 +1054,20 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 						}
 						{{- else if isNestedListSet .}}
 						{{- $ccccclist := (toGoName .TfName)}}
+						cccccrUsed := make(map[int]bool)
 						for ccccci := range data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}} {
 							keys := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if or (eq .Type "Int64") (eq .Type "Bool") (eq .Type "String")}}"{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{end}}{{end}}{{end}} }
 							keyValues := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if eq .Type "Int64"}}strconv.FormatInt(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}}.ValueInt64(), 10), {{else if eq .Type "Bool"}}strconv.FormatBool(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}}.ValueBool()), {{else if eq .Type "String"}}data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}}.Value{{.Type}}(), {{end}}{{end}}{{end}} }
 
 							var cccccr gjson.Result
+							cccccrIdx := -1
+							cccccrSearchIdx := 0
 							ccccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").ForEach(
 								func(_, v gjson.Result) bool {
+									if cccccrUsed[cccccrSearchIdx] {
+										cccccrSearchIdx++
+										return true
+									}
 									found := false
 									for ik := range keys {
 										if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -1007,11 +1079,17 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 									}
 									if found {
 										cccccr = v
+										cccccrIdx = cccccrSearchIdx
+										cccccrSearchIdx++
 										return false
 									}
+									cccccrSearchIdx++
 									return true
 								},
 							)
+							if cccccrIdx >= 0 {
+								cccccrUsed[cccccrIdx] = true
+							}
 
 							{{- range .Attributes}}
 							{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}

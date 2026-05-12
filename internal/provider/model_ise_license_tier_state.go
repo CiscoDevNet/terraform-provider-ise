@@ -101,13 +101,20 @@ func (data *LicenseTierState) fromBody(ctx context.Context, res gjson.Result) {
 
 //template:begin updateFromBody
 func (data *LicenseTierState) updateFromBody(ctx context.Context, res gjson.Result) {
+	rUsedLicenses := make(map[int]bool)
 	for i := range data.Licenses {
 		keys := [...]string{"name"}
 		keyValues := [...]string{data.Licenses[i].Name.ValueString()}
 
 		var r gjson.Result
+		rIdx := -1
+		rSearchIdx := 0
 		res.ForEach(
 			func(_, v gjson.Result) bool {
+				if rUsedLicenses[rSearchIdx] {
+					rSearchIdx++
+					return true
+				}
 				found := false
 				for ik := range keys {
 					if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -119,11 +126,17 @@ func (data *LicenseTierState) updateFromBody(ctx context.Context, res gjson.Resu
 				}
 				if found {
 					r = v
+					rIdx = rSearchIdx
+					rSearchIdx++
 					return false
 				}
+				rSearchIdx++
 				return true
 			},
 		)
+		if rIdx >= 0 {
+			rUsedLicenses[rIdx] = true
+		}
 		if value := r.Get("name"); value.Exists() && !data.Licenses[i].Name.IsNull() {
 			data.Licenses[i].Name = types.StringValue(value.String())
 		} else {

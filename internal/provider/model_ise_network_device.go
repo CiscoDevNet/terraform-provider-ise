@@ -599,13 +599,20 @@ func (data *NetworkDevice) updateFromBody(ctx context.Context, res gjson.Result)
 	} else {
 		data.DtlsDnsName = types.StringNull()
 	}
+	rUsedIps := make(map[int]bool)
 	for i := range data.Ips {
 		keys := [...]string{"ipaddress"}
 		keyValues := [...]string{data.Ips[i].Ipaddress.ValueString()}
 
 		var r gjson.Result
+		rIdx := -1
+		rSearchIdx := 0
 		res.Get("NetworkDevice.NetworkDeviceIPList").ForEach(
 			func(_, v gjson.Result) bool {
+				if rUsedIps[rSearchIdx] {
+					rSearchIdx++
+					return true
+				}
 				found := false
 				for ik := range keys {
 					if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -617,11 +624,17 @@ func (data *NetworkDevice) updateFromBody(ctx context.Context, res gjson.Result)
 				}
 				if found {
 					r = v
+					rIdx = rSearchIdx
+					rSearchIdx++
 					return false
 				}
+				rSearchIdx++
 				return true
 			},
 		)
+		if rIdx >= 0 {
+			rUsedIps[rIdx] = true
+		}
 		if value := r.Get("ipaddress"); value.Exists() && !data.Ips[i].Ipaddress.IsNull() {
 			data.Ips[i].Ipaddress = types.StringValue(value.String())
 		} else {

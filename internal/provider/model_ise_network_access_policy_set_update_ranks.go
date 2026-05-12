@@ -102,13 +102,20 @@ func (data *NetworkAccessPolicySetUpdateRanks) fromBody(ctx context.Context, res
 
 //template:begin updateFromBody
 func (data *NetworkAccessPolicySetUpdateRanks) updateFromBody(ctx context.Context, res gjson.Result) {
+	rUsedPolicies := make(map[int]bool)
 	for i := range data.Policies {
 		keys := [...]string{"id", "rank"}
 		keyValues := [...]string{data.Policies[i].Id.ValueString(), strconv.FormatInt(data.Policies[i].Rank.ValueInt64(), 10)}
 
 		var r gjson.Result
+		rIdx := -1
+		rSearchIdx := 0
 		res.Get("response").ForEach(
 			func(_, v gjson.Result) bool {
+				if rUsedPolicies[rSearchIdx] {
+					rSearchIdx++
+					return true
+				}
 				found := false
 				for ik := range keys {
 					if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -120,11 +127,17 @@ func (data *NetworkAccessPolicySetUpdateRanks) updateFromBody(ctx context.Contex
 				}
 				if found {
 					r = v
+					rIdx = rSearchIdx
+					rSearchIdx++
 					return false
 				}
+				rSearchIdx++
 				return true
 			},
 		)
+		if rIdx >= 0 {
+			rUsedPolicies[rIdx] = true
+		}
 		if value := r.Get("id"); value.Exists() && !data.Policies[i].Id.IsNull() {
 			data.Policies[i].Id = types.StringValue(value.String())
 		} else {

@@ -168,13 +168,20 @@ func (data *ActiveDirectoryGroupsByDomain) updateFromBody(ctx context.Context, r
 	} else {
 		data.TypeFilter = types.StringNull()
 	}
+	rUsedGroups := make(map[int]bool)
 	for i := range data.Groups {
 		keys := [...]string{"name", "sid", "type"}
 		keyValues := [...]string{data.Groups[i].Name.ValueString(), data.Groups[i].Sid.ValueString(), data.Groups[i].Type.ValueString()}
 
 		var r gjson.Result
+		rIdx := -1
+		rSearchIdx := 0
 		res.Get("ERSActiveDirectoryGroups.groups").ForEach(
 			func(_, v gjson.Result) bool {
+				if rUsedGroups[rSearchIdx] {
+					rSearchIdx++
+					return true
+				}
 				found := false
 				for ik := range keys {
 					if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -186,11 +193,17 @@ func (data *ActiveDirectoryGroupsByDomain) updateFromBody(ctx context.Context, r
 				}
 				if found {
 					r = v
+					rIdx = rSearchIdx
+					rSearchIdx++
 					return false
 				}
+				rSearchIdx++
 				return true
 			},
 		)
+		if rIdx >= 0 {
+			rUsedGroups[rIdx] = true
+		}
 		if value := r.Get("name"); value.Exists() && !data.Groups[i].Name.IsNull() {
 			data.Groups[i].Name = types.StringValue(value.String())
 		} else {

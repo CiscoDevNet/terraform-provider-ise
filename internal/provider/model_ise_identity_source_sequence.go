@@ -158,13 +158,20 @@ func (data *IdentitySourceSequence) updateFromBody(ctx context.Context, res gjso
 	} else {
 		data.CertificateAuthenticationProfile = types.StringNull()
 	}
+	rUsedIdentitySources := make(map[int]bool)
 	for i := range data.IdentitySources {
 		keys := [...]string{"idstore", "order"}
 		keyValues := [...]string{data.IdentitySources[i].Name.ValueString(), strconv.FormatInt(data.IdentitySources[i].Order.ValueInt64(), 10)}
 
 		var r gjson.Result
+		rIdx := -1
+		rSearchIdx := 0
 		res.Get("IdStoreSequence.idSeqItem").ForEach(
 			func(_, v gjson.Result) bool {
+				if rUsedIdentitySources[rSearchIdx] {
+					rSearchIdx++
+					return true
+				}
 				found := false
 				for ik := range keys {
 					if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -176,11 +183,17 @@ func (data *IdentitySourceSequence) updateFromBody(ctx context.Context, res gjso
 				}
 				if found {
 					r = v
+					rIdx = rSearchIdx
+					rSearchIdx++
 					return false
 				}
+				rSearchIdx++
 				return true
 			},
 		)
+		if rIdx >= 0 {
+			rUsedIdentitySources[rIdx] = true
+		}
 		if value := r.Get("idstore"); value.Exists() && !data.IdentitySources[i].Name.IsNull() {
 			data.IdentitySources[i].Name = types.StringValue(value.String())
 		} else {

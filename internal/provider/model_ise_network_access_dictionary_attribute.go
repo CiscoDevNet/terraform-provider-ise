@@ -174,13 +174,20 @@ func (data *NetworkAccessDictionaryAttribute) updateFromBody(ctx context.Context
 	} else {
 		data.InternalName = types.StringNull()
 	}
+	rUsedAllowedValues := make(map[int]bool)
 	for i := range data.AllowedValues {
 		keys := [...]string{"key", "value"}
 		keyValues := [...]string{data.AllowedValues[i].Key.ValueString(), data.AllowedValues[i].Value.ValueString()}
 
 		var r gjson.Result
+		rIdx := -1
+		rSearchIdx := 0
 		res.Get("response.allowedValues").ForEach(
 			func(_, v gjson.Result) bool {
+				if rUsedAllowedValues[rSearchIdx] {
+					rSearchIdx++
+					return true
+				}
 				found := false
 				for ik := range keys {
 					if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -192,11 +199,17 @@ func (data *NetworkAccessDictionaryAttribute) updateFromBody(ctx context.Context
 				}
 				if found {
 					r = v
+					rIdx = rSearchIdx
+					rSearchIdx++
 					return false
 				}
+				rSearchIdx++
 				return true
 			},
 		)
+		if rIdx >= 0 {
+			rUsedAllowedValues[rIdx] = true
+		}
 		if value := r.Get("key"); value.Exists() && !data.AllowedValues[i].Key.IsNull() {
 			data.AllowedValues[i].Key = types.StringValue(value.String())
 		} else {

@@ -108,13 +108,20 @@ func (data *ActiveDirectoryJoinDomainWithAllNodes) fromBody(ctx context.Context,
 
 //template:begin updateFromBody
 func (data *ActiveDirectoryJoinDomainWithAllNodes) updateFromBody(ctx context.Context, res gjson.Result) {
+	rUsedAdditionalData := make(map[int]bool)
 	for i := range data.AdditionalData {
 		keys := [...]string{"name"}
 		keyValues := [...]string{data.AdditionalData[i].Name.ValueString()}
 
 		var r gjson.Result
+		rIdx := -1
+		rSearchIdx := 0
 		res.Get("OperationAdditionalData.additionalData").ForEach(
 			func(_, v gjson.Result) bool {
+				if rUsedAdditionalData[rSearchIdx] {
+					rSearchIdx++
+					return true
+				}
 				found := false
 				for ik := range keys {
 					if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -126,11 +133,17 @@ func (data *ActiveDirectoryJoinDomainWithAllNodes) updateFromBody(ctx context.Co
 				}
 				if found {
 					r = v
+					rIdx = rSearchIdx
+					rSearchIdx++
 					return false
 				}
+				rSearchIdx++
 				return true
 			},
 		)
+		if rIdx >= 0 {
+			rUsedAdditionalData[rIdx] = true
+		}
 		if value := r.Get("name"); value.Exists() && !data.AdditionalData[i].Name.IsNull() {
 			data.AdditionalData[i].Name = types.StringValue(value.String())
 		} else {

@@ -152,13 +152,20 @@ func (data *TACACSCommandSet) updateFromBody(ctx context.Context, res gjson.Resu
 	} else if data.PermitUnmatched.ValueBool() != false {
 		data.PermitUnmatched = types.BoolNull()
 	}
+	rUsedCommands := make(map[int]bool)
 	for i := range data.Commands {
 		keys := [...]string{"grant", "command", "arguments"}
 		keyValues := [...]string{data.Commands[i].Grant.ValueString(), data.Commands[i].Command.ValueString(), data.Commands[i].Arguments.ValueString()}
 
 		var r gjson.Result
+		rIdx := -1
+		rSearchIdx := 0
 		res.Get("TacacsCommandSets.commands.commandList").ForEach(
 			func(_, v gjson.Result) bool {
+				if rUsedCommands[rSearchIdx] {
+					rSearchIdx++
+					return true
+				}
 				found := false
 				for ik := range keys {
 					if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -170,11 +177,17 @@ func (data *TACACSCommandSet) updateFromBody(ctx context.Context, res gjson.Resu
 				}
 				if found {
 					r = v
+					rIdx = rSearchIdx
+					rSearchIdx++
 					return false
 				}
+				rSearchIdx++
 				return true
 			},
 		)
+		if rIdx >= 0 {
+			rUsedCommands[rIdx] = true
+		}
 		if value := r.Get("grant"); value.Exists() && !data.Commands[i].Grant.IsNull() {
 			data.Commands[i].Grant = types.StringValue(value.String())
 		} else {

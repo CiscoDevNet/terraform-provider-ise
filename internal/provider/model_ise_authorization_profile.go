@@ -577,13 +577,20 @@ func (data *AuthorizationProfile) updateFromBody(ctx context.Context, res gjson.
 	} else {
 		data.ReauthenticationTimer = types.Int64Null()
 	}
+	rUsedAdvancedAttributes := make(map[int]bool)
 	for i := range data.AdvancedAttributes {
 		keys := [...]string{"leftHandSideDictionaryAttribue.dictionaryName", "leftHandSideDictionaryAttribue.attributeName", "rightHandSideAttribueValue.AdvancedAttributeValueType", "rightHandSideAttribueValue.value", "rightHandSideAttribueValue.dictionaryName", "rightHandSideAttribueValue.attributeName"}
 		keyValues := [...]string{data.AdvancedAttributes[i].AttributeLeftDictionaryName.ValueString(), data.AdvancedAttributes[i].AttributeLeftName.ValueString(), data.AdvancedAttributes[i].AttributeRightValueType.ValueString(), data.AdvancedAttributes[i].AttributeRightValue.ValueString(), data.AdvancedAttributes[i].AttributeRightDictionaryName.ValueString(), data.AdvancedAttributes[i].AttributeRightName.ValueString()}
 
 		var r gjson.Result
+		rIdx := -1
+		rSearchIdx := 0
 		res.Get("AuthorizationProfile.advancedAttributes").ForEach(
 			func(_, v gjson.Result) bool {
+				if rUsedAdvancedAttributes[rSearchIdx] {
+					rSearchIdx++
+					return true
+				}
 				found := false
 				for ik := range keys {
 					if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -595,11 +602,17 @@ func (data *AuthorizationProfile) updateFromBody(ctx context.Context, res gjson.
 				}
 				if found {
 					r = v
+					rIdx = rSearchIdx
+					rSearchIdx++
 					return false
 				}
+				rSearchIdx++
 				return true
 			},
 		)
+		if rIdx >= 0 {
+			rUsedAdvancedAttributes[rIdx] = true
+		}
 		if value := r.Get("leftHandSideDictionaryAttribue.dictionaryName"); value.Exists() && !data.AdvancedAttributes[i].AttributeLeftDictionaryName.IsNull() {
 			data.AdvancedAttributes[i].AttributeLeftDictionaryName = types.StringValue(value.String())
 		} else {

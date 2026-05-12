@@ -102,13 +102,20 @@ func (data *NetworkAccessAuthorizationGlobalExceptionRuleUpdateRanks) fromBody(c
 
 //template:begin updateFromBody
 func (data *NetworkAccessAuthorizationGlobalExceptionRuleUpdateRanks) updateFromBody(ctx context.Context, res gjson.Result) {
+	rUsedRules := make(map[int]bool)
 	for i := range data.Rules {
 		keys := [...]string{"rule.id", "rule.rank"}
 		keyValues := [...]string{data.Rules[i].Id.ValueString(), strconv.FormatInt(data.Rules[i].Rank.ValueInt64(), 10)}
 
 		var r gjson.Result
+		rIdx := -1
+		rSearchIdx := 0
 		res.Get("response").ForEach(
 			func(_, v gjson.Result) bool {
+				if rUsedRules[rSearchIdx] {
+					rSearchIdx++
+					return true
+				}
 				found := false
 				for ik := range keys {
 					if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -120,11 +127,17 @@ func (data *NetworkAccessAuthorizationGlobalExceptionRuleUpdateRanks) updateFrom
 				}
 				if found {
 					r = v
+					rIdx = rSearchIdx
+					rSearchIdx++
 					return false
 				}
+				rSearchIdx++
 				return true
 			},
 		)
+		if rIdx >= 0 {
+			rUsedRules[rIdx] = true
+		}
 		if value := r.Get("rule.id"); value.Exists() && !data.Rules[i].Id.IsNull() {
 			data.Rules[i].Id = types.StringValue(value.String())
 		} else {

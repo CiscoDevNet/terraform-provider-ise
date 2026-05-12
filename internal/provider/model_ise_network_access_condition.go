@@ -629,13 +629,20 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 	} else {
 		data.Operator = types.StringNull()
 	}
+	rUsedChildren := make(map[int]bool)
 	for i := range data.Children {
 		keys := [...]string{"name", "conditionType", "id", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
 		keyValues := [...]string{data.Children[i].Name.ValueString(), data.Children[i].ConditionType.ValueString(), data.Children[i].Id.ValueString(), data.Children[i].AttributeName.ValueString(), data.Children[i].AttributeValue.ValueString(), data.Children[i].DictionaryName.ValueString(), data.Children[i].DictionaryValue.ValueString(), data.Children[i].Operator.ValueString()}
 
 		var r gjson.Result
+		rIdx := -1
+		rSearchIdx := 0
 		res.Get("response.children").ForEach(
 			func(_, v gjson.Result) bool {
+				if rUsedChildren[rSearchIdx] {
+					rSearchIdx++
+					return true
+				}
 				found := false
 				for ik := range keys {
 					if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -647,11 +654,17 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 				}
 				if found {
 					r = v
+					rIdx = rSearchIdx
+					rSearchIdx++
 					return false
 				}
+				rSearchIdx++
 				return true
 			},
 		)
+		if rIdx >= 0 {
+			rUsedChildren[rIdx] = true
+		}
 		if value := r.Get("name"); value.Exists() && !data.Children[i].Name.IsNull() {
 			data.Children[i].Name = types.StringValue(value.String())
 		} else {
@@ -702,13 +715,20 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 		} else {
 			data.Children[i].Operator = types.StringNull()
 		}
+		crUsed := make(map[int]bool)
 		for ci := range data.Children[i].Children {
 			keys := [...]string{"name", "conditionType", "id", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
 			keyValues := [...]string{data.Children[i].Children[ci].Name.ValueString(), data.Children[i].Children[ci].ConditionType.ValueString(), data.Children[i].Children[ci].Id.ValueString(), data.Children[i].Children[ci].AttributeName.ValueString(), data.Children[i].Children[ci].AttributeValue.ValueString(), data.Children[i].Children[ci].DictionaryName.ValueString(), data.Children[i].Children[ci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Operator.ValueString()}
 
 			var cr gjson.Result
+			crIdx := -1
+			crSearchIdx := 0
 			r.Get("children").ForEach(
 				func(_, v gjson.Result) bool {
+					if crUsed[crSearchIdx] {
+						crSearchIdx++
+						return true
+					}
 					found := false
 					for ik := range keys {
 						if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -720,11 +740,17 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 					}
 					if found {
 						cr = v
+						crIdx = crSearchIdx
+						crSearchIdx++
 						return false
 					}
+					crSearchIdx++
 					return true
 				},
 			)
+			if crIdx >= 0 {
+				crUsed[crIdx] = true
+			}
 			if value := cr.Get("name"); value.Exists() && !data.Children[i].Children[ci].Name.IsNull() {
 				data.Children[i].Children[ci].Name = types.StringValue(value.String())
 			} else {
@@ -775,13 +801,20 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 			} else {
 				data.Children[i].Children[ci].Operator = types.StringNull()
 			}
+			ccrUsed := make(map[int]bool)
 			for cci := range data.Children[i].Children[ci].Children {
 				keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
 				keyValues := [...]string{data.Children[i].Children[ci].Children[cci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Operator.ValueString()}
 
 				var ccr gjson.Result
+				ccrIdx := -1
+				ccrSearchIdx := 0
 				cr.Get("children").ForEach(
 					func(_, v gjson.Result) bool {
+						if ccrUsed[ccrSearchIdx] {
+							ccrSearchIdx++
+							return true
+						}
 						found := false
 						for ik := range keys {
 							if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -793,11 +826,17 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 						}
 						if found {
 							ccr = v
+							ccrIdx = ccrSearchIdx
+							ccrSearchIdx++
 							return false
 						}
+						ccrSearchIdx++
 						return true
 					},
 				)
+				if ccrIdx >= 0 {
+					ccrUsed[ccrIdx] = true
+				}
 				if value := ccr.Get("conditionType"); value.Exists() && !data.Children[i].Children[ci].Children[cci].ConditionType.IsNull() {
 					data.Children[i].Children[ci].Children[cci].ConditionType = types.StringValue(value.String())
 				} else {
@@ -838,13 +877,20 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 				} else {
 					data.Children[i].Children[ci].Children[cci].Operator = types.StringNull()
 				}
+				cccrUsed := make(map[int]bool)
 				for ccci := range data.Children[i].Children[ci].Children[cci].Children {
 					keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
 					keyValues := [...]string{data.Children[i].Children[ci].Children[cci].Children[ccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Operator.ValueString()}
 
 					var cccr gjson.Result
+					cccrIdx := -1
+					cccrSearchIdx := 0
 					ccr.Get("children").ForEach(
 						func(_, v gjson.Result) bool {
+							if cccrUsed[cccrSearchIdx] {
+								cccrSearchIdx++
+								return true
+							}
 							found := false
 							for ik := range keys {
 								if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -856,11 +902,17 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 							}
 							if found {
 								cccr = v
+								cccrIdx = cccrSearchIdx
+								cccrSearchIdx++
 								return false
 							}
+							cccrSearchIdx++
 							return true
 						},
 					)
+					if cccrIdx >= 0 {
+						cccrUsed[cccrIdx] = true
+					}
 					if value := cccr.Get("conditionType"); value.Exists() && !data.Children[i].Children[ci].Children[cci].Children[ccci].ConditionType.IsNull() {
 						data.Children[i].Children[ci].Children[cci].Children[ccci].ConditionType = types.StringValue(value.String())
 					} else {
@@ -901,13 +953,20 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 					} else {
 						data.Children[i].Children[ci].Children[cci].Children[ccci].Operator = types.StringNull()
 					}
+					ccccrUsed := make(map[int]bool)
 					for cccci := range data.Children[i].Children[ci].Children[cci].Children[ccci].Children {
 						keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
 						keyValues := [...]string{data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator.ValueString()}
 
 						var ccccr gjson.Result
+						ccccrIdx := -1
+						ccccrSearchIdx := 0
 						cccr.Get("children").ForEach(
 							func(_, v gjson.Result) bool {
+								if ccccrUsed[ccccrSearchIdx] {
+									ccccrSearchIdx++
+									return true
+								}
 								found := false
 								for ik := range keys {
 									if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -919,11 +978,17 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 								}
 								if found {
 									ccccr = v
+									ccccrIdx = ccccrSearchIdx
+									ccccrSearchIdx++
 									return false
 								}
+								ccccrSearchIdx++
 								return true
 							},
 						)
+						if ccccrIdx >= 0 {
+							ccccrUsed[ccccrIdx] = true
+						}
 						if value := ccccr.Get("conditionType"); value.Exists() && !data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].ConditionType.IsNull() {
 							data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].ConditionType = types.StringValue(value.String())
 						} else {
@@ -964,13 +1029,20 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 						} else {
 							data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator = types.StringNull()
 						}
+						cccccrUsed := make(map[int]bool)
 						for ccccci := range data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children {
 							keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
 							keyValues := [...]string{data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Operator.ValueString()}
 
 							var cccccr gjson.Result
+							cccccrIdx := -1
+							cccccrSearchIdx := 0
 							ccccr.Get("children").ForEach(
 								func(_, v gjson.Result) bool {
+									if cccccrUsed[cccccrSearchIdx] {
+										cccccrSearchIdx++
+										return true
+									}
 									found := false
 									for ik := range keys {
 										if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -982,11 +1054,17 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 									}
 									if found {
 										cccccr = v
+										cccccrIdx = cccccrSearchIdx
+										cccccrSearchIdx++
 										return false
 									}
+									cccccrSearchIdx++
 									return true
 								},
 							)
+							if cccccrIdx >= 0 {
+								cccccrUsed[cccccrIdx] = true
+							}
 							if value := cccccr.Get("conditionType"); value.Exists() && !data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].ConditionType.IsNull() {
 								data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].ConditionType = types.StringValue(value.String())
 							} else {

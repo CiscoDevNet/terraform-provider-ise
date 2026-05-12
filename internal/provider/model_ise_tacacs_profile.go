@@ -138,13 +138,20 @@ func (data *TACACSProfile) updateFromBody(ctx context.Context, res gjson.Result)
 	} else {
 		data.Description = types.StringNull()
 	}
+	rUsedSessionAttributes := make(map[int]bool)
 	for i := range data.SessionAttributes {
 		keys := [...]string{"type", "name", "value"}
 		keyValues := [...]string{data.SessionAttributes[i].Type.ValueString(), data.SessionAttributes[i].Name.ValueString(), data.SessionAttributes[i].Value.ValueString()}
 
 		var r gjson.Result
+		rIdx := -1
+		rSearchIdx := 0
 		res.Get("TacacsProfile.sessionAttributes.sessionAttributeList").ForEach(
 			func(_, v gjson.Result) bool {
+				if rUsedSessionAttributes[rSearchIdx] {
+					rSearchIdx++
+					return true
+				}
 				found := false
 				for ik := range keys {
 					if v.Get(keys[ik]).String() == keyValues[ik] {
@@ -156,11 +163,17 @@ func (data *TACACSProfile) updateFromBody(ctx context.Context, res gjson.Result)
 				}
 				if found {
 					r = v
+					rIdx = rSearchIdx
+					rSearchIdx++
 					return false
 				}
+				rSearchIdx++
 				return true
 			},
 		)
+		if rIdx >= 0 {
+			rUsedSessionAttributes[rIdx] = true
+		}
 		if value := r.Get("type"); value.Exists() && !data.SessionAttributes[i].Type.IsNull() {
 			data.SessionAttributes[i].Type = types.StringValue(value.String())
 		} else {
