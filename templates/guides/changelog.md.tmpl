@@ -7,6 +7,10 @@ description: |-
 
 # Changelog
 
+## 0.3.2 (unreleased)
+
+- Fix issue with deeply nested policy conditions losing their children during update operations
+
 ## 0.3.1
 
 - Add `ise_network_access_dictionary_attribute` resource and data source
