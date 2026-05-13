@@ -680,6 +680,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 						ccValue.ForEach(func(cck, ccv gjson.Result) bool {
 							ccItem := {{$name}}{{$cname}}{{$ccname}}{{toGoName .TfName}}{}
 							{{- range .Attributes}}
+							{{- $cccname := toGoName .TfName}}
 							{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
 							{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 							if cccValue := ccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccValue.Exists() && cccValue.Type != gjson.Null {
@@ -702,6 +703,116 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 								ccItem.{{toGoName .TfName}} = helpers.GetStringMap(cccValue.Map())
 							} else {
 								ccItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
+							}
+							{{- else if isNestedListSet .}}
+							if cccValue := ccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccValue.Exists() {
+								ccItem.{{toGoName .TfName}} = make([]{{$name}}{{$cname}}{{$ccname}}{{$cccname}}{{toGoName .TfName}}, 0)
+								cccValue.ForEach(func(ccck, cccv gjson.Result) bool {
+									cccItem := {{$name}}{{$cname}}{{$ccname}}{{$cccname}}{{toGoName .TfName}}{}
+									{{- range .Attributes}}
+									{{- $ccccname := toGoName .TfName}}
+									{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
+									{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
+									if ccccValue := cccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccccValue.Exists() && ccccValue.Type != gjson.Null {
+										cccItem.{{toGoName .TfName}} = types.{{.Type}}Value(ccccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
+									} else {
+										{{- if .DefaultValue}}
+										cccItem.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
+										{{- else}}
+										cccItem.{{toGoName .TfName}} = types.{{.Type}}Null()
+										{{- end}}
+									}
+									{{- else if isListSet .}}
+									if ccccValue := cccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccccValue.Exists() {
+										cccItem.{{toGoName .TfName}} = helpers.Get{{.ElementType}}{{.Type}}(ccccValue.Array())
+									} else {
+										cccItem.{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
+									}
+									{{- else if eq .Type "Map"}}
+									if ccccValue := cccv.Get("{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}"); ccccValue.Exists() {
+										cccItem.{{toGoName .TfName}} = helpers.GetStringMap(ccccValue.Map())
+									} else {
+										cccItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
+									}
+									{{- else if isNestedListSet .}}
+									if ccccValue := cccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccccValue.Exists() {
+										cccItem.{{toGoName .TfName}} = make([]{{$name}}{{$cname}}{{$ccname}}{{$cccname}}{{$ccccname}}{{toGoName .TfName}}, 0)
+										ccccValue.ForEach(func(cccck, ccccv gjson.Result) bool {
+											ccccItem := {{$name}}{{$cname}}{{$ccname}}{{$cccname}}{{$ccccname}}{{toGoName .TfName}}{}
+											{{- range .Attributes}}
+											{{- $cccccname := toGoName .TfName}}
+											{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
+											{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
+											if cccccValue := ccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccccValue.Exists() && cccccValue.Type != gjson.Null {
+												ccccItem.{{toGoName .TfName}} = types.{{.Type}}Value(cccccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
+											} else {
+												{{- if .DefaultValue}}
+												ccccItem.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
+												{{- else}}
+												ccccItem.{{toGoName .TfName}} = types.{{.Type}}Null()
+												{{- end}}
+											}
+											{{- else if isListSet .}}
+											if cccccValue := ccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccccValue.Exists() {
+												ccccItem.{{toGoName .TfName}} = helpers.Get{{.ElementType}}{{.Type}}(cccccValue.Array())
+											} else {
+												ccccItem.{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
+											}
+											{{- else if eq .Type "Map"}}
+											if cccccValue := ccccv.Get("{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}"); cccccValue.Exists() {
+												ccccItem.{{toGoName .TfName}} = helpers.GetStringMap(cccccValue.Map())
+											} else {
+												ccccItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
+											}
+											{{- else if isNestedListSet .}}
+											if cccccValue := ccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccccValue.Exists() {
+												ccccItem.{{toGoName .TfName}} = make([]{{$name}}{{$cname}}{{$ccname}}{{$cccname}}{{$ccccname}}{{$cccccname}}{{toGoName .TfName}}, 0)
+												cccccValue.ForEach(func(ccccck, cccccv gjson.Result) bool {
+													cccccItem := {{$name}}{{$cname}}{{$ccname}}{{$cccname}}{{$ccccname}}{{$cccccname}}{{toGoName .TfName}}{}
+													{{- range .Attributes}}
+													{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
+													{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
+													if ccccccValue := cccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccccccValue.Exists() && ccccccValue.Type != gjson.Null {
+														cccccItem.{{toGoName .TfName}} = types.{{.Type}}Value(ccccccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
+													} else {
+														{{- if .DefaultValue}}
+														cccccItem.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
+														{{- else}}
+														cccccItem.{{toGoName .TfName}} = types.{{.Type}}Null()
+														{{- end}}
+													}
+													{{- else if isListSet .}}
+													if ccccccValue := cccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccccccValue.Exists() {
+														cccccItem.{{toGoName .TfName}} = helpers.Get{{.ElementType}}{{.Type}}(ccccccValue.Array())
+													} else {
+														cccccItem.{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
+													}
+													{{- else if eq .Type "Map"}}
+													if ccccccValue := cccccv.Get("{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}"); ccccccValue.Exists() {
+														cccccItem.{{toGoName .TfName}} = helpers.GetStringMap(ccccccValue.Map())
+													} else {
+														cccccItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
+													}
+													{{- end}}
+													{{- end}}
+													{{- end}}
+													ccccItem.{{toGoName .TfName}} = append(ccccItem.{{toGoName .TfName}}, cccccItem)
+													return true
+												})
+											}
+											{{- end}}
+											{{- end}}
+											{{- end}}
+											cccItem.{{toGoName .TfName}} = append(cccItem.{{toGoName .TfName}}, ccccItem)
+											return true
+										})
+									}
+									{{- end}}
+									{{- end}}
+									{{- end}}
+									ccItem.{{toGoName .TfName}} = append(ccItem.{{toGoName .TfName}}, cccItem)
+									return true
+								})
 							}
 							{{- end}}
 							{{- end}}
