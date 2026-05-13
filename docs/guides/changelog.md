@@ -7,7 +7,7 @@ description: |-
 
 # Changelog
 
-## 0.3.2 (unreleased)
+## 0.3.2
 
 - Fix issue with deeply nested policy conditions losing their children during update operations
 
