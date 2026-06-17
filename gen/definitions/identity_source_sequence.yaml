@@ -24,7 +24,7 @@ attributes:
   - model_name: certificateAuthenticationProfile
     data_path: [IdStoreSequence]
     type: String
-    mandatory: true
+    default_value: ""
     description: Certificate Authentication Profile, empty if doesn't exist
     example: Preloaded_Certificate_Profile
   - model_name: idSeqItem

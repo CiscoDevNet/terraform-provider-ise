@@ -112,7 +112,7 @@ func (data *IdentitySourceSequence) fromBody(ctx context.Context, res gjson.Resu
 	if value := res.Get("IdStoreSequence.certificateAuthenticationProfile"); value.Exists() && value.Type != gjson.Null {
 		data.CertificateAuthenticationProfile = types.StringValue(value.String())
 	} else {
-		data.CertificateAuthenticationProfile = types.StringNull()
+		data.CertificateAuthenticationProfile = types.StringValue("")
 	}
 	if value := res.Get("IdStoreSequence.idSeqItem"); value.Exists() {
 		data.IdentitySources = make([]IdentitySourceSequenceIdentitySources, 0)
@@ -155,7 +155,7 @@ func (data *IdentitySourceSequence) updateFromBody(ctx context.Context, res gjso
 	}
 	if value := res.Get("IdStoreSequence.certificateAuthenticationProfile"); value.Exists() && !data.CertificateAuthenticationProfile.IsNull() {
 		data.CertificateAuthenticationProfile = types.StringValue(value.String())
-	} else {
+	} else if data.CertificateAuthenticationProfile.ValueString() != "" {
 		data.CertificateAuthenticationProfile = types.StringNull()
 	}
 	for i := range data.IdentitySources {

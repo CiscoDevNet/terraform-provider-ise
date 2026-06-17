@@ -116,7 +116,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 				{{- else}}
 				Optional:            true,
 				{{- end}}
-				{{- if or (len .DefaultValue) .Computed}}
+				{{- if or .DefaultValue .Computed}}
 				Computed:            true,
 				{{- end}}
 				{{- if len .EnumValues}}
@@ -141,11 +141,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 					float64validator.Between({{.MinFloat}}, {{.MaxFloat}}),
 				},
 				{{- end}}
-				{{- if and (len .DefaultValue) (eq .Type "Int64")}}
+				{{- if and .DefaultValue (eq .Type "Int64")}}
 				Default:             int64default.StaticInt64({{.DefaultValue}}),
-				{{- else if and (len .DefaultValue) (eq .Type "Bool")}}
+				{{- else if and .DefaultValue (eq .Type "Bool")}}
 				Default:             booldefault.StaticBool({{.DefaultValue}}),
-				{{- else if and (len .DefaultValue) (eq .Type "String")}}
+				{{- else if and .DefaultValue (eq .Type "String")}}
 				Default:             stringdefault.StaticString("{{.DefaultValue}}"),
 				{{- end}}
 				{{- if or .Id .Reference .RequiresReplace}}
@@ -188,7 +188,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 							{{- else}}
 							Optional:            true,
 							{{- end}}
-							{{- if or (len .DefaultValue) .Computed}}
+							{{- if or .DefaultValue .Computed}}
 							Computed:            true,
 							{{- end}}
 							{{- if len .EnumValues}}
@@ -213,11 +213,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 								float64validator.Between({{.MinFloat}}, {{.MaxFloat}}),
 							},
 							{{- end}}
-							{{- if and (len .DefaultValue) (eq .Type "Int64")}}
+							{{- if and .DefaultValue (eq .Type "Int64")}}
 							Default:             int64default.StaticInt64({{.DefaultValue}}),
-							{{- else if and (len .DefaultValue) (eq .Type "Bool")}}
+							{{- else if and .DefaultValue (eq .Type "Bool")}}
 							Default:             booldefault.StaticBool({{.DefaultValue}}),
-							{{- else if and (len .DefaultValue) (eq .Type "String")}}
+							{{- else if and .DefaultValue (eq .Type "String")}}
 							Default:             stringdefault.StaticString("{{.DefaultValue}}"),
 							{{- end}}
 							{{- if .RequiresReplace}}
@@ -260,7 +260,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 										{{- else}}
 										Optional:            true,
 										{{- end}}
-										{{- if or (len .DefaultValue) .Computed}}
+										{{- if or .DefaultValue .Computed}}
 										Computed:            true,
 										{{- end}}
 										{{- if len .EnumValues}}
@@ -285,11 +285,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 											float64validator.Between({{.MinFloat}}, {{.MaxFloat}}),
 										},
 										{{- end}}
-										{{- if and (len .DefaultValue) (eq .Type "Int64")}}
+										{{- if and .DefaultValue (eq .Type "Int64")}}
 										Default:             int64default.StaticInt64({{.DefaultValue}}),
-										{{- else if and (len .DefaultValue) (eq .Type "Bool")}}
+										{{- else if and .DefaultValue (eq .Type "Bool")}}
 										Default:             booldefault.StaticBool({{.DefaultValue}}),
-										{{- else if and (len .DefaultValue) (eq .Type "String")}}
+										{{- else if and .DefaultValue (eq .Type "String")}}
 										Default:             stringdefault.StaticString("{{.DefaultValue}}"),
 										{{- end}}
 										{{- if .RequiresReplace}}
@@ -332,7 +332,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 													{{- else}}
 													Optional:            true,
 													{{- end}}
-													{{- if or (len .DefaultValue) .Computed}}
+													{{- if or .DefaultValue .Computed}}
 													Computed:            true,
 													{{- end}}
 													{{- if len .EnumValues}}
@@ -357,11 +357,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 														float64validator.Between({{.MinFloat}}, {{.MaxFloat}}),
 													},
 													{{- end}}
-													{{- if and (len .DefaultValue) (eq .Type "Int64")}}
+													{{- if and .DefaultValue (eq .Type "Int64")}}
 													Default:             int64default.StaticInt64({{.DefaultValue}}),
-													{{- else if and (len .DefaultValue) (eq .Type "Bool")}}
+													{{- else if and .DefaultValue (eq .Type "Bool")}}
 													Default:             booldefault.StaticBool({{.DefaultValue}}),
-													{{- else if and (len .DefaultValue) (eq .Type "String")}}
+													{{- else if and .DefaultValue (eq .Type "String")}}
 													Default:             stringdefault.StaticString("{{.DefaultValue}}"),
 													{{- end}}
 													{{- if .RequiresReplace}}
@@ -404,7 +404,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																{{- else}}
 																Optional:            true,
 																{{- end}}
-																{{- if or (len .DefaultValue) .Computed}}
+																{{- if or .DefaultValue .Computed}}
 																Computed:            true,
 																{{- end}}
 																{{- if len .EnumValues}}
@@ -429,11 +429,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																	float64validator.Between({{.MinFloat}}, {{.MaxFloat}}),
 																},
 																{{- end}}
-																{{- if and (len .DefaultValue) (eq .Type "Int64")}}
+																{{- if and .DefaultValue (eq .Type "Int64")}}
 																Default:             int64default.StaticInt64({{.DefaultValue}}),
-																{{- else if and (len .DefaultValue) (eq .Type "Bool")}}
+																{{- else if and .DefaultValue (eq .Type "Bool")}}
 																Default:             booldefault.StaticBool({{.DefaultValue}}),
-																{{- else if and (len .DefaultValue) (eq .Type "String")}}
+																{{- else if and .DefaultValue (eq .Type "String")}}
 																Default:             stringdefault.StaticString("{{.DefaultValue}}"),
 																{{- end}}
 																{{- if .RequiresReplace}}
@@ -476,7 +476,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																			{{- else}}
 																			Optional:            true,
 																			{{- end}}
-																			{{- if or (len .DefaultValue) .Computed}}
+																			{{- if or .DefaultValue .Computed}}
 																			Computed:            true,
 																			{{- end}}
 																			{{- if len .EnumValues}}
@@ -501,11 +501,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																				float64validator.Between({{.MinFloat}}, {{.MaxFloat}}),
 																			},
 																			{{- end}}
-																			{{- if and (len .DefaultValue) (eq .Type "Int64")}}
+																			{{- if and .DefaultValue (eq .Type "Int64")}}
 																			Default:             int64default.StaticInt64({{.DefaultValue}}),
-																			{{- else if and (len .DefaultValue) (eq .Type "Bool")}}
+																			{{- else if and .DefaultValue (eq .Type "Bool")}}
 																			Default:             booldefault.StaticBool({{.DefaultValue}}),
-																			{{- else if and (len .DefaultValue) (eq .Type "String")}}
+																			{{- else if and .DefaultValue (eq .Type "String")}}
 																			Default:             stringdefault.StaticString("{{.DefaultValue}}"),
 																			{{- end}}
 																			{{- if .RequiresReplace}}
@@ -548,7 +548,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																					{{- else}}
 																					Optional:            true,
 																					{{- end}}
-																					{{- if or (len .DefaultValue) .Computed}}
+																					{{- if or .DefaultValue .Computed}}
 																					Computed:            true,
 																					{{- end}}
 																					{{- if len .EnumValues}}
@@ -573,11 +573,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																						float64validator.Between({{.MinFloat}}, {{.MaxFloat}}),
 																					},
 																					{{- end}}
-																					{{- if and (len .DefaultValue) (eq .Type "Int64")}}
+																					{{- if and .DefaultValue (eq .Type "Int64")}}
 																					Default:             int64default.StaticInt64({{.DefaultValue}}),
-																					{{- else if and (len .DefaultValue) (eq .Type "Bool")}}
+																					{{- else if and .DefaultValue (eq .Type "Bool")}}
 																					Default:             booldefault.StaticBool({{.DefaultValue}}),
-																					{{- else if and (len .DefaultValue) (eq .Type "String")}}
+																					{{- else if and .DefaultValue (eq .Type "String")}}
 																					Default:             stringdefault.StaticString("{{.DefaultValue}}"),
 																					{{- end}}
 																					{{- if .RequiresReplace}}
