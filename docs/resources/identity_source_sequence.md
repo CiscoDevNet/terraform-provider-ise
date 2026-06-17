@@ -33,12 +33,13 @@ resource "ise_identity_source_sequence" "example" {
 ### Required
 
 - `break_on_store_fail` (Boolean) Do not access other stores in the sequence if a selected identity store cannot be accessed for authentication
-- `certificate_authentication_profile` (String) Certificate Authentication Profile, empty if doesn't exist
 - `identity_sources` (Attributes List) (see [below for nested schema](#nestedatt--identity_sources))
 - `name` (String) The name of the identity source sequence
 
 ### Optional
 
+- `certificate_authentication_profile` (String) Certificate Authentication Profile, empty if doesn't exist
+  - Default value: ``
 - `description` (String) Description
 
 ### Read-Only

@@ -161,7 +161,7 @@ type YamlConfigAttribute struct {
 	StringPatterns   []string              `yaml:"string_patterns"`
 	StringMinLength  int64                 `yaml:"string_min_length"`
 	StringMaxLength  int64                 `yaml:"string_max_length"`
-	DefaultValue     string                `yaml:"default_value"`
+	DefaultValue     *string               `yaml:"default_value"`
 	Value            string                `yaml:"value"`
 	TestValue        string                `yaml:"test_value"`
 	MinimumTestValue string                `yaml:"minimum_test_value"`

@@ -71,7 +71,6 @@ func testAccIseIdentitySourceSequenceConfig_minimum() string {
 	config := `resource "ise_identity_source_sequence" "test" {` + "\n"
 	config += `	name = "Sequence1"` + "\n"
 	config += `	break_on_store_fail = true` + "\n"
-	config += `	certificate_authentication_profile = "Preloaded_Certificate_Profile"` + "\n"
 	config += `	identity_sources = [{` + "\n"
 	config += `	  name = "Internal Users"` + "\n"
 	config += `	  order = 1` + "\n"
