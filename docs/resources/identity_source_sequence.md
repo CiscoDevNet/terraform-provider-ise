@@ -38,7 +38,8 @@ resource "ise_identity_source_sequence" "example" {
 
 ### Optional
 
-- `certificate_authentication_profile` (String) Certificate Authentication Profile, empty if doesn't exist. Defaults to `""`.
+- `certificate_authentication_profile` (String) Certificate Authentication Profile, empty if doesn't exist
+  - Default value: ``
 - `description` (String) Description
 
 ### Read-Only
