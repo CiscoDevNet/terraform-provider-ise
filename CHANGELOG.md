@@ -1,3 +1,7 @@
+## 0.3.3 (unreleased)
+
+- Fix issue with `Map` type attributes using a nested `data_path` generating a malformed JSON key (e.g. `custom_attributes` on `ise_endpoint` produced `[ERSEndPoint customAttributes]` instead of the nested `ERSEndPoint.customAttributes` path), causing API request and read failures
+
 ## 0.3.2
 
 - Fix issue with deeply nested policy conditions losing their children during update operations

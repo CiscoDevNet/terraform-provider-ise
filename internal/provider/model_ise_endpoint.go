@@ -108,7 +108,7 @@ func (data Endpoint) toBody(ctx context.Context, state Endpoint) string {
 	if !data.CustomAttributes.IsNull() {
 		var values map[string]string
 		data.CustomAttributes.ElementsAs(ctx, &values, false)
-		body, _ = sjson.Set(body, "[ERSEndPoint customAttributes].customAttributes", values)
+		body, _ = sjson.Set(body, "ERSEndPoint.customAttributes.customAttributes", values)
 	}
 	if !data.IdentityStore.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.identityStore", data.IdentityStore.ValueString())
@@ -210,7 +210,7 @@ func (data *Endpoint) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.StaticGroupAssignmentDefined = types.BoolValue(true)
 	}
-	if value := res.Get("[ERSEndPoint customAttributes].customAttributes"); value.Exists() {
+	if value := res.Get("ERSEndPoint.customAttributes.customAttributes"); value.Exists() {
 		data.CustomAttributes = helpers.GetStringMap(value.Map())
 	} else {
 		data.CustomAttributes = types.MapNull(types.StringType)
@@ -346,7 +346,7 @@ func (data *Endpoint) updateFromBody(ctx context.Context, res gjson.Result) {
 	} else if data.StaticGroupAssignmentDefined.ValueBool() != true {
 		data.StaticGroupAssignmentDefined = types.BoolNull()
 	}
-	if value := res.Get("[ERSEndPoint customAttributes].customAttributes"); value.Exists() && !data.CustomAttributes.IsNull() {
+	if value := res.Get("ERSEndPoint.customAttributes.customAttributes"); value.Exists() && !data.CustomAttributes.IsNull() {
 		data.CustomAttributes = helpers.GetStringMap(value.Map())
 	} else {
 		data.CustomAttributes = types.MapNull(types.StringType)

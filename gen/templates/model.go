@@ -393,7 +393,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 	if !data.{{toGoName .TfName}}.IsNull() {
 		var values map[string]string
 		data.{{toGoName .TfName}}.ElementsAs(ctx, &values, false)
-		body, _ = sjson.Set(body, "{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}", values)
+		body, _ = sjson.Set(body, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", values)
 	}
 	{{- else if isNestedListSet .}}
 	if len(data.{{toGoName .TfName}}) > 0 {
@@ -418,7 +418,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 			if !item.{{toGoName .TfName}}.IsNull() {
 				var values map[string]string
 				item.{{toGoName .TfName}}.ElementsAs(ctx, &values, false)
-				itemBody, _ = sjson.Set(itemBody, "{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}", values)
+				itemBody, _ = sjson.Set(itemBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", values)
 			}
 			{{- else if isNestedListSet .}}
 			if len(item.{{toGoName .TfName}}) > 0 {
@@ -443,7 +443,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 					if !childItem.{{toGoName .TfName}}.IsNull() {
 						var values map[string]string
 						childItem.{{toGoName .TfName}}.ElementsAs(ctx, &values, false)
-						itemChildBody, _ = sjson.Set(itemChildBody, "{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}", values)
+						itemChildBody, _ = sjson.Set(itemChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", values)
 					}
 					{{- else if isNestedListSet .}}
 					if len(childItem.{{toGoName .TfName}}) > 0 {
@@ -468,7 +468,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 							if !childChildItem.{{toGoName .TfName}}.IsNull() {
 								var values map[string]string
 								childChildItem.{{toGoName .TfName}}.ElementsAs(ctx, &values, false)
-								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}", values)
+								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", values)
 							}
 							{{- else if isNestedListSet .}}
 							if len(childChildItem.{{toGoName .TfName}}) > 0 {
@@ -493,7 +493,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 									if !childChildChildItem.{{toGoName .TfName}}.IsNull() {
 										var values map[string]string
 										childChildChildItem.{{toGoName .TfName}}.ElementsAs(ctx, &values, false)
-										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}", values)
+										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", values)
 									}
 									{{- else if isNestedListSet .}}
 									if len(childChildChildItem.{{toGoName .TfName}}) > 0 {
@@ -518,7 +518,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 											if !childChildChildChildItem.{{toGoName .TfName}}.IsNull() {
 												var values map[string]string
 												childChildChildChildItem.{{toGoName .TfName}}.ElementsAs(ctx, &values, false)
-												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}", values)
+												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", values)
 											}
 											{{- else if isNestedListSet .}}
 											if len(childChildChildChildItem.{{toGoName .TfName}}) > 0 {
@@ -543,7 +543,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 													if !childChildChildChildChildItem.{{toGoName .TfName}}.IsNull() {
 														var values map[string]string
 														childChildChildChildChildItem.{{toGoName .TfName}}.ElementsAs(ctx, &values, false)
-														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}", values)
+														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", values)
 													}
 													{{- end}}
 													{{- end}}
@@ -610,7 +610,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 		data.{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 	}
 	{{- else if eq .Type "Map"}}
-	if value := res.Get("{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}"); value.Exists() {
+	if value := res.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() {
 		data.{{toGoName .TfName}} = helpers.GetStringMap(value.Map())
 	} else {
 		data.{{toGoName .TfName}} = types.MapNull(types.StringType)
@@ -640,7 +640,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 				item.{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 			}
 			{{- else if eq .Type "Map"}}
-			if cValue := v.Get("{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}"); cValue.Exists() {
+			if cValue := v.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cValue.Exists() {
 				item.{{toGoName .TfName}} = helpers.GetStringMap(cValue.Map())
 			} else {
 				item.{{toGoName .TfName}} = types.MapNull(types.StringType)
@@ -669,7 +669,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 						cItem.{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 					}
 					{{- else if eq .Type "Map"}}
-					if ccValue := cv.Get("{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}"); ccValue.Exists() {
+					if ccValue := cv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccValue.Exists() {
 						cItem.{{toGoName .TfName}} = helpers.GetStringMap(ccValue.Map())
 					} else {
 						cItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
@@ -699,7 +699,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 								ccItem.{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 							}
 							{{- else if eq .Type "Map"}}
-							if cccValue := ccv.Get("{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}"); cccValue.Exists() {
+							if cccValue := ccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccValue.Exists() {
 								ccItem.{{toGoName .TfName}} = helpers.GetStringMap(cccValue.Map())
 							} else {
 								ccItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
@@ -729,7 +729,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 										cccItem.{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 									}
 									{{- else if eq .Type "Map"}}
-									if ccccValue := cccv.Get("{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}"); ccccValue.Exists() {
+									if ccccValue := cccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccccValue.Exists() {
 										cccItem.{{toGoName .TfName}} = helpers.GetStringMap(ccccValue.Map())
 									} else {
 										cccItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
@@ -759,7 +759,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 												ccccItem.{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 											}
 											{{- else if eq .Type "Map"}}
-											if cccccValue := ccccv.Get("{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}"); cccccValue.Exists() {
+											if cccccValue := ccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccccValue.Exists() {
 												ccccItem.{{toGoName .TfName}} = helpers.GetStringMap(cccccValue.Map())
 											} else {
 												ccccItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
@@ -788,7 +788,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 														cccccItem.{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 													}
 													{{- else if eq .Type "Map"}}
-													if ccccccValue := cccccv.Get("{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}"); ccccccValue.Exists() {
+													if ccccccValue := cccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccccccValue.Exists() {
 														cccccItem.{{toGoName .TfName}} = helpers.GetStringMap(ccccccValue.Map())
 													} else {
 														cccccItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
@@ -859,7 +859,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 		data.{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 	}
 	{{- else if eq .Type "Map"}}
-	if value := res.Get("{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{toGoName .TfName}}.IsNull() {
+	if value := res.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{toGoName .TfName}}.IsNull() {
 		data.{{toGoName .TfName}} = helpers.GetStringMap(value.Map())
 	} else {
 		data.{{toGoName .TfName}} = types.MapNull(types.StringType)
@@ -917,7 +917,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 			data.{{$list}}[i].{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 		}
 		{{- else if eq .Type "Map"}}
-		if value := r.Get("{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{toGoName .TfName}}.IsNull() {
+		if value := r.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{toGoName .TfName}}.IsNull() {
 			data.{{$list}}[i].{{toGoName .TfName}} = helpers.GetStringMap(value.Map())
 		} else {
 			data.{{$list}}[i].{{toGoName .TfName}} = types.MapNull(types.StringType)
@@ -969,7 +969,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 				data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 			}
 			{{- else if eq .Type "Map"}}
-			if value := cr.Get("{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}}.IsNull() {
+			if value := cr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}}.IsNull() {
 				data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}} = helpers.GetStringMap(value.Map())
 			} else {
 				data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}} = types.MapNull(types.StringType)
@@ -1021,7 +1021,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 					data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 				}
 				{{- else if eq .Type "Map"}}
-				if value := ccr.Get("{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}}.IsNull() {
+				if value := ccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}}.IsNull() {
 					data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}} = helpers.GetStringMap(value.Map())
 				} else {
 					data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}} = types.MapNull(types.StringType)
@@ -1073,7 +1073,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 						data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 					}
 					{{- else if eq .Type "Map"}}
-					if value := cccr.Get("{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}}.IsNull() {
+					if value := cccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}}.IsNull() {
 						data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}} = helpers.GetStringMap(value.Map())
 					} else {
 						data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}} = types.MapNull(types.StringType)
@@ -1125,7 +1125,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 							data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 						}
 						{{- else if eq .Type "Map"}}
-						if value := ccccr.Get("{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}}.IsNull() {
+						if value := ccccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}}.IsNull() {
 							data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}} = helpers.GetStringMap(value.Map())
 						} else {
 							data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}} = types.MapNull(types.StringType)
@@ -1177,7 +1177,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 								data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 							}
 							{{- else if eq .Type "Map"}}
-							if value := cccccr.Get("{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}}.IsNull() {
+							if value := cccccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}}.IsNull() {
 								data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}} = helpers.GetStringMap(value.Map())
 							} else {
 								data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}} = types.MapNull(types.StringType)
@@ -1233,7 +1233,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 				item.{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 			}
 			{{- else if eq .Type "Map"}}
-			if cValue := v.Get("{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}"); cValue.Exists() {
+			if cValue := v.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cValue.Exists() {
 				item.{{toGoName .TfName}} = helpers.GetStringMap(cValue.Map())
 			} else {
 				item.{{toGoName .TfName}} = types.MapNull(types.StringType)
@@ -1262,7 +1262,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 						cItem.{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 					}
 					{{- else if eq .Type "Map"}}
-					if ccValue := cv.Get("{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}"); ccValue.Exists() {
+					if ccValue := cv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccValue.Exists() {
 						cItem.{{toGoName .TfName}} = helpers.GetStringMap(ccValue.Map())
 					} else {
 						cItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
@@ -1291,7 +1291,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 								ccItem.{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 							}
 							{{- else if eq .Type "Map"}}
-							if cccValue := ccv.Get("{{if .DataPath}}{{.DataPath}}.{{end}}{{.ModelName}}"); cccValue.Exists() {
+							if cccValue := ccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccValue.Exists() {
 								ccItem.{{toGoName .TfName}} = helpers.GetStringMap(cccValue.Map())
 							} else {
 								ccItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
