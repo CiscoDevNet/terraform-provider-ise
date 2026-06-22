@@ -13,10 +13,9 @@ attributes:
   - model_name: password
     data_path: [InternalUser]
     type: String
-    mandatory: true
     write_only: true
     write_changes_only: true
-    description: The password of the internal user
+    description: The password of the internal user. Required when creating a new user. When managing existing (brownfield) users the password can be omitted and the existing password will be preserved.
     example: Cisco123
   - model_name: changePassword
     data_path: [InternalUser]

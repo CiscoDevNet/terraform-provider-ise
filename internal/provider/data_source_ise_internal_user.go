@@ -77,7 +77,7 @@ func (d *InternalUserDataSource) Schema(ctx context.Context, req datasource.Sche
 				Computed:            true,
 			},
 			"password": schema.StringAttribute{
-				MarkdownDescription: "The password of the internal user",
+				MarkdownDescription: "The password of the internal user. Required when creating a new user. When managing existing (brownfield) users the password can be omitted and the existing password will be preserved.",
 				Computed:            true,
 			},
 			"change_password": schema.BoolAttribute{
