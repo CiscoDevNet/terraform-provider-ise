@@ -35,7 +35,6 @@ resource "ise_internal_user" "example" {
 ### Required
 
 - `name` (String) The name of the internal user
-- `password` (String) The password of the internal user
 
 ### Optional
 
@@ -50,6 +49,7 @@ resource "ise_internal_user" "example" {
 - `first_name` (String) First name of the internal user
 - `identity_groups` (String) Comma separated list of identity group IDs.
 - `last_name` (String) Last name of the internal user
+- `password` (String) The password of the internal user. Required when creating a new user. When managing existing (brownfield) users the password can be omitted and the existing password will be preserved.
 - `password_id_store` (String) The ID store where the internal user's password is kept
   - Default value: `Internal Users`
 - `password_never_expires` (Boolean) Set to `true` to indicate the user password never expires. This will not apply to Users who are also ISE Admins. This field is only supported from ISE 3.2.

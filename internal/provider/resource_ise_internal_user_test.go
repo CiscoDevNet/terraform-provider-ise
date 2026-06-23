@@ -21,7 +21,6 @@ package provider
 
 //template:begin imports
 import (
-	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -44,11 +43,6 @@ func TestAccIseInternalUser(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_internal_user.test", "description", "My first Terraform user"))
 
 	var steps []resource.TestStep
-	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
-		steps = append(steps, resource.TestStep{
-			Config: testAccIseInternalUserConfig_minimum(),
-		})
-	}
 	steps = append(steps, resource.TestStep{
 		Config: testAccIseInternalUserConfig_all(),
 		Check:  resource.ComposeTestCheckFunc(checks...),
@@ -74,7 +68,6 @@ func TestAccIseInternalUser(t *testing.T) {
 func testAccIseInternalUserConfig_minimum() string {
 	config := `resource "ise_internal_user" "test" {` + "\n"
 	config += `	name = "UserTF"` + "\n"
-	config += `	password = "Cisco123"` + "\n"
 	config += `}` + "\n"
 	return config
 }

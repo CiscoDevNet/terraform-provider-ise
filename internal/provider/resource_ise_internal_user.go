@@ -80,8 +80,8 @@ func (r *InternalUserResource) Schema(ctx context.Context, req resource.SchemaRe
 				Required:            true,
 			},
 			"password": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The password of the internal user").String,
-				Required:            true,
+				MarkdownDescription: helpers.NewAttributeDescription("The password of the internal user. Required when creating a new user. When managing existing (brownfield) users the password can be omitted and the existing password will be preserved.").String,
+				Optional:            true,
 			},
 			"change_password": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Requires the user to change the password").AddDefaultValueDescription("true").String,

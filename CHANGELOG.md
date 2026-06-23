@@ -1,3 +1,7 @@
+## 0.3.4 (unreleased)
+
+- Make `password` optional in the `ise_internal_user` resource to support brownfield management of existing ISE user accounts without requiring the password to be stored in configuration
+
 ## 0.3.3
 
 - Make `certificate_authentication_profile` optional in the `ise_identity_source_sequence` resource
