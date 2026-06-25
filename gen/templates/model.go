@@ -611,7 +611,11 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 	}
 	{{- else if eq .Type "Map"}}
 	if value := res.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() {
+		{{- if .FilterEmptyValues}}
+		data.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(value.Map())
+		{{- else}}
 		data.{{toGoName .TfName}} = helpers.GetStringMap(value.Map())
+		{{- end}}
 	} else {
 		data.{{toGoName .TfName}} = types.MapNull(types.StringType)
 	}
@@ -641,7 +645,11 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 			}
 			{{- else if eq .Type "Map"}}
 			if cValue := v.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cValue.Exists() {
+				{{- if .FilterEmptyValues}}
+				item.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(cValue.Map())
+				{{- else}}
 				item.{{toGoName .TfName}} = helpers.GetStringMap(cValue.Map())
+				{{- end}}
 			} else {
 				item.{{toGoName .TfName}} = types.MapNull(types.StringType)
 			}
@@ -670,7 +678,11 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 					}
 					{{- else if eq .Type "Map"}}
 					if ccValue := cv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccValue.Exists() {
+						{{- if .FilterEmptyValues}}
+						cItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(ccValue.Map())
+						{{- else}}
 						cItem.{{toGoName .TfName}} = helpers.GetStringMap(ccValue.Map())
+						{{- end}}
 					} else {
 						cItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
 					}
@@ -700,7 +712,11 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 							}
 							{{- else if eq .Type "Map"}}
 							if cccValue := ccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccValue.Exists() {
+								{{- if .FilterEmptyValues}}
+								ccItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(cccValue.Map())
+								{{- else}}
 								ccItem.{{toGoName .TfName}} = helpers.GetStringMap(cccValue.Map())
+								{{- end}}
 							} else {
 								ccItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
 							}
@@ -730,7 +746,11 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 									}
 									{{- else if eq .Type "Map"}}
 									if ccccValue := cccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccccValue.Exists() {
+										{{- if .FilterEmptyValues}}
+										cccItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(ccccValue.Map())
+										{{- else}}
 										cccItem.{{toGoName .TfName}} = helpers.GetStringMap(ccccValue.Map())
+										{{- end}}
 									} else {
 										cccItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
 									}
@@ -760,7 +780,11 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 											}
 											{{- else if eq .Type "Map"}}
 											if cccccValue := ccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccccValue.Exists() {
+												{{- if .FilterEmptyValues}}
+												ccccItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(cccccValue.Map())
+												{{- else}}
 												ccccItem.{{toGoName .TfName}} = helpers.GetStringMap(cccccValue.Map())
+												{{- end}}
 											} else {
 												ccccItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
 											}
@@ -789,7 +813,11 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 													}
 													{{- else if eq .Type "Map"}}
 													if ccccccValue := cccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccccccValue.Exists() {
+														{{- if .FilterEmptyValues}}
+														cccccItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(ccccccValue.Map())
+														{{- else}}
 														cccccItem.{{toGoName .TfName}} = helpers.GetStringMap(ccccccValue.Map())
+														{{- end}}
 													} else {
 														cccccItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
 													}
@@ -860,7 +888,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 	}
 	{{- else if eq .Type "Map"}}
 	if value := res.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{toGoName .TfName}}.IsNull() {
-		data.{{toGoName .TfName}} = helpers.GetStringMap(value.Map())
+		data.{{toGoName .TfName}} = helpers.GetStringMapFiltered(value.Map(), data.{{toGoName .TfName}})
 	} else {
 		data.{{toGoName .TfName}} = types.MapNull(types.StringType)
 	}
@@ -918,7 +946,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 		}
 		{{- else if eq .Type "Map"}}
 		if value := r.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{toGoName .TfName}}.IsNull() {
-			data.{{$list}}[i].{{toGoName .TfName}} = helpers.GetStringMap(value.Map())
+			data.{{$list}}[i].{{toGoName .TfName}} = helpers.GetStringMapFiltered(value.Map(), data.{{$list}}[i].{{toGoName .TfName}})
 		} else {
 			data.{{$list}}[i].{{toGoName .TfName}} = types.MapNull(types.StringType)
 		}
@@ -970,7 +998,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 			}
 			{{- else if eq .Type "Map"}}
 			if value := cr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}}.IsNull() {
-				data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}} = helpers.GetStringMap(value.Map())
+				data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}} = helpers.GetStringMapFiltered(value.Map(), data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}})
 			} else {
 				data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}} = types.MapNull(types.StringType)
 			}
@@ -1022,7 +1050,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 				}
 				{{- else if eq .Type "Map"}}
 				if value := ccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}}.IsNull() {
-					data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}} = helpers.GetStringMap(value.Map())
+					data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}} = helpers.GetStringMapFiltered(value.Map(), data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}})
 				} else {
 					data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}} = types.MapNull(types.StringType)
 				}
@@ -1074,7 +1102,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 					}
 					{{- else if eq .Type "Map"}}
 					if value := cccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}}.IsNull() {
-						data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}} = helpers.GetStringMap(value.Map())
+						data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}} = helpers.GetStringMapFiltered(value.Map(), data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}})
 					} else {
 						data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}} = types.MapNull(types.StringType)
 					}
@@ -1126,7 +1154,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 						}
 						{{- else if eq .Type "Map"}}
 						if value := ccccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}}.IsNull() {
-							data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}} = helpers.GetStringMap(value.Map())
+							data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}} = helpers.GetStringMapFiltered(value.Map(), data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}})
 						} else {
 							data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}} = types.MapNull(types.StringType)
 						}
@@ -1178,7 +1206,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 							}
 							{{- else if eq .Type "Map"}}
 							if value := cccccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}}.IsNull() {
-								data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}} = helpers.GetStringMap(value.Map())
+								data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}} = helpers.GetStringMapFiltered(value.Map(), data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}})
 							} else {
 								data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}} = types.MapNull(types.StringType)
 							}

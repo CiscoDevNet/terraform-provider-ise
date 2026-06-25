@@ -167,6 +167,7 @@ type YamlConfigAttribute struct {
 	MinimumTestValue string                `yaml:"minimum_test_value"`
 	TestTags         []string              `yaml:"test_tags"`
 	Attributes       []YamlConfigAttribute `yaml:"attributes"`
+	FilterEmptyValues bool                  `yaml:"filter_empty_values"`
 }
 
 // Templating helper function to convert TF name to GO name
