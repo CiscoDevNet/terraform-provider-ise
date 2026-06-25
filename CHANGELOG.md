@@ -1,4 +1,4 @@
-## 0.3.4 (unreleased)
+## 0.3.4
 
 - Fix perpetual drift in the `custom_attributes` attribute of the `ise_endpoint` resource, where ISE returns all globally-defined endpoint custom attributes (including unassigned ones as empty strings), causing Terraform to report changes on every plan
 - Make `password` optional in the `ise_internal_user` resource to support brownfield management of existing ISE user accounts without requiring the password to be stored in configuration
