@@ -40,6 +40,38 @@ func GetStringMap(result map[string]gjson.Result) types.Map {
 	return types.MapValueMust(types.StringType, v)
 }
 
+// GetStringMapNonEmpty is used for ISE map attributes where the API returns
+// globally-defined-but-unassigned keys as empty strings (e.g. endpoint custom
+// attributes), and "" semantically means unset. Empty-string entries are dropped.
+func GetStringMapNonEmpty(result map[string]gjson.Result) types.Map {
+	v := make(map[string]attr.Value)
+	for key, value := range result {
+		if value.String() != "" {
+			v[key] = types.StringValue(value.String())
+		}
+	}
+	return types.MapValueMust(types.StringType, v)
+}
+
+// GetStringMapFiltered returns only the keys already present in stateMap (with
+// live values from apiResult), suppressing server-injected keys that were never
+// declared in configuration. When stateMap is null or unknown (import), all
+// apiResult keys are accepted.
+func GetStringMapFiltered(apiResult map[string]gjson.Result, stateMap types.Map) types.Map {
+	if stateMap.IsNull() || stateMap.IsUnknown() {
+		return GetStringMap(apiResult)
+	}
+	v := make(map[string]attr.Value)
+	for key := range stateMap.Elements() {
+		if val, ok := apiResult[key]; ok {
+			v[key] = types.StringValue(val.String())
+		} else {
+			v[key] = types.StringValue("")
+		}
+	}
+	return types.MapValueMust(types.StringType, v)
+}
+
 func GetStringList(result []gjson.Result) types.List {
 	v := make([]attr.Value, len(result))
 	for r := range result {

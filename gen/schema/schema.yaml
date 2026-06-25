@@ -70,3 +70,4 @@ attribute:
   minimum_test_value: str(required=False) # Value used for "minimum" resource acceptance test
   test_tags: list(str(), required=False) # List of test tags, attribute is only included in acceptance tests if an environment variable with one of these tags is configured
   attributes: list(include('attribute'), required=False) # List of attributes, only relevant if type is "List" or "Set"
+  filter_empty_values: bool(required=False) # Set to true to drop empty-string values when reading a Map attribute from the API response (e.g. ISE endpoint custom attributes where "" means unset)
