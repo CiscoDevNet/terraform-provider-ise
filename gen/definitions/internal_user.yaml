@@ -71,6 +71,7 @@ attributes:
     data_path: [InternalUser]
     type: String
     description: Key value map
+    normalize_empty_json: true
     exclude_test: true
   - model_name: passwordIDStore
     data_path: [InternalUser]

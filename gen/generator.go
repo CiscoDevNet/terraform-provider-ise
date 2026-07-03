@@ -143,8 +143,9 @@ type YamlConfigAttribute struct {
 	Mandatory        bool                  `yaml:"mandatory"`
 	Computed         bool                  `yaml:"computed"`
 	Immutable        bool                  `yaml:"immutable"`
-	WriteOnly        bool                  `yaml:"write_only"`
-	WriteChangesOnly bool                  `yaml:"write_changes_only"`
+	WriteOnly          bool                  `yaml:"write_only"`
+	NormalizeEmptyJson bool                  `yaml:"normalize_empty_json"`
+	WriteChangesOnly   bool                  `yaml:"write_changes_only"`
 	ExcludeUpdate    bool                  `yaml:"exclude_update"`
 	ExcludeTest      bool                  `yaml:"exclude_test"`
 	RequiresReplace  bool                  `yaml:"requires_replace"`
