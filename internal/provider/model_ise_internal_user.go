@@ -159,7 +159,7 @@ func (data *InternalUser) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.IdentityGroups = types.StringNull()
 	}
-	if value := res.Get("InternalUser.customAttributes"); value.Exists() && value.Type != gjson.Null && value.Raw != "{}" {
+	if value := res.Get("InternalUser.customAttributes"); value.Exists() && value.Type != gjson.Null && !(value.Type == gjson.JSON && len(value.Map()) == 0) {
 		data.CustomAttributes = types.StringValue(value.String())
 	} else {
 		data.CustomAttributes = types.StringNull()
@@ -225,7 +225,7 @@ func (data *InternalUser) updateFromBody(ctx context.Context, res gjson.Result) 
 	} else {
 		data.IdentityGroups = types.StringNull()
 	}
-	if value := res.Get("InternalUser.customAttributes"); value.Exists() && !data.CustomAttributes.IsNull() && value.Raw != "{}" {
+	if value := res.Get("InternalUser.customAttributes"); value.Exists() && !data.CustomAttributes.IsNull() && !(value.Type == gjson.JSON && len(value.Map()) == 0) {
 		data.CustomAttributes = types.StringValue(value.String())
 	} else {
 		data.CustomAttributes = types.StringNull()
