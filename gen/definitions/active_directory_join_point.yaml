@@ -160,7 +160,7 @@ attributes:
     data_path: [ERSActiveDirectory, advancedSettings]
     type: Int64
     requires_replace: true
-    default_value: 5
+    computed: true
     description: Aging Time
     example: 5
   - model_name: enableCallbackForDialinClient

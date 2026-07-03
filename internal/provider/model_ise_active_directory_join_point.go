@@ -378,7 +378,7 @@ func (data *ActiveDirectoryJoinPoint) fromBody(ctx context.Context, res gjson.Re
 	if value := res.Get("ERSActiveDirectory.advancedSettings.agingTime"); value.Exists() && value.Type != gjson.Null {
 		data.AgingTime = types.Int64Value(value.Int())
 	} else {
-		data.AgingTime = types.Int64Value(5)
+		data.AgingTime = types.Int64Null()
 	}
 	if value := res.Get("ERSActiveDirectory.advancedSettings.enableCallbackForDialinClient"); value.Exists() && value.Type != gjson.Null {
 		data.EnableCallbackForDialinClient = types.BoolValue(value.Bool())
@@ -668,7 +668,7 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 	}
 	if value := res.Get("ERSActiveDirectory.advancedSettings.agingTime"); value.Exists() && !data.AgingTime.IsNull() {
 		data.AgingTime = types.Int64Value(value.Int())
-	} else if data.AgingTime.ValueInt64() != 5 {
+	} else {
 		data.AgingTime = types.Int64Null()
 	}
 	if value := res.Get("ERSActiveDirectory.advancedSettings.enableCallbackForDialinClient"); value.Exists() && !data.EnableCallbackForDialinClient.IsNull() {

@@ -270,12 +270,12 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 				},
 			},
 			"aging_time": schema.Int64Attribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Aging Time").AddDefaultValueDescription("5").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Aging Time").String,
 				Optional:            true,
 				Computed:            true,
-				Default:             int64default.StaticInt64(5),
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.RequiresReplace(),
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"enable_callback_for_dialin_client": schema.BoolAttribute{
