@@ -87,8 +87,10 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 			"description": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Join point description").String,
 				Optional:            true,
+				Computed:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
+					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"domain": schema.StringAttribute{

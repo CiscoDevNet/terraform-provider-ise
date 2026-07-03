@@ -85,6 +85,10 @@ func (r *AuthorizationProfileResource) Schema(ctx context.Context, req resource.
 			"description": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Description").String,
 				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"vlan_name_id": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Vlan name or ID").String,
@@ -107,6 +111,10 @@ func (r *AuthorizationProfileResource) Schema(ctx context.Context, req resource.
 			"web_redirection_acl": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Web redirection ACL").String,
 				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"web_redirection_portal_name": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("A portal that exist in the DB and fits the `web_redirection_type`").String,
