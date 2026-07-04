@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
@@ -178,7 +179,7 @@ func (data *ActiveDirectoryGroupsByDomain) updateFromBody(ctx context.Context, r
 		for _, v := range parentItems {
 			found := false
 			for ik := range keys {
-				if v.Get(keys[ik]).String() == keyValues[ik] {
+				if helpers.NormalizeOperator(v.Get(keys[ik]).String()) == helpers.NormalizeOperator(keyValues[ik]) {
 					found = true
 					continue
 				}

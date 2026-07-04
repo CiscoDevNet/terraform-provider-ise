@@ -170,7 +170,7 @@ func (data *Endpoint) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.description"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.description"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
@@ -211,21 +211,21 @@ func (data *Endpoint) fromBody(ctx context.Context, res gjson.Result) {
 		data.StaticGroupAssignmentDefined = types.BoolValue(true)
 	}
 	if value := res.Get("ERSEndPoint.customAttributes.customAttributes"); value.Exists() {
-		data.CustomAttributes = helpers.GetStringMapNonEmpty(value.Map())
+		data.CustomAttributes = helpers.GetStringMapNonEmptyOrNull(value.Map())
 	} else {
 		data.CustomAttributes = types.MapNull(types.StringType)
 	}
-	if value := res.Get("ERSEndPoint.identityStore"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.identityStore"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.IdentityStore = types.StringValue(value.String())
 	} else {
 		data.IdentityStore = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.identityStoreId"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.identityStoreId"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.IdentityStoreId = types.StringValue(value.String())
 	} else {
 		data.IdentityStoreId = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.portalUser"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.portalUser"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.PortalUser = types.StringValue(value.String())
 	} else {
 		data.PortalUser = types.StringNull()
@@ -306,7 +306,7 @@ func (data *Endpoint) updateFromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.description"); value.Exists() && !data.Description.IsNull() {
+	if value := res.Get("ERSEndPoint.description"); value.Exists() && !data.Description.IsNull() && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
@@ -351,17 +351,17 @@ func (data *Endpoint) updateFromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.CustomAttributes = types.MapNull(types.StringType)
 	}
-	if value := res.Get("ERSEndPoint.identityStore"); value.Exists() && !data.IdentityStore.IsNull() {
+	if value := res.Get("ERSEndPoint.identityStore"); value.Exists() && !data.IdentityStore.IsNull() && value.String() != "" {
 		data.IdentityStore = types.StringValue(value.String())
 	} else {
 		data.IdentityStore = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.identityStoreId"); value.Exists() && !data.IdentityStoreId.IsNull() {
+	if value := res.Get("ERSEndPoint.identityStoreId"); value.Exists() && !data.IdentityStoreId.IsNull() && value.String() != "" {
 		data.IdentityStoreId = types.StringValue(value.String())
 	} else {
 		data.IdentityStoreId = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.portalUser"); value.Exists() && !data.PortalUser.IsNull() {
+	if value := res.Get("ERSEndPoint.portalUser"); value.Exists() && !data.PortalUser.IsNull() && value.String() != "" {
 		data.PortalUser = types.StringValue(value.String())
 	} else {
 		data.PortalUser = types.StringNull()

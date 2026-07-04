@@ -47,6 +47,9 @@ attribute:
   mandatory: bool(required=False) # Set to true if the attribute is mandatory
   computed: bool(required=False) # Set to true if the attribute is computed
   write_only: bool(required=False) # Set to true if the attribute is write-only, meaning we cannot read the value
+  normalize_empty_json: bool(required=False) # Set to true to normalize an empty JSON object ({} or "{}") returned by the API to null, preventing drift when the config omits the attribute
+  normalize_empty_string: bool(required=False) # Set to true to normalize an empty string ("") returned by the API to null, preventing drift when the config omits the attribute
+  normalize_operator: bool(required=False) # Set to true to normalize IP-specific operator aliases (ipEquals -> equals, etc.) for stable key matching
   write_changes_only: bool(required=False) # Set to true if the attribute should only be written (included in PUT payload) if it has changed
   exclude_test: bool(required=False) # Exclude attribute from example (documentation) and acceptance test
   exclude_example: bool(required=False) # Exclude attribute from acceptance test only (example/documentation is still generated)

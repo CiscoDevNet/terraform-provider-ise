@@ -24,6 +24,7 @@ import (
 	"context"
 	"strconv"
 
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
@@ -783,7 +784,7 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 		for _, v := range parentItems {
 			found := false
 			for ik := range keys {
-				if v.Get(keys[ik]).String() == keyValues[ik] {
+				if helpers.NormalizeOperator(v.Get(keys[ik]).String()) == helpers.NormalizeOperator(keyValues[ik]) {
 					found = true
 					continue
 				}
@@ -862,7 +863,7 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 			for _, v := range childItems {
 				found := false
 				for ik := range keys {
-					if v.Get(keys[ik]).String() == keyValues[ik] {
+					if helpers.NormalizeOperator(v.Get(keys[ik]).String()) == helpers.NormalizeOperator(keyValues[ik]) {
 						found = true
 						continue
 					}
@@ -941,7 +942,7 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 				for _, v := range cciItems {
 					found := false
 					for ik := range keys {
-						if v.Get(keys[ik]).String() == keyValues[ik] {
+						if helpers.NormalizeOperator(v.Get(keys[ik]).String()) == helpers.NormalizeOperator(keyValues[ik]) {
 							found = true
 							continue
 						}
@@ -1010,7 +1011,7 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 					for _, v := range ccciItems {
 						found := false
 						for ik := range keys {
-							if v.Get(keys[ik]).String() == keyValues[ik] {
+							if helpers.NormalizeOperator(v.Get(keys[ik]).String()) == helpers.NormalizeOperator(keyValues[ik]) {
 								found = true
 								continue
 							}
@@ -1079,7 +1080,7 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 						for _, v := range cccciItems {
 							found := false
 							for ik := range keys {
-								if v.Get(keys[ik]).String() == keyValues[ik] {
+								if helpers.NormalizeOperator(v.Get(keys[ik]).String()) == helpers.NormalizeOperator(keyValues[ik]) {
 									found = true
 									continue
 								}
@@ -1148,7 +1149,7 @@ func (data *NetworkAccessCondition) updateFromBody(ctx context.Context, res gjso
 							for _, v := range ccccciItems {
 								found := false
 								for ik := range keys {
-									if v.Get(keys[ik]).String() == keyValues[ik] {
+									if helpers.NormalizeOperator(v.Get(keys[ik]).String()) == helpers.NormalizeOperator(keyValues[ik]) {
 										found = true
 										continue
 									}

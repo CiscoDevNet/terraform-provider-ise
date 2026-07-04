@@ -26,6 +26,7 @@ import (
 	"net/url"
 	"strconv"
 
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
@@ -484,7 +485,7 @@ func (data *NetworkAccessAuthenticationRule) fromBody(ctx context.Context, res g
 				item.DictionaryValue = types.StringNull()
 			}
 			if cValue := v.Get("operator"); cValue.Exists() && cValue.Type != gjson.Null {
-				item.Operator = types.StringValue(cValue.String())
+				item.Operator = types.StringValue(helpers.NormalizeOperator(cValue.String()))
 			} else {
 				item.Operator = types.StringNull()
 			}
@@ -828,7 +829,7 @@ func (data *NetworkAccessAuthenticationRule) updateFromBody(ctx context.Context,
 		for _, v := range parentItems {
 			found := false
 			for ik := range keys {
-				if v.Get(keys[ik]).String() == keyValues[ik] {
+				if helpers.NormalizeOperator(v.Get(keys[ik]).String()) == helpers.NormalizeOperator(keyValues[ik]) {
 					found = true
 					continue
 				}
@@ -883,7 +884,7 @@ func (data *NetworkAccessAuthenticationRule) updateFromBody(ctx context.Context,
 			data.Children[i].DictionaryValue = types.StringNull()
 		}
 		if value := r.Get("operator"); value.Exists() && !data.Children[i].Operator.IsNull() {
-			data.Children[i].Operator = types.StringValue(value.String())
+			data.Children[i].Operator = types.StringValue(helpers.NormalizeOperator(value.String()))
 		} else {
 			data.Children[i].Operator = types.StringNull()
 		}
@@ -897,7 +898,7 @@ func (data *NetworkAccessAuthenticationRule) updateFromBody(ctx context.Context,
 			for _, v := range childItems {
 				found := false
 				for ik := range keys {
-					if v.Get(keys[ik]).String() == keyValues[ik] {
+					if helpers.NormalizeOperator(v.Get(keys[ik]).String()) == helpers.NormalizeOperator(keyValues[ik]) {
 						found = true
 						continue
 					}
@@ -952,7 +953,7 @@ func (data *NetworkAccessAuthenticationRule) updateFromBody(ctx context.Context,
 				data.Children[i].Children[ci].DictionaryValue = types.StringNull()
 			}
 			if value := cr.Get("operator"); value.Exists() && !data.Children[i].Children[ci].Operator.IsNull() {
-				data.Children[i].Children[ci].Operator = types.StringValue(value.String())
+				data.Children[i].Children[ci].Operator = types.StringValue(helpers.NormalizeOperator(value.String()))
 			} else {
 				data.Children[i].Children[ci].Operator = types.StringNull()
 			}
@@ -966,7 +967,7 @@ func (data *NetworkAccessAuthenticationRule) updateFromBody(ctx context.Context,
 				for _, v := range cciItems {
 					found := false
 					for ik := range keys {
-						if v.Get(keys[ik]).String() == keyValues[ik] {
+						if helpers.NormalizeOperator(v.Get(keys[ik]).String()) == helpers.NormalizeOperator(keyValues[ik]) {
 							found = true
 							continue
 						}
@@ -1021,7 +1022,7 @@ func (data *NetworkAccessAuthenticationRule) updateFromBody(ctx context.Context,
 					data.Children[i].Children[ci].Children[cci].DictionaryValue = types.StringNull()
 				}
 				if value := ccr.Get("operator"); value.Exists() && !data.Children[i].Children[ci].Children[cci].Operator.IsNull() {
-					data.Children[i].Children[ci].Children[cci].Operator = types.StringValue(value.String())
+					data.Children[i].Children[ci].Children[cci].Operator = types.StringValue(helpers.NormalizeOperator(value.String()))
 				} else {
 					data.Children[i].Children[ci].Children[cci].Operator = types.StringNull()
 				}
@@ -1035,7 +1036,7 @@ func (data *NetworkAccessAuthenticationRule) updateFromBody(ctx context.Context,
 					for _, v := range ccciItems {
 						found := false
 						for ik := range keys {
-							if v.Get(keys[ik]).String() == keyValues[ik] {
+							if helpers.NormalizeOperator(v.Get(keys[ik]).String()) == helpers.NormalizeOperator(keyValues[ik]) {
 								found = true
 								continue
 							}
@@ -1090,7 +1091,7 @@ func (data *NetworkAccessAuthenticationRule) updateFromBody(ctx context.Context,
 						data.Children[i].Children[ci].Children[cci].Children[ccci].DictionaryValue = types.StringNull()
 					}
 					if value := cccr.Get("operator"); value.Exists() && !data.Children[i].Children[ci].Children[cci].Children[ccci].Operator.IsNull() {
-						data.Children[i].Children[ci].Children[cci].Children[ccci].Operator = types.StringValue(value.String())
+						data.Children[i].Children[ci].Children[cci].Children[ccci].Operator = types.StringValue(helpers.NormalizeOperator(value.String()))
 					} else {
 						data.Children[i].Children[ci].Children[cci].Children[ccci].Operator = types.StringNull()
 					}
@@ -1104,7 +1105,7 @@ func (data *NetworkAccessAuthenticationRule) updateFromBody(ctx context.Context,
 						for _, v := range cccciItems {
 							found := false
 							for ik := range keys {
-								if v.Get(keys[ik]).String() == keyValues[ik] {
+								if helpers.NormalizeOperator(v.Get(keys[ik]).String()) == helpers.NormalizeOperator(keyValues[ik]) {
 									found = true
 									continue
 								}
@@ -1159,7 +1160,7 @@ func (data *NetworkAccessAuthenticationRule) updateFromBody(ctx context.Context,
 							data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].DictionaryValue = types.StringNull()
 						}
 						if value := ccccr.Get("operator"); value.Exists() && !data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator.IsNull() {
-							data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator = types.StringValue(value.String())
+							data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator = types.StringValue(helpers.NormalizeOperator(value.String()))
 						} else {
 							data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator = types.StringNull()
 						}
@@ -1173,7 +1174,7 @@ func (data *NetworkAccessAuthenticationRule) updateFromBody(ctx context.Context,
 							for _, v := range ccccciItems {
 								found := false
 								for ik := range keys {
-									if v.Get(keys[ik]).String() == keyValues[ik] {
+									if helpers.NormalizeOperator(v.Get(keys[ik]).String()) == helpers.NormalizeOperator(keyValues[ik]) {
 										found = true
 										continue
 									}
@@ -1228,7 +1229,7 @@ func (data *NetworkAccessAuthenticationRule) updateFromBody(ctx context.Context,
 								data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].DictionaryValue = types.StringNull()
 							}
 							if value := cccccr.Get("operator"); value.Exists() && !data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Operator.IsNull() {
-								data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Operator = types.StringValue(value.String())
+								data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Operator = types.StringValue(helpers.NormalizeOperator(value.String()))
 							} else {
 								data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Operator = types.StringNull()
 							}

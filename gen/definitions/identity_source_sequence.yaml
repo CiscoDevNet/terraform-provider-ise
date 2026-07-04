@@ -14,6 +14,7 @@ attributes:
     data_path: [IdStoreSequence]
     type: String
     description: Description
+    normalize_empty_string: true
     example: My identity source sequence
   - model_name: breakOnStoreFail
     data_path: [IdStoreSequence]
