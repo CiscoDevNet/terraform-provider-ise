@@ -144,6 +144,7 @@ type YamlConfigAttribute struct {
 	Computed         bool                  `yaml:"computed"`
 	Immutable        bool                  `yaml:"immutable"`
 	WriteOnly        bool                  `yaml:"write_only"`
+	ComputedOnly      bool                  `yaml:"computed_only"`
 	WriteChangesOnly bool                  `yaml:"write_changes_only"`
 	ExcludeUpdate    bool                  `yaml:"exclude_update"`
 	ExcludeTest      bool                  `yaml:"exclude_test"`
