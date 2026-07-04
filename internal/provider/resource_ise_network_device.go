@@ -32,6 +32,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -93,6 +94,10 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 			"authentication_enable_key_wrap": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Enable key wrap").String,
 				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"authentication_encryption_key": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Encryption key").String,
@@ -105,8 +110,12 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 			"authentication_encryption_key_format": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Key input format").AddStringEnumDescription("ASCII", "HEXADECIMAL").String,
 				Optional:            true,
+				Computed:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("ASCII", "HEXADECIMAL"),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"authentication_message_authenticator_code_key": schema.StringAttribute{
@@ -131,6 +140,10 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 			"authentication_enable_multi_secret": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Enable multiple RADIUS shared secrets").String,
 				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"authentication_second_radius_shared_secret": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Second RADIUS shared secret").String,
@@ -139,6 +152,10 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 			"authentication_dtls_required": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Enforce use of DTLS").String,
 				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"coa_port": schema.Int64Attribute{
 				MarkdownDescription: helpers.NewAttributeDescription("CoA port").AddDefaultValueDescription("1700").String,
