@@ -89,6 +89,10 @@ func (r *EndpointResource) Schema(ctx context.Context, req resource.SchemaReques
 			"group_id": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Identity Group ID").String,
 				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"profile_id": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Profile ID").String,

@@ -612,7 +612,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 	{{- else if eq .Type "Map"}}
 	if value := res.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() {
 		{{- if .FilterEmptyValues}}
-		data.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(value.Map())
+		data.{{toGoName .TfName}} = helpers.GetStringMapFiltered(value.Map(), data.{{toGoName .TfName}})
 		{{- else}}
 		data.{{toGoName .TfName}} = helpers.GetStringMap(value.Map())
 		{{- end}}

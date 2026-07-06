@@ -1,3 +1,8 @@
+## 0.3.5 (unreleased)
+
+- Fix brownfield import drift on `ise_endpoint.custom_attributes` by using `GetStringMapFiltered` in import read (`fromBody`) when `filter_empty_values` is set, matching `updateFromBody` behavior
+- Mark `group_id` as computed on `ise_endpoint` so imported group membership is preserved when omitted from config with `static_group_assignment = false`
+
 ## 0.3.4
 
 - Fix perpetual drift in the `custom_attributes` attribute of the `ise_endpoint` resource, where ISE returns all globally-defined endpoint custom attributes (including unassigned ones as empty strings), causing Terraform to report changes on every plan

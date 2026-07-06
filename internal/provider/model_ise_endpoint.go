@@ -211,7 +211,7 @@ func (data *Endpoint) fromBody(ctx context.Context, res gjson.Result) {
 		data.StaticGroupAssignmentDefined = types.BoolValue(true)
 	}
 	if value := res.Get("ERSEndPoint.customAttributes.customAttributes"); value.Exists() {
-		data.CustomAttributes = helpers.GetStringMapNonEmpty(value.Map())
+		data.CustomAttributes = helpers.GetStringMapFiltered(value.Map(), data.CustomAttributes)
 	} else {
 		data.CustomAttributes = types.MapNull(types.StringType)
 	}

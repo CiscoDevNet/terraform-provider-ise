@@ -26,6 +26,7 @@ attributes:
     data_path: [ERSEndPoint]
     type: String
     description: Identity Group ID
+    computed: true
     example: 3a88eec0-8c00-11e6-996c-525400b48521
     test_value: ise_endpoint_identity_group.test.id
   - model_name: profileId
