@@ -204,6 +204,24 @@ func (r *EndpointResource) Configure(_ context.Context, req resource.ConfigureRe
 
 //template:end configure
 
+func (r *EndpointResource) refreshPlanFromAPI(ctx context.Context, plan *Endpoint, resp *resource.CreateResponse) bool {
+	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object after create (GET), got error: %s, %s", err, res.String()))
+		return false
+	}
+	if plan.GroupId.IsUnknown() {
+		if value := res.Get("ERSEndPoint.groupId"); value.Exists() {
+			plan.GroupId = types.StringValue(value.String())
+		} else {
+			plan.GroupId = types.StringNull()
+		}
+	} else {
+		plan.updateFromBody(ctx, res)
+	}
+	return true
+}
+
 func (r *EndpointResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan Endpoint
 
@@ -225,6 +243,10 @@ func (r *EndpointResource) Create(ctx context.Context, req resource.CreateReques
 
 		tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
+		if !r.refreshPlanFromAPI(ctx, &plan, resp) {
+			return
+		}
+
 		diags = resp.State.Set(ctx, &plan)
 		resp.Diagnostics.Append(diags...)
 		return
@@ -245,6 +267,10 @@ func (r *EndpointResource) Create(ctx context.Context, req resource.CreateReques
 		}
 
 		tflog.Debug(ctx, fmt.Sprintf("%s: Update finished successfully", plan.Id.ValueString()))
+
+		if !r.refreshPlanFromAPI(ctx, &plan, resp) {
+			return
+		}
 
 		diags = resp.State.Set(ctx, &plan)
 		resp.Diagnostics.Append(diags...)
