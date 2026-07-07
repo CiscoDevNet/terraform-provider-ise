@@ -111,14 +111,14 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 				{{- else if eq .Type "Map"}}
 				ElementType:         types.StringType,
 				{{- end}}
-				{{- if or .Reference .Mandatory}}
-				Required:            true,
-				{{- else if not .ComputedOnly}}
-				Optional:            true,
-				{{- end}}
-				{{- if or .DefaultValue .Computed .ComputedOnly}}
-				Computed:            true,
-				{{- end}}
+			{{- if or .Reference .Mandatory}}
+			Required:            true,
+			{{- else}}
+			Optional:            true,
+			{{- end}}
+			{{- if or .DefaultValue .Computed}}
+			Computed:            true,
+			{{- end}}
 				{{- if len .EnumValues}}
 				Validators: []validator.String{
 					stringvalidator.OneOf({{range .EnumValues}}"{{.}}", {{end}}),
@@ -148,15 +148,15 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 				{{- else if and .DefaultValue (eq .Type "String")}}
 				Default:             stringdefault.StaticString("{{.DefaultValue}}"),
 				{{- end}}
-				{{- if or .Id .Reference .RequiresReplace .Computed .ComputedOnly}}
-				PlanModifiers: []planmodifier.{{.Type}}{
-					{{- if or .Id .Reference .RequiresReplace}}
-					{{snakeCase .Type}}planmodifier.RequiresReplace(),
-					{{- end}}
-					{{- if or .Computed .ComputedOnly}}
-					{{snakeCase .Type}}planmodifier.UseStateForUnknown(),
-					{{- end}}
-				},
+			{{- if or .Id .Reference .RequiresReplace .Computed}}
+			PlanModifiers: []planmodifier.{{.Type}}{
+				{{- if or .Id .Reference .RequiresReplace}}
+				{{snakeCase .Type}}planmodifier.RequiresReplace(),
+				{{- end}}
+				{{- if .Computed}}
+				{{snakeCase .Type}}planmodifier.UseStateForUnknown(),
+				{{- end}}
+			},
 				{{- end}}
 				{{- if isNestedListSet .}}
 				NestedObject: schema.NestedAttributeObject{
