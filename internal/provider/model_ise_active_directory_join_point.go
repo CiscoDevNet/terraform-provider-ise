@@ -317,7 +317,7 @@ func (data *ActiveDirectoryJoinPoint) fromBody(ctx context.Context, res gjson.Re
 			if cValue := v.Get("defaultValue"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.DefaultValue = types.StringValue(cValue.String())
 			} else {
-				item.DefaultValue = types.StringNull()
+				item.DefaultValue = types.StringValue("")
 			}
 			data.Attributes = append(data.Attributes, item)
 			return true
@@ -589,7 +589,7 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 		if value := r.Get("defaultValue"); value.Exists() && !data.Attributes[i].DefaultValue.IsNull() {
 			data.Attributes[i].DefaultValue = types.StringValue(value.String())
 		} else {
-			data.Attributes[i].DefaultValue = types.StringNull()
+			data.Attributes[i].DefaultValue = types.StringValue("")
 		}
 	}
 	for i := range data.RewriteRules {

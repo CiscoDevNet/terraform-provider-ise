@@ -146,6 +146,7 @@ type YamlConfigAttribute struct {
 	WriteOnly        bool                  `yaml:"write_only"`
 	NormalizeEmptyJson   bool                  `yaml:"normalize_empty_json"`
 	NormalizeEmptyString bool                  `yaml:"normalize_empty_string"`
+	PreserveEmptyString  bool                  `yaml:"preserve_empty_string"`
 	NormalizeOperator    bool                  `yaml:"normalize_operator"`
 	WriteChangesOnly bool                  `yaml:"write_changes_only"`
 	ExcludeUpdate    bool                  `yaml:"exclude_update"`

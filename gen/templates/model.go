@@ -633,6 +633,8 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 			} else {
 				{{- if .DefaultValue}}
 				item.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
+				{{- else if and (eq .Type "String") .PreserveEmptyString}}
+				item.{{toGoName .TfName}} = types.StringValue("")
 				{{- else}}
 				item.{{toGoName .TfName}} = types.{{.Type}}Null()
 				{{- end}}
@@ -663,13 +665,15 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 					{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 					if ccValue := cv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.{{toGoName .TfName}} = types.{{.Type}}Value(ccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
-					} else {
-						{{- if .DefaultValue}}
-						cItem.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
-						{{- else}}
-						cItem.{{toGoName .TfName}} = types.{{.Type}}Null()
-						{{- end}}
-					}
+						} else {
+							{{- if .DefaultValue}}
+							cItem.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
+							{{- else if and (eq .Type "String") .PreserveEmptyString}}
+							cItem.{{toGoName .TfName}} = types.StringValue("")
+							{{- else}}
+							cItem.{{toGoName .TfName}} = types.{{.Type}}Null()
+							{{- end}}
+						}
 					{{- else if isListSet .}}
 					if ccValue := cv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccValue.Exists() {
 						cItem.{{toGoName .TfName}} = helpers.Get{{.ElementType}}{{.Type}}(ccValue.Array())
@@ -700,6 +704,8 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 							} else {
 								{{- if .DefaultValue}}
 								ccItem.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
+								{{- else if and (eq .Type "String") .PreserveEmptyString}}
+								ccItem.{{toGoName .TfName}} = types.StringValue("")
 								{{- else}}
 								ccItem.{{toGoName .TfName}} = types.{{.Type}}Null()
 								{{- end}}
@@ -734,6 +740,8 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 									} else {
 										{{- if .DefaultValue}}
 										cccItem.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
+										{{- else if and (eq .Type "String") .PreserveEmptyString}}
+										cccItem.{{toGoName .TfName}} = types.StringValue("")
 										{{- else}}
 										cccItem.{{toGoName .TfName}} = types.{{.Type}}Null()
 										{{- end}}
@@ -936,7 +944,11 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 		if value := r.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{toGoName .TfName}}.IsNull() {
 			data.{{$list}}[i].{{toGoName .TfName}} = types.{{.Type}}Value({{if and (eq .Type "String") .NormalizeOperator}}helpers.NormalizeOperator(value.String()){{else}}value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}(){{end}})
 		} else {{if .DefaultValue}}if data.{{$list}}[i].{{toGoName .TfName}}.Value{{.Type}}() != {{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}} {{end}}{
+			{{- if and (eq .Type "String") .PreserveEmptyString}}
+			data.{{$list}}[i].{{toGoName .TfName}} = types.StringValue("")
+			{{- else}}
 			data.{{$list}}[i].{{toGoName .TfName}} = types.{{.Type}}Null()
+			{{- end}}
 		}
 		{{- else if isListSet .}}
 		if value := r.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{toGoName .TfName}}.IsNull() {
@@ -1250,6 +1262,8 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 			} else {
 				{{- if .DefaultValue}}
 				item.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
+				{{- else if and (eq .Type "String") .PreserveEmptyString}}
+				item.{{toGoName .TfName}} = types.StringValue("")
 				{{- else}}
 				item.{{toGoName .TfName}} = types.{{.Type}}Null()
 				{{- end}}
@@ -1276,13 +1290,15 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 					{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 					if ccValue := cv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.{{toGoName .TfName}} = types.{{.Type}}Value(ccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
-					} else {
-						{{- if .DefaultValue}}
-						cItem.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
-						{{- else}}
-						cItem.{{toGoName .TfName}} = types.{{.Type}}Null()
-						{{- end}}
-					}
+						} else {
+							{{- if .DefaultValue}}
+							cItem.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
+							{{- else if and (eq .Type "String") .PreserveEmptyString}}
+							cItem.{{toGoName .TfName}} = types.StringValue("")
+							{{- else}}
+							cItem.{{toGoName .TfName}} = types.{{.Type}}Null()
+							{{- end}}
+						}
 					{{- else if isListSet .}}
 					if ccValue := cv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccValue.Exists() {
 						cItem.{{toGoName .TfName}} = helpers.Get{{.ElementType}}{{.Type}}(ccValue.Array())
@@ -1308,6 +1324,8 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 							} else {
 								{{- if .DefaultValue}}
 								ccItem.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
+								{{- else if and (eq .Type "String") .PreserveEmptyString}}
+								ccItem.{{toGoName .TfName}} = types.StringValue("")
 								{{- else}}
 								ccItem.{{toGoName .TfName}} = types.{{.Type}}Null()
 								{{- end}}
