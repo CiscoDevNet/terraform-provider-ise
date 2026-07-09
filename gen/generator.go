@@ -142,6 +142,7 @@ type YamlConfigAttribute struct {
 	ResponseDataPath string                `yaml:"response_data_path"`
 	Mandatory        bool                  `yaml:"mandatory"`
 	Computed         bool                  `yaml:"computed"`
+	ComputedWhen     string                `yaml:"computed_when"`
 	Immutable        bool                  `yaml:"immutable"`
 	WriteOnly        bool                  `yaml:"write_only"`
 	WriteChangesOnly bool                  `yaml:"write_changes_only"`
@@ -241,6 +242,24 @@ func HasId(attributes []YamlConfigAttribute) bool {
 		}
 	}
 	return false
+}
+
+// ComputedWhenAttr returns the sibling attribute name from a computed_when
+// expression of the form "<attr>=<bool>" (e.g. "static_profile_assignment=false"
+// -> "static_profile_assignment").
+func ComputedWhenAttr(expr string) string {
+	parts := strings.SplitN(expr, "=", 2)
+	return strings.TrimSpace(parts[0])
+}
+
+// ComputedWhenValue returns the boolean literal ("true"/"false") from a
+// computed_when expression. Defaults to "false" if omitted.
+func ComputedWhenValue(expr string) string {
+	parts := strings.SplitN(expr, "=", 2)
+	if len(parts) < 2 || strings.TrimSpace(parts[1]) == "" {
+		return "false"
+	}
+	return strings.TrimSpace(parts[1])
 }
 
 // Templating helper function to return true if reference included in attributes
@@ -371,6 +390,8 @@ var functions = template.FuncMap{
 	"path":                   BuildPath,
 	"hasId":                  HasId,
 	"getId":                  GetId,
+	"computedWhenAttr":       ComputedWhenAttr,
+	"computedWhenValue":      ComputedWhenValue,
 	"hasReference":           HasReference,
 	"importParts":            ImportParts,
 	"subtract":               Subtract,
