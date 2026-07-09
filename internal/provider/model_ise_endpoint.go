@@ -438,12 +438,6 @@ func (data *Endpoint) updateFromBody(ctx context.Context, res gjson.Result) {
 // fromBodyUnknowns updates the Unknown Computed tfstate values from a JSON.
 // Known values are not changed (usual for Computed attributes with UseStateForUnknown or with Default).
 //
-// fromBodyUnknowns updates the Unknown Computed tfstate values from a JSON.
-// Known values are not changed (usual for Computed attributes with UseStateForUnknown or with Default).
-//
-// fromBodyUnknowns updates the Unknown Computed tfstate values from a JSON.
-// Known values are not changed (usual for Computed attributes with UseStateForUnknown or with Default).
-//
 //template:begin fromBodyUnknowns
 func (data *Endpoint) fromBodyUnknowns(ctx context.Context, res gjson.Result) {
 	if data.ProfileId.IsUnknown() {
