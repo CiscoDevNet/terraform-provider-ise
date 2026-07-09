@@ -851,6 +851,15 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	locationElements := strings.Split(location, "/")
 	plan.Id = types.StringValue(locationElements[len(locationElements)-1])
 	{{- end}}
+	{{- if hasComputedField .Attributes}}
+	// Fetch computed fields from API after CREATE
+	res, err = r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object after create (GET), got error: %s, %s", err, res.String()))
+		return
+	}
+	plan.fromBodyUnknowns(ctx, res)
+	{{- end}}
 	{{- if .UpdateDefault}}
 	} else {
 		res, err := r.client.Get(plan.getPath())

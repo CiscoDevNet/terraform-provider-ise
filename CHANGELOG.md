@@ -1,3 +1,7 @@
+## 0.3.5 (Unreleased)
+
+- Fix "unknown value after apply" error for `profile_id` in `ise_endpoint` resource during CREATE operations by implementing template-based computed field resolution pattern following Catalyst Center provider conventions
+
 ## 0.3.4
 
 - Fix perpetual drift in the `custom_attributes` attribute of the `ise_endpoint` resource, where ISE returns all globally-defined endpoint custom attributes (including unassigned ones as empty strings), causing Terraform to report changes on every plan

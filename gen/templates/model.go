@@ -1351,6 +1351,42 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 }
 //template:end updateFromBody
 
+//template:begin fromBodyUnknowns
+// fromBodyUnknowns updates the Unknown Computed tfstate values from a JSON.
+// Known values are not changed (usual for Computed attributes with UseStateForUnknown or with Default).
+func (data *{{camelCase .Name}}) fromBodyUnknowns(ctx context.Context, res gjson.Result) {
+	{{- range .Attributes}}
+	{{- if and (not .Value) (not .WriteOnly) (not .Reference) .Computed}}
+	{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
+	if data.{{toGoName .TfName}}.IsUnknown() {
+		if value := res.Get("{{if .ResponseDataPath}}{{.ResponseDataPath}}{{else}}{{if $openApi}}response.{{end}}{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}{{end}}"); value.Exists() {
+			data.{{toGoName .TfName}} = types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
+		} else {
+			data.{{toGoName .TfName}} = types.{{.Type}}Null()
+		}
+	}
+	{{- else if isListSet .}}
+	if data.{{toGoName .TfName}}.IsUnknown() {
+		if value := res.Get("{{if .ResponseDataPath}}{{.ResponseDataPath}}{{else}}{{if $openApi}}response.{{end}}{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}{{end}}"); value.Exists() {
+			data.{{toGoName .TfName}} = helpers.Get{{.ElementType}}{{.Type}}(value.Array())
+		} else {
+			data.{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
+		}
+	}
+	{{- else if eq .Type "Map"}}
+	if data.{{toGoName .TfName}}.IsUnknown() {
+		if value := res.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() {
+			data.{{toGoName .TfName}} = helpers.GetStringMap(value.Map())
+		} else {
+			data.{{toGoName .TfName}} = types.MapNull(types.StringType)
+		}
+	}
+	{{- end}}
+	{{- end}}
+	{{- end}}
+}
+//template:end fromBodyUnknowns
+
 //template:begin isNull
 func (data *{{camelCase .Name}}) isNull(ctx context.Context, res gjson.Result) bool {
 	{{- range .Attributes}}

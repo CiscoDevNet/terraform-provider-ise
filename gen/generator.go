@@ -360,6 +360,16 @@ func HasAttribute(attributes []YamlConfigAttribute, attrName string) bool {
 }
 
 // Map of templating functions
+// HasComputedField returns true if any attribute in the list has Computed: true
+func HasComputedField(attributes []YamlConfigAttribute) bool {
+	for _, attr := range attributes {
+		if attr.Computed {
+			return true
+		}
+	}
+	return false
+}
+
 var functions = template.FuncMap{
 	"toGoName":               ToGoName,
 	"camelCase":              CamelCase,
@@ -385,6 +395,7 @@ var functions = template.FuncMap{
 	"isNestedList":           IsNestedList,
 	"isNestedSet":            IsNestedSet,
 	"hasAttribute":           HasAttribute,
+	"hasComputedField":       HasComputedField,
 }
 
 func augmentAttribute(attr *YamlConfigAttribute) {
