@@ -95,7 +95,7 @@ func (r *EndpointResource) Schema(ctx context.Context, req resource.SchemaReques
 				Optional:            true,
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{
-					helpers.AdoptStateWhenSiblingBoolEquals("static_profile_assignment", false),
+					helpers.ComputedWhen("static_profile_assignment", false),
 				},
 			},
 			"static_profile_assignment": schema.BoolAttribute{

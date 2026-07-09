@@ -46,7 +46,7 @@ attribute:
   data_source_query: bool(required=False) # Set to true if the attribute is an alternative query parameter for the data source
   mandatory: bool(required=False) # Set to true if the attribute is mandatory
   computed: bool(required=False) # Set to true if the attribute is computed
-  computed_when: str(required=False) # Conditional computed marker "<sibling_bool_attr>=<true|false>". When the sibling Bool equals the given value and this attribute is unset in config, keep the prior state value instead of planning a change to null (conditional alternative to UseStateForUnknown for conditionally server-owned fields, e.g. "static_profile_assignment=false")
+  computed_when: str(required=False) # Conditional computed marker "<bool_attr>=<true|false>"; when the sibling Bool matches and this attribute is unset in config, keep the prior state value (conditional UseStateForUnknown, e.g. "static_profile_assignment=false")
   write_only: bool(required=False) # Set to true if the attribute is write-only, meaning we cannot read the value
   write_changes_only: bool(required=False) # Set to true if the attribute should only be written (included in PUT payload) if it has changed
   exclude_test: bool(required=False) # Exclude attribute from example (documentation) and acceptance test

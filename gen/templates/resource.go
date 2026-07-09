@@ -156,7 +156,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 				{{- if .Computed}}
 				PlanModifiers: []planmodifier.{{.Type}}{
 					{{- if .ComputedWhen}}
-					helpers.AdoptStateWhenSiblingBoolEquals("{{computedWhenAttr .ComputedWhen}}", {{computedWhenValue .ComputedWhen}}),
+					helpers.ComputedWhen("{{computedWhenAttr .ComputedWhen}}", {{computedWhenValue .ComputedWhen}}),
 					{{- else}}
 					{{snakeCase .Type}}planmodifier.UseStateForUnknown(),
 					{{- end}}
