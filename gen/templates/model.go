@@ -1352,8 +1352,6 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 //template:end updateFromBody
 
 //template:begin fromBodyUnknowns
-// fromBodyUnknowns updates the Unknown Computed tfstate values from a JSON.
-// Known values are not changed (usual for Computed attributes with UseStateForUnknown or with Default).
 func (data *{{camelCase .Name}}) fromBodyUnknowns(ctx context.Context, res gjson.Result) {
 	{{- range .Attributes}}
 	{{- if and (not .Value) (not .WriteOnly) (not .Reference) .Computed}}
