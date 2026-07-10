@@ -165,17 +165,17 @@ func (data Endpoint) toBody(ctx context.Context, state Endpoint) string {
 
 //template:begin fromBody
 func (data *Endpoint) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("ERSEndPoint.name"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.name"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.description"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.description"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.mac"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.mac"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.Mac = types.StringValue(value.String())
 	} else {
 		data.Mac = types.StringNull()
@@ -223,22 +223,22 @@ func (data *Endpoint) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.CustomAttributes = types.MapNull(types.StringType)
 	}
-	if value := res.Get("ERSEndPoint.identityStore"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.identityStore"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.IdentityStore = types.StringValue(value.String())
 	} else {
 		data.IdentityStore = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.identityStoreId"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.identityStoreId"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.IdentityStoreId = types.StringValue(value.String())
 	} else {
 		data.IdentityStoreId = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.portalUser"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.portalUser"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.PortalUser = types.StringValue(value.String())
 	} else {
 		data.PortalUser = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.mdmAttributes.mdmServerName"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.mdmAttributes.mdmServerName"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.MdmServerName = types.StringValue(value.String())
 	} else {
 		data.MdmServerName = types.StringNull()
@@ -258,22 +258,22 @@ func (data *Endpoint) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.MdmComplianceStatus = types.BoolNull()
 	}
-	if value := res.Get("ERSEndPoint.mdmAttributes.mdmOS"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.mdmAttributes.mdmOS"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.MdmOs = types.StringValue(value.String())
 	} else {
 		data.MdmOs = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.mdmAttributes.mdmManufacturer"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.mdmAttributes.mdmManufacturer"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.MdmManufacturer = types.StringValue(value.String())
 	} else {
 		data.MdmManufacturer = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.mdmAttributes.mdmModel"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.mdmAttributes.mdmModel"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.MdmModel = types.StringValue(value.String())
 	} else {
 		data.MdmModel = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.mdmAttributes.mdmSerial"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.mdmAttributes.mdmSerial"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.MdmSerial = types.StringValue(value.String())
 	} else {
 		data.MdmSerial = types.StringNull()
@@ -293,12 +293,12 @@ func (data *Endpoint) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.MdmJailBroken = types.BoolNull()
 	}
-	if value := res.Get("ERSEndPoint.mdmAttributes.mdmIMEI"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.mdmAttributes.mdmIMEI"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.MdmImei = types.StringValue(value.String())
 	} else {
 		data.MdmImei = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.mdmAttributes.mdmPhoneNumber"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.mdmAttributes.mdmPhoneNumber"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.MdmPhoneNumber = types.StringValue(value.String())
 	} else {
 		data.MdmPhoneNumber = types.StringNull()
