@@ -89,6 +89,10 @@ func (r *EndpointResource) Schema(ctx context.Context, req resource.SchemaReques
 			"group_id": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Identity Group ID").String,
 				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					helpers.ComputedWhen("static_group_assignment", false),
+				},
 			},
 			"profile_id": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Profile ID").String,
@@ -236,6 +240,11 @@ func (r *EndpointResource) Create(ctx context.Context, req resource.CreateReques
 		} else {
 			plan.ProfileId = types.StringNull()
 		}
+		if value := res.Get("ERSEndPoint.groupId"); value.Exists() && value.String() != "" {
+			plan.GroupId = types.StringValue(value.String())
+		} else {
+			plan.GroupId = types.StringNull()
+		}
 
 		tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
@@ -255,6 +264,11 @@ func (r *EndpointResource) Create(ctx context.Context, req resource.CreateReques
 			plan.ProfileId = types.StringValue(value.String())
 		} else {
 			plan.ProfileId = types.StringNull()
+		}
+		if value := res.Get("ERSEndPoint.groupId"); value.Exists() && value.String() != "" {
+			plan.GroupId = types.StringValue(value.String())
+		} else {
+			plan.GroupId = types.StringNull()
 		}
 		tflog.Debug(ctx, fmt.Sprintf("%s: Resource already exists, updating existing resource", plan.Id.ValueString()))
 		// Update existing object
@@ -332,6 +346,22 @@ func (r *EndpointResource) Update(ctx context.Context, req resource.UpdateReques
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
+	}
+
+	res, err = r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to read back updated object (GET), got error: %s, %s", err, res.String()))
+		return
+	}
+	if value := res.Get("ERSEndPoint.groupId"); value.Exists() && value.String() != "" {
+		plan.GroupId = types.StringValue(value.String())
+	} else {
+		plan.GroupId = types.StringNull()
+	}
+	if value := res.Get("ERSEndPoint.profileId"); value.Exists() && value.String() != "" {
+		plan.ProfileId = types.StringValue(value.String())
+	} else {
+		plan.ProfileId = types.StringNull()
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Update finished successfully", plan.Id.ValueString()))

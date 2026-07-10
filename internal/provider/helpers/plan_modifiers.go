@@ -53,11 +53,7 @@ func (m computedWhen) PlanModifyString(ctx context.Context, req planmodifier.Str
 	if !req.ConfigValue.IsNull() {
 		return
 	}
-	// On create there is no prior state to adopt.
-	if req.StateValue.IsNull() {
-		return
-	}
-	// Keep state only on the server-owned branch (sibling == expected).
+	// On the server-owned branch (sibling == expected) the value is assigned by ISE.
 	var sibling types.Bool
 	diags := req.Plan.GetAttribute(ctx, path.Root(m.siblingAttr), &sibling)
 	resp.Diagnostics.Append(diags...)
@@ -65,6 +61,23 @@ func (m computedWhen) PlanModifyString(ctx context.Context, req planmodifier.Str
 		return
 	}
 	if sibling.IsUnknown() || sibling.IsNull() || sibling.ValueBool() != m.expected {
+		return
+	}
+	// On create there is no prior state, so let the value stay unknown.
+	if req.State.Raw.IsNull() {
+		return
+	}
+	// If the prior state has no value (import/refresh of a dynamic endpoint that ISE
+	// left unset), keep it null so a fresh import shows no diff.
+	if req.StateValue.IsNull() {
+		resp.PlanValue = types.StringNull()
+		return
+	}
+	// State holds an ISE-assigned value. ISE may reassign it on any update, so reuse it
+	// only on a no-op; if anything else in the resource is changing, plan it unknown and
+	// let the read-back fill in ISE's real value.
+	if !req.Plan.Raw.Equal(req.State.Raw) {
+		resp.PlanValue = types.StringUnknown()
 		return
 	}
 	resp.PlanValue = req.StateValue
