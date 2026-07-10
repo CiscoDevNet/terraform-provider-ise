@@ -33,6 +33,7 @@ attributes:
     type: String
     description: Profile ID
     computed: true
+    computed_when: static_profile_assignment=false
     example: 3a91a150-8c00-11e6-996c-525400b48521
   - model_name: staticProfileAssignment
     data_path: [ERSEndPoint]

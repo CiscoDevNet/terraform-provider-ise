@@ -155,7 +155,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 				{{- end}}
 				{{- if .Computed}}
 				PlanModifiers: []planmodifier.{{.Type}}{
+					{{- if .ComputedWhen}}
+					helpers.ComputedWhen("{{computedWhenAttr .ComputedWhen}}", {{computedWhenValue .ComputedWhen}}),
+					{{- else}}
 					{{snakeCase .Type}}planmodifier.UseStateForUnknown(),
+					{{- end}}
 				},
 				{{- end}}
 				{{- if isNestedListSet .}}
