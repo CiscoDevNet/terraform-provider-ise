@@ -259,6 +259,15 @@ func ComputedWhenValue(expr string) string {
 	return strings.TrimSpace(parts[1])
 }
 
+func HasComputedWhen(attributes []YamlConfigAttribute) bool {
+	for _, attr := range attributes {
+		if attr.ComputedWhen != "" {
+			return true
+		}
+	}
+	return false
+}
+
 // Templating helper function to return true if reference included in attributes
 func HasReference(attributes []YamlConfigAttribute) bool {
 	for _, attr := range attributes {
@@ -389,6 +398,7 @@ var functions = template.FuncMap{
 	"getId":                  GetId,
 	"computedWhenAttr":       ComputedWhenAttr,
 	"computedWhenValue":      ComputedWhenValue,
+	"hasComputedWhen":        HasComputedWhen,
 	"hasReference":           HasReference,
 	"importParts":            ImportParts,
 	"subtract":               Subtract,

@@ -57,7 +57,8 @@ func (m computedWhen) PlanModifyString(ctx context.Context, req planmodifier.Str
 	if req.StateValue.IsNull() {
 		return
 	}
-	// Keep state only on the server-owned branch (sibling == expected).
+	// On the server-owned branch (sibling == expected) the value is assigned by ISE.
+	// Read the sibling from the PLAN so a sibling change is accounted for.
 	var sibling types.Bool
 	diags := req.Plan.GetAttribute(ctx, path.Root(m.siblingAttr), &sibling)
 	resp.Diagnostics.Append(diags...)
@@ -65,6 +66,13 @@ func (m computedWhen) PlanModifyString(ctx context.Context, req planmodifier.Str
 		return
 	}
 	if sibling.IsUnknown() || sibling.IsNull() || sibling.ValueBool() != m.expected {
+		return
+	}
+
+	// ISE may reassign the server-owned value on any update, so only reuse the prior
+	// state value on a no-op; otherwise plan it unknown and let the read-back fill it.
+	if !req.Plan.Raw.Equal(req.State.Raw) {
+		resp.PlanValue = types.StringUnknown()
 		return
 	}
 	resp.PlanValue = req.StateValue
