@@ -624,7 +624,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 	{{- else if eq .Type "Map"}}
 	if value := res.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() {
 		{{- if .FilterEmptyValues}}
-		data.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(value.Map())
+		data.{{toGoName .TfName}} = helpers.GetStringMapFiltered(value.Map(), data.{{toGoName .TfName}})
 		{{- else}}
 		data.{{toGoName .TfName}} = helpers.GetStringMap(value.Map())
 		{{- end}}
@@ -655,16 +655,16 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 			} else {
 				item.{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 			}
-			{{- else if eq .Type "Map"}}
-			if cValue := v.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cValue.Exists() {
-				{{- if .FilterEmptyValues}}
-				item.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(cValue.Map())
-				{{- else}}
-				item.{{toGoName .TfName}} = helpers.GetStringMap(cValue.Map())
-				{{- end}}
-			} else {
-				item.{{toGoName .TfName}} = types.MapNull(types.StringType)
-			}
+		{{- else if eq .Type "Map"}}
+		if cValue := v.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cValue.Exists() {
+			{{- if .FilterEmptyValues}}
+			item.{{toGoName .TfName}} = helpers.GetStringMapFiltered(cValue.Map(), item.{{toGoName .TfName}})
+			{{- else}}
+			item.{{toGoName .TfName}} = helpers.GetStringMap(cValue.Map())
+			{{- end}}
+		} else {
+			item.{{toGoName .TfName}} = types.MapNull(types.StringType)
+		}
 			{{- else if isNestedListSet .}}
 			if cValue := v.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cValue.Exists() {
 				item.{{toGoName .TfName}} = make([]{{$name}}{{$cname}}{{toGoName .TfName}}, 0)
@@ -688,16 +688,16 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 					} else {
 						cItem.{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 					}
-					{{- else if eq .Type "Map"}}
-					if ccValue := cv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccValue.Exists() {
-						{{- if .FilterEmptyValues}}
-						cItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(ccValue.Map())
-						{{- else}}
-						cItem.{{toGoName .TfName}} = helpers.GetStringMap(ccValue.Map())
-						{{- end}}
-					} else {
-						cItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
-					}
+				{{- else if eq .Type "Map"}}
+				if ccValue := cv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccValue.Exists() {
+					{{- if .FilterEmptyValues}}
+					cItem.{{toGoName .TfName}} = helpers.GetStringMapFiltered(ccValue.Map(), cItem.{{toGoName .TfName}})
+					{{- else}}
+					cItem.{{toGoName .TfName}} = helpers.GetStringMap(ccValue.Map())
+					{{- end}}
+				} else {
+					cItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
+				}
 					{{- else if isNestedListSet .}}
 					if ccValue := cv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccValue.Exists() {
 						cItem.{{toGoName .TfName}} = make([]{{$name}}{{$cname}}{{$ccname}}{{toGoName .TfName}}, 0)
@@ -722,16 +722,16 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 							} else {
 								ccItem.{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 							}
-							{{- else if eq .Type "Map"}}
-							if cccValue := ccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccValue.Exists() {
-								{{- if .FilterEmptyValues}}
-								ccItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(cccValue.Map())
-								{{- else}}
-								ccItem.{{toGoName .TfName}} = helpers.GetStringMap(cccValue.Map())
-								{{- end}}
-							} else {
-								ccItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
-							}
+						{{- else if eq .Type "Map"}}
+						if cccValue := ccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccValue.Exists() {
+							{{- if .FilterEmptyValues}}
+							ccItem.{{toGoName .TfName}} = helpers.GetStringMapFiltered(cccValue.Map(), ccItem.{{toGoName .TfName}})
+							{{- else}}
+							ccItem.{{toGoName .TfName}} = helpers.GetStringMap(cccValue.Map())
+							{{- end}}
+						} else {
+							ccItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
+						}
 							{{- else if isNestedListSet .}}
 							if cccValue := ccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccValue.Exists() {
 								ccItem.{{toGoName .TfName}} = make([]{{$name}}{{$cname}}{{$ccname}}{{$cccname}}{{toGoName .TfName}}, 0)
@@ -759,7 +759,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 									{{- else if eq .Type "Map"}}
 									if ccccValue := cccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccccValue.Exists() {
 										{{- if .FilterEmptyValues}}
-										cccItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(ccccValue.Map())
+										cccItem.{{toGoName .TfName}} = helpers.GetStringMapFiltered(ccccValue.Map(), cccItem.{{toGoName .TfName}})
 										{{- else}}
 										cccItem.{{toGoName .TfName}} = helpers.GetStringMap(ccccValue.Map())
 										{{- end}}
@@ -790,16 +790,16 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 											} else {
 												ccccItem.{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 											}
-											{{- else if eq .Type "Map"}}
-											if cccccValue := ccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccccValue.Exists() {
-												{{- if .FilterEmptyValues}}
-												ccccItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(cccccValue.Map())
-												{{- else}}
-												ccccItem.{{toGoName .TfName}} = helpers.GetStringMap(cccccValue.Map())
-												{{- end}}
-											} else {
-												ccccItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
-											}
+												{{- else if eq .Type "Map"}}
+												if cccccValue := ccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccccValue.Exists() {
+													{{- if .FilterEmptyValues}}
+													ccccItem.{{toGoName .TfName}} = helpers.GetStringMapFiltered(cccccValue.Map(), ccccItem.{{toGoName .TfName}})
+													{{- else}}
+													ccccItem.{{toGoName .TfName}} = helpers.GetStringMap(cccccValue.Map())
+													{{- end}}
+												} else {
+													ccccItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
+												}
 											{{- else if isNestedListSet .}}
 											if cccccValue := ccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccccValue.Exists() {
 												ccccItem.{{toGoName .TfName}} = make([]{{$name}}{{$cname}}{{$ccname}}{{$cccname}}{{$ccccname}}{{$cccccname}}{{toGoName .TfName}}, 0)
@@ -823,16 +823,16 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 													} else {
 														cccccItem.{{toGoName .TfName}} = types.{{.Type}}Null(types.{{.ElementType}}Type)
 													}
-													{{- else if eq .Type "Map"}}
-													if ccccccValue := cccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccccccValue.Exists() {
-														{{- if .FilterEmptyValues}}
-														cccccItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(ccccccValue.Map())
-														{{- else}}
-														cccccItem.{{toGoName .TfName}} = helpers.GetStringMap(ccccccValue.Map())
-														{{- end}}
-													} else {
-														cccccItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
-													}
+														{{- else if eq .Type "Map"}}
+														if ccccccValue := cccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccccccValue.Exists() {
+															{{- if .FilterEmptyValues}}
+															cccccItem.{{toGoName .TfName}} = helpers.GetStringMapFiltered(ccccccValue.Map(), cccccItem.{{toGoName .TfName}})
+															{{- else}}
+															cccccItem.{{toGoName .TfName}} = helpers.GetStringMap(ccccccValue.Map())
+															{{- end}}
+														} else {
+															cccccItem.{{toGoName .TfName}} = types.MapNull(types.StringType)
+														}
 													{{- end}}
 													{{- end}}
 													{{- end}}
