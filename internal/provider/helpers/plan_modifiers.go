@@ -67,8 +67,15 @@ func (m computedWhen) PlanModifyString(ctx context.Context, req planmodifier.Str
 	if req.State.Raw.IsNull() {
 		return
 	}
-	// ISE may reassign the server-owned value on any update, so only reuse the prior
-	// state value on a no-op; otherwise plan it unknown and let the read-back fill it.
+	// If the prior state has no value (import/refresh of a dynamic endpoint that ISE
+	// left unset), keep it null so a fresh import shows no diff.
+	if req.StateValue.IsNull() {
+		resp.PlanValue = types.StringNull()
+		return
+	}
+	// State holds an ISE-assigned value. ISE may reassign it on any update, so reuse it
+	// only on a no-op; if anything else in the resource is changing, plan it unknown and
+	// let the read-back fill in ISE's real value.
 	if !req.Plan.Raw.Equal(req.State.Raw) {
 		resp.PlanValue = types.StringUnknown()
 		return
