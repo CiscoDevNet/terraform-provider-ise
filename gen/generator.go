@@ -268,6 +268,19 @@ func HasComputedWhen(attributes []YamlConfigAttribute) bool {
 	return false
 }
 
+// ComputedWhenModelName returns the ISE model (JSON) name of the sibling attribute in a
+// "<tf_name>=<bool>" computed_when expression, e.g. "static_group_assignment" ->
+// "staticGroupAssignment" (lower camelCase, matching ERS field naming).
+func ComputedWhenModelName(expr string) string {
+	parts := strings.Split(ComputedWhenAttr(expr), "_")
+	for i, p := range parts {
+		if i > 0 {
+			parts[i] = strings.Title(p)
+		}
+	}
+	return strings.Join(parts, "")
+}
+
 // Templating helper function to return true if reference included in attributes
 func HasReference(attributes []YamlConfigAttribute) bool {
 	for _, attr := range attributes {
@@ -398,6 +411,7 @@ var functions = template.FuncMap{
 	"getId":                  GetId,
 	"computedWhenAttr":       ComputedWhenAttr,
 	"computedWhenValue":      ComputedWhenValue,
+	"computedWhenModelName":  ComputedWhenModelName,
 	"hasComputedWhen":        HasComputedWhen,
 	"hasReference":           HasReference,
 	"importParts":            ImportParts,

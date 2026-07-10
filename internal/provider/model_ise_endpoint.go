@@ -87,10 +87,10 @@ func (data Endpoint) toBody(ctx context.Context, state Endpoint) string {
 	if !data.Mac.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.mac", data.Mac.ValueString())
 	}
-	if !data.GroupId.IsNull() {
+	if !data.GroupId.IsNull() && !data.GroupId.IsUnknown() {
 		body, _ = sjson.Set(body, "ERSEndPoint.groupId", data.GroupId.ValueString())
 	}
-	if !data.ProfileId.IsNull() {
+	if !data.ProfileId.IsNull() && !data.ProfileId.IsUnknown() {
 		body, _ = sjson.Set(body, "ERSEndPoint.profileId", data.ProfileId.ValueString())
 	}
 	if !data.StaticProfileAssignment.IsNull() {
@@ -180,12 +180,20 @@ func (data *Endpoint) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.Mac = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.groupId"); value.Exists() && value.Type != gjson.Null {
+	// group_id is server-owned when static_group_assignment == false; only
+	// adopt it into state on the operator-owned branch so it is not written back on the next apply.
+	if sibling := res.Get("ERSEndPoint.staticGroupAssignment"); sibling.Exists() && sibling.Bool() == false {
+		data.GroupId = types.StringNull()
+	} else if value := res.Get("ERSEndPoint.groupId"); value.Exists() && value.Type != gjson.Null {
 		data.GroupId = types.StringValue(value.String())
 	} else {
 		data.GroupId = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.profileId"); value.Exists() && value.Type != gjson.Null {
+	// profile_id is server-owned when static_profile_assignment == false; only
+	// adopt it into state on the operator-owned branch so it is not written back on the next apply.
+	if sibling := res.Get("ERSEndPoint.staticProfileAssignment"); sibling.Exists() && sibling.Bool() == false {
+		data.ProfileId = types.StringNull()
+	} else if value := res.Get("ERSEndPoint.profileId"); value.Exists() && value.Type != gjson.Null {
 		data.ProfileId = types.StringValue(value.String())
 	} else {
 		data.ProfileId = types.StringNull()
