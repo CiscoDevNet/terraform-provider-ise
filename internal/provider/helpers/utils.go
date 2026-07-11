@@ -59,22 +59,6 @@ func GetStringMapNonEmpty(result map[string]gjson.Result) types.Map {
 	return types.MapValueMust(types.StringType, v)
 }
 
-// GetStringMapNonEmptyOrNull is like GetStringMapNonEmpty but returns null when
-// all entries are empty strings — preventing drift when a config that omits the
-// attribute is compared to an ISE response where all custom attribute values are "".
-func GetStringMapNonEmptyOrNull(result map[string]gjson.Result) types.Map {
-	v := make(map[string]attr.Value)
-	for key, value := range result {
-		if value.String() != "" {
-			v[key] = types.StringValue(value.String())
-		}
-	}
-	if len(v) == 0 {
-		return types.MapNull(types.StringType)
-	}
-	return types.MapValueMust(types.StringType, v)
-}
-
 // GetStringMapFiltered returns only the keys already present in stateMap (with
 // live values from apiResult), suppressing server-injected keys that were never
 // declared in configuration. When stateMap is null or unknown (import), all
