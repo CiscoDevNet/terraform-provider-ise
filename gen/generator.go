@@ -142,6 +142,7 @@ type YamlConfigAttribute struct {
 	ResponseDataPath string                `yaml:"response_data_path"`
 	Mandatory        bool                  `yaml:"mandatory"`
 	Computed         bool                  `yaml:"computed"`
+	ComputedWhen     string                `yaml:"computed_when"`
 	Immutable        bool                  `yaml:"immutable"`
 	WriteOnly        bool                  `yaml:"write_only"`
 	NormalizeEmptyJson   bool                  `yaml:"normalize_empty_json"`
@@ -245,6 +246,43 @@ func HasId(attributes []YamlConfigAttribute) bool {
 		}
 	}
 	return false
+}
+
+// ComputedWhenAttr returns the attribute name from a "<attr>=<bool>" expression.
+func ComputedWhenAttr(expr string) string {
+	parts := strings.SplitN(expr, "=", 2)
+	return strings.TrimSpace(parts[0])
+}
+
+// ComputedWhenValue returns the bool literal from a "<attr>=<bool>" expression (default "false").
+func ComputedWhenValue(expr string) string {
+	parts := strings.SplitN(expr, "=", 2)
+	if len(parts) < 2 || strings.TrimSpace(parts[1]) == "" {
+		return "false"
+	}
+	return strings.TrimSpace(parts[1])
+}
+
+func HasComputedWhen(attributes []YamlConfigAttribute) bool {
+	for _, attr := range attributes {
+		if attr.ComputedWhen != "" {
+			return true
+		}
+	}
+	return false
+}
+
+// ComputedWhenModelName returns the ISE model (JSON) name of the sibling attribute in a
+// "<tf_name>=<bool>" computed_when expression, e.g. "static_group_assignment" ->
+// "staticGroupAssignment" (lower camelCase, matching ERS field naming).
+func ComputedWhenModelName(expr string) string {
+	parts := strings.Split(ComputedWhenAttr(expr), "_")
+	for i, p := range parts {
+		if i > 0 {
+			parts[i] = strings.Title(p)
+		}
+	}
+	return strings.Join(parts, "")
 }
 
 // Templating helper function to return true if reference included in attributes
@@ -375,6 +413,10 @@ var functions = template.FuncMap{
 	"path":                   BuildPath,
 	"hasId":                  HasId,
 	"getId":                  GetId,
+	"computedWhenAttr":       ComputedWhenAttr,
+	"computedWhenValue":      ComputedWhenValue,
+	"computedWhenModelName":  ComputedWhenModelName,
+	"hasComputedWhen":        HasComputedWhen,
 	"hasReference":           HasReference,
 	"importParts":            ImportParts,
 	"subtract":               Subtract,

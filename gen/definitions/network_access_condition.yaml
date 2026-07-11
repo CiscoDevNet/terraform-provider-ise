@@ -50,6 +50,7 @@ attributes:
     example: abc
     exclude_test: true
   - model_name: operator
+    normalize_operator: true
     type: String
     enum_values:
       [
@@ -145,6 +146,7 @@ attributes:
         example: abc
         exclude_test: true
       - model_name: operator
+        normalize_operator: true
         type: String
         id: true
         enum_values:
@@ -240,6 +242,7 @@ attributes:
             example: abc
             exclude_test: true
           - model_name: operator
+            normalize_operator: true
             type: String
             id: true
             enum_values:
@@ -307,6 +310,7 @@ attributes:
                 description: Dictionary value
                 example: abc
               - model_name: operator
+                normalize_operator: true
                 type: String
                 enum_values:
                   [
@@ -367,6 +371,7 @@ attributes:
                     type: String
                     description: Dictionary value
                   - model_name: operator
+                    normalize_operator: true
                     type: String
                     enum_values:
                       [
@@ -426,6 +431,7 @@ attributes:
                         type: String
                         description: Dictionary value
                       - model_name: operator
+                        normalize_operator: true
                         type: String
                         enum_values:
                           [
@@ -479,6 +485,7 @@ attributes:
                             type: String
                             description: Dictionary value
                           - model_name: operator
+                            normalize_operator: true
                             type: String
                             enum_values:
                               [

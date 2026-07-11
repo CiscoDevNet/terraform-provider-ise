@@ -87,10 +87,10 @@ func (data Endpoint) toBody(ctx context.Context, state Endpoint) string {
 	if !data.Mac.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.mac", data.Mac.ValueString())
 	}
-	if !data.GroupId.IsNull() {
+	if !data.GroupId.IsNull() && !data.GroupId.IsUnknown() {
 		body, _ = sjson.Set(body, "ERSEndPoint.groupId", data.GroupId.ValueString())
 	}
-	if !data.ProfileId.IsNull() {
+	if !data.ProfileId.IsNull() && !data.ProfileId.IsUnknown() {
 		body, _ = sjson.Set(body, "ERSEndPoint.profileId", data.ProfileId.ValueString())
 	}
 	if !data.StaticProfileAssignment.IsNull() {
@@ -165,27 +165,35 @@ func (data Endpoint) toBody(ctx context.Context, state Endpoint) string {
 
 //template:begin fromBody
 func (data *Endpoint) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("ERSEndPoint.name"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.name"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.Name = types.StringValue(value.String())
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.description"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
+	if value := res.Get("ERSEndPoint.description"); value.Exists() && value.Type != gjson.Null && value.String() != "" && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.mac"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.mac"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.Mac = types.StringValue(value.String())
 	} else {
 		data.Mac = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.groupId"); value.Exists() && value.Type != gjson.Null {
+	// group_id is server-owned when static_group_assignment == false; only
+	// adopt it into state on the operator-owned branch so it is not written back on the next apply.
+	if sibling := res.Get("ERSEndPoint.staticGroupAssignment"); sibling.Exists() && sibling.Bool() == false {
+		data.GroupId = types.StringNull()
+	} else if value := res.Get("ERSEndPoint.groupId"); value.Exists() && value.Type != gjson.Null {
 		data.GroupId = types.StringValue(value.String())
 	} else {
 		data.GroupId = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.profileId"); value.Exists() && value.Type != gjson.Null {
+	// profile_id is server-owned when static_profile_assignment == false; only
+	// adopt it into state on the operator-owned branch so it is not written back on the next apply.
+	if sibling := res.Get("ERSEndPoint.staticProfileAssignment"); sibling.Exists() && sibling.Bool() == false {
+		data.ProfileId = types.StringNull()
+	} else if value := res.Get("ERSEndPoint.profileId"); value.Exists() && value.Type != gjson.Null {
 		data.ProfileId = types.StringValue(value.String())
 	} else {
 		data.ProfileId = types.StringNull()
@@ -211,26 +219,26 @@ func (data *Endpoint) fromBody(ctx context.Context, res gjson.Result) {
 		data.StaticGroupAssignmentDefined = types.BoolValue(true)
 	}
 	if value := res.Get("ERSEndPoint.customAttributes.customAttributes"); value.Exists() {
-		data.CustomAttributes = helpers.GetStringMapNonEmptyOrNull(value.Map())
+		data.CustomAttributes = helpers.GetStringMapFiltered(value.Map(), data.CustomAttributes)
 	} else {
 		data.CustomAttributes = types.MapNull(types.StringType)
 	}
-	if value := res.Get("ERSEndPoint.identityStore"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
+	if value := res.Get("ERSEndPoint.identityStore"); value.Exists() && value.Type != gjson.Null && value.String() != "" && value.String() != "" {
 		data.IdentityStore = types.StringValue(value.String())
 	} else {
 		data.IdentityStore = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.identityStoreId"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
+	if value := res.Get("ERSEndPoint.identityStoreId"); value.Exists() && value.Type != gjson.Null && value.String() != "" && value.String() != "" {
 		data.IdentityStoreId = types.StringValue(value.String())
 	} else {
 		data.IdentityStoreId = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.portalUser"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
+	if value := res.Get("ERSEndPoint.portalUser"); value.Exists() && value.Type != gjson.Null && value.String() != "" && value.String() != "" {
 		data.PortalUser = types.StringValue(value.String())
 	} else {
 		data.PortalUser = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.mdmAttributes.mdmServerName"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.mdmAttributes.mdmServerName"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.MdmServerName = types.StringValue(value.String())
 	} else {
 		data.MdmServerName = types.StringNull()
@@ -250,22 +258,22 @@ func (data *Endpoint) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.MdmComplianceStatus = types.BoolNull()
 	}
-	if value := res.Get("ERSEndPoint.mdmAttributes.mdmOS"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.mdmAttributes.mdmOS"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.MdmOs = types.StringValue(value.String())
 	} else {
 		data.MdmOs = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.mdmAttributes.mdmManufacturer"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.mdmAttributes.mdmManufacturer"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.MdmManufacturer = types.StringValue(value.String())
 	} else {
 		data.MdmManufacturer = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.mdmAttributes.mdmModel"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.mdmAttributes.mdmModel"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.MdmModel = types.StringValue(value.String())
 	} else {
 		data.MdmModel = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.mdmAttributes.mdmSerial"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.mdmAttributes.mdmSerial"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.MdmSerial = types.StringValue(value.String())
 	} else {
 		data.MdmSerial = types.StringNull()
@@ -285,12 +293,12 @@ func (data *Endpoint) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.MdmJailBroken = types.BoolNull()
 	}
-	if value := res.Get("ERSEndPoint.mdmAttributes.mdmIMEI"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.mdmAttributes.mdmIMEI"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.MdmImei = types.StringValue(value.String())
 	} else {
 		data.MdmImei = types.StringNull()
 	}
-	if value := res.Get("ERSEndPoint.mdmAttributes.mdmPhoneNumber"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSEndPoint.mdmAttributes.mdmPhoneNumber"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.MdmPhoneNumber = types.StringValue(value.String())
 	} else {
 		data.MdmPhoneNumber = types.StringNull()

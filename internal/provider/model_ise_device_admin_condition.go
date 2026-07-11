@@ -163,7 +163,7 @@ func (data DeviceAdminCondition) toBody(ctx context.Context, state DeviceAdminCo
 		body, _ = sjson.Set(body, "dictionaryValue", data.DictionaryValue.ValueString())
 	}
 	if !data.Operator.IsNull() {
-		body, _ = sjson.Set(body, "operator", data.Operator.ValueString())
+		body, _ = sjson.Set(body, "operator", helpers.NormalizeOperator(data.Operator.ValueString()))
 	}
 	if len(data.Children) > 0 {
 		body, _ = sjson.Set(body, "children", []interface{}{})
@@ -197,7 +197,7 @@ func (data DeviceAdminCondition) toBody(ctx context.Context, state DeviceAdminCo
 				itemBody, _ = sjson.Set(itemBody, "dictionaryValue", item.DictionaryValue.ValueString())
 			}
 			if !item.Operator.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "operator", item.Operator.ValueString())
+				itemBody, _ = sjson.Set(itemBody, "operator", helpers.NormalizeOperator(item.Operator.ValueString()))
 			}
 			if len(item.Children) > 0 {
 				itemBody, _ = sjson.Set(itemBody, "children", []interface{}{})
@@ -231,7 +231,7 @@ func (data DeviceAdminCondition) toBody(ctx context.Context, state DeviceAdminCo
 						itemChildBody, _ = sjson.Set(itemChildBody, "dictionaryValue", childItem.DictionaryValue.ValueString())
 					}
 					if !childItem.Operator.IsNull() {
-						itemChildBody, _ = sjson.Set(itemChildBody, "operator", childItem.Operator.ValueString())
+						itemChildBody, _ = sjson.Set(itemChildBody, "operator", helpers.NormalizeOperator(childItem.Operator.ValueString()))
 					}
 					if len(childItem.Children) > 0 {
 						itemChildBody, _ = sjson.Set(itemChildBody, "children", []interface{}{})
@@ -259,7 +259,7 @@ func (data DeviceAdminCondition) toBody(ctx context.Context, state DeviceAdminCo
 								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "dictionaryValue", childChildItem.DictionaryValue.ValueString())
 							}
 							if !childChildItem.Operator.IsNull() {
-								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "operator", childChildItem.Operator.ValueString())
+								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "operator", helpers.NormalizeOperator(childChildItem.Operator.ValueString()))
 							}
 							if len(childChildItem.Children) > 0 {
 								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "children", []interface{}{})
@@ -287,7 +287,7 @@ func (data DeviceAdminCondition) toBody(ctx context.Context, state DeviceAdminCo
 										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "dictionaryValue", childChildChildItem.DictionaryValue.ValueString())
 									}
 									if !childChildChildItem.Operator.IsNull() {
-										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "operator", childChildChildItem.Operator.ValueString())
+										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "operator", helpers.NormalizeOperator(childChildChildItem.Operator.ValueString()))
 									}
 									if len(childChildChildItem.Children) > 0 {
 										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "children", []interface{}{})
@@ -315,7 +315,7 @@ func (data DeviceAdminCondition) toBody(ctx context.Context, state DeviceAdminCo
 												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "dictionaryValue", childChildChildChildItem.DictionaryValue.ValueString())
 											}
 											if !childChildChildChildItem.Operator.IsNull() {
-												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "operator", childChildChildChildItem.Operator.ValueString())
+												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "operator", helpers.NormalizeOperator(childChildChildChildItem.Operator.ValueString()))
 											}
 											if len(childChildChildChildItem.Children) > 0 {
 												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "children", []interface{}{})
@@ -343,7 +343,7 @@ func (data DeviceAdminCondition) toBody(ctx context.Context, state DeviceAdminCo
 														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "dictionaryValue", childChildChildChildChildItem.DictionaryValue.ValueString())
 													}
 													if !childChildChildChildChildItem.Operator.IsNull() {
-														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "operator", childChildChildChildChildItem.Operator.ValueString())
+														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "operator", helpers.NormalizeOperator(childChildChildChildChildItem.Operator.ValueString()))
 													}
 													itemChildChildChildChildBody, _ = sjson.SetRaw(itemChildChildChildChildBody, "children.-1", itemChildChildChildChildChildBody)
 												}
@@ -411,7 +411,7 @@ func (data *DeviceAdminCondition) fromBody(ctx context.Context, res gjson.Result
 		data.DictionaryValue = types.StringNull()
 	}
 	if value := res.Get("response.operator"); value.Exists() && value.Type != gjson.Null {
-		data.Operator = types.StringValue(value.String())
+		data.Operator = types.StringValue(helpers.NormalizeOperator(value.String()))
 	} else {
 		data.Operator = types.StringNull()
 	}
@@ -465,7 +465,7 @@ func (data *DeviceAdminCondition) fromBody(ctx context.Context, res gjson.Result
 				item.DictionaryValue = types.StringNull()
 			}
 			if cValue := v.Get("operator"); cValue.Exists() && cValue.Type != gjson.Null {
-				item.Operator = types.StringValue(cValue.String())
+				item.Operator = types.StringValue(helpers.NormalizeOperator(cValue.String()))
 			} else {
 				item.Operator = types.StringNull()
 			}
@@ -770,7 +770,7 @@ func (data *DeviceAdminCondition) updateFromBody(ctx context.Context, res gjson.
 		data.DictionaryValue = types.StringNull()
 	}
 	if value := res.Get("response.operator"); value.Exists() && !data.Operator.IsNull() {
-		data.Operator = types.StringValue(value.String())
+		data.Operator = types.StringValue(helpers.NormalizeOperator(value.String()))
 	} else {
 		data.Operator = types.StringNull()
 	}
@@ -849,7 +849,7 @@ func (data *DeviceAdminCondition) updateFromBody(ctx context.Context, res gjson.
 			data.Children[i].DictionaryValue = types.StringNull()
 		}
 		if value := r.Get("operator"); value.Exists() && !data.Children[i].Operator.IsNull() {
-			data.Children[i].Operator = types.StringValue(value.String())
+			data.Children[i].Operator = types.StringValue(helpers.NormalizeOperator(value.String()))
 		} else {
 			data.Children[i].Operator = types.StringNull()
 		}
@@ -928,7 +928,7 @@ func (data *DeviceAdminCondition) updateFromBody(ctx context.Context, res gjson.
 				data.Children[i].Children[ci].DictionaryValue = types.StringNull()
 			}
 			if value := cr.Get("operator"); value.Exists() && !data.Children[i].Children[ci].Operator.IsNull() {
-				data.Children[i].Children[ci].Operator = types.StringValue(value.String())
+				data.Children[i].Children[ci].Operator = types.StringValue(helpers.NormalizeOperator(value.String()))
 			} else {
 				data.Children[i].Children[ci].Operator = types.StringNull()
 			}
@@ -997,7 +997,7 @@ func (data *DeviceAdminCondition) updateFromBody(ctx context.Context, res gjson.
 					data.Children[i].Children[ci].Children[cci].DictionaryValue = types.StringNull()
 				}
 				if value := ccr.Get("operator"); value.Exists() && !data.Children[i].Children[ci].Children[cci].Operator.IsNull() {
-					data.Children[i].Children[ci].Children[cci].Operator = types.StringValue(value.String())
+					data.Children[i].Children[ci].Children[cci].Operator = types.StringValue(helpers.NormalizeOperator(value.String()))
 				} else {
 					data.Children[i].Children[ci].Children[cci].Operator = types.StringNull()
 				}
@@ -1066,7 +1066,7 @@ func (data *DeviceAdminCondition) updateFromBody(ctx context.Context, res gjson.
 						data.Children[i].Children[ci].Children[cci].Children[ccci].DictionaryValue = types.StringNull()
 					}
 					if value := cccr.Get("operator"); value.Exists() && !data.Children[i].Children[ci].Children[cci].Children[ccci].Operator.IsNull() {
-						data.Children[i].Children[ci].Children[cci].Children[ccci].Operator = types.StringValue(value.String())
+						data.Children[i].Children[ci].Children[cci].Children[ccci].Operator = types.StringValue(helpers.NormalizeOperator(value.String()))
 					} else {
 						data.Children[i].Children[ci].Children[cci].Children[ccci].Operator = types.StringNull()
 					}
@@ -1135,7 +1135,7 @@ func (data *DeviceAdminCondition) updateFromBody(ctx context.Context, res gjson.
 							data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].DictionaryValue = types.StringNull()
 						}
 						if value := ccccr.Get("operator"); value.Exists() && !data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator.IsNull() {
-							data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator = types.StringValue(value.String())
+							data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator = types.StringValue(helpers.NormalizeOperator(value.String()))
 						} else {
 							data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator = types.StringNull()
 						}
@@ -1204,7 +1204,7 @@ func (data *DeviceAdminCondition) updateFromBody(ctx context.Context, res gjson.
 								data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].DictionaryValue = types.StringNull()
 							}
 							if value := cccccr.Get("operator"); value.Exists() && !data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Operator.IsNull() {
-								data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Operator = types.StringValue(value.String())
+								data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Operator = types.StringValue(helpers.NormalizeOperator(value.String()))
 							} else {
 								data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Operator = types.StringNull()
 							}

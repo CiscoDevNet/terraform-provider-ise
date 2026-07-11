@@ -51,6 +51,11 @@ func GetStringMapNonEmpty(result map[string]gjson.Result) types.Map {
 			v[key] = types.StringValue(value.String())
 		}
 	}
+	// No entries: treat as unset (null) rather than an empty map, so an Optional map
+	// imported/read from a server that returns {} does not drift against a null config.
+	if len(v) == 0 {
+		return types.MapNull(types.StringType)
+	}
 	return types.MapValueMust(types.StringType, v)
 }
 

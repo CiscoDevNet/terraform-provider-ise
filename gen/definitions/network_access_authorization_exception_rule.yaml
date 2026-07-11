@@ -86,6 +86,7 @@ attributes:
     example: abc
     exclude_test: true
   - model_name: operator
+    normalize_operator: true
     data_path: [rule, condition]
     tf_name: condition_operator
     type: String
@@ -166,6 +167,7 @@ attributes:
         description: Dictionary value
         example: abc
       - model_name: operator
+        normalize_operator: true
         type: String
         enum_values:
           [
@@ -242,6 +244,7 @@ attributes:
             description: Dictionary value
             example: abc
           - model_name: operator
+            normalize_operator: true
             type: String
             enum_values:
               [
@@ -308,6 +311,7 @@ attributes:
                 description: Dictionary value
                 example: abc
               - model_name: operator
+                normalize_operator: true
                 type: String
                 enum_values:
                   [
@@ -368,6 +372,7 @@ attributes:
                     type: String
                     description: Dictionary value
                   - model_name: operator
+                    normalize_operator: true
                     type: String
                     enum_values:
                       [
@@ -427,6 +432,7 @@ attributes:
                         type: String
                         description: Dictionary value
                       - model_name: operator
+                        normalize_operator: true
                         type: String
                         enum_values:
                           [
@@ -480,6 +486,7 @@ attributes:
                             type: String
                             description: Dictionary value
                           - model_name: operator
+                            normalize_operator: true
                             type: String
                             enum_values:
                               [

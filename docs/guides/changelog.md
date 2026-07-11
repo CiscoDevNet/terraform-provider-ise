@@ -7,6 +7,10 @@ description: |-
 
 # Changelog
 
+## 0.3.5 (unreleased)
+
+- Fix perpetual drift in the `group_id` and `profile_id` attributes of the `ise_endpoint` resource, where ISE dynamically assigns these values when `static_group_assignment` / `static_profile_assignment` are `false`, causing Terraform to report changes on every plan
+
 ## 0.3.4
 
 - Fix perpetual drift in the `custom_attributes` attribute of the `ise_endpoint` resource, where ISE returns all globally-defined endpoint custom attributes (including unassigned ones as empty strings), causing Terraform to report changes on every plan

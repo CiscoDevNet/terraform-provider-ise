@@ -89,10 +89,18 @@ func (r *EndpointResource) Schema(ctx context.Context, req resource.SchemaReques
 			"group_id": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Identity Group ID").String,
 				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					helpers.ComputedWhen("static_group_assignment", false),
+				},
 			},
 			"profile_id": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Profile ID").String,
 				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					helpers.ComputedWhen("static_profile_assignment", false),
+				},
 			},
 			"static_profile_assignment": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Static Profile Assignment").String,
@@ -219,6 +227,25 @@ func (r *EndpointResource) Create(ctx context.Context, req resource.CreateReques
 		locationElements := strings.Split(location, "/")
 		plan.Id = types.StringValue(locationElements[len(locationElements)-1])
 
+		// profile_id is Optional+Computed: ISE assigns it (empty for dynamic endpoints
+		// until the profiler runs). Read the created object back so the Computed value
+		// is known after apply, as the framework requires.
+		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to read back created object (GET), got error: %s, %s", err, res.String()))
+			return
+		}
+		if value := res.Get("ERSEndPoint.profileId"); value.Exists() && value.String() != "" {
+			plan.ProfileId = types.StringValue(value.String())
+		} else {
+			plan.ProfileId = types.StringNull()
+		}
+		if value := res.Get("ERSEndPoint.groupId"); value.Exists() && value.String() != "" {
+			plan.GroupId = types.StringValue(value.String())
+		} else {
+			plan.GroupId = types.StringNull()
+		}
+
 		tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 
 		diags = resp.State.Set(ctx, &plan)
@@ -231,6 +258,18 @@ func (r *EndpointResource) Create(ctx context.Context, req resource.CreateReques
 			return
 		}
 		plan.Id = types.StringValue(res.Get("ERSEndPoint.id").String())
+		// Resolve the Optional+Computed profile_id from the existing object so it is
+		// known after apply (see the create branch above for rationale).
+		if value := res.Get("ERSEndPoint.profileId"); value.Exists() && value.String() != "" {
+			plan.ProfileId = types.StringValue(value.String())
+		} else {
+			plan.ProfileId = types.StringNull()
+		}
+		if value := res.Get("ERSEndPoint.groupId"); value.Exists() && value.String() != "" {
+			plan.GroupId = types.StringValue(value.String())
+		} else {
+			plan.GroupId = types.StringNull()
+		}
 		tflog.Debug(ctx, fmt.Sprintf("%s: Resource already exists, updating existing resource", plan.Id.ValueString()))
 		// Update existing object
 		body := plan.toBody(ctx, Endpoint{})
@@ -307,6 +346,22 @@ func (r *EndpointResource) Update(ctx context.Context, req resource.UpdateReques
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
+	}
+
+	res, err = r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to read back updated object (GET), got error: %s, %s", err, res.String()))
+		return
+	}
+	if value := res.Get("ERSEndPoint.groupId"); value.Exists() && value.String() != "" {
+		plan.GroupId = types.StringValue(value.String())
+	} else {
+		plan.GroupId = types.StringNull()
+	}
+	if value := res.Get("ERSEndPoint.profileId"); value.Exists() && value.String() != "" {
+		plan.ProfileId = types.StringValue(value.String())
+	} else {
+		plan.ProfileId = types.StringNull()
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Update finished successfully", plan.Id.ValueString()))

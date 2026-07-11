@@ -155,7 +155,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 				{{- end}}
 				{{- if .Computed}}
 				PlanModifiers: []planmodifier.{{.Type}}{
+					{{- if .ComputedWhen}}
+					helpers.ComputedWhen("{{computedWhenAttr .ComputedWhen}}", {{computedWhenValue .ComputedWhen}}),
+					{{- else}}
 					{{snakeCase .Type}}planmodifier.UseStateForUnknown(),
+					{{- end}}
 				},
 				{{- end}}
 				{{- if isNestedListSet .}}
@@ -1088,7 +1092,24 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	}
 	{{- end}}
 	{{- end}}
-	
+	{{- if hasComputedWhen .Attributes}}
+
+	res, err = r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to read back updated object (GET), got error: %s, %s", err, res.String()))
+		return
+	}
+	{{- range .Attributes}}
+	{{- if .ComputedWhen}}
+	if value := res.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && value.String() != "" {
+		plan.{{toGoName .TfName}} = types.StringValue(value.String())
+	} else {
+		plan.{{toGoName .TfName}} = types.StringNull()
+	}
+	{{- end}}
+	{{- end}}
+	{{- end}}
+
 	tflog.Debug(ctx, fmt.Sprintf("%s: Update finished successfully", plan.Id.ValueString()))
 
 	diags = resp.State.Set(ctx, &plan)
