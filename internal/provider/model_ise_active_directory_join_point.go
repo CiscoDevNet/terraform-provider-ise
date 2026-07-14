@@ -187,7 +187,7 @@ func (data ActiveDirectoryJoinPoint) toBody(ctx context.Context, state ActiveDir
 	if !data.PlaintextAuth.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.plaintextAuth", data.PlaintextAuth.ValueBool())
 	}
-	if !data.AgingTime.IsNull() {
+	if !data.AgingTime.IsNull() && data.AgingTime != state.AgingTime {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.agingTime", data.AgingTime.ValueInt64())
 	}
 	if !data.EnableCallbackForDialinClient.IsNull() {
