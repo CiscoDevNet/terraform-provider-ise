@@ -39,3 +39,6 @@ website/vendor
 
 # SBOM files generated during release
 *_sbom.*.json
+
+# Compiled provider binary (built via `go install` / `go build`)
+/terraform-provider-ise

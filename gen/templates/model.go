@@ -624,7 +624,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 	{{- else if eq .Type "Map"}}
 	if value := res.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() {
 		{{- if .FilterEmptyValues}}
-		data.{{toGoName .TfName}} = helpers.GetStringMapFiltered(value.Map(), data.{{toGoName .TfName}})
+		data.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(value.Map())
 		{{- else}}
 		data.{{toGoName .TfName}} = helpers.GetStringMap(value.Map())
 		{{- end}}
@@ -660,7 +660,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 			{{- else if eq .Type "Map"}}
 			if cValue := v.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cValue.Exists() {
 				{{- if .FilterEmptyValues}}
-				item.{{toGoName .TfName}} = helpers.GetStringMapFiltered(cValue.Map(), item.{{toGoName .TfName}})
+				item.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(cValue.Map())
 				{{- else}}
 				item.{{toGoName .TfName}} = helpers.GetStringMap(cValue.Map())
 				{{- end}}
@@ -695,7 +695,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 					{{- else if eq .Type "Map"}}
 					if ccValue := cv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccValue.Exists() {
 						{{- if .FilterEmptyValues}}
-						cItem.{{toGoName .TfName}} = helpers.GetStringMapFiltered(ccValue.Map(), cItem.{{toGoName .TfName}})
+						cItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(ccValue.Map())
 						{{- else}}
 						cItem.{{toGoName .TfName}} = helpers.GetStringMap(ccValue.Map())
 						{{- end}}
@@ -731,7 +731,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 							{{- else if eq .Type "Map"}}
 							if cccValue := ccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccValue.Exists() {
 								{{- if .FilterEmptyValues}}
-								ccItem.{{toGoName .TfName}} = helpers.GetStringMapFiltered(cccValue.Map(), ccItem.{{toGoName .TfName}})
+								ccItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(cccValue.Map())
 								{{- else}}
 								ccItem.{{toGoName .TfName}} = helpers.GetStringMap(cccValue.Map())
 								{{- end}}
@@ -767,7 +767,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 									{{- else if eq .Type "Map"}}
 									if ccccValue := cccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccccValue.Exists() {
 										{{- if .FilterEmptyValues}}
-										cccItem.{{toGoName .TfName}} = helpers.GetStringMapFiltered(ccccValue.Map(), cccItem.{{toGoName .TfName}})
+										cccItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(ccccValue.Map())
 										{{- else}}
 										cccItem.{{toGoName .TfName}} = helpers.GetStringMap(ccccValue.Map())
 										{{- end}}
@@ -801,7 +801,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 											{{- else if eq .Type "Map"}}
 											if cccccValue := ccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccccValue.Exists() {
 												{{- if .FilterEmptyValues}}
-												ccccItem.{{toGoName .TfName}} = helpers.GetStringMapFiltered(cccccValue.Map(), ccccItem.{{toGoName .TfName}})
+												ccccItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(cccccValue.Map())
 												{{- else}}
 												ccccItem.{{toGoName .TfName}} = helpers.GetStringMap(cccccValue.Map())
 												{{- end}}
@@ -834,7 +834,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 													{{- else if eq .Type "Map"}}
 													if ccccccValue := cccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccccccValue.Exists() {
 														{{- if .FilterEmptyValues}}
-														cccccItem.{{toGoName .TfName}} = helpers.GetStringMapFiltered(ccccccValue.Map(), cccccItem.{{toGoName .TfName}})
+														cccccItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(ccccccValue.Map())
 														{{- else}}
 														cccccItem.{{toGoName .TfName}} = helpers.GetStringMap(ccccccValue.Map())
 														{{- end}}
