@@ -22,245 +22,53 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"fmt"
-	"net/url"
-	"strconv"
 
-	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type Endpoint struct {
-	Id types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Mac types.String `tfsdk:"mac"`
-	GroupId types.String `tfsdk:"group_id"`
-	ProfileId types.String `tfsdk:"profile_id"`
-	StaticProfileAssignment types.Bool `tfsdk:"static_profile_assignment"`
-	StaticProfileAssignmentDefined types.Bool `tfsdk:"static_profile_assignment_defined"`
-	StaticGroupAssignment types.Bool `tfsdk:"static_group_assignment"`
-	StaticGroupAssignmentDefined types.Bool `tfsdk:"static_group_assignment_defined"`
-	CustomAttributes types.Map `tfsdk:"custom_attributes"`
-	IdentityStore types.String `tfsdk:"identity_store"`
-	IdentityStoreId types.String `tfsdk:"identity_store_id"`
-	PortalUser types.String `tfsdk:"portal_user"`
-	MdmServerName types.String `tfsdk:"mdm_server_name"`
-	MdmReachable types.Bool `tfsdk:"mdm_reachable"`
-	MdmEnrolled types.Bool `tfsdk:"mdm_enrolled"`
-	MdmComplianceStatus types.Bool `tfsdk:"mdm_compliance_status"`
-	MdmOs types.String `tfsdk:"mdm_os"`
-	MdmManufacturer types.String `tfsdk:"mdm_manufacturer"`
-	MdmModel types.String `tfsdk:"mdm_model"`
-	MdmSerial types.String `tfsdk:"mdm_serial"`
-	MdmEncrypted types.Bool `tfsdk:"mdm_encrypted"`
-	MdmPinlock types.Bool `tfsdk:"mdm_pinlock"`
-	MdmJailBroken types.Bool `tfsdk:"mdm_jail_broken"`
-	MdmImei types.String `tfsdk:"mdm_imei"`
-	MdmPhoneNumber types.String `tfsdk:"mdm_phone_number"`
+	Id                             types.String `tfsdk:"id"`
+	Name                           types.String `tfsdk:"name"`
+	Description                    types.String `tfsdk:"description"`
+	Mac                            types.String `tfsdk:"mac"`
+	GroupId                        types.String `tfsdk:"group_id"`
+	ProfileId                      types.String `tfsdk:"profile_id"`
+	StaticProfileAssignment        types.Bool   `tfsdk:"static_profile_assignment"`
+	StaticProfileAssignmentDefined types.Bool   `tfsdk:"static_profile_assignment_defined"`
+	StaticGroupAssignment          types.Bool   `tfsdk:"static_group_assignment"`
+	StaticGroupAssignmentDefined   types.Bool   `tfsdk:"static_group_assignment_defined"`
+	CustomAttributes               types.Map    `tfsdk:"custom_attributes"`
+	IdentityStore                  types.String `tfsdk:"identity_store"`
+	IdentityStoreId                types.String `tfsdk:"identity_store_id"`
+	PortalUser                     types.String `tfsdk:"portal_user"`
+	MdmServerName                  types.String `tfsdk:"mdm_server_name"`
+	MdmReachable                   types.Bool   `tfsdk:"mdm_reachable"`
+	MdmEnrolled                    types.Bool   `tfsdk:"mdm_enrolled"`
+	MdmComplianceStatus            types.Bool   `tfsdk:"mdm_compliance_status"`
+	MdmOs                          types.String `tfsdk:"mdm_os"`
+	MdmManufacturer                types.String `tfsdk:"mdm_manufacturer"`
+	MdmModel                       types.String `tfsdk:"mdm_model"`
+	MdmSerial                      types.String `tfsdk:"mdm_serial"`
+	MdmEncrypted                   types.Bool   `tfsdk:"mdm_encrypted"`
+	MdmPinlock                     types.Bool   `tfsdk:"mdm_pinlock"`
+	MdmJailBroken                  types.Bool   `tfsdk:"mdm_jail_broken"`
+	MdmImei                        types.String `tfsdk:"mdm_imei"`
+	MdmPhoneNumber                 types.String `tfsdk:"mdm_phone_number"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data Endpoint) getPath() string {
-		return "/ers/config/endpoint"
+	return "/ers/config/endpoint"
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -270,13 +78,13 @@ func (data Endpoint) getPath() string {
 //template:begin toBody
 func (data Endpoint) toBody(ctx context.Context, state Endpoint) string {
 	body := ""
-	if !data.Name.IsNull()  {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()  {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.description", data.Description.ValueString())
 	}
-	if !data.Mac.IsNull()  {
+	if !data.Mac.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.mac", data.Mac.ValueString())
 	}
 	if !data.GroupId.IsNull() && !data.GroupId.IsUnknown() {
@@ -285,16 +93,16 @@ func (data Endpoint) toBody(ctx context.Context, state Endpoint) string {
 	if !data.ProfileId.IsNull() && !data.ProfileId.IsUnknown() {
 		body, _ = sjson.Set(body, "ERSEndPoint.profileId", data.ProfileId.ValueString())
 	}
-	if !data.StaticProfileAssignment.IsNull()  {
+	if !data.StaticProfileAssignment.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.staticProfileAssignment", data.StaticProfileAssignment.ValueBool())
 	}
-	if !data.StaticProfileAssignmentDefined.IsNull()  {
+	if !data.StaticProfileAssignmentDefined.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.staticProfileAssignmentDefined", data.StaticProfileAssignmentDefined.ValueBool())
 	}
-	if !data.StaticGroupAssignment.IsNull()  {
+	if !data.StaticGroupAssignment.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.staticGroupAssignment", data.StaticGroupAssignment.ValueBool())
 	}
-	if !data.StaticGroupAssignmentDefined.IsNull()  {
+	if !data.StaticGroupAssignmentDefined.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.staticGroupAssignmentDefined", data.StaticGroupAssignmentDefined.ValueBool())
 	}
 	if !data.CustomAttributes.IsNull() {
@@ -302,56 +110,57 @@ func (data Endpoint) toBody(ctx context.Context, state Endpoint) string {
 		data.CustomAttributes.ElementsAs(ctx, &values, false)
 		body, _ = sjson.Set(body, "ERSEndPoint.customAttributes.customAttributes", values)
 	}
-	if !data.IdentityStore.IsNull()  {
+	if !data.IdentityStore.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.identityStore", data.IdentityStore.ValueString())
 	}
-	if !data.IdentityStoreId.IsNull()  {
+	if !data.IdentityStoreId.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.identityStoreId", data.IdentityStoreId.ValueString())
 	}
-	if !data.PortalUser.IsNull()  {
+	if !data.PortalUser.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.portalUser", data.PortalUser.ValueString())
 	}
-	if !data.MdmServerName.IsNull()  {
+	if !data.MdmServerName.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.mdmAttributes.mdmServerName", data.MdmServerName.ValueString())
 	}
-	if !data.MdmReachable.IsNull()  {
+	if !data.MdmReachable.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.mdmAttributes.mdmReachable", data.MdmReachable.ValueBool())
 	}
-	if !data.MdmEnrolled.IsNull()  {
+	if !data.MdmEnrolled.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.mdmAttributes.mdmEnrolled", data.MdmEnrolled.ValueBool())
 	}
-	if !data.MdmComplianceStatus.IsNull()  {
+	if !data.MdmComplianceStatus.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.mdmAttributes.mdmComplianceStatus", data.MdmComplianceStatus.ValueBool())
 	}
-	if !data.MdmOs.IsNull()  {
+	if !data.MdmOs.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.mdmAttributes.mdmOS", data.MdmOs.ValueString())
 	}
-	if !data.MdmManufacturer.IsNull()  {
+	if !data.MdmManufacturer.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.mdmAttributes.mdmManufacturer", data.MdmManufacturer.ValueString())
 	}
-	if !data.MdmModel.IsNull()  {
+	if !data.MdmModel.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.mdmAttributes.mdmModel", data.MdmModel.ValueString())
 	}
-	if !data.MdmSerial.IsNull()  {
+	if !data.MdmSerial.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.mdmAttributes.mdmSerial", data.MdmSerial.ValueString())
 	}
-	if !data.MdmEncrypted.IsNull()  {
+	if !data.MdmEncrypted.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.mdmAttributes.mdmEncrypted", data.MdmEncrypted.ValueBool())
 	}
-	if !data.MdmPinlock.IsNull()  {
+	if !data.MdmPinlock.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.mdmAttributes.mdmPinlock", data.MdmPinlock.ValueBool())
 	}
-	if !data.MdmJailBroken.IsNull()  {
+	if !data.MdmJailBroken.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.mdmAttributes.mdmJailBroken", data.MdmJailBroken.ValueBool())
 	}
-	if !data.MdmImei.IsNull()  {
+	if !data.MdmImei.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.mdmAttributes.mdmIMEI", data.MdmImei.ValueString())
 	}
-	if !data.MdmPhoneNumber.IsNull()  {
+	if !data.MdmPhoneNumber.IsNull() {
 		body, _ = sjson.Set(body, "ERSEndPoint.mdmAttributes.mdmPhoneNumber", data.MdmPhoneNumber.ValueString())
 	}
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -495,6 +304,7 @@ func (data *Endpoint) fromBody(ctx context.Context, res gjson.Result) {
 		data.MdmPhoneNumber = types.StringNull()
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -630,6 +440,7 @@ func (data *Endpoint) updateFromBody(ctx context.Context, res gjson.Result) {
 		data.MdmPhoneNumber = types.StringNull()
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -714,4 +525,5 @@ func (data *Endpoint) isNull(ctx context.Context, res gjson.Result) bool {
 	}
 	return true
 }
+
 //template:end isNull

@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAcc
@@ -34,16 +35,17 @@ func TestAccIseNetworkAccessAuthorizationExceptionRuleUpdateRanks(t *testing.T) 
 
 	var steps []resource.TestStep
 	steps = append(steps, resource.TestStep{
-		Config: testAccIseNetworkAccessAuthorizationExceptionRuleUpdateRanksPrerequisitesConfig+testAccIseNetworkAccessAuthorizationExceptionRuleUpdateRanksConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Config: testAccIseNetworkAccessAuthorizationExceptionRuleUpdateRanksPrerequisitesConfig + testAccIseNetworkAccessAuthorizationExceptionRuleUpdateRanksConfig_all(),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
-	
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
+
 //template:end testAcc
 
 //template:begin testPrerequisites
@@ -74,6 +76,7 @@ resource "ise_network_access_authorization_exception_rule" "test" {
 }
 
 `
+
 //template:end testPrerequisites
 
 //template:begin testAccConfigMinimal
@@ -85,6 +88,7 @@ func testAccIseNetworkAccessAuthorizationExceptionRuleUpdateRanksConfig_minimum(
 	config += `}` + "\n"
 	return config
 }
+
 //template:end testAccConfigMinimal
 
 //template:begin testAccConfigAll
@@ -98,4 +102,5 @@ func testAccIseNetworkAccessAuthorizationExceptionRuleUpdateRanksConfig_all() st
 	config += `}` + "\n"
 	return config
 }
+
 //template:end testAccConfigAll

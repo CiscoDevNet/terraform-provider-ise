@@ -21,16 +21,18 @@ package provider
 
 //template:begin imports
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
 func TestAccDataSourceIseCertificateAuthenticationProfile(t *testing.T) {
 	if os.Getenv("CERT_PROFILE") == "" {
-        t.Skip("skipping test, set environment variable CERT_PROFILE")
+		t.Skip("skipping test, set environment variable CERT_PROFILE")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_certificate_authentication_profile.test", "name", "CertProf1"))
@@ -46,11 +48,12 @@ func TestAccDataSourceIseCertificateAuthenticationProfile(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseCertificateAuthenticationProfileConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -67,7 +70,7 @@ func testAccDataSourceIseCertificateAuthenticationProfileConfig() string {
 	config += `	match_mode = "NEVER"` + "\n"
 	config += `	username_from = "CERTIFICATE"` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_certificate_authentication_profile" "test" {
 			id = ise_certificate_authentication_profile.test.id
@@ -75,4 +78,5 @@ func testAccDataSourceIseCertificateAuthenticationProfileConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

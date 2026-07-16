@@ -22,61 +22,29 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"fmt"
-	"net/url"
-	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type TrustSecWorkProcessSettings struct {
-	Id types.String `tfsdk:"id"`
-	MatrixMode types.String `tfsdk:"matrix_mode"`
-	UseDefcons types.Bool `tfsdk:"use_defcons"`
-	EnableApprovalWorkflow types.Bool `tfsdk:"enable_approval_workflow"`
+	Id                     types.String `tfsdk:"id"`
+	MatrixMode             types.String `tfsdk:"matrix_mode"`
+	UseDefcons             types.Bool   `tfsdk:"use_defcons"`
+	EnableApprovalWorkflow types.Bool   `tfsdk:"enable_approval_workflow"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data TrustSecWorkProcessSettings) getPath() string {
-		return "/api/v1/trustsec/matrix-workflow-settings"
+	return "/api/v1/trustsec/matrix-workflow-settings"
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -86,17 +54,18 @@ func (data TrustSecWorkProcessSettings) getPath() string {
 //template:begin toBody
 func (data TrustSecWorkProcessSettings) toBody(ctx context.Context, state TrustSecWorkProcessSettings) string {
 	body := ""
-	if !data.MatrixMode.IsNull()  {
+	if !data.MatrixMode.IsNull() {
 		body, _ = sjson.Set(body, "matrixMode", data.MatrixMode.ValueString())
 	}
-	if !data.UseDefcons.IsNull()  {
+	if !data.UseDefcons.IsNull() {
 		body, _ = sjson.Set(body, "useDefcons", data.UseDefcons.ValueBool())
 	}
-	if !data.EnableApprovalWorkflow.IsNull()  {
+	if !data.EnableApprovalWorkflow.IsNull() {
 		body, _ = sjson.Set(body, "approvalWorkflow.enableApprovalWorkflow", data.EnableApprovalWorkflow.ValueBool())
 	}
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -117,6 +86,7 @@ func (data *TrustSecWorkProcessSettings) fromBody(ctx context.Context, res gjson
 		data.EnableApprovalWorkflow = types.BoolValue(false)
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -137,6 +107,7 @@ func (data *TrustSecWorkProcessSettings) updateFromBody(ctx context.Context, res
 		data.EnableApprovalWorkflow = types.BoolNull()
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -152,4 +123,5 @@ func (data *TrustSecWorkProcessSettings) isNull(ctx context.Context, res gjson.R
 	}
 	return true
 }
+
 //template:end isNull

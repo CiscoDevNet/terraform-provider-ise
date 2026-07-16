@@ -24,93 +24,38 @@ import (
 	"context"
 	"fmt"
 	"net/url"
-	"strconv"
 
-	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type ActiveDirectoryGroupsByDomain struct {
-	JoinPointId types.String `tfsdk:"join_point_id"`
-	Domain types.String `tfsdk:"domain"`
-	Filter types.String `tfsdk:"filter"`
-	SidFilter types.String `tfsdk:"sid_filter"`
-	TypeFilter types.String `tfsdk:"type_filter"`
-	Groups []ActiveDirectoryGroupsByDomainGroups `tfsdk:"groups"`
+	JoinPointId types.String                          `tfsdk:"join_point_id"`
+	Domain      types.String                          `tfsdk:"domain"`
+	Filter      types.String                          `tfsdk:"filter"`
+	SidFilter   types.String                          `tfsdk:"sid_filter"`
+	TypeFilter  types.String                          `tfsdk:"type_filter"`
+	Groups      []ActiveDirectoryGroupsByDomainGroups `tfsdk:"groups"`
 }
-
-
-
-
-
-
 
 type ActiveDirectoryGroupsByDomainGroups struct {
 	Name types.String `tfsdk:"name"`
-	Sid types.String `tfsdk:"sid"`
+	Sid  types.String `tfsdk:"sid"`
 	Type types.String `tfsdk:"type"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data ActiveDirectoryGroupsByDomain) getPath() string {
-		return fmt.Sprintf("/ers/config/activedirectory/%v/getGroupsByDomain", url.QueryEscape(data.JoinPointId.ValueString()))
+	return fmt.Sprintf("/ers/config/activedirectory/%v/getGroupsByDomain", url.QueryEscape(data.JoinPointId.ValueString()))
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -120,16 +65,16 @@ func (data ActiveDirectoryGroupsByDomain) getPath() string {
 //template:begin toBody
 func (data ActiveDirectoryGroupsByDomain) toBody(ctx context.Context, state ActiveDirectoryGroupsByDomain) string {
 	body := ""
-	if !data.Domain.IsNull()  {
+	if !data.Domain.IsNull() {
 		body, _ = sjson.Set(body, "Domain", data.Domain.ValueString())
 	}
-	if !data.Filter.IsNull()  {
+	if !data.Filter.IsNull() {
 		body, _ = sjson.Set(body, "filter", data.Filter.ValueString())
 	}
-	if !data.SidFilter.IsNull()  {
+	if !data.SidFilter.IsNull() {
 		body, _ = sjson.Set(body, "sidFilter", data.SidFilter.ValueString())
 	}
-	if !data.TypeFilter.IsNull()  {
+	if !data.TypeFilter.IsNull() {
 		body, _ = sjson.Set(body, "typeFilter", data.TypeFilter.ValueString())
 	}
 	if len(data.Groups) > 0 {
@@ -150,6 +95,7 @@ func (data ActiveDirectoryGroupsByDomain) toBody(ctx context.Context, state Acti
 	}
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -198,6 +144,7 @@ func (data *ActiveDirectoryGroupsByDomain) fromBody(ctx context.Context, res gjs
 		})
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -223,8 +170,8 @@ func (data *ActiveDirectoryGroupsByDomain) updateFromBody(ctx context.Context, r
 		data.TypeFilter = types.StringNull()
 	}
 	for i := range data.Groups {
-		keys := [...]string{ "name", "sid", "type",  }
-		keyValues := [...]string{ data.Groups[i].Name.ValueString(), data.Groups[i].Sid.ValueString(), data.Groups[i].Type.ValueString(),  }
+		keys := [...]string{"name", "sid", "type"}
+		keyValues := [...]string{data.Groups[i].Name.ValueString(), data.Groups[i].Sid.ValueString(), data.Groups[i].Type.ValueString()}
 
 		var r gjson.Result
 		parentItems := res.Get("ERSActiveDirectoryGroups.groups").Array()
@@ -268,6 +215,7 @@ func (data *ActiveDirectoryGroupsByDomain) updateFromBody(ctx context.Context, r
 		}
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -289,4 +237,5 @@ func (data *ActiveDirectoryGroupsByDomain) isNull(ctx context.Context, res gjson
 	}
 	return true
 }
+
 //template:end isNull

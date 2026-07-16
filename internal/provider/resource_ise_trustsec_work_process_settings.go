@@ -23,34 +23,21 @@ package provider
 import (
 	"context"
 	"fmt"
-	"net/url"
-	"sort"
 	"strings"
-	"sync"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
-	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
-	"github.com/tidwall/gjson"
-	"github.com/tidwall/sjson"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 )
+
 //template:end imports
 
 //template:begin header
@@ -69,6 +56,7 @@ type TrustSecWorkProcessSettingsResource struct {
 func (r *TrustSecWorkProcessSettingsResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_trustsec_work_process_settings"
 }
+
 //template:end header
 
 //template:begin model
@@ -86,10 +74,10 @@ func (r *TrustSecWorkProcessSettingsResource) Schema(ctx context.Context, req re
 				},
 			},
 			"matrix_mode": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("TrustSec Matrix Mode").AddStringEnumDescription("SINGLE_MATRIX", "MULTIPLE_MATRICES", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("TrustSec Matrix Mode").AddStringEnumDescription("SINGLE_MATRIX", "MULTIPLE_MATRICES").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("SINGLE_MATRIX", "MULTIPLE_MATRICES", ),
+					stringvalidator.OneOf("SINGLE_MATRIX", "MULTIPLE_MATRICES"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -108,6 +96,7 @@ func (r *TrustSecWorkProcessSettingsResource) Schema(ctx context.Context, req re
 		},
 	}
 }
+
 //template:end model
 
 //template:begin configure
@@ -118,6 +107,7 @@ func (r *TrustSecWorkProcessSettingsResource) Configure(_ context.Context, req r
 
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
+
 //template:end configure
 
 //template:begin create
@@ -136,7 +126,7 @@ func (r *TrustSecWorkProcessSettingsResource) Create(ctx context.Context, req re
 	// Create object
 	body := plan.toBody(ctx, TrustSecWorkProcessSettings{})
 	params := ""
-	res, err := r.client.Put(plan.getPath() + params, body)
+	res, err := r.client.Put(plan.getPath()+params, body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -148,6 +138,7 @@ func (r *TrustSecWorkProcessSettingsResource) Create(ctx context.Context, req re
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end create
 
 //template:begin read
@@ -183,12 +174,12 @@ func (r *TrustSecWorkProcessSettingsResource) Read(ctx context.Context, req reso
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end read
 
 //template:begin update
 func (r *TrustSecWorkProcessSettingsResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state TrustSecWorkProcessSettings
-
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -205,7 +196,7 @@ func (r *TrustSecWorkProcessSettingsResource) Update(ctx context.Context, req re
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	body := plan.toBody(ctx, state)
-	
+
 	res, err := r.client.Put(plan.getPath(), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
@@ -217,6 +208,7 @@ func (r *TrustSecWorkProcessSettingsResource) Update(ctx context.Context, req re
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end update
 
 func (r *TrustSecWorkProcessSettingsResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

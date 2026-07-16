@@ -24,33 +24,19 @@ import (
 	"context"
 	"fmt"
 	"net/url"
-	"sort"
 	"strings"
-	"sync"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
-	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
-	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 )
+
 //template:end imports
 
 //template:begin header
@@ -69,6 +55,7 @@ type DeviceAdminAuthorizationExceptionRuleUpdateRankResource struct {
 func (r *DeviceAdminAuthorizationExceptionRuleUpdateRankResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_device_admin_authorization_exception_rule_update_rank"
 }
+
 //template:end header
 
 //template:begin model
@@ -106,6 +93,7 @@ func (r *DeviceAdminAuthorizationExceptionRuleUpdateRankResource) Schema(ctx con
 		},
 	}
 }
+
 //template:end model
 
 //template:begin configure
@@ -116,6 +104,7 @@ func (r *DeviceAdminAuthorizationExceptionRuleUpdateRankResource) Configure(_ co
 
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
+
 //template:end configure
 
 //template:begin create
@@ -156,6 +145,7 @@ func (r *DeviceAdminAuthorizationExceptionRuleUpdateRankResource) Create(ctx con
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end create
 
 //template:begin read
@@ -191,13 +181,13 @@ func (r *DeviceAdminAuthorizationExceptionRuleUpdateRankResource) Read(ctx conte
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end read
 
 //template:begin update
 func (r *DeviceAdminAuthorizationExceptionRuleUpdateRankResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state DeviceAdminAuthorizationExceptionRuleUpdateRank
 	var existingData DeviceAdminAuthorizationExceptionRule
-
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -213,7 +203,7 @@ func (r *DeviceAdminAuthorizationExceptionRuleUpdateRankResource) Update(ctx con
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
-	
+
 	// Read existing attributes from the API
 	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.RuleId.ValueString()))
 	if err != nil {
@@ -239,6 +229,7 @@ func (r *DeviceAdminAuthorizationExceptionRuleUpdateRankResource) Update(ctx con
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end update
 
 //template:begin delete
@@ -258,6 +249,7 @@ func (r *DeviceAdminAuthorizationExceptionRuleUpdateRankResource) Delete(ctx con
 
 	resp.State.RemoveResource(ctx)
 }
+
 //template:end delete
 
 //template:begin import

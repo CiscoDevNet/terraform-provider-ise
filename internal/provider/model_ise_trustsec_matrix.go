@@ -22,77 +22,31 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"fmt"
-	"net/url"
-	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type TrustSecMatrix struct {
-	Id types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	DefconLevel types.String `tfsdk:"defcon_level"`
+	Id               types.String `tfsdk:"id"`
+	Name             types.String `tfsdk:"name"`
+	Description      types.String `tfsdk:"description"`
+	DefconLevel      types.String `tfsdk:"defcon_level"`
 	MatrixPolicyType types.String `tfsdk:"matrix_policy_type"`
-	CopyPolicyFrom types.String `tfsdk:"copy_policy_from"`
+	CopyPolicyFrom   types.String `tfsdk:"copy_policy_from"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data TrustSecMatrix) getPath() string {
-		return "/api/v1/trustsec/matrix"
+	return "/api/v1/trustsec/matrix"
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -102,23 +56,24 @@ func (data TrustSecMatrix) getPath() string {
 //template:begin toBody
 func (data TrustSecMatrix) toBody(ctx context.Context, state TrustSecMatrix) string {
 	body := ""
-	if !data.Name.IsNull()  {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()  {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.DefconLevel.IsNull()  {
+	if !data.DefconLevel.IsNull() {
 		body, _ = sjson.Set(body, "defconLevel", data.DefconLevel.ValueString())
 	}
-	if !data.MatrixPolicyType.IsNull()  {
+	if !data.MatrixPolicyType.IsNull() {
 		body, _ = sjson.Set(body, "matrixPolicyType", data.MatrixPolicyType.ValueString())
 	}
-	if !data.CopyPolicyFrom.IsNull()  {
+	if !data.CopyPolicyFrom.IsNull() {
 		body, _ = sjson.Set(body, "copyPolicyFrom", data.CopyPolicyFrom.ValueString())
 	}
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -144,6 +99,7 @@ func (data *TrustSecMatrix) fromBody(ctx context.Context, res gjson.Result) {
 		data.MatrixPolicyType = types.StringNull()
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -169,6 +125,7 @@ func (data *TrustSecMatrix) updateFromBody(ctx context.Context, res gjson.Result
 		data.MatrixPolicyType = types.StringNull()
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -190,4 +147,5 @@ func (data *TrustSecMatrix) isNull(ctx context.Context, res gjson.Result) bool {
 	}
 	return true
 }
+
 //template:end isNull

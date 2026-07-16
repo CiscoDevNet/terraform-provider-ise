@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -42,11 +43,12 @@ func TestAccDataSourceIseTACACSCommandSet(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseTACACSCommandSetConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -64,7 +66,7 @@ func testAccDataSourceIseTACACSCommandSetConfig() string {
 	config += `	  arguments = ""` + "\n"
 	config += `	}]` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_tacacs_command_set" "test" {
 			id = ise_tacacs_command_set.test.id
@@ -72,4 +74,5 @@ func testAccDataSourceIseTACACSCommandSetConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

@@ -24,33 +24,22 @@ import (
 	"context"
 	"fmt"
 	"net/url"
-	"sort"
 	"strings"
-	"sync"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
-	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 )
+
 //template:end imports
 
 //template:begin header
@@ -70,6 +59,7 @@ type DeviceAdminPolicySetResource struct {
 func (r *DeviceAdminPolicySetResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_device_admin_policy_set"
 }
+
 //template:end header
 
 //template:begin model
@@ -107,10 +97,10 @@ func (r *DeviceAdminPolicySetResource) Schema(ctx context.Context, req resource.
 				Required:            true,
 			},
 			"state": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The state that the policy set is in. A disabled policy set cannot be matched.").AddStringEnumDescription("disabled", "enabled", "monitor", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("The state that the policy set is in. A disabled policy set cannot be matched.").AddStringEnumDescription("disabled", "enabled", "monitor").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("disabled", "enabled", "monitor", ),
+					stringvalidator.OneOf("disabled", "enabled", "monitor"),
 				},
 			},
 			"default": schema.BoolAttribute{
@@ -118,10 +108,10 @@ func (r *DeviceAdminPolicySetResource) Schema(ctx context.Context, req resource.
 				Optional:            true,
 			},
 			"condition_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", ),
+					stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference"),
 				},
 			},
 			"condition_id": schema.StringAttribute{
@@ -149,10 +139,10 @@ func (r *DeviceAdminPolicySetResource) Schema(ctx context.Context, req resource.
 				Optional:            true,
 			},
 			"condition_operator": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith", ),
+					stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith"),
 				},
 			},
 			"children": schema.ListNestedAttribute{
@@ -161,10 +151,10 @@ func (r *DeviceAdminPolicySetResource) Schema(ctx context.Context, req resource.
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"condition_type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Indicates whether the record is the condition itself or a logical aggregation. Logical aggreation indicates that additional conditions are present under the children attribute.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference").String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", ),
+								stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference"),
 							},
 						},
 						"id": schema.StringAttribute{
@@ -192,10 +182,10 @@ func (r *DeviceAdminPolicySetResource) Schema(ctx context.Context, req resource.
 							Optional:            true,
 						},
 						"operator": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith").String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith", ),
+								stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith"),
 							},
 						},
 						"children": schema.ListNestedAttribute{
@@ -204,10 +194,10 @@ func (r *DeviceAdminPolicySetResource) Schema(ctx context.Context, req resource.
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"condition_type": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", ).String,
+										MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference").String,
 										Required:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", ),
+											stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference"),
 										},
 									},
 									"id": schema.StringAttribute{
@@ -235,10 +225,10 @@ func (r *DeviceAdminPolicySetResource) Schema(ctx context.Context, req resource.
 										Optional:            true,
 									},
 									"operator": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", ).String,
+										MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith").String,
 										Optional:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", ),
+											stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
 										},
 									},
 									"children": schema.ListNestedAttribute{
@@ -247,10 +237,10 @@ func (r *DeviceAdminPolicySetResource) Schema(ctx context.Context, req resource.
 										NestedObject: schema.NestedAttributeObject{
 											Attributes: map[string]schema.Attribute{
 												"condition_type": schema.StringAttribute{
-													MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", ).String,
+													MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference").String,
 													Required:            true,
 													Validators: []validator.String{
-														stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", ),
+														stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference"),
 													},
 												},
 												"id": schema.StringAttribute{
@@ -278,10 +268,10 @@ func (r *DeviceAdminPolicySetResource) Schema(ctx context.Context, req resource.
 													Optional:            true,
 												},
 												"operator": schema.StringAttribute{
-													MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", ).String,
+													MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith").String,
 													Optional:            true,
 													Validators: []validator.String{
-														stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", ),
+														stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
 													},
 												},
 												"children": schema.ListNestedAttribute{
@@ -290,10 +280,10 @@ func (r *DeviceAdminPolicySetResource) Schema(ctx context.Context, req resource.
 													NestedObject: schema.NestedAttributeObject{
 														Attributes: map[string]schema.Attribute{
 															"condition_type": schema.StringAttribute{
-																MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", ).String,
+																MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference").String,
 																Required:            true,
 																Validators: []validator.String{
-																	stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", ),
+																	stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference"),
 																},
 															},
 															"id": schema.StringAttribute{
@@ -321,10 +311,10 @@ func (r *DeviceAdminPolicySetResource) Schema(ctx context.Context, req resource.
 																Optional:            true,
 															},
 															"operator": schema.StringAttribute{
-																MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", ).String,
+																MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith").String,
 																Optional:            true,
 																Validators: []validator.String{
-																	stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", ),
+																	stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
 																},
 															},
 															"children": schema.ListNestedAttribute{
@@ -333,97 +323,88 @@ func (r *DeviceAdminPolicySetResource) Schema(ctx context.Context, req resource.
 																NestedObject: schema.NestedAttributeObject{
 																	Attributes: map[string]schema.Attribute{
 																		"condition_type": schema.StringAttribute{
-																			MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", ).String,
+																			MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference").String,
 																			Required:            true,
 																			Validators: []validator.String{
-																				stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference", ),
+																				stringvalidator.OneOf("ConditionAndBlock", "ConditionAttributes", "ConditionOrBlock", "ConditionReference"),
 																			},
-
 																		},
 																		"id": schema.StringAttribute{
 																			MarkdownDescription: helpers.NewAttributeDescription("UUID for condition").String,
 																			Optional:            true,
-
 																		},
 																		"is_negate": schema.BoolAttribute{
 																			MarkdownDescription: helpers.NewAttributeDescription("Indicates whereas this condition is in negate mode").String,
 																			Optional:            true,
-
 																		},
 																		"attribute_name": schema.StringAttribute{
 																			MarkdownDescription: helpers.NewAttributeDescription("Dictionary attribute name").String,
 																			Optional:            true,
-
 																		},
 																		"attribute_value": schema.StringAttribute{
 																			MarkdownDescription: helpers.NewAttributeDescription("Attribute value for condition").String,
 																			Optional:            true,
-
 																		},
 																		"dictionary_name": schema.StringAttribute{
 																			MarkdownDescription: helpers.NewAttributeDescription("Dictionary name").String,
 																			Optional:            true,
-
 																		},
 																		"dictionary_value": schema.StringAttribute{
 																			MarkdownDescription: helpers.NewAttributeDescription("Dictionary value").String,
 																			Optional:            true,
-
 																		},
 																		"operator": schema.StringAttribute{
-																			MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", ).String,
+																			MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith").String,
 																			Optional:            true,
 																			Validators: []validator.String{
-																				stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", ),
+																				stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
 																			},
-
 																		},
 																		"children": schema.ListNestedAttribute{
 																			MarkdownDescription: helpers.NewAttributeDescription("List of child conditions").String,
 																			Optional:            true,
-																		NestedObject: schema.NestedAttributeObject{
-																			Attributes: map[string]schema.Attribute{
-																				"condition_type": schema.StringAttribute{
-																					MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAttributes", "ConditionReference", ).String,
-																					Required:            true,
-																					Validators: []validator.String{
-																						stringvalidator.OneOf("ConditionAttributes", "ConditionReference", ),
+																			NestedObject: schema.NestedAttributeObject{
+																				Attributes: map[string]schema.Attribute{
+																					"condition_type": schema.StringAttribute{
+																						MarkdownDescription: helpers.NewAttributeDescription("Condition type.").AddStringEnumDescription("ConditionAttributes", "ConditionReference").String,
+																						Required:            true,
+																						Validators: []validator.String{
+																							stringvalidator.OneOf("ConditionAttributes", "ConditionReference"),
+																						},
 																					},
-																				},
-																				"id": schema.StringAttribute{
-																					MarkdownDescription: helpers.NewAttributeDescription("UUID for condition").String,
-																					Optional:            true,
-																				},
-																				"is_negate": schema.BoolAttribute{
-																					MarkdownDescription: helpers.NewAttributeDescription("Indicates whereas this condition is in negate mode").String,
-																					Optional:            true,
-																				},
-																				"attribute_name": schema.StringAttribute{
-																					MarkdownDescription: helpers.NewAttributeDescription("Dictionary attribute name").String,
-																					Optional:            true,
-																				},
-																				"attribute_value": schema.StringAttribute{
-																					MarkdownDescription: helpers.NewAttributeDescription("Attribute value for condition").String,
-																					Optional:            true,
-																				},
-																				"dictionary_name": schema.StringAttribute{
-																					MarkdownDescription: helpers.NewAttributeDescription("Dictionary name").String,
-																					Optional:            true,
-																				},
-																				"dictionary_value": schema.StringAttribute{
-																					MarkdownDescription: helpers.NewAttributeDescription("Dictionary value").String,
-																					Optional:            true,
-																				},
-																				"operator": schema.StringAttribute{
-																					MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", ).String,
-																					Optional:            true,
-																					Validators: []validator.String{
-																						stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", ),
+																					"id": schema.StringAttribute{
+																						MarkdownDescription: helpers.NewAttributeDescription("UUID for condition").String,
+																						Optional:            true,
+																					},
+																					"is_negate": schema.BoolAttribute{
+																						MarkdownDescription: helpers.NewAttributeDescription("Indicates whereas this condition is in negate mode").String,
+																						Optional:            true,
+																					},
+																					"attribute_name": schema.StringAttribute{
+																						MarkdownDescription: helpers.NewAttributeDescription("Dictionary attribute name").String,
+																						Optional:            true,
+																					},
+																					"attribute_value": schema.StringAttribute{
+																						MarkdownDescription: helpers.NewAttributeDescription("Attribute value for condition").String,
+																						Optional:            true,
+																					},
+																					"dictionary_name": schema.StringAttribute{
+																						MarkdownDescription: helpers.NewAttributeDescription("Dictionary name").String,
+																						Optional:            true,
+																					},
+																					"dictionary_value": schema.StringAttribute{
+																						MarkdownDescription: helpers.NewAttributeDescription("Dictionary value").String,
+																						Optional:            true,
+																					},
+																					"operator": schema.StringAttribute{
+																						MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith").String,
+																						Optional:            true,
+																						Validators: []validator.String{
+																							stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
+																						},
 																					},
 																				},
 																			},
-																		},
-
 																		},
 																	},
 																},
@@ -443,6 +424,7 @@ func (r *DeviceAdminPolicySetResource) Schema(ctx context.Context, req resource.
 		},
 	}
 }
+
 //template:end model
 
 //template:begin configure
@@ -453,6 +435,7 @@ func (r *DeviceAdminPolicySetResource) Configure(_ context.Context, req resource
 
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
+
 //template:end configure
 
 //template:begin create
@@ -471,12 +454,12 @@ func (r *DeviceAdminPolicySetResource) Create(ctx context.Context, req resource.
 	// Create object
 	body := plan.toBody(ctx, DeviceAdminPolicySet{})
 	if plan.Name.ValueString() != "Default" {
-	res, _, err := r.client.Post(plan.getPath(), body)
-	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
-		return
-	}
-	plan.Id = types.StringValue(res.Get("response.id").String())
+		res, _, err := r.client.Post(plan.getPath(), body)
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
+			return
+		}
+		plan.Id = types.StringValue(res.Get("response.id").String())
 	} else {
 		res, err := r.client.Get(plan.getPath())
 		if err != nil {
@@ -517,6 +500,7 @@ func (r *DeviceAdminPolicySetResource) Create(ctx context.Context, req resource.
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end create
 
 //template:begin read
@@ -552,12 +536,12 @@ func (r *DeviceAdminPolicySetResource) Read(ctx context.Context, req resource.Re
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end read
 
 //template:begin update
 func (r *DeviceAdminPolicySetResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state DeviceAdminPolicySet
-
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -593,8 +577,8 @@ func (r *DeviceAdminPolicySetResource) Update(ctx context.Context, req resource.
 			body, _ = sjson.Set(body, "description", existingData.Description.ValueString())
 		}
 	}
-	
-	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body)
+
+	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -605,6 +589,7 @@ func (r *DeviceAdminPolicySetResource) Update(ctx context.Context, req resource.
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end update
 
 //template:begin delete
@@ -629,10 +614,12 @@ func (r *DeviceAdminPolicySetResource) Delete(ctx context.Context, req resource.
 
 	resp.State.RemoveResource(ctx)
 }
+
 //template:end delete
 
 //template:begin import
 func (r *DeviceAdminPolicySetResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
+
 //template:end import

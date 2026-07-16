@@ -20,11 +20,7 @@
 package provider
 
 //template:begin imports
-import (
-	"testing"
 
-	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
-)
 //template:end imports
 
 //template:begin testPrerequisites

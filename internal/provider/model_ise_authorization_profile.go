@@ -22,322 +22,69 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"fmt"
-	"net/url"
-	"strconv"
 
-	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type AuthorizationProfile struct {
-	Id types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	VlanNameId types.String `tfsdk:"vlan_name_id"`
-	VlanTagId types.Int64 `tfsdk:"vlan_tag_id"`
-	WebRedirectionType types.String `tfsdk:"web_redirection_type"`
-	WebRedirectionAcl types.String `tfsdk:"web_redirection_acl"`
-	WebRedirectionPortalName types.String `tfsdk:"web_redirection_portal_name"`
-	WebRedirectionStaticIpHostNameFqdn types.String `tfsdk:"web_redirection_static_ip_host_name_fqdn"`
-	WebRedirectionDisplayCertificatesRenewalMessages types.Bool `tfsdk:"web_redirection_display_certificates_renewal_messages"`
-	AgentlessPosture types.Bool `tfsdk:"agentless_posture"`
-	AccessType types.String `tfsdk:"access_type"`
-	ProfileName types.String `tfsdk:"profile_name"`
-	AirespaceAcl types.String `tfsdk:"airespace_acl"`
-	Acl types.String `tfsdk:"acl"`
-	DaclName types.String `tfsdk:"dacl_name"`
-	AutoSmartPort types.String `tfsdk:"auto_smart_port"`
-	InterfaceTemplate types.String `tfsdk:"interface_template"`
-	Ipv6AclFilter types.String `tfsdk:"ipv6_acl_filter"`
-	AvcProfile types.String `tfsdk:"avc_profile"`
-	AsaVpn types.String `tfsdk:"asa_vpn"`
-	UniqueIdentifier types.String `tfsdk:"unique_identifier"`
-	TrackMovement types.Bool `tfsdk:"track_movement"`
-	ServiceTemplate types.Bool `tfsdk:"service_template"`
-	EasywiredSessionCandidate types.Bool `tfsdk:"easywired_session_candidate"`
-	VoiceDomainPermission types.Bool `tfsdk:"voice_domain_permission"`
-	Neat types.Bool `tfsdk:"neat"`
-	WebAuth types.Bool `tfsdk:"web_auth"`
-	MacSecPolicy types.String `tfsdk:"mac_sec_policy"`
-	ReauthenticationConnectivity types.String `tfsdk:"reauthentication_connectivity"`
-	ReauthenticationTimer types.Int64 `tfsdk:"reauthentication_timer"`
-	AdvancedAttributes []AuthorizationProfileAdvancedAttributes `tfsdk:"advanced_attributes"`
-	Ipv6DaclName types.String `tfsdk:"ipv6_dacl_name"`
-	AirespaceIpv6Acl types.String `tfsdk:"airespace_ipv6_acl"`
+	Id                                               types.String                             `tfsdk:"id"`
+	Name                                             types.String                             `tfsdk:"name"`
+	Description                                      types.String                             `tfsdk:"description"`
+	VlanNameId                                       types.String                             `tfsdk:"vlan_name_id"`
+	VlanTagId                                        types.Int64                              `tfsdk:"vlan_tag_id"`
+	WebRedirectionType                               types.String                             `tfsdk:"web_redirection_type"`
+	WebRedirectionAcl                                types.String                             `tfsdk:"web_redirection_acl"`
+	WebRedirectionPortalName                         types.String                             `tfsdk:"web_redirection_portal_name"`
+	WebRedirectionStaticIpHostNameFqdn               types.String                             `tfsdk:"web_redirection_static_ip_host_name_fqdn"`
+	WebRedirectionDisplayCertificatesRenewalMessages types.Bool                               `tfsdk:"web_redirection_display_certificates_renewal_messages"`
+	AgentlessPosture                                 types.Bool                               `tfsdk:"agentless_posture"`
+	AccessType                                       types.String                             `tfsdk:"access_type"`
+	ProfileName                                      types.String                             `tfsdk:"profile_name"`
+	AirespaceAcl                                     types.String                             `tfsdk:"airespace_acl"`
+	Acl                                              types.String                             `tfsdk:"acl"`
+	DaclName                                         types.String                             `tfsdk:"dacl_name"`
+	AutoSmartPort                                    types.String                             `tfsdk:"auto_smart_port"`
+	InterfaceTemplate                                types.String                             `tfsdk:"interface_template"`
+	Ipv6AclFilter                                    types.String                             `tfsdk:"ipv6_acl_filter"`
+	AvcProfile                                       types.String                             `tfsdk:"avc_profile"`
+	AsaVpn                                           types.String                             `tfsdk:"asa_vpn"`
+	UniqueIdentifier                                 types.String                             `tfsdk:"unique_identifier"`
+	TrackMovement                                    types.Bool                               `tfsdk:"track_movement"`
+	ServiceTemplate                                  types.Bool                               `tfsdk:"service_template"`
+	EasywiredSessionCandidate                        types.Bool                               `tfsdk:"easywired_session_candidate"`
+	VoiceDomainPermission                            types.Bool                               `tfsdk:"voice_domain_permission"`
+	Neat                                             types.Bool                               `tfsdk:"neat"`
+	WebAuth                                          types.Bool                               `tfsdk:"web_auth"`
+	MacSecPolicy                                     types.String                             `tfsdk:"mac_sec_policy"`
+	ReauthenticationConnectivity                     types.String                             `tfsdk:"reauthentication_connectivity"`
+	ReauthenticationTimer                            types.Int64                              `tfsdk:"reauthentication_timer"`
+	AdvancedAttributes                               []AuthorizationProfileAdvancedAttributes `tfsdk:"advanced_attributes"`
+	Ipv6DaclName                                     types.String                             `tfsdk:"ipv6_dacl_name"`
+	AirespaceIpv6Acl                                 types.String                             `tfsdk:"airespace_ipv6_acl"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 type AuthorizationProfileAdvancedAttributes struct {
-	AttributeLeftDictionaryName types.String `tfsdk:"attribute_left_dictionary_name"`
-	AttributeLeftName types.String `tfsdk:"attribute_left_name"`
-	AttributeRightValueType types.String `tfsdk:"attribute_right_value_type"`
-	AttributeRightValue types.String `tfsdk:"attribute_right_value"`
+	AttributeLeftDictionaryName  types.String `tfsdk:"attribute_left_dictionary_name"`
+	AttributeLeftName            types.String `tfsdk:"attribute_left_name"`
+	AttributeRightValueType      types.String `tfsdk:"attribute_right_value_type"`
+	AttributeRightValue          types.String `tfsdk:"attribute_right_value"`
 	AttributeRightDictionaryName types.String `tfsdk:"attribute_right_dictionary_name"`
-	AttributeRightName types.String `tfsdk:"attribute_right_name"`
+	AttributeRightName           types.String `tfsdk:"attribute_right_name"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data AuthorizationProfile) getPath() string {
-		return "/ers/config/authorizationprofile"
+	return "/ers/config/authorizationprofile"
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -347,95 +94,95 @@ func (data AuthorizationProfile) getPath() string {
 //template:begin toBody
 func (data AuthorizationProfile) toBody(ctx context.Context, state AuthorizationProfile) string {
 	body := ""
-	if !data.Name.IsNull()  {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()  {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.description", data.Description.ValueString())
 	}
-	if !data.VlanNameId.IsNull()  {
+	if !data.VlanNameId.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.vlan.nameID", data.VlanNameId.ValueString())
 	}
-	if !data.VlanTagId.IsNull()  {
+	if !data.VlanTagId.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.vlan.tagID", data.VlanTagId.ValueInt64())
 	}
-	if !data.WebRedirectionType.IsNull()  {
+	if !data.WebRedirectionType.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.webRedirection.WebRedirectionType", data.WebRedirectionType.ValueString())
 	}
-	if !data.WebRedirectionAcl.IsNull()  {
+	if !data.WebRedirectionAcl.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.webRedirection.acl", data.WebRedirectionAcl.ValueString())
 	}
-	if !data.WebRedirectionPortalName.IsNull()  {
+	if !data.WebRedirectionPortalName.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.webRedirection.portalName", data.WebRedirectionPortalName.ValueString())
 	}
-	if !data.WebRedirectionStaticIpHostNameFqdn.IsNull()  {
+	if !data.WebRedirectionStaticIpHostNameFqdn.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.webRedirection.staticIPHostNameFQDN", data.WebRedirectionStaticIpHostNameFqdn.ValueString())
 	}
-	if !data.WebRedirectionDisplayCertificatesRenewalMessages.IsNull()  {
+	if !data.WebRedirectionDisplayCertificatesRenewalMessages.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.webRedirection.displayCertificatesRenewalMessages", data.WebRedirectionDisplayCertificatesRenewalMessages.ValueBool())
 	}
-	if !data.AgentlessPosture.IsNull()  {
+	if !data.AgentlessPosture.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.agentlessPosture", data.AgentlessPosture.ValueBool())
 	}
-	if !data.AccessType.IsNull()  {
+	if !data.AccessType.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.accessType", data.AccessType.ValueString())
 	}
 	body, _ = sjson.Set(body, "AuthorizationProfile.authzProfileType", "SWITCH")
-	if !data.ProfileName.IsNull()  {
+	if !data.ProfileName.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.profileName", data.ProfileName.ValueString())
 	}
-	if !data.AirespaceAcl.IsNull()  {
+	if !data.AirespaceAcl.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.airespaceACL", data.AirespaceAcl.ValueString())
 	}
-	if !data.Acl.IsNull()  {
+	if !data.Acl.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.acl", data.Acl.ValueString())
 	}
-	if !data.DaclName.IsNull()  {
+	if !data.DaclName.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.daclName", data.DaclName.ValueString())
 	}
-	if !data.AutoSmartPort.IsNull()  {
+	if !data.AutoSmartPort.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.autoSmartPort", data.AutoSmartPort.ValueString())
 	}
-	if !data.InterfaceTemplate.IsNull()  {
+	if !data.InterfaceTemplate.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.interfaceTemplate", data.InterfaceTemplate.ValueString())
 	}
-	if !data.Ipv6AclFilter.IsNull()  {
+	if !data.Ipv6AclFilter.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.ipv6ACLFilter", data.Ipv6AclFilter.ValueString())
 	}
-	if !data.AvcProfile.IsNull()  {
+	if !data.AvcProfile.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.avcProfile", data.AvcProfile.ValueString())
 	}
-	if !data.AsaVpn.IsNull()  {
+	if !data.AsaVpn.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.asaVpn", data.AsaVpn.ValueString())
 	}
-	if !data.UniqueIdentifier.IsNull()  {
+	if !data.UniqueIdentifier.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.uniqueIdentifier", data.UniqueIdentifier.ValueString())
 	}
-	if !data.TrackMovement.IsNull()  {
+	if !data.TrackMovement.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.trackMovement", data.TrackMovement.ValueBool())
 	}
-	if !data.ServiceTemplate.IsNull()  {
+	if !data.ServiceTemplate.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.serviceTemplate", data.ServiceTemplate.ValueBool())
 	}
-	if !data.EasywiredSessionCandidate.IsNull()  {
+	if !data.EasywiredSessionCandidate.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.easywiredSessionCandidate", data.EasywiredSessionCandidate.ValueBool())
 	}
-	if !data.VoiceDomainPermission.IsNull()  {
+	if !data.VoiceDomainPermission.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.voiceDomainPermission", data.VoiceDomainPermission.ValueBool())
 	}
-	if !data.Neat.IsNull()  {
+	if !data.Neat.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.neat", data.Neat.ValueBool())
 	}
-	if !data.WebAuth.IsNull()  {
+	if !data.WebAuth.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.webAuth", data.WebAuth.ValueBool())
 	}
-	if !data.MacSecPolicy.IsNull()  {
+	if !data.MacSecPolicy.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.macSecPolicy", data.MacSecPolicy.ValueString())
 	}
-	if !data.ReauthenticationConnectivity.IsNull()  {
+	if !data.ReauthenticationConnectivity.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.reauth.connectivity", data.ReauthenticationConnectivity.ValueString())
 	}
-	if !data.ReauthenticationTimer.IsNull()  {
+	if !data.ReauthenticationTimer.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.reauth.timer", data.ReauthenticationTimer.ValueInt64())
 	}
 	if len(data.AdvancedAttributes) > 0 {
@@ -464,14 +211,15 @@ func (data AuthorizationProfile) toBody(ctx context.Context, state Authorization
 			body, _ = sjson.SetRaw(body, "AuthorizationProfile.advancedAttributes.-1", itemBody)
 		}
 	}
-	if !data.Ipv6DaclName.IsNull()  {
+	if !data.Ipv6DaclName.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.ipv6DaclName", data.Ipv6DaclName.ValueString())
 	}
-	if !data.AirespaceIpv6Acl.IsNull()  {
+	if !data.AirespaceIpv6Acl.IsNull() {
 		body, _ = sjson.Set(body, "AuthorizationProfile.airespaceIPv6ACL", data.AirespaceIpv6Acl.ValueString())
 	}
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -675,6 +423,7 @@ func (data *AuthorizationProfile) fromBody(ctx context.Context, res gjson.Result
 		data.AirespaceIpv6Acl = types.StringNull()
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -830,8 +579,8 @@ func (data *AuthorizationProfile) updateFromBody(ctx context.Context, res gjson.
 		data.ReauthenticationTimer = types.Int64Null()
 	}
 	for i := range data.AdvancedAttributes {
-		keys := [...]string{ "leftHandSideDictionaryAttribue.dictionaryName", "leftHandSideDictionaryAttribue.attributeName", "rightHandSideAttribueValue.AdvancedAttributeValueType", "rightHandSideAttribueValue.value", "rightHandSideAttribueValue.dictionaryName", "rightHandSideAttribueValue.attributeName",  }
-		keyValues := [...]string{ data.AdvancedAttributes[i].AttributeLeftDictionaryName.ValueString(), data.AdvancedAttributes[i].AttributeLeftName.ValueString(), data.AdvancedAttributes[i].AttributeRightValueType.ValueString(), data.AdvancedAttributes[i].AttributeRightValue.ValueString(), data.AdvancedAttributes[i].AttributeRightDictionaryName.ValueString(), data.AdvancedAttributes[i].AttributeRightName.ValueString(),  }
+		keys := [...]string{"leftHandSideDictionaryAttribue.dictionaryName", "leftHandSideDictionaryAttribue.attributeName", "rightHandSideAttribueValue.AdvancedAttributeValueType", "rightHandSideAttribueValue.value", "rightHandSideAttribueValue.dictionaryName", "rightHandSideAttribueValue.attributeName"}
+		keyValues := [...]string{data.AdvancedAttributes[i].AttributeLeftDictionaryName.ValueString(), data.AdvancedAttributes[i].AttributeLeftName.ValueString(), data.AdvancedAttributes[i].AttributeRightValueType.ValueString(), data.AdvancedAttributes[i].AttributeRightValue.ValueString(), data.AdvancedAttributes[i].AttributeRightDictionaryName.ValueString(), data.AdvancedAttributes[i].AttributeRightName.ValueString()}
 
 		var r gjson.Result
 		parentItems := res.Get("AuthorizationProfile.advancedAttributes").Array()
@@ -900,6 +649,7 @@ func (data *AuthorizationProfile) updateFromBody(ctx context.Context, res gjson.
 		data.AirespaceIpv6Acl = types.StringNull()
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -1005,4 +755,5 @@ func (data *AuthorizationProfile) isNull(ctx context.Context, res gjson.Result) 
 	}
 	return true
 }
+
 //template:end isNull

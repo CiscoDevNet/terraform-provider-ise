@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -46,12 +47,13 @@ func TestAccDataSourceIseNetworkAccessAuthorizationGlobalExceptionRule(t *testin
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceIseNetworkAccessAuthorizationGlobalExceptionRulePrerequisitesConfig+testAccDataSourceIseNetworkAccessAuthorizationGlobalExceptionRuleConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceIseNetworkAccessAuthorizationGlobalExceptionRulePrerequisitesConfig + testAccDataSourceIseNetworkAccessAuthorizationGlobalExceptionRuleConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -66,6 +68,7 @@ resource "ise_network_access_condition" "test" {
 }
 
 `
+
 //template:end testPrerequisites
 
 //template:begin testAccDataSourceConfig
@@ -83,7 +86,7 @@ func testAccDataSourceIseNetworkAccessAuthorizationGlobalExceptionRuleConfig() s
 	config += `	profiles = ["PermitAccess"]` + "\n"
 	config += `	security_group = "BYOD"` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_network_access_authorization_global_exception_rule" "test" {
 			id = ise_network_access_authorization_global_exception_rule.test.id
@@ -91,4 +94,5 @@ func testAccDataSourceIseNetworkAccessAuthorizationGlobalExceptionRuleConfig() s
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

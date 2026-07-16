@@ -24,33 +24,22 @@ import (
 	"context"
 	"fmt"
 	"net/url"
-	"sort"
 	"strings"
-	"sync"
 
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
-	"github.com/tidwall/gjson"
-	"github.com/tidwall/sjson"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 )
+
 //template:end imports
 
 //template:begin header
@@ -70,6 +59,7 @@ type AllowedProtocolsResource struct {
 func (r *AllowedProtocolsResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_allowed_protocols"
 }
+
 //template:end header
 
 //template:begin model
@@ -147,10 +137,10 @@ func (r *AllowedProtocolsResource) Schema(ctx context.Context, req resource.Sche
 				Required:            true,
 			},
 			"preferred_eap_protocol": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Preferred EAP protocol").AddStringEnumDescription("EAP_FAST", "PEAP", "LEAP", "EAP_MD5", "EAP_TLS", "EAP_TTLS", "TEAP", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Preferred EAP protocol").AddStringEnumDescription("EAP_FAST", "PEAP", "LEAP", "EAP_MD5", "EAP_TLS", "EAP_TTLS", "TEAP").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("EAP_FAST", "PEAP", "LEAP", "EAP_MD5", "EAP_TLS", "EAP_TTLS", "TEAP", ),
+					stringvalidator.OneOf("EAP_FAST", "PEAP", "LEAP", "EAP_MD5", "EAP_TLS", "EAP_TTLS", "TEAP"),
 				},
 			},
 			"eap_tls_l_bit": schema.BoolAttribute{
@@ -178,10 +168,10 @@ func (r *AllowedProtocolsResource) Schema(ctx context.Context, req resource.Sche
 				Optional:            true,
 			},
 			"eap_tls_session_ticket_ttl_unit": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Session ticket TTL unit. Is required only if `eap_tls_enable_stateless_session_resume` is `true`.").AddStringEnumDescription("SECONDS", "MINUTES", "HOURS", "DAYS", "WEEKS", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Session ticket TTL unit. Is required only if `eap_tls_enable_stateless_session_resume` is `true`.").AddStringEnumDescription("SECONDS", "MINUTES", "HOURS", "DAYS", "WEEKS").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("SECONDS", "MINUTES", "HOURS", "DAYS", "WEEKS", ),
+					stringvalidator.OneOf("SECONDS", "MINUTES", "HOURS", "DAYS", "WEEKS"),
 				},
 			},
 			"eap_tls_session_ticket_percentage": schema.Int64Attribute{
@@ -323,10 +313,10 @@ func (r *AllowedProtocolsResource) Schema(ctx context.Context, req resource.Sche
 				Optional:            true,
 			},
 			"eap_fast_pacs_tunnel_pac_ttl_unit": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("PACs tunnel PAC time to live unit. Is required only if `eap_fast_use_pacs` is `true`.").AddStringEnumDescription("SECONDS", "MINUTES", "HOURS", "DAYS", "WEEKS", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("PACs tunnel PAC time to live unit. Is required only if `eap_fast_use_pacs` is `true`.").AddStringEnumDescription("SECONDS", "MINUTES", "HOURS", "DAYS", "WEEKS").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("SECONDS", "MINUTES", "HOURS", "DAYS", "WEEKS", ),
+					stringvalidator.OneOf("SECONDS", "MINUTES", "HOURS", "DAYS", "WEEKS"),
 				},
 			},
 			"eap_fast_pacs_use_proactive_pac_update_percentage": schema.Int64Attribute{
@@ -361,10 +351,10 @@ func (r *AllowedProtocolsResource) Schema(ctx context.Context, req resource.Sche
 				Optional:            true,
 			},
 			"eap_fast_pacs_machine_pac_ttl_unit": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Machine PAC TTL unit. Is required only if `eap_fast_pacs_allow_machine_authentication` is `true`.").AddStringEnumDescription("SECONDS", "MINUTES", "HOURS", "DAYS", "WEEKS", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Machine PAC TTL unit. Is required only if `eap_fast_pacs_allow_machine_authentication` is `true`.").AddStringEnumDescription("SECONDS", "MINUTES", "HOURS", "DAYS", "WEEKS").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("SECONDS", "MINUTES", "HOURS", "DAYS", "WEEKS", ),
+					stringvalidator.OneOf("SECONDS", "MINUTES", "HOURS", "DAYS", "WEEKS"),
 				},
 			},
 			"eap_fast_pacs_stateless_session_resume": schema.BoolAttribute{
@@ -376,10 +366,10 @@ func (r *AllowedProtocolsResource) Schema(ctx context.Context, req resource.Sche
 				Optional:            true,
 			},
 			"eap_fast_pacs_authorization_pac_ttl_unit": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Authorization PAC TTL unit. Is required only if `eap_fast_pacs_stateless_session_resume` is `true`.").AddStringEnumDescription("SECONDS", "MINUTES", "HOURS", "DAYS", "WEEKS", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Authorization PAC TTL unit. Is required only if `eap_fast_pacs_stateless_session_resume` is `true`.").AddStringEnumDescription("SECONDS", "MINUTES", "HOURS", "DAYS", "WEEKS").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("SECONDS", "MINUTES", "HOURS", "DAYS", "WEEKS", ),
+					stringvalidator.OneOf("SECONDS", "MINUTES", "HOURS", "DAYS", "WEEKS"),
 				},
 			},
 			"eap_fast_accept_client_cert": schema.BoolAttribute{
@@ -436,6 +426,7 @@ func (r *AllowedProtocolsResource) Schema(ctx context.Context, req resource.Sche
 		},
 	}
 }
+
 //template:end model
 
 //template:begin configure
@@ -446,6 +437,7 @@ func (r *AllowedProtocolsResource) Configure(_ context.Context, req resource.Con
 
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
+
 //template:end configure
 
 //template:begin create
@@ -476,6 +468,7 @@ func (r *AllowedProtocolsResource) Create(ctx context.Context, req resource.Crea
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end create
 
 //template:begin read
@@ -511,12 +504,12 @@ func (r *AllowedProtocolsResource) Read(ctx context.Context, req resource.ReadRe
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end read
 
 //template:begin update
 func (r *AllowedProtocolsResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state AllowedProtocols
-
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -533,8 +526,8 @@ func (r *AllowedProtocolsResource) Update(ctx context.Context, req resource.Upda
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	body := plan.toBody(ctx, state)
-	
-	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body)
+
+	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -545,6 +538,7 @@ func (r *AllowedProtocolsResource) Update(ctx context.Context, req resource.Upda
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end update
 
 //template:begin delete
@@ -569,10 +563,12 @@ func (r *AllowedProtocolsResource) Delete(ctx context.Context, req resource.Dele
 
 	resp.State.RemoveResource(ctx)
 }
+
 //template:end delete
 
 //template:begin import
 func (r *AllowedProtocolsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
+
 //template:end import

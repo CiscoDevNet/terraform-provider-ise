@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -70,11 +71,12 @@ func TestAccDataSourceIseAuthorizationProfile(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseAuthorizationProfileConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -120,7 +122,7 @@ func testAccDataSourceIseAuthorizationProfileConfig() string {
 	config += `	}]` + "\n"
 	config += `	airespace_ipv6_acl = "ACL1"` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_authorization_profile" "test" {
 			id = ise_authorization_profile.test.id
@@ -128,4 +130,5 @@ func testAccDataSourceIseAuthorizationProfileConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

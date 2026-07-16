@@ -24,33 +24,24 @@ import (
 	"context"
 	"fmt"
 	"net/url"
-	"sort"
 	"strings"
-	"sync"
 
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
-	"github.com/tidwall/gjson"
-	"github.com/tidwall/sjson"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 )
+
 //template:end imports
 
 //template:begin header
@@ -70,6 +61,7 @@ type NetworkDeviceResource struct {
 func (r *NetworkDeviceResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_network_device"
 }
+
 //template:end header
 
 //template:begin model
@@ -103,10 +95,10 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional:            true,
 			},
 			"authentication_encryption_key_format": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Key input format").AddStringEnumDescription("ASCII", "HEXADECIMAL", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Key input format").AddStringEnumDescription("ASCII", "HEXADECIMAL").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("ASCII", "HEXADECIMAL", ),
+					stringvalidator.OneOf("ASCII", "HEXADECIMAL"),
 				},
 			},
 			"authentication_message_authenticator_code_key": schema.StringAttribute{
@@ -114,10 +106,10 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional:            true,
 			},
 			"authentication_network_protocol": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Network protocol").AddStringEnumDescription("RADIUS", "TACACS_PLUS", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Network protocol").AddStringEnumDescription("RADIUS", "TACACS_PLUS").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("RADIUS", "TACACS_PLUS", ),
+					stringvalidator.OneOf("RADIUS", "TACACS_PLUS"),
 				},
 			},
 			"authentication_radius_shared_secret": schema.StringAttribute{
@@ -209,10 +201,10 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional:            true,
 			},
 			"snmp_version": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("SNMP version").AddStringEnumDescription("ONE", "TWO_C", "THREE", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("SNMP version").AddStringEnumDescription("ONE", "TWO_C", "THREE").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("ONE", "TWO_C", "THREE", ),
+					stringvalidator.OneOf("ONE", "TWO_C", "THREE"),
 				},
 			},
 			"snmp_username": schema.StringAttribute{
@@ -220,17 +212,17 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional:            true,
 			},
 			"snmp_security_level": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("SNMP security level. Required for snmp version 3.").AddStringEnumDescription("NO_AUTH", "AUTH", "PRIV", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("SNMP security level. Required for snmp version 3.").AddStringEnumDescription("NO_AUTH", "AUTH", "PRIV").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("NO_AUTH", "AUTH", "PRIV", ),
+					stringvalidator.OneOf("NO_AUTH", "AUTH", "PRIV"),
 				},
 			},
 			"snmp_auth_protocol": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("SNMP authentication protocol. Required for snmp version 3 and securityLevel AUTH or PRIV.").AddStringEnumDescription("MD5", "SHA", "SHA2", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("SNMP authentication protocol. Required for snmp version 3 and securityLevel AUTH or PRIV.").AddStringEnumDescription("MD5", "SHA", "SHA2").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("MD5", "SHA", "SHA2", ),
+					stringvalidator.OneOf("MD5", "SHA", "SHA2"),
 				},
 			},
 			"snmp_auth_password": schema.StringAttribute{
@@ -238,10 +230,10 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional:            true,
 			},
 			"snmp_privacy_protocol": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("SNMP privacy protocol. Required for snmp version 3 and securityLevel PRIV.").AddStringEnumDescription("DES", "AES128", "AES192", "AES256", "3DES", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("SNMP privacy protocol. Required for snmp version 3 and securityLevel PRIV.").AddStringEnumDescription("DES", "AES128", "AES192", "AES256", "3DES").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("DES", "AES128", "AES192", "AES256", "3DES", ),
+					stringvalidator.OneOf("DES", "AES128", "AES192", "AES256", "3DES"),
 				},
 			},
 			"snmp_privacy_password": schema.StringAttribute{
@@ -249,10 +241,10 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional:            true,
 			},
 			"tacacs_connect_mode_options": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Connect mode options").AddStringEnumDescription("OFF", "ON_LEGACY", "ON_DRAFT_COMPLIANT", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Connect mode options").AddStringEnumDescription("OFF", "ON_LEGACY", "ON_DRAFT_COMPLIANT").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("OFF", "ON_LEGACY", "ON_DRAFT_COMPLIANT", ),
+					stringvalidator.OneOf("OFF", "ON_LEGACY", "ON_DRAFT_COMPLIANT"),
 				},
 			},
 			"tacacs_shared_secret": schema.StringAttribute{
@@ -316,10 +308,10 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional:            true,
 			},
 			"trustsec_send_configuration_to_device_using": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Send configuration to device using").AddStringEnumDescription("DISABLE_ALL", "ENABLE_USING_CLI", "ENABLE_USING_COA", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Send configuration to device using").AddStringEnumDescription("DISABLE_ALL", "ENABLE_USING_CLI", "ENABLE_USING_COA").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("DISABLE_ALL", "ENABLE_USING_CLI", "ENABLE_USING_COA", ),
+					stringvalidator.OneOf("DISABLE_ALL", "ENABLE_USING_CLI", "ENABLE_USING_COA"),
 				},
 			},
 			"trustsec_coa_source_host": schema.StringAttribute{
@@ -329,6 +321,7 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 		},
 	}
 }
+
 //template:end model
 
 //template:begin configure
@@ -339,6 +332,7 @@ func (r *NetworkDeviceResource) Configure(_ context.Context, req resource.Config
 
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
+
 //template:end configure
 
 //template:begin create
@@ -369,6 +363,7 @@ func (r *NetworkDeviceResource) Create(ctx context.Context, req resource.CreateR
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end create
 
 //template:begin read
@@ -404,12 +399,12 @@ func (r *NetworkDeviceResource) Read(ctx context.Context, req resource.ReadReque
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end read
 
 //template:begin update
 func (r *NetworkDeviceResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state NetworkDevice
-
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -426,8 +421,8 @@ func (r *NetworkDeviceResource) Update(ctx context.Context, req resource.UpdateR
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	body := plan.toBody(ctx, state)
-	
-	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body)
+
+	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -438,6 +433,7 @@ func (r *NetworkDeviceResource) Update(ctx context.Context, req resource.UpdateR
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end update
 
 //template:begin delete
@@ -462,10 +458,12 @@ func (r *NetworkDeviceResource) Delete(ctx context.Context, req resource.DeleteR
 
 	resp.State.RemoveResource(ctx)
 }
+
 //template:end delete
 
 //template:begin import
 func (r *NetworkDeviceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
+
 //template:end import

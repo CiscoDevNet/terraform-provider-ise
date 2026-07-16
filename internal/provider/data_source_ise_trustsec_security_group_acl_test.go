@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -40,11 +41,12 @@ func TestAccDataSourceIseTrustSecSecurityGroupACL(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseTrustSecSecurityGroupACLConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -59,7 +61,7 @@ func testAccDataSourceIseTrustSecSecurityGroupACLConfig() string {
 	config += `	ip_version = "IPV4"` + "\n"
 	config += `	read_only = false` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_trustsec_security_group_acl" "test" {
 			id = ise_trustsec_security_group_acl.test.id
@@ -67,4 +69,5 @@ func testAccDataSourceIseTrustSecSecurityGroupACLConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

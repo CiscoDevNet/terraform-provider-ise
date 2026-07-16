@@ -22,335 +22,79 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"fmt"
-	"net/url"
-	"strconv"
 
-	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type ActiveDirectoryJoinPoint struct {
-	Id types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Domain types.String `tfsdk:"domain"`
-	AdScopesNames types.String `tfsdk:"ad_scopes_names"`
-	EnableDomainAllowedList types.Bool `tfsdk:"enable_domain_allowed_list"`
-	Groups []ActiveDirectoryJoinPointGroups `tfsdk:"groups"`
-	Attributes []ActiveDirectoryJoinPointAttributes `tfsdk:"attributes"`
-	RewriteRules []ActiveDirectoryJoinPointRewriteRules `tfsdk:"rewrite_rules"`
-	EnableRewrites types.Bool `tfsdk:"enable_rewrites"`
-	EnablePassChange types.Bool `tfsdk:"enable_pass_change"`
-	EnableMachineAuth types.Bool `tfsdk:"enable_machine_auth"`
-	EnableMachineAccess types.Bool `tfsdk:"enable_machine_access"`
-	EnableDialinPermissionCheck types.Bool `tfsdk:"enable_dialin_permission_check"`
-	PlaintextAuth types.Bool `tfsdk:"plaintext_auth"`
-	AgingTime types.Int64 `tfsdk:"aging_time"`
-	EnableCallbackForDialinClient types.Bool `tfsdk:"enable_callback_for_dialin_client"`
-	IdentityNotInAdBehaviour types.String `tfsdk:"identity_not_in_ad_behaviour"`
-	UnreachableDomainsBehaviour types.String `tfsdk:"unreachable_domains_behaviour"`
-	Schema types.String `tfsdk:"schema"`
-	FirstName types.String `tfsdk:"first_name"`
-	Department types.String `tfsdk:"department"`
-	LastName types.String `tfsdk:"last_name"`
-	OrganizationalUnit types.String `tfsdk:"organizational_unit"`
-	JobTitle types.String `tfsdk:"job_title"`
-	Locality types.String `tfsdk:"locality"`
-	Email types.String `tfsdk:"email"`
-	StateOrProvince types.String `tfsdk:"state_or_province"`
-	Telephone types.String `tfsdk:"telephone"`
-	Country types.String `tfsdk:"country"`
-	StreetAddress types.String `tfsdk:"street_address"`
-	EnableFailedAuthProtection types.Bool `tfsdk:"enable_failed_auth_protection"`
-	FailedAuthThreshold types.Int64 `tfsdk:"failed_auth_threshold"`
-	AuthProtectionType types.String `tfsdk:"auth_protection_type"`
+	Id                            types.String                           `tfsdk:"id"`
+	Name                          types.String                           `tfsdk:"name"`
+	Description                   types.String                           `tfsdk:"description"`
+	Domain                        types.String                           `tfsdk:"domain"`
+	AdScopesNames                 types.String                           `tfsdk:"ad_scopes_names"`
+	EnableDomainAllowedList       types.Bool                             `tfsdk:"enable_domain_allowed_list"`
+	Groups                        []ActiveDirectoryJoinPointGroups       `tfsdk:"groups"`
+	Attributes                    []ActiveDirectoryJoinPointAttributes   `tfsdk:"attributes"`
+	RewriteRules                  []ActiveDirectoryJoinPointRewriteRules `tfsdk:"rewrite_rules"`
+	EnableRewrites                types.Bool                             `tfsdk:"enable_rewrites"`
+	EnablePassChange              types.Bool                             `tfsdk:"enable_pass_change"`
+	EnableMachineAuth             types.Bool                             `tfsdk:"enable_machine_auth"`
+	EnableMachineAccess           types.Bool                             `tfsdk:"enable_machine_access"`
+	EnableDialinPermissionCheck   types.Bool                             `tfsdk:"enable_dialin_permission_check"`
+	PlaintextAuth                 types.Bool                             `tfsdk:"plaintext_auth"`
+	AgingTime                     types.Int64                            `tfsdk:"aging_time"`
+	EnableCallbackForDialinClient types.Bool                             `tfsdk:"enable_callback_for_dialin_client"`
+	IdentityNotInAdBehaviour      types.String                           `tfsdk:"identity_not_in_ad_behaviour"`
+	UnreachableDomainsBehaviour   types.String                           `tfsdk:"unreachable_domains_behaviour"`
+	Schema                        types.String                           `tfsdk:"schema"`
+	FirstName                     types.String                           `tfsdk:"first_name"`
+	Department                    types.String                           `tfsdk:"department"`
+	LastName                      types.String                           `tfsdk:"last_name"`
+	OrganizationalUnit            types.String                           `tfsdk:"organizational_unit"`
+	JobTitle                      types.String                           `tfsdk:"job_title"`
+	Locality                      types.String                           `tfsdk:"locality"`
+	Email                         types.String                           `tfsdk:"email"`
+	StateOrProvince               types.String                           `tfsdk:"state_or_province"`
+	Telephone                     types.String                           `tfsdk:"telephone"`
+	Country                       types.String                           `tfsdk:"country"`
+	StreetAddress                 types.String                           `tfsdk:"street_address"`
+	EnableFailedAuthProtection    types.Bool                             `tfsdk:"enable_failed_auth_protection"`
+	FailedAuthThreshold           types.Int64                            `tfsdk:"failed_auth_threshold"`
+	AuthProtectionType            types.String                           `tfsdk:"auth_protection_type"`
 }
-
-
-
-
-
-
 
 type ActiveDirectoryJoinPointGroups struct {
 	Name types.String `tfsdk:"name"`
-	Sid types.String `tfsdk:"sid"`
+	Sid  types.String `tfsdk:"sid"`
 	Type types.String `tfsdk:"type"`
 }
 
 type ActiveDirectoryJoinPointAttributes struct {
-	Name types.String `tfsdk:"name"`
-	Type types.String `tfsdk:"type"`
+	Name         types.String `tfsdk:"name"`
+	Type         types.String `tfsdk:"type"`
 	InternalName types.String `tfsdk:"internal_name"`
 	DefaultValue types.String `tfsdk:"default_value"`
 }
 
 type ActiveDirectoryJoinPointRewriteRules struct {
-	RowId types.String `tfsdk:"row_id"`
-	RewriteMatch types.String `tfsdk:"rewrite_match"`
+	RowId         types.String `tfsdk:"row_id"`
+	RewriteMatch  types.String `tfsdk:"rewrite_match"`
 	RewriteResult types.String `tfsdk:"rewrite_result"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data ActiveDirectoryJoinPoint) getPath() string {
-		return "/ers/config/activedirectory"
+	return "/ers/config/activedirectory"
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -360,19 +104,19 @@ func (data ActiveDirectoryJoinPoint) getPath() string {
 //template:begin toBody
 func (data ActiveDirectoryJoinPoint) toBody(ctx context.Context, state ActiveDirectoryJoinPoint) string {
 	body := ""
-	if !data.Name.IsNull()  {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()  {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.description", data.Description.ValueString())
 	}
-	if !data.Domain.IsNull()  {
+	if !data.Domain.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.domain", data.Domain.ValueString())
 	}
-	if !data.AdScopesNames.IsNull()  {
+	if !data.AdScopesNames.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.adScopesNames", data.AdScopesNames.ValueString())
 	}
-	if !data.EnableDomainAllowedList.IsNull()  {
+	if !data.EnableDomainAllowedList.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.enableDomainAllowedList", data.EnableDomainAllowedList.ValueBool())
 	}
 	if len(data.Groups) > 0 {
@@ -426,83 +170,84 @@ func (data ActiveDirectoryJoinPoint) toBody(ctx context.Context, state ActiveDir
 			body, _ = sjson.SetRaw(body, "ERSActiveDirectory.advancedSettings.rewriteRules.-1", itemBody)
 		}
 	}
-	if !data.EnableRewrites.IsNull()  {
+	if !data.EnableRewrites.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.enableRewrites", data.EnableRewrites.ValueBool())
 	}
-	if !data.EnablePassChange.IsNull()  {
+	if !data.EnablePassChange.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.enablePassChange", data.EnablePassChange.ValueBool())
 	}
-	if !data.EnableMachineAuth.IsNull()  {
+	if !data.EnableMachineAuth.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.enableMachineAuth", data.EnableMachineAuth.ValueBool())
 	}
-	if !data.EnableMachineAccess.IsNull()  {
+	if !data.EnableMachineAccess.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.enableMachineAccess", data.EnableMachineAccess.ValueBool())
 	}
-	if !data.EnableDialinPermissionCheck.IsNull()  {
+	if !data.EnableDialinPermissionCheck.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.enableDialinPermissionCheck", data.EnableDialinPermissionCheck.ValueBool())
 	}
-	if !data.PlaintextAuth.IsNull()  {
+	if !data.PlaintextAuth.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.plaintextAuth", data.PlaintextAuth.ValueBool())
 	}
 	if !data.AgingTime.IsNull() && data.AgingTime != state.AgingTime {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.agingTime", data.AgingTime.ValueInt64())
 	}
-	if !data.EnableCallbackForDialinClient.IsNull()  {
+	if !data.EnableCallbackForDialinClient.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.enableCallbackForDialinClient", data.EnableCallbackForDialinClient.ValueBool())
 	}
-	if !data.IdentityNotInAdBehaviour.IsNull()  {
+	if !data.IdentityNotInAdBehaviour.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.identityNotInAdBehaviour", data.IdentityNotInAdBehaviour.ValueString())
 	}
-	if !data.UnreachableDomainsBehaviour.IsNull()  {
+	if !data.UnreachableDomainsBehaviour.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.unreachableDomainsBehaviour", data.UnreachableDomainsBehaviour.ValueString())
 	}
-	if !data.Schema.IsNull()  {
+	if !data.Schema.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.schema", data.Schema.ValueString())
 	}
-	if !data.FirstName.IsNull()  {
+	if !data.FirstName.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.firstName", data.FirstName.ValueString())
 	}
-	if !data.Department.IsNull()  {
+	if !data.Department.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.department", data.Department.ValueString())
 	}
-	if !data.LastName.IsNull()  {
+	if !data.LastName.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.lastName", data.LastName.ValueString())
 	}
-	if !data.OrganizationalUnit.IsNull()  {
+	if !data.OrganizationalUnit.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.organizationalUnit", data.OrganizationalUnit.ValueString())
 	}
-	if !data.JobTitle.IsNull()  {
+	if !data.JobTitle.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.jobTitle", data.JobTitle.ValueString())
 	}
-	if !data.Locality.IsNull()  {
+	if !data.Locality.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.locality", data.Locality.ValueString())
 	}
-	if !data.Email.IsNull()  {
+	if !data.Email.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.email", data.Email.ValueString())
 	}
-	if !data.StateOrProvince.IsNull()  {
+	if !data.StateOrProvince.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.stateOrProvince", data.StateOrProvince.ValueString())
 	}
-	if !data.Telephone.IsNull()  {
+	if !data.Telephone.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.telephone", data.Telephone.ValueString())
 	}
-	if !data.Country.IsNull()  {
+	if !data.Country.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.country", data.Country.ValueString())
 	}
-	if !data.StreetAddress.IsNull()  {
+	if !data.StreetAddress.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.streetAddress", data.StreetAddress.ValueString())
 	}
-	if !data.EnableFailedAuthProtection.IsNull()  {
+	if !data.EnableFailedAuthProtection.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.enableFailedAuthProtection", data.EnableFailedAuthProtection.ValueBool())
 	}
-	if !data.FailedAuthThreshold.IsNull()  {
+	if !data.FailedAuthThreshold.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.failedAuthThreshold", data.FailedAuthThreshold.ValueInt64())
 	}
-	if !data.AuthProtectionType.IsNull()  {
+	if !data.AuthProtectionType.IsNull() {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.advancedSettings.authProtectionType", data.AuthProtectionType.ValueString())
 	}
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -727,6 +472,7 @@ func (data *ActiveDirectoryJoinPoint) fromBody(ctx context.Context, res gjson.Re
 		data.AuthProtectionType = types.StringNull()
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -757,8 +503,8 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 		data.EnableDomainAllowedList = types.BoolNull()
 	}
 	for i := range data.Groups {
-		keys := [...]string{ "sid",  }
-		keyValues := [...]string{ data.Groups[i].Sid.ValueString(),  }
+		keys := [...]string{"sid"}
+		keyValues := [...]string{data.Groups[i].Sid.ValueString()}
 
 		var r gjson.Result
 		parentItems := res.Get("ERSActiveDirectory.adgroups.groups").Array()
@@ -797,8 +543,8 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 		}
 	}
 	for i := range data.Attributes {
-		keys := [...]string{ "name", "type", "internalName", "defaultValue",  }
-		keyValues := [...]string{ data.Attributes[i].Name.ValueString(), data.Attributes[i].Type.ValueString(), data.Attributes[i].InternalName.ValueString(), data.Attributes[i].DefaultValue.ValueString(),  }
+		keys := [...]string{"name", "type", "internalName", "defaultValue"}
+		keyValues := [...]string{data.Attributes[i].Name.ValueString(), data.Attributes[i].Type.ValueString(), data.Attributes[i].InternalName.ValueString(), data.Attributes[i].DefaultValue.ValueString()}
 
 		var r gjson.Result
 		parentItems := res.Get("ERSActiveDirectory.adAttributes.attributes").Array()
@@ -847,8 +593,8 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 		}
 	}
 	for i := range data.RewriteRules {
-		keys := [...]string{ "rowId", "rewriteMatch", "rewriteResult",  }
-		keyValues := [...]string{ data.RewriteRules[i].RowId.ValueString(), data.RewriteRules[i].RewriteMatch.ValueString(), data.RewriteRules[i].RewriteResult.ValueString(),  }
+		keys := [...]string{"rowId", "rewriteMatch", "rewriteResult"}
+		keyValues := [...]string{data.RewriteRules[i].RowId.ValueString(), data.RewriteRules[i].RewriteMatch.ValueString(), data.RewriteRules[i].RewriteResult.ValueString()}
 
 		var r gjson.Result
 		parentItems := res.Get("ERSActiveDirectory.advancedSettings.rewriteRules").Array()
@@ -1017,6 +763,7 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 		data.AuthProtectionType = types.StringNull()
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -1122,4 +869,5 @@ func (data *ActiveDirectoryJoinPoint) isNull(ctx context.Context, res gjson.Resu
 	}
 	return true
 }
+
 //template:end isNull

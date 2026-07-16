@@ -24,59 +24,29 @@ import (
 	"context"
 	"fmt"
 	"net/url"
-	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type DeviceAdminAuthenticationRuleUpdateRank struct {
-	Id types.String `tfsdk:"id"`
-	RuleId types.String `tfsdk:"rule_id"`
+	Id          types.String `tfsdk:"id"`
+	RuleId      types.String `tfsdk:"rule_id"`
 	PolicySetId types.String `tfsdk:"policy_set_id"`
-	Rank types.Int64 `tfsdk:"rank"`
+	Rank        types.Int64  `tfsdk:"rank"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data DeviceAdminAuthenticationRuleUpdateRank) getPath() string {
-		return fmt.Sprintf("/api/v1/policy/device-admin/policy-set/%v/authentication", url.QueryEscape(data.PolicySetId.ValueString()))
+	return fmt.Sprintf("/api/v1/policy/device-admin/policy-set/%v/authentication", url.QueryEscape(data.PolicySetId.ValueString()))
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -86,14 +56,15 @@ func (data DeviceAdminAuthenticationRuleUpdateRank) getPath() string {
 //template:begin toBody
 func (data DeviceAdminAuthenticationRuleUpdateRank) toBody(ctx context.Context, state DeviceAdminAuthenticationRuleUpdateRank) string {
 	body := ""
-	if !data.RuleId.IsNull()  {
+	if !data.RuleId.IsNull() {
 		body, _ = sjson.Set(body, "", data.RuleId.ValueString())
 	}
-	if !data.Rank.IsNull()  {
+	if !data.Rank.IsNull() {
 		body, _ = sjson.Set(body, "rule.rank", data.Rank.ValueInt64())
 	}
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -104,6 +75,7 @@ func (data *DeviceAdminAuthenticationRuleUpdateRank) fromBody(ctx context.Contex
 		data.Rank = types.Int64Null()
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -114,6 +86,7 @@ func (data *DeviceAdminAuthenticationRuleUpdateRank) updateFromBody(ctx context.
 		data.Rank = types.Int64Null()
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -126,4 +99,5 @@ func (data *DeviceAdminAuthenticationRuleUpdateRank) isNull(ctx context.Context,
 	}
 	return true
 }
+
 //template:end isNull

@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAcc
@@ -108,19 +109,20 @@ func TestAccIseAllowedProtocols(t *testing.T) {
 	var steps []resource.TestStep
 	steps = append(steps, resource.TestStep{
 		Config: testAccIseAllowedProtocolsConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
-		ResourceName:  "ise_allowed_protocols.test",
-		ImportState:   true,
+		ResourceName: "ise_allowed_protocols.test",
+		ImportState:  true,
 	})
-	
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
+
 //template:end testAcc
 
 //template:begin testPrerequisites
@@ -150,6 +152,7 @@ func testAccIseAllowedProtocolsConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 //template:end testAccConfigMinimal
 
 //template:begin testAccConfigAll
@@ -233,4 +236,5 @@ func testAccIseAllowedProtocolsConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
+
 //template:end testAccConfigAll

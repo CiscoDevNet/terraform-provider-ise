@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -39,11 +40,12 @@ func TestAccDataSourceIseEndpointIdentityGroup(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseEndpointIdentityGroupConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -56,7 +58,7 @@ func testAccDataSourceIseEndpointIdentityGroupConfig() string {
 	config += `	description = "My endpoint identity group"` + "\n"
 	config += `	system_defined = false` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_endpoint_identity_group" "test" {
 			id = ise_endpoint_identity_group.test.id
@@ -64,4 +66,5 @@ func testAccDataSourceIseEndpointIdentityGroupConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

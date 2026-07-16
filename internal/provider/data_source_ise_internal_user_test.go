@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -46,11 +47,12 @@ func TestAccDataSourceIseInternalUser(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseInternalUserConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -72,7 +74,7 @@ func testAccDataSourceIseInternalUserConfig() string {
 	config += `	password_id_store = "Internal Users"` + "\n"
 	config += `	description = "My first Terraform user"` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_internal_user" "test" {
 			id = ise_internal_user.test.id
@@ -80,4 +82,5 @@ func testAccDataSourceIseInternalUserConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

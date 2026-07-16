@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -110,11 +111,12 @@ func TestAccDataSourceIseAllowedProtocols(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseAllowedProtocolsConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -199,7 +201,7 @@ func testAccDataSourceIseAllowedProtocolsConfig() string {
 	config += `	teap_request_basic_pwd_auth = true` + "\n"
 	config += `	allow_5g = true` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_allowed_protocols" "test" {
 			id = ise_allowed_protocols.test.id
@@ -207,4 +209,5 @@ func testAccDataSourceIseAllowedProtocolsConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

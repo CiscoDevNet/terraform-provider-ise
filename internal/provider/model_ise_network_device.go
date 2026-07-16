@@ -22,432 +22,81 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"fmt"
-	"net/url"
-	"strconv"
 
-	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type NetworkDevice struct {
-	Id types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	AuthenticationEnableKeyWrap types.Bool `tfsdk:"authentication_enable_key_wrap"`
-	AuthenticationEncryptionKey types.String `tfsdk:"authentication_encryption_key"`
-	AuthenticationEncryptionKeyFormat types.String `tfsdk:"authentication_encryption_key_format"`
-	AuthenticationMessageAuthenticatorCodeKey types.String `tfsdk:"authentication_message_authenticator_code_key"`
-	AuthenticationNetworkProtocol types.String `tfsdk:"authentication_network_protocol"`
-	AuthenticationRadiusSharedSecret types.String `tfsdk:"authentication_radius_shared_secret"`
-	AuthenticationEnableMultiSecret types.Bool `tfsdk:"authentication_enable_multi_secret"`
-	AuthenticationSecondRadiusSharedSecret types.String `tfsdk:"authentication_second_radius_shared_secret"`
-	AuthenticationDtlsRequired types.Bool `tfsdk:"authentication_dtls_required"`
-	CoaPort types.Int64 `tfsdk:"coa_port"`
-	DtlsDnsName types.String `tfsdk:"dtls_dns_name"`
-	Ips []NetworkDeviceIps `tfsdk:"ips"`
-	NetworkDeviceGroups types.Set `tfsdk:"network_device_groups"`
-	ModelName types.String `tfsdk:"model_name"`
-	SoftwareVersion types.String `tfsdk:"software_version"`
-	ProfileName types.String `tfsdk:"profile_name"`
-	SnmpLinkTrapQuery types.Bool `tfsdk:"snmp_link_trap_query"`
-	SnmpMacTrapQuery types.Bool `tfsdk:"snmp_mac_trap_query"`
-	SnmpOriginatingPolicyServiceNode types.String `tfsdk:"snmp_originating_policy_service_node"`
-	SnmpPollingInterval types.Int64 `tfsdk:"snmp_polling_interval"`
-	SnmpRoCommunity types.String `tfsdk:"snmp_ro_community"`
-	SnmpVersion types.String `tfsdk:"snmp_version"`
-	SnmpUsername types.String `tfsdk:"snmp_username"`
-	SnmpSecurityLevel types.String `tfsdk:"snmp_security_level"`
-	SnmpAuthProtocol types.String `tfsdk:"snmp_auth_protocol"`
-	SnmpAuthPassword types.String `tfsdk:"snmp_auth_password"`
-	SnmpPrivacyProtocol types.String `tfsdk:"snmp_privacy_protocol"`
-	SnmpPrivacyPassword types.String `tfsdk:"snmp_privacy_password"`
-	TacacsConnectModeOptions types.String `tfsdk:"tacacs_connect_mode_options"`
-	TacacsSharedSecret types.String `tfsdk:"tacacs_shared_secret"`
-	TrustsecDeviceId types.String `tfsdk:"trustsec_device_id"`
-	TrustsecDevicePassword types.String `tfsdk:"trustsec_device_password"`
-	TrustsecRestApiUsername types.String `tfsdk:"trustsec_rest_api_username"`
-	TrustsecRestApiPassword types.String `tfsdk:"trustsec_rest_api_password"`
-	TrustsecEnableModePassword types.String `tfsdk:"trustsec_enable_mode_password"`
-	TrustsecExecModePassword types.String `tfsdk:"trustsec_exec_mode_password"`
-	TrustsecExecModeUsername types.String `tfsdk:"trustsec_exec_mode_username"`
-	TrustsecIncludeWhenDeployingSgtUpdates types.Bool `tfsdk:"trustsec_include_when_deploying_sgt_updates"`
-	TrustsecDownloadEnvironmentDataEveryXSeconds types.Int64 `tfsdk:"trustsec_download_environment_data_every_x_seconds"`
-	TrustsecDownloadPeerAuthorizationPolicyEveryXSeconds types.Int64 `tfsdk:"trustsec_download_peer_authorization_policy_every_x_seconds"`
-	TrustsecDownloadSgaclListsEveryXSeconds types.Int64 `tfsdk:"trustsec_download_sgacl_lists_every_x_seconds"`
-	TrustsecOtherSgaDevicesToTrustThisDevice types.Bool `tfsdk:"trustsec_other_sga_devices_to_trust_this_device"`
-	TrustsecReAuthenticationEveryXSeconds types.Int64 `tfsdk:"trustsec_re_authentication_every_x_seconds"`
-	TrustsecSendConfigurationToDevice types.Bool `tfsdk:"trustsec_send_configuration_to_device"`
-	TrustsecSendConfigurationToDeviceUsing types.String `tfsdk:"trustsec_send_configuration_to_device_using"`
-	TrustsecCoaSourceHost types.String `tfsdk:"trustsec_coa_source_host"`
+	Id                                                   types.String       `tfsdk:"id"`
+	Name                                                 types.String       `tfsdk:"name"`
+	Description                                          types.String       `tfsdk:"description"`
+	AuthenticationEnableKeyWrap                          types.Bool         `tfsdk:"authentication_enable_key_wrap"`
+	AuthenticationEncryptionKey                          types.String       `tfsdk:"authentication_encryption_key"`
+	AuthenticationEncryptionKeyFormat                    types.String       `tfsdk:"authentication_encryption_key_format"`
+	AuthenticationMessageAuthenticatorCodeKey            types.String       `tfsdk:"authentication_message_authenticator_code_key"`
+	AuthenticationNetworkProtocol                        types.String       `tfsdk:"authentication_network_protocol"`
+	AuthenticationRadiusSharedSecret                     types.String       `tfsdk:"authentication_radius_shared_secret"`
+	AuthenticationEnableMultiSecret                      types.Bool         `tfsdk:"authentication_enable_multi_secret"`
+	AuthenticationSecondRadiusSharedSecret               types.String       `tfsdk:"authentication_second_radius_shared_secret"`
+	AuthenticationDtlsRequired                           types.Bool         `tfsdk:"authentication_dtls_required"`
+	CoaPort                                              types.Int64        `tfsdk:"coa_port"`
+	DtlsDnsName                                          types.String       `tfsdk:"dtls_dns_name"`
+	Ips                                                  []NetworkDeviceIps `tfsdk:"ips"`
+	NetworkDeviceGroups                                  types.Set          `tfsdk:"network_device_groups"`
+	ModelName                                            types.String       `tfsdk:"model_name"`
+	SoftwareVersion                                      types.String       `tfsdk:"software_version"`
+	ProfileName                                          types.String       `tfsdk:"profile_name"`
+	SnmpLinkTrapQuery                                    types.Bool         `tfsdk:"snmp_link_trap_query"`
+	SnmpMacTrapQuery                                     types.Bool         `tfsdk:"snmp_mac_trap_query"`
+	SnmpOriginatingPolicyServiceNode                     types.String       `tfsdk:"snmp_originating_policy_service_node"`
+	SnmpPollingInterval                                  types.Int64        `tfsdk:"snmp_polling_interval"`
+	SnmpRoCommunity                                      types.String       `tfsdk:"snmp_ro_community"`
+	SnmpVersion                                          types.String       `tfsdk:"snmp_version"`
+	SnmpUsername                                         types.String       `tfsdk:"snmp_username"`
+	SnmpSecurityLevel                                    types.String       `tfsdk:"snmp_security_level"`
+	SnmpAuthProtocol                                     types.String       `tfsdk:"snmp_auth_protocol"`
+	SnmpAuthPassword                                     types.String       `tfsdk:"snmp_auth_password"`
+	SnmpPrivacyProtocol                                  types.String       `tfsdk:"snmp_privacy_protocol"`
+	SnmpPrivacyPassword                                  types.String       `tfsdk:"snmp_privacy_password"`
+	TacacsConnectModeOptions                             types.String       `tfsdk:"tacacs_connect_mode_options"`
+	TacacsSharedSecret                                   types.String       `tfsdk:"tacacs_shared_secret"`
+	TrustsecDeviceId                                     types.String       `tfsdk:"trustsec_device_id"`
+	TrustsecDevicePassword                               types.String       `tfsdk:"trustsec_device_password"`
+	TrustsecRestApiUsername                              types.String       `tfsdk:"trustsec_rest_api_username"`
+	TrustsecRestApiPassword                              types.String       `tfsdk:"trustsec_rest_api_password"`
+	TrustsecEnableModePassword                           types.String       `tfsdk:"trustsec_enable_mode_password"`
+	TrustsecExecModePassword                             types.String       `tfsdk:"trustsec_exec_mode_password"`
+	TrustsecExecModeUsername                             types.String       `tfsdk:"trustsec_exec_mode_username"`
+	TrustsecIncludeWhenDeployingSgtUpdates               types.Bool         `tfsdk:"trustsec_include_when_deploying_sgt_updates"`
+	TrustsecDownloadEnvironmentDataEveryXSeconds         types.Int64        `tfsdk:"trustsec_download_environment_data_every_x_seconds"`
+	TrustsecDownloadPeerAuthorizationPolicyEveryXSeconds types.Int64        `tfsdk:"trustsec_download_peer_authorization_policy_every_x_seconds"`
+	TrustsecDownloadSgaclListsEveryXSeconds              types.Int64        `tfsdk:"trustsec_download_sgacl_lists_every_x_seconds"`
+	TrustsecOtherSgaDevicesToTrustThisDevice             types.Bool         `tfsdk:"trustsec_other_sga_devices_to_trust_this_device"`
+	TrustsecReAuthenticationEveryXSeconds                types.Int64        `tfsdk:"trustsec_re_authentication_every_x_seconds"`
+	TrustsecSendConfigurationToDevice                    types.Bool         `tfsdk:"trustsec_send_configuration_to_device"`
+	TrustsecSendConfigurationToDeviceUsing               types.String       `tfsdk:"trustsec_send_configuration_to_device_using"`
+	TrustsecCoaSourceHost                                types.String       `tfsdk:"trustsec_coa_source_host"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 type NetworkDeviceIps struct {
-	Ipaddress types.String `tfsdk:"ipaddress"`
+	Ipaddress        types.String `tfsdk:"ipaddress"`
 	IpaddressExclude types.String `tfsdk:"ipaddress_exclude"`
-	Mask types.String `tfsdk:"mask"`
+	Mask             types.String `tfsdk:"mask"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data NetworkDevice) getPath() string {
-		return "/ers/config/networkdevice"
+	return "/ers/config/networkdevice"
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -460,43 +109,43 @@ func (data NetworkDevice) toBody(ctx context.Context, state NetworkDevice) strin
 	if data.Id.ValueString() != "" {
 		body, _ = sjson.Set(body, "NetworkDevice.id", data.Id.ValueString())
 	}
-	if !data.Name.IsNull()  {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()  {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.description", data.Description.ValueString())
 	}
-	if !data.AuthenticationEnableKeyWrap.IsNull()  {
+	if !data.AuthenticationEnableKeyWrap.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.authenticationSettings.enableKeyWrap", data.AuthenticationEnableKeyWrap.ValueBool())
 	}
-	if !data.AuthenticationEncryptionKey.IsNull()  {
+	if !data.AuthenticationEncryptionKey.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.authenticationSettings.keyEncryptionKey", data.AuthenticationEncryptionKey.ValueString())
 	}
-	if !data.AuthenticationEncryptionKeyFormat.IsNull()  {
+	if !data.AuthenticationEncryptionKeyFormat.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.authenticationSettings.keyInputFormat", data.AuthenticationEncryptionKeyFormat.ValueString())
 	}
-	if !data.AuthenticationMessageAuthenticatorCodeKey.IsNull()  {
+	if !data.AuthenticationMessageAuthenticatorCodeKey.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.authenticationSettings.messageAuthenticatorCodeKey", data.AuthenticationMessageAuthenticatorCodeKey.ValueString())
 	}
-	if !data.AuthenticationNetworkProtocol.IsNull()  {
+	if !data.AuthenticationNetworkProtocol.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.authenticationSettings.networkProtocol", data.AuthenticationNetworkProtocol.ValueString())
 	}
-	if !data.AuthenticationRadiusSharedSecret.IsNull()  {
+	if !data.AuthenticationRadiusSharedSecret.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.authenticationSettings.radiusSharedSecret", data.AuthenticationRadiusSharedSecret.ValueString())
 	}
-	if !data.AuthenticationEnableMultiSecret.IsNull()  {
+	if !data.AuthenticationEnableMultiSecret.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.authenticationSettings.enableMultiSecret", data.AuthenticationEnableMultiSecret.ValueBool())
 	}
-	if !data.AuthenticationSecondRadiusSharedSecret.IsNull()  {
+	if !data.AuthenticationSecondRadiusSharedSecret.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.authenticationSettings.secondRadiusSharedSecret", data.AuthenticationSecondRadiusSharedSecret.ValueString())
 	}
-	if !data.AuthenticationDtlsRequired.IsNull()  {
+	if !data.AuthenticationDtlsRequired.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.authenticationSettings.dtlsRequired", data.AuthenticationDtlsRequired.ValueBool())
 	}
-	if !data.CoaPort.IsNull()  {
+	if !data.CoaPort.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.coaPort", data.CoaPort.ValueInt64())
 	}
-	if !data.DtlsDnsName.IsNull()  {
+	if !data.DtlsDnsName.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.dtlsDnsName", data.DtlsDnsName.ValueString())
 	}
 	if len(data.Ips) > 0 {
@@ -520,107 +169,108 @@ func (data NetworkDevice) toBody(ctx context.Context, state NetworkDevice) strin
 		data.NetworkDeviceGroups.ElementsAs(ctx, &values, false)
 		body, _ = sjson.Set(body, "NetworkDevice.NetworkDeviceGroupList", values)
 	}
-	if !data.ModelName.IsNull()  {
+	if !data.ModelName.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.modelName", data.ModelName.ValueString())
 	}
-	if !data.SoftwareVersion.IsNull()  {
+	if !data.SoftwareVersion.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.softwareVersion", data.SoftwareVersion.ValueString())
 	}
-	if !data.ProfileName.IsNull()  {
+	if !data.ProfileName.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.profileName", data.ProfileName.ValueString())
 	}
-	if !data.SnmpLinkTrapQuery.IsNull()  {
+	if !data.SnmpLinkTrapQuery.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.linkTrapQuery", data.SnmpLinkTrapQuery.ValueBool())
 	}
-	if !data.SnmpMacTrapQuery.IsNull()  {
+	if !data.SnmpMacTrapQuery.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.macTrapQuery", data.SnmpMacTrapQuery.ValueBool())
 	}
-	if !data.SnmpOriginatingPolicyServiceNode.IsNull()  {
+	if !data.SnmpOriginatingPolicyServiceNode.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.originatingPolicyServicesNode", data.SnmpOriginatingPolicyServiceNode.ValueString())
 	}
-	if !data.SnmpPollingInterval.IsNull()  {
+	if !data.SnmpPollingInterval.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.pollingInterval", data.SnmpPollingInterval.ValueInt64())
 	}
-	if !data.SnmpRoCommunity.IsNull()  {
+	if !data.SnmpRoCommunity.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.roCommunity", data.SnmpRoCommunity.ValueString())
 	}
-	if !data.SnmpVersion.IsNull()  {
+	if !data.SnmpVersion.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.version", data.SnmpVersion.ValueString())
 	}
-	if !data.SnmpUsername.IsNull()  {
+	if !data.SnmpUsername.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.username", data.SnmpUsername.ValueString())
 	}
-	if !data.SnmpSecurityLevel.IsNull()  {
+	if !data.SnmpSecurityLevel.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.securityLevel", data.SnmpSecurityLevel.ValueString())
 	}
-	if !data.SnmpAuthProtocol.IsNull()  {
+	if !data.SnmpAuthProtocol.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.authProtocol", data.SnmpAuthProtocol.ValueString())
 	}
-	if !data.SnmpAuthPassword.IsNull()  {
+	if !data.SnmpAuthPassword.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.authPassword", data.SnmpAuthPassword.ValueString())
 	}
-	if !data.SnmpPrivacyProtocol.IsNull()  {
+	if !data.SnmpPrivacyProtocol.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.privacyProtocol", data.SnmpPrivacyProtocol.ValueString())
 	}
-	if !data.SnmpPrivacyPassword.IsNull()  {
+	if !data.SnmpPrivacyPassword.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.privacyPassword", data.SnmpPrivacyPassword.ValueString())
 	}
-	if !data.TacacsConnectModeOptions.IsNull()  {
+	if !data.TacacsConnectModeOptions.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.tacacsSettings.connectModeOptions", data.TacacsConnectModeOptions.ValueString())
 	}
-	if !data.TacacsSharedSecret.IsNull()  {
+	if !data.TacacsSharedSecret.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.tacacsSettings.sharedSecret", data.TacacsSharedSecret.ValueString())
 	}
-	if !data.TrustsecDeviceId.IsNull()  {
+	if !data.TrustsecDeviceId.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.deviceAuthenticationSettings.sgaDeviceId", data.TrustsecDeviceId.ValueString())
 	}
-	if !data.TrustsecDevicePassword.IsNull()  {
+	if !data.TrustsecDevicePassword.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.deviceAuthenticationSettings.sgaDevicePassword", data.TrustsecDevicePassword.ValueString())
 	}
-	if !data.TrustsecRestApiUsername.IsNull()  {
+	if !data.TrustsecRestApiUsername.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.deviceAuthenticationSettings.restApiUsername", data.TrustsecRestApiUsername.ValueString())
 	}
-	if !data.TrustsecRestApiPassword.IsNull()  {
+	if !data.TrustsecRestApiPassword.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.deviceAuthenticationSettings.restApiPassword", data.TrustsecRestApiPassword.ValueString())
 	}
-	if !data.TrustsecEnableModePassword.IsNull()  {
+	if !data.TrustsecEnableModePassword.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.deviceConfigurationDeployment.enableModePassword", data.TrustsecEnableModePassword.ValueString())
 	}
-	if !data.TrustsecExecModePassword.IsNull()  {
+	if !data.TrustsecExecModePassword.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.deviceConfigurationDeployment.execModePassword", data.TrustsecExecModePassword.ValueString())
 	}
-	if !data.TrustsecExecModeUsername.IsNull()  {
+	if !data.TrustsecExecModeUsername.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.deviceConfigurationDeployment.execModeUsername", data.TrustsecExecModeUsername.ValueString())
 	}
-	if !data.TrustsecIncludeWhenDeployingSgtUpdates.IsNull()  {
+	if !data.TrustsecIncludeWhenDeployingSgtUpdates.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.deviceConfigurationDeployment.includeWhenDeployingSGTUpdates", data.TrustsecIncludeWhenDeployingSgtUpdates.ValueBool())
 	}
-	if !data.TrustsecDownloadEnvironmentDataEveryXSeconds.IsNull()  {
+	if !data.TrustsecDownloadEnvironmentDataEveryXSeconds.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.downlaodEnvironmentDataEveryXSeconds", data.TrustsecDownloadEnvironmentDataEveryXSeconds.ValueInt64())
 	}
-	if !data.TrustsecDownloadPeerAuthorizationPolicyEveryXSeconds.IsNull()  {
+	if !data.TrustsecDownloadPeerAuthorizationPolicyEveryXSeconds.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.downlaodPeerAuthorizationPolicyEveryXSeconds", data.TrustsecDownloadPeerAuthorizationPolicyEveryXSeconds.ValueInt64())
 	}
-	if !data.TrustsecDownloadSgaclListsEveryXSeconds.IsNull()  {
+	if !data.TrustsecDownloadSgaclListsEveryXSeconds.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.downloadSGACLListsEveryXSeconds", data.TrustsecDownloadSgaclListsEveryXSeconds.ValueInt64())
 	}
-	if !data.TrustsecOtherSgaDevicesToTrustThisDevice.IsNull()  {
+	if !data.TrustsecOtherSgaDevicesToTrustThisDevice.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.otherSGADevicesToTrustThisDevice", data.TrustsecOtherSgaDevicesToTrustThisDevice.ValueBool())
 	}
-	if !data.TrustsecReAuthenticationEveryXSeconds.IsNull()  {
+	if !data.TrustsecReAuthenticationEveryXSeconds.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.reAuthenticationEveryXSeconds", data.TrustsecReAuthenticationEveryXSeconds.ValueInt64())
 	}
-	if !data.TrustsecSendConfigurationToDevice.IsNull()  {
+	if !data.TrustsecSendConfigurationToDevice.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.sendConfigurationToDevice", data.TrustsecSendConfigurationToDevice.ValueBool())
 	}
-	if !data.TrustsecSendConfigurationToDeviceUsing.IsNull()  {
+	if !data.TrustsecSendConfigurationToDeviceUsing.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.sendConfigurationToDeviceUsing", data.TrustsecSendConfigurationToDeviceUsing.ValueString())
 	}
-	if !data.TrustsecCoaSourceHost.IsNull()  {
+	if !data.TrustsecCoaSourceHost.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.sgaNotificationAndUpdates.coaSourceHost", data.TrustsecCoaSourceHost.ValueString())
 	}
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -879,6 +529,7 @@ func (data *NetworkDevice) fromBody(ctx context.Context, res gjson.Result) {
 		data.TrustsecCoaSourceHost = types.StringNull()
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -949,8 +600,8 @@ func (data *NetworkDevice) updateFromBody(ctx context.Context, res gjson.Result)
 		data.DtlsDnsName = types.StringNull()
 	}
 	for i := range data.Ips {
-		keys := [...]string{ "ipaddress",  }
-		keyValues := [...]string{ data.Ips[i].Ipaddress.ValueString(),  }
+		keys := [...]string{"ipaddress"}
+		keyValues := [...]string{data.Ips[i].Ipaddress.ValueString()}
 
 		var r gjson.Result
 		parentItems := res.Get("NetworkDevice.NetworkDeviceIPList").Array()
@@ -1159,6 +810,7 @@ func (data *NetworkDevice) updateFromBody(ctx context.Context, res gjson.Result)
 		data.TrustsecCoaSourceHost = types.StringNull()
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -1309,4 +961,5 @@ func (data *NetworkDevice) isNull(ctx context.Context, res gjson.Result) bool {
 	}
 	return true
 }
+
 //template:end isNull

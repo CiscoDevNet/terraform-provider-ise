@@ -22,77 +22,31 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"fmt"
-	"net/url"
-	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type TrustSecSecurityGroupACL struct {
-	Id types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
+	Id          types.String `tfsdk:"id"`
+	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
-	AclContent types.String `tfsdk:"acl_content"`
-	IpVersion types.String `tfsdk:"ip_version"`
-	ReadOnly types.Bool `tfsdk:"read_only"`
+	AclContent  types.String `tfsdk:"acl_content"`
+	IpVersion   types.String `tfsdk:"ip_version"`
+	ReadOnly    types.Bool   `tfsdk:"read_only"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data TrustSecSecurityGroupACL) getPath() string {
-		return "/ers/config/sgacl"
+	return "/ers/config/sgacl"
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -102,23 +56,24 @@ func (data TrustSecSecurityGroupACL) getPath() string {
 //template:begin toBody
 func (data TrustSecSecurityGroupACL) toBody(ctx context.Context, state TrustSecSecurityGroupACL) string {
 	body := ""
-	if !data.Name.IsNull()  {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "Sgacl.name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()  {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "Sgacl.description", data.Description.ValueString())
 	}
-	if !data.AclContent.IsNull()  {
+	if !data.AclContent.IsNull() {
 		body, _ = sjson.Set(body, "Sgacl.aclcontent", data.AclContent.ValueString())
 	}
-	if !data.IpVersion.IsNull()  {
+	if !data.IpVersion.IsNull() {
 		body, _ = sjson.Set(body, "Sgacl.ipVersion", data.IpVersion.ValueString())
 	}
-	if !data.ReadOnly.IsNull()  {
+	if !data.ReadOnly.IsNull() {
 		body, _ = sjson.Set(body, "Sgacl.readOnly", data.ReadOnly.ValueBool())
 	}
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -144,6 +99,7 @@ func (data *TrustSecSecurityGroupACL) fromBody(ctx context.Context, res gjson.Re
 		data.IpVersion = types.StringValue("IP_AGNOSTIC")
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -169,6 +125,7 @@ func (data *TrustSecSecurityGroupACL) updateFromBody(ctx context.Context, res gj
 		data.IpVersion = types.StringNull()
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -190,4 +147,5 @@ func (data *TrustSecSecurityGroupACL) isNull(ctx context.Context, res gjson.Resu
 	}
 	return true
 }
+
 //template:end isNull

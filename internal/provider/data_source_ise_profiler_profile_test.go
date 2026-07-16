@@ -21,16 +21,18 @@ package provider
 
 //template:begin imports
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
 func TestAccDataSourceIseProfilerProfile(t *testing.T) {
 	if os.Getenv("PROFILE") == "" {
-        t.Skip("skipping test, set environment variable PROFILE")
+		t.Skip("skipping test, set environment variable PROFILE")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_profiler_profile.test", "name", "Polycom-Device"))
@@ -42,11 +44,12 @@ func TestAccDataSourceIseProfilerProfile(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseProfilerProfileConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -55,7 +58,7 @@ func TestAccDataSourceIseProfilerProfile(t *testing.T) {
 //template:begin testAccDataSourceConfig
 func testAccDataSourceIseProfilerProfileConfig() string {
 	config := ""
-	
+
 	config += `
 		data "ise_profiler_profile" "test" {
 			id = ise_profiler_profile.test.id
@@ -63,4 +66,5 @@ func testAccDataSourceIseProfilerProfileConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

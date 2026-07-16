@@ -22,175 +22,31 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"fmt"
-	"net/url"
-	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type AllowedProtocolsTACACS struct {
-	Id types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	AllowPapAscii types.Bool `tfsdk:"allow_pap_ascii"`
-	AllowChap types.Bool `tfsdk:"allow_chap"`
-	AllowMsChapV1 types.Bool `tfsdk:"allow_ms_chap_v1"`
+	Id            types.String `tfsdk:"id"`
+	Name          types.String `tfsdk:"name"`
+	Description   types.String `tfsdk:"description"`
+	AllowPapAscii types.Bool   `tfsdk:"allow_pap_ascii"`
+	AllowChap     types.Bool   `tfsdk:"allow_chap"`
+	AllowMsChapV1 types.Bool   `tfsdk:"allow_ms_chap_v1"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data AllowedProtocolsTACACS) getPath() string {
-		return "/ers/config/allowedprotocols"
+	return "/ers/config/allowedprotocols"
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -200,20 +56,20 @@ func (data AllowedProtocolsTACACS) getPath() string {
 //template:begin toBody
 func (data AllowedProtocolsTACACS) toBody(ctx context.Context, state AllowedProtocolsTACACS) string {
 	body := ""
-	if !data.Name.IsNull()  {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "AllowedProtocols.name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()  {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "AllowedProtocols.description", data.Description.ValueString())
 	}
 	body, _ = sjson.Set(body, "AllowedProtocols.processHostLookup", false)
-	if !data.AllowPapAscii.IsNull()  {
+	if !data.AllowPapAscii.IsNull() {
 		body, _ = sjson.Set(body, "AllowedProtocols.allowPapAscii", data.AllowPapAscii.ValueBool())
 	}
-	if !data.AllowChap.IsNull()  {
+	if !data.AllowChap.IsNull() {
 		body, _ = sjson.Set(body, "AllowedProtocols.allowChap", data.AllowChap.ValueBool())
 	}
-	if !data.AllowMsChapV1.IsNull()  {
+	if !data.AllowMsChapV1.IsNull() {
 		body, _ = sjson.Set(body, "AllowedProtocols.allowMsChapV1", data.AllowMsChapV1.ValueBool())
 	}
 	body, _ = sjson.Set(body, "AllowedProtocols.allowMsChapV2", false)
@@ -231,6 +87,7 @@ func (data AllowedProtocolsTACACS) toBody(ctx context.Context, state AllowedProt
 	body, _ = sjson.Set(body, "AllowedProtocols.fiveG", false)
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -261,6 +118,7 @@ func (data *AllowedProtocolsTACACS) fromBody(ctx context.Context, res gjson.Resu
 		data.AllowMsChapV1 = types.BoolNull()
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -291,6 +149,7 @@ func (data *AllowedProtocolsTACACS) updateFromBody(ctx context.Context, res gjso
 		data.AllowMsChapV1 = types.BoolNull()
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -312,4 +171,5 @@ func (data *AllowedProtocolsTACACS) isNull(ctx context.Context, res gjson.Result
 	}
 	return true
 }
+
 //template:end isNull

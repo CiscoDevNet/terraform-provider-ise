@@ -84,6 +84,7 @@ func (r *NetworkDeviceGroupResource) Schema(ctx context.Context, req resource.Sc
 		},
 	}
 }
+
 //template:end model
 
 func (r *NetworkDeviceGroupResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
@@ -160,12 +161,12 @@ func (r *NetworkDeviceGroupResource) Read(ctx context.Context, req resource.Read
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end read
 
 //template:begin update
 func (r *NetworkDeviceGroupResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state NetworkDeviceGroup
-
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -182,8 +183,8 @@ func (r *NetworkDeviceGroupResource) Update(ctx context.Context, req resource.Up
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	body := plan.toBody(ctx, state)
-	
-	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body)
+
+	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -194,6 +195,7 @@ func (r *NetworkDeviceGroupResource) Update(ctx context.Context, req resource.Up
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end update
 
 //template:begin delete
@@ -218,10 +220,12 @@ func (r *NetworkDeviceGroupResource) Delete(ctx context.Context, req resource.De
 
 	resp.State.RemoveResource(ctx)
 }
+
 //template:end delete
 
 //template:begin import
 func (r *NetworkDeviceGroupResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
+
 //template:end import

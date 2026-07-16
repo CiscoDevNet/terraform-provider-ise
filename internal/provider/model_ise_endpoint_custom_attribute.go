@@ -22,53 +22,28 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"fmt"
-	"net/url"
-	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type EndpointCustomAttribute struct {
-	Id types.String `tfsdk:"id"`
+	Id            types.String `tfsdk:"id"`
 	AttributeName types.String `tfsdk:"attribute_name"`
 	AttributeType types.String `tfsdk:"attribute_type"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data EndpointCustomAttribute) getPath() string {
-		return "/api/v1/endpoint-custom-attribute"
+	return "/api/v1/endpoint-custom-attribute"
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -78,14 +53,15 @@ func (data EndpointCustomAttribute) getPath() string {
 //template:begin toBody
 func (data EndpointCustomAttribute) toBody(ctx context.Context, state EndpointCustomAttribute) string {
 	body := ""
-	if !data.AttributeName.IsNull()  {
+	if !data.AttributeName.IsNull() {
 		body, _ = sjson.Set(body, "attributeName", data.AttributeName.ValueString())
 	}
-	if !data.AttributeType.IsNull()  {
+	if !data.AttributeType.IsNull() {
 		body, _ = sjson.Set(body, "attributeType", data.AttributeType.ValueString())
 	}
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -101,6 +77,7 @@ func (data *EndpointCustomAttribute) fromBody(ctx context.Context, res gjson.Res
 		data.AttributeType = types.StringNull()
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -116,6 +93,7 @@ func (data *EndpointCustomAttribute) updateFromBody(ctx context.Context, res gjs
 		data.AttributeType = types.StringNull()
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -128,4 +106,5 @@ func (data *EndpointCustomAttribute) isNull(ctx context.Context, res gjson.Resul
 	}
 	return true
 }
+
 //template:end isNull

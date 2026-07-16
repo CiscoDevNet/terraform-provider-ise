@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -42,12 +43,13 @@ func TestAccDataSourceIseNetworkAccessDictionaryAttribute(t *testing.T) {
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceIseNetworkAccessDictionaryAttributePrerequisitesConfig+testAccDataSourceIseNetworkAccessDictionaryAttributeConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceIseNetworkAccessDictionaryAttributePrerequisitesConfig + testAccDataSourceIseNetworkAccessDictionaryAttributeConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -60,6 +62,7 @@ resource "ise_network_access_dictionary" "test" {
 }
 
 `
+
 //template:end testPrerequisites
 
 //template:begin testAccDataSourceConfig
@@ -76,7 +79,7 @@ func testAccDataSourceIseNetworkAccessDictionaryAttributeConfig() string {
 	config += `	  value = "value1"` + "\n"
 	config += `	}]` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_network_access_dictionary_attribute" "test" {
 			id = ise_network_access_dictionary_attribute.test.id
@@ -85,4 +88,5 @@ func testAccDataSourceIseNetworkAccessDictionaryAttributeConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

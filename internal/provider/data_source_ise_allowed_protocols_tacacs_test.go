@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -41,11 +42,12 @@ func TestAccDataSourceIseAllowedProtocolsTACACS(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseAllowedProtocolsTACACSConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -60,7 +62,7 @@ func testAccDataSourceIseAllowedProtocolsTACACSConfig() string {
 	config += `	allow_chap = true` + "\n"
 	config += `	allow_ms_chap_v1 = true` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_allowed_protocols_tacacs" "test" {
 			id = ise_allowed_protocols_tacacs.test.id
@@ -68,4 +70,5 @@ func testAccDataSourceIseAllowedProtocolsTACACSConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

@@ -21,10 +21,12 @@ package provider
 
 //template:begin imports
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAcc
@@ -41,19 +43,20 @@ func TestAccIseLicenseTierState(t *testing.T) {
 	}
 	steps = append(steps, resource.TestStep{
 		Config: testAccIseLicenseTierStateConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
-		ResourceName:  "ise_license_tier_state.test",
-		ImportState:   true,
+		ResourceName: "ise_license_tier_state.test",
+		ImportState:  true,
 	})
-	
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
+
 //template:end testAcc
 
 //template:begin testPrerequisites
@@ -69,6 +72,7 @@ func testAccIseLicenseTierStateConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 //template:end testAccConfigMinimal
 
 //template:begin testAccConfigAll
@@ -81,4 +85,5 @@ func testAccIseLicenseTierStateConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
+
 //template:end testAccConfigAll

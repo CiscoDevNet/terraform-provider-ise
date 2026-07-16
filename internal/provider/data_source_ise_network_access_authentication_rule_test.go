@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -49,12 +50,13 @@ func TestAccDataSourceIseNetworkAccessAuthenticationRule(t *testing.T) {
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceIseNetworkAccessAuthenticationRulePrerequisitesConfig+testAccDataSourceIseNetworkAccessAuthenticationRuleConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceIseNetworkAccessAuthenticationRulePrerequisitesConfig + testAccDataSourceIseNetworkAccessAuthenticationRuleConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -79,6 +81,7 @@ resource "ise_network_access_condition" "test" {
 }
 
 `
+
 //template:end testPrerequisites
 
 //template:begin testAccDataSourceConfig
@@ -100,7 +103,7 @@ func testAccDataSourceIseNetworkAccessAuthenticationRuleConfig() string {
 	config += `	if_process_fail = "DROP"` + "\n"
 	config += `	if_user_not_found = "REJECT"` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_network_access_authentication_rule" "test" {
 			id = ise_network_access_authentication_rule.test.id
@@ -109,4 +112,5 @@ func testAccDataSourceIseNetworkAccessAuthenticationRuleConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

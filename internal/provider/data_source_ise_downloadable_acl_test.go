@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -40,11 +41,12 @@ func TestAccDataSourceIseDownloadableACL(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseDownloadableACLConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -58,7 +60,7 @@ func testAccDataSourceIseDownloadableACLConfig() string {
 	config += `	dacl = "permit ip any any"` + "\n"
 	config += `	dacl_type = "IPV4"` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_downloadable_acl" "test" {
 			id = ise_downloadable_acl.test.id
@@ -66,4 +68,5 @@ func testAccDataSourceIseDownloadableACLConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

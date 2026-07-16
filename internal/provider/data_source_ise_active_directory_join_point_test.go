@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -75,11 +76,12 @@ func TestAccDataSourceIseActiveDirectoryJoinPoint(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseActiveDirectoryJoinPointConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -135,7 +137,7 @@ func testAccDataSourceIseActiveDirectoryJoinPointConfig() string {
 	config += `	failed_auth_threshold = 5` + "\n"
 	config += `	auth_protection_type = "WIRELESS"` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_active_directory_join_point" "test" {
 			id = ise_active_directory_join_point.test.id
@@ -143,4 +145,5 @@ func testAccDataSourceIseActiveDirectoryJoinPointConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -44,11 +45,12 @@ func TestAccDataSourceIseNetworkAccessCondition(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseNetworkAccessConditionConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -66,7 +68,7 @@ func testAccDataSourceIseNetworkAccessConditionConfig() string {
 	config += `	dictionary_name = "Network Access"` + "\n"
 	config += `	operator = "equals"` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_network_access_condition" "test" {
 			id = ise_network_access_condition.test.id
@@ -74,4 +76,5 @@ func testAccDataSourceIseNetworkAccessConditionConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -38,11 +39,12 @@ func TestAccDataSourceIseLicenseTierState(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseLicenseTierStateConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -56,7 +58,7 @@ func testAccDataSourceIseLicenseTierStateConfig() string {
 	config += `	  status = "ENABLED"` + "\n"
 	config += `	}]` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_license_tier_state" "test" {
 			id = ise_license_tier_state.test.id
@@ -64,4 +66,5 @@ func testAccDataSourceIseLicenseTierStateConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig
