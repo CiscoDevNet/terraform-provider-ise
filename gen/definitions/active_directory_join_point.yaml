@@ -162,6 +162,7 @@ attributes:
     type: Int64
     requires_replace: true
     default_value: 5
+    write_changes_only: true
     description: Aging Time
     example: 5
   - model_name: enableCallbackForDialinClient
