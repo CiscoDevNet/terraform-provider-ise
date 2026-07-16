@@ -10,6 +10,8 @@ description: |-
 ## 0.3.5 (unreleased)
 
 - Fix perpetual drift in the `group_id` and `profile_id` attributes of the `ise_endpoint` resource, where ISE dynamically assigns these values when `static_group_assignment` / `static_profile_assignment` are `false`, causing Terraform to report changes on every plan
+- Fix perpetual drift on optional string attributes across the `ise_endpoint`, `ise_internal_user`, `ise_authorization_profile`, `ise_network_device`, `ise_network_access_policy_set`, `ise_device_admin_policy_set`, `ise_identity_source_sequence`, and `ise_active_directory_join_point` resources, where ISE returns an empty string (`""`) for unset fields, causing Terraform to report an in-place update on every plan after a brownfield import
+- Fix perpetual drift in policy condition `operator` fields of the `ise_network_access_authentication_rule`, `ise_network_access_authorization_rule`, `ise_device_admin_authentication_rule`, and `ise_device_admin_authorization_rule` resources, where ISE normalizes `equals` to `ipEquals` for IP-address attributes (e.g. `NAS-IP-Address`), causing the child condition to be re-added on every plan
 
 ## 0.3.4
 
