@@ -22,33 +22,55 @@ package provider
 //template:begin imports
 import (
 	"context"
+	"fmt"
+	"net/url"
+	"strconv"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
 //template:end imports
 
 //template:begin types
 type LicenseTierState struct {
-	Id       types.String               `tfsdk:"id"`
+	Id types.String `tfsdk:"id"`
 	Licenses []LicenseTierStateLicenses `tfsdk:"licenses"`
 }
 
+
 type LicenseTierStateLicenses struct {
-	Name   types.String `tfsdk:"name"`
+	Name types.String `tfsdk:"name"`
 	Status types.String `tfsdk:"status"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //template:end types
 
 //template:begin getPath
 func (data LicenseTierState) getPath() string {
-	return "/api/v1/license/system/tier-state"
+		return "/api/v1/license/system/tier-state"
 }
-
 //template:end getPath
 
 //template:begin getPathDelete
@@ -73,7 +95,6 @@ func (data LicenseTierState) toBody(ctx context.Context, state LicenseTierState)
 	}
 	return body
 }
-
 //template:end toBody
 
 //template:begin fromBody
@@ -97,14 +118,13 @@ func (data *LicenseTierState) fromBody(ctx context.Context, res gjson.Result) {
 		})
 	}
 }
-
 //template:end fromBody
 
 //template:begin updateFromBody
 func (data *LicenseTierState) updateFromBody(ctx context.Context, res gjson.Result) {
 	for i := range data.Licenses {
-		keys := [...]string{"name"}
-		keyValues := [...]string{data.Licenses[i].Name.ValueString()}
+		keys := [...]string{ "name",  }
+		keyValues := [...]string{ data.Licenses[i].Name.ValueString(),  }
 
 		var r gjson.Result
 		parentItems := res.Array()
@@ -143,7 +163,6 @@ func (data *LicenseTierState) updateFromBody(ctx context.Context, res gjson.Resu
 		}
 	}
 }
-
 //template:end updateFromBody
 
 //template:begin isNull
@@ -153,5 +172,4 @@ func (data *LicenseTierState) isNull(ctx context.Context, res gjson.Result) bool
 	}
 	return true
 }
-
 //template:end isNull

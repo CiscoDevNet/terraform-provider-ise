@@ -22,37 +22,80 @@ package provider
 //template:begin imports
 import (
 	"context"
+	"fmt"
+	"net/url"
+	"strconv"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
 //template:end imports
 
 //template:begin types
 type TACACSCommandSet struct {
-	Id              types.String               `tfsdk:"id"`
-	Name            types.String               `tfsdk:"name"`
-	Description     types.String               `tfsdk:"description"`
-	PermitUnmatched types.Bool                 `tfsdk:"permit_unmatched"`
-	Commands        []TACACSCommandSetCommands `tfsdk:"commands"`
+	Id types.String `tfsdk:"id"`
+	Name types.String `tfsdk:"name"`
+	Description types.String `tfsdk:"description"`
+	PermitUnmatched types.Bool `tfsdk:"permit_unmatched"`
+	Commands []TACACSCommandSetCommands `tfsdk:"commands"`
 }
 
+
+
+
+
 type TACACSCommandSetCommands struct {
-	Grant     types.String `tfsdk:"grant"`
-	Command   types.String `tfsdk:"command"`
+	Grant types.String `tfsdk:"grant"`
+	Command types.String `tfsdk:"command"`
 	Arguments types.String `tfsdk:"arguments"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //template:end types
 
 //template:begin getPath
 func (data TACACSCommandSet) getPath() string {
-	return "/ers/config/tacacscommandsets"
+		return "/ers/config/tacacscommandsets"
 }
-
 //template:end getPath
 
 //template:begin getPathDelete
@@ -62,13 +105,13 @@ func (data TACACSCommandSet) getPath() string {
 //template:begin toBody
 func (data TACACSCommandSet) toBody(ctx context.Context, state TACACSCommandSet) string {
 	body := ""
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()  {
 		body, _ = sjson.Set(body, "TacacsCommandSets.name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull() {
+	if !data.Description.IsNull()  {
 		body, _ = sjson.Set(body, "TacacsCommandSets.description", data.Description.ValueString())
 	}
-	if !data.PermitUnmatched.IsNull() {
+	if !data.PermitUnmatched.IsNull()  {
 		body, _ = sjson.Set(body, "TacacsCommandSets.permitUnmatched", data.PermitUnmatched.ValueBool())
 	}
 	if len(data.Commands) > 0 {
@@ -89,7 +132,6 @@ func (data TACACSCommandSet) toBody(ctx context.Context, state TACACSCommandSet)
 	}
 	return body
 }
-
 //template:end toBody
 
 //template:begin fromBody
@@ -133,7 +175,6 @@ func (data *TACACSCommandSet) fromBody(ctx context.Context, res gjson.Result) {
 		})
 	}
 }
-
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -154,8 +195,8 @@ func (data *TACACSCommandSet) updateFromBody(ctx context.Context, res gjson.Resu
 		data.PermitUnmatched = types.BoolNull()
 	}
 	for i := range data.Commands {
-		keys := [...]string{"grant", "command", "arguments"}
-		keyValues := [...]string{data.Commands[i].Grant.ValueString(), data.Commands[i].Command.ValueString(), data.Commands[i].Arguments.ValueString()}
+		keys := [...]string{ "grant", "command", "arguments",  }
+		keyValues := [...]string{ data.Commands[i].Grant.ValueString(), data.Commands[i].Command.ValueString(), data.Commands[i].Arguments.ValueString(),  }
 
 		var r gjson.Result
 		parentItems := res.Get("TacacsCommandSets.commands.commandList").Array()
@@ -199,7 +240,6 @@ func (data *TACACSCommandSet) updateFromBody(ctx context.Context, res gjson.Resu
 		}
 	}
 }
-
 //template:end updateFromBody
 
 //template:begin isNull
@@ -218,5 +258,4 @@ func (data *TACACSCommandSet) isNull(ctx context.Context, res gjson.Result) bool
 	}
 	return true
 }
-
 //template:end isNull

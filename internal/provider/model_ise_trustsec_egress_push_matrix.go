@@ -22,27 +22,45 @@ package provider
 //template:begin imports
 import (
 	"context"
+	"fmt"
+	"net/url"
+	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
 //template:end imports
 
 //template:begin types
 type TrustSecEgressPushMatrix struct {
-	Id    types.String `tfsdk:"id"`
-	Force types.Bool   `tfsdk:"force"`
+	Id types.String `tfsdk:"id"`
+	Force types.Bool `tfsdk:"force"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //template:end types
 
 //template:begin getPath
 func (data TrustSecEgressPushMatrix) getPath() string {
-	return "/ers/config/op/trustsec/egresspushmatrix"
+		return "/ers/config/op/trustsec/egresspushmatrix"
 }
-
 //template:end getPath
 
 //template:begin getPathDelete
@@ -52,12 +70,11 @@ func (data TrustSecEgressPushMatrix) getPath() string {
 //template:begin toBody
 func (data TrustSecEgressPushMatrix) toBody(ctx context.Context, state TrustSecEgressPushMatrix) string {
 	body := ""
-	if !data.Force.IsNull() {
+	if !data.Force.IsNull()  {
 		body, _ = sjson.Set(body, "", data.Force.ValueBool())
 	}
 	return body
 }
-
 //template:end toBody
 
 //template:begin fromBody
@@ -68,7 +85,6 @@ func (data *TrustSecEgressPushMatrix) fromBody(ctx context.Context, res gjson.Re
 		data.Force = types.BoolValue(false)
 	}
 }
-
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -79,7 +95,6 @@ func (data *TrustSecEgressPushMatrix) updateFromBody(ctx context.Context, res gj
 		data.Force = types.BoolNull()
 	}
 }
-
 //template:end updateFromBody
 
 //template:begin isNull
@@ -89,5 +104,4 @@ func (data *TrustSecEgressPushMatrix) isNull(ctx context.Context, res gjson.Resu
 	}
 	return true
 }
-
 //template:end isNull

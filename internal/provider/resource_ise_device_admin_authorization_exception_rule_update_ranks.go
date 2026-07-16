@@ -26,19 +26,31 @@ import (
 	"net/url"
 	"sort"
 	"strings"
+	"sync"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
+	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 )
-
 //template:end imports
 
 //template:begin header
@@ -57,7 +69,6 @@ type DeviceAdminAuthorizationExceptionRuleUpdateRanksResource struct {
 func (r *DeviceAdminAuthorizationExceptionRuleUpdateRanksResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_device_admin_authorization_exception_rule_update_ranks"
 }
-
 //template:end header
 
 //template:begin model
@@ -103,7 +114,6 @@ func (r *DeviceAdminAuthorizationExceptionRuleUpdateRanksResource) Schema(ctx co
 		},
 	}
 }
-
 //template:end model
 
 //template:begin configure
@@ -114,7 +124,6 @@ func (r *DeviceAdminAuthorizationExceptionRuleUpdateRanksResource) Configure(_ c
 
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
-
 //template:end configure
 
 //template:begin create
@@ -133,9 +142,9 @@ func (r *DeviceAdminAuthorizationExceptionRuleUpdateRanksResource) Create(ctx co
 	rules := make([]DeviceAdminAuthorizationExceptionRuleUpdateRanksRules, len(plan.Rules))
 	copy(rules, plan.Rules)
 	sort.Slice(rules, func(i, j int) bool {
-		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()
+		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()  
 	})
-	for _, rule := range rules {
+	for _, rule := range rules{
 		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
@@ -161,7 +170,6 @@ func (r *DeviceAdminAuthorizationExceptionRuleUpdateRanksResource) Create(ctx co
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end create
 
 //template:begin read
@@ -197,13 +205,13 @@ func (r *DeviceAdminAuthorizationExceptionRuleUpdateRanksResource) Read(ctx cont
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end read
 
 //template:begin update
 func (r *DeviceAdminAuthorizationExceptionRuleUpdateRanksResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state DeviceAdminAuthorizationExceptionRuleUpdateRanks
 	var existingData DeviceAdminAuthorizationExceptionRule
+
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -222,9 +230,9 @@ func (r *DeviceAdminAuthorizationExceptionRuleUpdateRanksResource) Update(ctx co
 	rules := make([]DeviceAdminAuthorizationExceptionRuleUpdateRanksRules, len(plan.Rules))
 	copy(rules, plan.Rules)
 	sort.Slice(rules, func(i, j int) bool {
-		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()
+		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()  
 	})
-	for _, rule := range rules {
+	for _, rule := range rules{
 		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
@@ -250,7 +258,6 @@ func (r *DeviceAdminAuthorizationExceptionRuleUpdateRanksResource) Update(ctx co
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end update
 
 //template:begin delete
@@ -270,7 +277,6 @@ func (r *DeviceAdminAuthorizationExceptionRuleUpdateRanksResource) Delete(ctx co
 
 	resp.State.RemoveResource(ctx)
 }
-
 //template:end delete
 
 //template:begin import

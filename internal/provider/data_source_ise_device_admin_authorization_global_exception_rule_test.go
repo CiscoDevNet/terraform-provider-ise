@@ -25,7 +25,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
 //template:end imports
 
 //template:begin testAccDataSource
@@ -46,13 +45,12 @@ func TestAccDataSourceIseDeviceAdminAuthorizationGlobalExceptionRule(t *testing.
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceIseDeviceAdminAuthorizationGlobalExceptionRulePrerequisitesConfig + testAccDataSourceIseDeviceAdminAuthorizationGlobalExceptionRuleConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceIseDeviceAdminAuthorizationGlobalExceptionRulePrerequisitesConfig+testAccDataSourceIseDeviceAdminAuthorizationGlobalExceptionRuleConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
-
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -67,7 +65,6 @@ resource "ise_device_admin_condition" "test" {
 }
 
 `
-
 //template:end testPrerequisites
 
 //template:begin testAccDataSourceConfig
@@ -85,7 +82,7 @@ func testAccDataSourceIseDeviceAdminAuthorizationGlobalExceptionRuleConfig() str
 	config += `	command_sets = ["DenyAllCommands"]` + "\n"
 	config += `	profile = "Default Shell Profile"` + "\n"
 	config += `}` + "\n"
-
+	
 	config += `
 		data "ise_device_admin_authorization_global_exception_rule" "test" {
 			id = ise_device_admin_authorization_global_exception_rule.test.id
@@ -93,5 +90,4 @@ func testAccDataSourceIseDeviceAdminAuthorizationGlobalExceptionRuleConfig() str
 	`
 	return config
 }
-
 //template:end testAccDataSourceConfig

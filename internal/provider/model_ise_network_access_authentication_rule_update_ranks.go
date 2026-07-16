@@ -26,33 +26,59 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
 //template:end imports
 
 //template:begin types
 type NetworkAccessAuthenticationRuleUpdateRanks struct {
-	Id          types.String                                      `tfsdk:"id"`
-	PolicySetId types.String                                      `tfsdk:"policy_set_id"`
-	Rules       []NetworkAccessAuthenticationRuleUpdateRanksRules `tfsdk:"rules"`
+	Id types.String `tfsdk:"id"`
+	PolicySetId types.String `tfsdk:"policy_set_id"`
+	Rules []NetworkAccessAuthenticationRuleUpdateRanksRules `tfsdk:"rules"`
 }
 
+
+
 type NetworkAccessAuthenticationRuleUpdateRanksRules struct {
-	Id   types.String `tfsdk:"id"`
-	Rank types.Int64  `tfsdk:"rank"`
+	Id types.String `tfsdk:"id"`
+	Rank types.Int64 `tfsdk:"rank"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //template:end types
 
 //template:begin getPath
 func (data NetworkAccessAuthenticationRuleUpdateRanks) getPath() string {
-	return fmt.Sprintf("/api/v1/policy/network-access/policy-set/%v/authentication", url.QueryEscape(data.PolicySetId.ValueString()))
+		return fmt.Sprintf("/api/v1/policy/network-access/policy-set/%v/authentication", url.QueryEscape(data.PolicySetId.ValueString()))
 }
-
 //template:end getPath
 
 //template:begin getPathDelete
@@ -77,7 +103,6 @@ func (data NetworkAccessAuthenticationRuleUpdateRanks) toBody(ctx context.Contex
 	}
 	return body
 }
-
 //template:end toBody
 
 //template:begin fromBody
@@ -101,14 +126,13 @@ func (data *NetworkAccessAuthenticationRuleUpdateRanks) fromBody(ctx context.Con
 		})
 	}
 }
-
 //template:end fromBody
 
 //template:begin updateFromBody
 func (data *NetworkAccessAuthenticationRuleUpdateRanks) updateFromBody(ctx context.Context, res gjson.Result) {
 	for i := range data.Rules {
-		keys := [...]string{"rule.id", "rule.rank"}
-		keyValues := [...]string{data.Rules[i].Id.ValueString(), strconv.FormatInt(data.Rules[i].Rank.ValueInt64(), 10)}
+		keys := [...]string{ "rule.id", "rule.rank",  }
+		keyValues := [...]string{ data.Rules[i].Id.ValueString(), strconv.FormatInt(data.Rules[i].Rank.ValueInt64(), 10),  }
 
 		var r gjson.Result
 		parentItems := res.Get("response").Array()
@@ -147,7 +171,6 @@ func (data *NetworkAccessAuthenticationRuleUpdateRanks) updateFromBody(ctx conte
 		}
 	}
 }
-
 //template:end updateFromBody
 
 //template:begin isNull
@@ -157,5 +180,4 @@ func (data *NetworkAccessAuthenticationRuleUpdateRanks) isNull(ctx context.Conte
 	}
 	return true
 }
-
 //template:end isNull

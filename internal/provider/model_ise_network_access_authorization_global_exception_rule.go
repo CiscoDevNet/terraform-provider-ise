@@ -22,113 +22,235 @@ package provider
 //template:begin imports
 import (
 	"context"
+	"fmt"
+	"net/url"
 	"strconv"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
 //template:end imports
 
 //template:begin types
 type NetworkAccessAuthorizationGlobalExceptionRule struct {
-	Id                       types.String                                            `tfsdk:"id"`
-	Name                     types.String                                            `tfsdk:"name"`
-	Rank                     types.Int64                                             `tfsdk:"rank"`
-	State                    types.String                                            `tfsdk:"state"`
-	ConditionType            types.String                                            `tfsdk:"condition_type"`
-	ConditionId              types.String                                            `tfsdk:"condition_id"`
-	ConditionIsNegate        types.Bool                                              `tfsdk:"condition_is_negate"`
-	ConditionAttributeName   types.String                                            `tfsdk:"condition_attribute_name"`
-	ConditionAttributeValue  types.String                                            `tfsdk:"condition_attribute_value"`
-	ConditionDictionaryName  types.String                                            `tfsdk:"condition_dictionary_name"`
-	ConditionDictionaryValue types.String                                            `tfsdk:"condition_dictionary_value"`
-	ConditionOperator        types.String                                            `tfsdk:"condition_operator"`
-	Children                 []NetworkAccessAuthorizationGlobalExceptionRuleChildren `tfsdk:"children"`
-	Profiles                 types.List                                              `tfsdk:"profiles"`
-	SecurityGroup            types.String                                            `tfsdk:"security_group"`
+	Id types.String `tfsdk:"id"`
+	Name types.String `tfsdk:"name"`
+	Rank types.Int64 `tfsdk:"rank"`
+	State types.String `tfsdk:"state"`
+	ConditionType types.String `tfsdk:"condition_type"`
+	ConditionId types.String `tfsdk:"condition_id"`
+	ConditionIsNegate types.Bool `tfsdk:"condition_is_negate"`
+	ConditionAttributeName types.String `tfsdk:"condition_attribute_name"`
+	ConditionAttributeValue types.String `tfsdk:"condition_attribute_value"`
+	ConditionDictionaryName types.String `tfsdk:"condition_dictionary_name"`
+	ConditionDictionaryValue types.String `tfsdk:"condition_dictionary_value"`
+	ConditionOperator types.String `tfsdk:"condition_operator"`
+	Children []NetworkAccessAuthorizationGlobalExceptionRuleChildren `tfsdk:"children"`
+	Profiles types.List `tfsdk:"profiles"`
+	SecurityGroup types.String `tfsdk:"security_group"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 type NetworkAccessAuthorizationGlobalExceptionRuleChildren struct {
-	ConditionType   types.String                                                    `tfsdk:"condition_type"`
-	Id              types.String                                                    `tfsdk:"id"`
-	IsNegate        types.Bool                                                      `tfsdk:"is_negate"`
-	AttributeName   types.String                                                    `tfsdk:"attribute_name"`
-	AttributeValue  types.String                                                    `tfsdk:"attribute_value"`
-	DictionaryName  types.String                                                    `tfsdk:"dictionary_name"`
-	DictionaryValue types.String                                                    `tfsdk:"dictionary_value"`
-	Operator        types.String                                                    `tfsdk:"operator"`
-	Children        []NetworkAccessAuthorizationGlobalExceptionRuleChildrenChildren `tfsdk:"children"`
+	ConditionType types.String `tfsdk:"condition_type"`
+	Id types.String `tfsdk:"id"`
+	IsNegate types.Bool `tfsdk:"is_negate"`
+	AttributeName types.String `tfsdk:"attribute_name"`
+	AttributeValue types.String `tfsdk:"attribute_value"`
+	DictionaryName types.String `tfsdk:"dictionary_name"`
+	DictionaryValue types.String `tfsdk:"dictionary_value"`
+	Operator types.String `tfsdk:"operator"`
+	Children []NetworkAccessAuthorizationGlobalExceptionRuleChildrenChildren `tfsdk:"children"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 type NetworkAccessAuthorizationGlobalExceptionRuleChildrenChildren struct {
-	ConditionType   types.String                                                            `tfsdk:"condition_type"`
-	Id              types.String                                                            `tfsdk:"id"`
-	IsNegate        types.Bool                                                              `tfsdk:"is_negate"`
-	AttributeName   types.String                                                            `tfsdk:"attribute_name"`
-	AttributeValue  types.String                                                            `tfsdk:"attribute_value"`
-	DictionaryName  types.String                                                            `tfsdk:"dictionary_name"`
-	DictionaryValue types.String                                                            `tfsdk:"dictionary_value"`
-	Operator        types.String                                                            `tfsdk:"operator"`
-	Children        []NetworkAccessAuthorizationGlobalExceptionRuleChildrenChildrenChildren `tfsdk:"children"`
+	ConditionType types.String `tfsdk:"condition_type"`
+	Id types.String `tfsdk:"id"`
+	IsNegate types.Bool `tfsdk:"is_negate"`
+	AttributeName types.String `tfsdk:"attribute_name"`
+	AttributeValue types.String `tfsdk:"attribute_value"`
+	DictionaryName types.String `tfsdk:"dictionary_name"`
+	DictionaryValue types.String `tfsdk:"dictionary_value"`
+	Operator types.String `tfsdk:"operator"`
+	Children []NetworkAccessAuthorizationGlobalExceptionRuleChildrenChildrenChildren `tfsdk:"children"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 type NetworkAccessAuthorizationGlobalExceptionRuleChildrenChildrenChildren struct {
-	ConditionType   types.String                                                                    `tfsdk:"condition_type"`
-	Id              types.String                                                                    `tfsdk:"id"`
-	IsNegate        types.Bool                                                                      `tfsdk:"is_negate"`
-	AttributeName   types.String                                                                    `tfsdk:"attribute_name"`
-	AttributeValue  types.String                                                                    `tfsdk:"attribute_value"`
-	DictionaryName  types.String                                                                    `tfsdk:"dictionary_name"`
-	DictionaryValue types.String                                                                    `tfsdk:"dictionary_value"`
-	Operator        types.String                                                                    `tfsdk:"operator"`
-	Children        []NetworkAccessAuthorizationGlobalExceptionRuleChildrenChildrenChildrenChildren `tfsdk:"children"`
+	ConditionType types.String `tfsdk:"condition_type"`
+	Id types.String `tfsdk:"id"`
+	IsNegate types.Bool `tfsdk:"is_negate"`
+	AttributeName types.String `tfsdk:"attribute_name"`
+	AttributeValue types.String `tfsdk:"attribute_value"`
+	DictionaryName types.String `tfsdk:"dictionary_name"`
+	DictionaryValue types.String `tfsdk:"dictionary_value"`
+	Operator types.String `tfsdk:"operator"`
+	Children []NetworkAccessAuthorizationGlobalExceptionRuleChildrenChildrenChildrenChildren `tfsdk:"children"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 type NetworkAccessAuthorizationGlobalExceptionRuleChildrenChildrenChildrenChildren struct {
-	ConditionType   types.String                                                                            `tfsdk:"condition_type"`
-	Id              types.String                                                                            `tfsdk:"id"`
-	IsNegate        types.Bool                                                                              `tfsdk:"is_negate"`
-	AttributeName   types.String                                                                            `tfsdk:"attribute_name"`
-	AttributeValue  types.String                                                                            `tfsdk:"attribute_value"`
-	DictionaryName  types.String                                                                            `tfsdk:"dictionary_name"`
-	DictionaryValue types.String                                                                            `tfsdk:"dictionary_value"`
-	Operator        types.String                                                                            `tfsdk:"operator"`
-	Children        []NetworkAccessAuthorizationGlobalExceptionRuleChildrenChildrenChildrenChildrenChildren `tfsdk:"children"`
+	ConditionType types.String `tfsdk:"condition_type"`
+	Id types.String `tfsdk:"id"`
+	IsNegate types.Bool `tfsdk:"is_negate"`
+	AttributeName types.String `tfsdk:"attribute_name"`
+	AttributeValue types.String `tfsdk:"attribute_value"`
+	DictionaryName types.String `tfsdk:"dictionary_name"`
+	DictionaryValue types.String `tfsdk:"dictionary_value"`
+	Operator types.String `tfsdk:"operator"`
+	Children []NetworkAccessAuthorizationGlobalExceptionRuleChildrenChildrenChildrenChildrenChildren `tfsdk:"children"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 type NetworkAccessAuthorizationGlobalExceptionRuleChildrenChildrenChildrenChildrenChildren struct {
-	ConditionType   types.String                                                                                    `tfsdk:"condition_type"`
-	Id              types.String                                                                                    `tfsdk:"id"`
-	IsNegate        types.Bool                                                                                      `tfsdk:"is_negate"`
-	AttributeName   types.String                                                                                    `tfsdk:"attribute_name"`
-	AttributeValue  types.String                                                                                    `tfsdk:"attribute_value"`
-	DictionaryName  types.String                                                                                    `tfsdk:"dictionary_name"`
-	DictionaryValue types.String                                                                                    `tfsdk:"dictionary_value"`
-	Operator        types.String                                                                                    `tfsdk:"operator"`
-	Children        []NetworkAccessAuthorizationGlobalExceptionRuleChildrenChildrenChildrenChildrenChildrenChildren `tfsdk:"children"`
+	ConditionType types.String `tfsdk:"condition_type"`
+	Id types.String `tfsdk:"id"`
+	IsNegate types.Bool `tfsdk:"is_negate"`
+	AttributeName types.String `tfsdk:"attribute_name"`
+	AttributeValue types.String `tfsdk:"attribute_value"`
+	DictionaryName types.String `tfsdk:"dictionary_name"`
+	DictionaryValue types.String `tfsdk:"dictionary_value"`
+	Operator types.String `tfsdk:"operator"`
+	Children []NetworkAccessAuthorizationGlobalExceptionRuleChildrenChildrenChildrenChildrenChildrenChildren `tfsdk:"children"`
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 type NetworkAccessAuthorizationGlobalExceptionRuleChildrenChildrenChildrenChildrenChildrenChildren struct {
-	ConditionType   types.String `tfsdk:"condition_type"`
-	Id              types.String `tfsdk:"id"`
-	IsNegate        types.Bool   `tfsdk:"is_negate"`
-	AttributeName   types.String `tfsdk:"attribute_name"`
-	AttributeValue  types.String `tfsdk:"attribute_value"`
-	DictionaryName  types.String `tfsdk:"dictionary_name"`
+	ConditionType types.String `tfsdk:"condition_type"`
+	Id types.String `tfsdk:"id"`
+	IsNegate types.Bool `tfsdk:"is_negate"`
+	AttributeName types.String `tfsdk:"attribute_name"`
+	AttributeValue types.String `tfsdk:"attribute_value"`
+	DictionaryName types.String `tfsdk:"dictionary_name"`
 	DictionaryValue types.String `tfsdk:"dictionary_value"`
-	Operator        types.String `tfsdk:"operator"`
+	Operator types.String `tfsdk:"operator"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //template:end types
 
 //template:begin getPath
 func (data NetworkAccessAuthorizationGlobalExceptionRule) getPath() string {
-	return "/api/v1/policy/network-access/policy-set/global-exception"
+		return "/api/v1/policy/network-access/policy-set/global-exception"
 }
-
 //template:end getPath
 
 //template:begin getPathDelete
@@ -138,38 +260,38 @@ func (data NetworkAccessAuthorizationGlobalExceptionRule) getPath() string {
 //template:begin toBody
 func (data NetworkAccessAuthorizationGlobalExceptionRule) toBody(ctx context.Context, state NetworkAccessAuthorizationGlobalExceptionRule) string {
 	body := ""
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()  {
 		body, _ = sjson.Set(body, "rule.name", data.Name.ValueString())
 	}
-	if !data.Rank.IsNull() {
+	if !data.Rank.IsNull()  {
 		body, _ = sjson.Set(body, "rule.rank", data.Rank.ValueInt64())
 	}
-	if !data.State.IsNull() {
+	if !data.State.IsNull()  {
 		body, _ = sjson.Set(body, "rule.state", data.State.ValueString())
 	}
-	if !data.ConditionType.IsNull() {
+	if !data.ConditionType.IsNull()  {
 		body, _ = sjson.Set(body, "rule.condition.conditionType", data.ConditionType.ValueString())
 	}
-	if !data.ConditionId.IsNull() {
+	if !data.ConditionId.IsNull()  {
 		body, _ = sjson.Set(body, "rule.condition.id", data.ConditionId.ValueString())
 	}
-	if !data.ConditionIsNegate.IsNull() {
+	if !data.ConditionIsNegate.IsNull()  {
 		body, _ = sjson.Set(body, "rule.condition.isNegate", data.ConditionIsNegate.ValueBool())
 	}
-	if !data.ConditionAttributeName.IsNull() {
+	if !data.ConditionAttributeName.IsNull()  {
 		body, _ = sjson.Set(body, "rule.condition.attributeName", data.ConditionAttributeName.ValueString())
 	}
-	if !data.ConditionAttributeValue.IsNull() {
+	if !data.ConditionAttributeValue.IsNull()  {
 		body, _ = sjson.Set(body, "rule.condition.attributeValue", data.ConditionAttributeValue.ValueString())
 	}
-	if !data.ConditionDictionaryName.IsNull() {
+	if !data.ConditionDictionaryName.IsNull()  {
 		body, _ = sjson.Set(body, "rule.condition.dictionaryName", data.ConditionDictionaryName.ValueString())
 	}
-	if !data.ConditionDictionaryValue.IsNull() {
+	if !data.ConditionDictionaryValue.IsNull()  {
 		body, _ = sjson.Set(body, "rule.condition.dictionaryValue", data.ConditionDictionaryValue.ValueString())
 	}
-	if !data.ConditionOperator.IsNull() {
-		body, _ = sjson.Set(body, "rule.condition.operator", helpers.NormalizeOperator(data.ConditionOperator.ValueString()))
+	if !data.ConditionOperator.IsNull()  {
+		body, _ = sjson.Set(body, "rule.condition.operator", data.ConditionOperator.ValueString())
 	}
 	if len(data.Children) > 0 {
 		body, _ = sjson.Set(body, "rule.condition.children", []interface{}{})
@@ -197,7 +319,7 @@ func (data NetworkAccessAuthorizationGlobalExceptionRule) toBody(ctx context.Con
 				itemBody, _ = sjson.Set(itemBody, "dictionaryValue", item.DictionaryValue.ValueString())
 			}
 			if !item.Operator.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "operator", helpers.NormalizeOperator(item.Operator.ValueString()))
+				itemBody, _ = sjson.Set(itemBody, "operator", item.Operator.ValueString())
 			}
 			if len(item.Children) > 0 {
 				itemBody, _ = sjson.Set(itemBody, "children", []interface{}{})
@@ -225,7 +347,7 @@ func (data NetworkAccessAuthorizationGlobalExceptionRule) toBody(ctx context.Con
 						itemChildBody, _ = sjson.Set(itemChildBody, "dictionaryValue", childItem.DictionaryValue.ValueString())
 					}
 					if !childItem.Operator.IsNull() {
-						itemChildBody, _ = sjson.Set(itemChildBody, "operator", helpers.NormalizeOperator(childItem.Operator.ValueString()))
+						itemChildBody, _ = sjson.Set(itemChildBody, "operator", childItem.Operator.ValueString())
 					}
 					if len(childItem.Children) > 0 {
 						itemChildBody, _ = sjson.Set(itemChildBody, "children", []interface{}{})
@@ -253,7 +375,7 @@ func (data NetworkAccessAuthorizationGlobalExceptionRule) toBody(ctx context.Con
 								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "dictionaryValue", childChildItem.DictionaryValue.ValueString())
 							}
 							if !childChildItem.Operator.IsNull() {
-								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "operator", helpers.NormalizeOperator(childChildItem.Operator.ValueString()))
+								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "operator", childChildItem.Operator.ValueString())
 							}
 							if len(childChildItem.Children) > 0 {
 								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "children", []interface{}{})
@@ -281,7 +403,7 @@ func (data NetworkAccessAuthorizationGlobalExceptionRule) toBody(ctx context.Con
 										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "dictionaryValue", childChildChildItem.DictionaryValue.ValueString())
 									}
 									if !childChildChildItem.Operator.IsNull() {
-										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "operator", helpers.NormalizeOperator(childChildChildItem.Operator.ValueString()))
+										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "operator", childChildChildItem.Operator.ValueString())
 									}
 									if len(childChildChildItem.Children) > 0 {
 										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "children", []interface{}{})
@@ -309,7 +431,7 @@ func (data NetworkAccessAuthorizationGlobalExceptionRule) toBody(ctx context.Con
 												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "dictionaryValue", childChildChildChildItem.DictionaryValue.ValueString())
 											}
 											if !childChildChildChildItem.Operator.IsNull() {
-												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "operator", helpers.NormalizeOperator(childChildChildChildItem.Operator.ValueString()))
+												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "operator", childChildChildChildItem.Operator.ValueString())
 											}
 											if len(childChildChildChildItem.Children) > 0 {
 												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "children", []interface{}{})
@@ -337,7 +459,7 @@ func (data NetworkAccessAuthorizationGlobalExceptionRule) toBody(ctx context.Con
 														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "dictionaryValue", childChildChildChildChildItem.DictionaryValue.ValueString())
 													}
 													if !childChildChildChildChildItem.Operator.IsNull() {
-														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "operator", helpers.NormalizeOperator(childChildChildChildChildItem.Operator.ValueString()))
+														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "operator", childChildChildChildChildItem.Operator.ValueString())
 													}
 													itemChildChildChildChildBody, _ = sjson.SetRaw(itemChildChildChildChildBody, "children.-1", itemChildChildChildChildChildBody)
 												}
@@ -362,12 +484,11 @@ func (data NetworkAccessAuthorizationGlobalExceptionRule) toBody(ctx context.Con
 		data.Profiles.ElementsAs(ctx, &values, false)
 		body, _ = sjson.Set(body, "profile", values)
 	}
-	if !data.SecurityGroup.IsNull() {
+	if !data.SecurityGroup.IsNull()  {
 		body, _ = sjson.Set(body, "securityGroup", data.SecurityGroup.ValueString())
 	}
 	return body
 }
-
 //template:end toBody
 
 //template:begin fromBody
@@ -477,44 +598,44 @@ func (data *NetworkAccessAuthorizationGlobalExceptionRule) fromBody(ctx context.
 					cItem := NetworkAccessAuthorizationGlobalExceptionRuleChildrenChildren{}
 					if ccValue := cv.Get("conditionType"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.ConditionType = types.StringValue(ccValue.String())
-					} else {
-						cItem.ConditionType = types.StringNull()
-					}
+						} else {
+							cItem.ConditionType = types.StringNull()
+						}
 					if ccValue := cv.Get("id"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.Id = types.StringValue(ccValue.String())
-					} else {
-						cItem.Id = types.StringNull()
-					}
+						} else {
+							cItem.Id = types.StringNull()
+						}
 					if ccValue := cv.Get("isNegate"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.IsNegate = types.BoolValue(ccValue.Bool())
-					} else {
-						cItem.IsNegate = types.BoolNull()
-					}
+						} else {
+							cItem.IsNegate = types.BoolNull()
+						}
 					if ccValue := cv.Get("attributeName"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.AttributeName = types.StringValue(ccValue.String())
-					} else {
-						cItem.AttributeName = types.StringNull()
-					}
+						} else {
+							cItem.AttributeName = types.StringNull()
+						}
 					if ccValue := cv.Get("attributeValue"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.AttributeValue = types.StringValue(ccValue.String())
-					} else {
-						cItem.AttributeValue = types.StringNull()
-					}
+						} else {
+							cItem.AttributeValue = types.StringNull()
+						}
 					if ccValue := cv.Get("dictionaryName"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.DictionaryName = types.StringValue(ccValue.String())
-					} else {
-						cItem.DictionaryName = types.StringNull()
-					}
+						} else {
+							cItem.DictionaryName = types.StringNull()
+						}
 					if ccValue := cv.Get("dictionaryValue"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.DictionaryValue = types.StringValue(ccValue.String())
-					} else {
-						cItem.DictionaryValue = types.StringNull()
-					}
+						} else {
+							cItem.DictionaryValue = types.StringNull()
+						}
 					if ccValue := cv.Get("operator"); ccValue.Exists() && ccValue.Type != gjson.Null {
-						cItem.Operator = types.StringValue(ccValue.String())
-					} else {
-						cItem.Operator = types.StringNull()
-					}
+						cItem.Operator = types.StringValue(helpers.NormalizeOperator(ccValue.String()))
+						} else {
+							cItem.Operator = types.StringNull()
+						}
 					if ccValue := cv.Get("children"); ccValue.Exists() {
 						cItem.Children = make([]NetworkAccessAuthorizationGlobalExceptionRuleChildrenChildrenChildren, 0)
 						ccValue.ForEach(func(cck, ccv gjson.Result) bool {
@@ -555,7 +676,7 @@ func (data *NetworkAccessAuthorizationGlobalExceptionRule) fromBody(ctx context.
 								ccItem.DictionaryValue = types.StringNull()
 							}
 							if cccValue := ccv.Get("operator"); cccValue.Exists() && cccValue.Type != gjson.Null {
-								ccItem.Operator = types.StringValue(cccValue.String())
+								ccItem.Operator = types.StringValue(helpers.NormalizeOperator(cccValue.String()))
 							} else {
 								ccItem.Operator = types.StringNull()
 							}
@@ -599,7 +720,7 @@ func (data *NetworkAccessAuthorizationGlobalExceptionRule) fromBody(ctx context.
 										cccItem.DictionaryValue = types.StringNull()
 									}
 									if ccccValue := cccv.Get("operator"); ccccValue.Exists() && ccccValue.Type != gjson.Null {
-										cccItem.Operator = types.StringValue(ccccValue.String())
+										cccItem.Operator = types.StringValue(helpers.NormalizeOperator(ccccValue.String()))
 									} else {
 										cccItem.Operator = types.StringNull()
 									}
@@ -643,7 +764,7 @@ func (data *NetworkAccessAuthorizationGlobalExceptionRule) fromBody(ctx context.
 												ccccItem.DictionaryValue = types.StringNull()
 											}
 											if cccccValue := ccccv.Get("operator"); cccccValue.Exists() && cccccValue.Type != gjson.Null {
-												ccccItem.Operator = types.StringValue(cccccValue.String())
+												ccccItem.Operator = types.StringValue(helpers.NormalizeOperator(cccccValue.String()))
 											} else {
 												ccccItem.Operator = types.StringNull()
 											}
@@ -687,7 +808,7 @@ func (data *NetworkAccessAuthorizationGlobalExceptionRule) fromBody(ctx context.
 														cccccItem.DictionaryValue = types.StringNull()
 													}
 													if ccccccValue := cccccv.Get("operator"); ccccccValue.Exists() && ccccccValue.Type != gjson.Null {
-														cccccItem.Operator = types.StringValue(ccccccValue.String())
+														cccccItem.Operator = types.StringValue(helpers.NormalizeOperator(ccccccValue.String()))
 													} else {
 														cccccItem.Operator = types.StringNull()
 													}
@@ -726,7 +847,6 @@ func (data *NetworkAccessAuthorizationGlobalExceptionRule) fromBody(ctx context.
 		data.SecurityGroup = types.StringNull()
 	}
 }
-
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -787,8 +907,8 @@ func (data *NetworkAccessAuthorizationGlobalExceptionRule) updateFromBody(ctx co
 		data.ConditionOperator = types.StringNull()
 	}
 	for i := range data.Children {
-		keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
-		keyValues := [...]string{data.Children[i].ConditionType.ValueString(), data.Children[i].Id.ValueString(), strconv.FormatBool(data.Children[i].IsNegate.ValueBool()), data.Children[i].AttributeName.ValueString(), data.Children[i].AttributeValue.ValueString(), data.Children[i].DictionaryName.ValueString(), data.Children[i].DictionaryValue.ValueString(), data.Children[i].Operator.ValueString()}
+		keys := [...]string{ "conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator",  }
+		keyValues := [...]string{ data.Children[i].ConditionType.ValueString(), data.Children[i].Id.ValueString(), strconv.FormatBool(data.Children[i].IsNegate.ValueBool()), data.Children[i].AttributeName.ValueString(), data.Children[i].AttributeValue.ValueString(), data.Children[i].DictionaryName.ValueString(), data.Children[i].DictionaryValue.ValueString(), data.Children[i].Operator.ValueString(),  }
 
 		var r gjson.Result
 		parentItems := res.Get("response.rule.condition.children").Array()
@@ -856,8 +976,8 @@ func (data *NetworkAccessAuthorizationGlobalExceptionRule) updateFromBody(ctx co
 			data.Children[i].Operator = types.StringNull()
 		}
 		for ci := range data.Children[i].Children {
-			keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
-			keyValues := [...]string{data.Children[i].Children[ci].ConditionType.ValueString(), data.Children[i].Children[ci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].IsNegate.ValueBool()), data.Children[i].Children[ci].AttributeName.ValueString(), data.Children[i].Children[ci].AttributeValue.ValueString(), data.Children[i].Children[ci].DictionaryName.ValueString(), data.Children[i].Children[ci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Operator.ValueString()}
+			keys := [...]string{ "conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator",  }
+			keyValues := [...]string{ data.Children[i].Children[ci].ConditionType.ValueString(), data.Children[i].Children[ci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].IsNegate.ValueBool()), data.Children[i].Children[ci].AttributeName.ValueString(), data.Children[i].Children[ci].AttributeValue.ValueString(), data.Children[i].Children[ci].DictionaryName.ValueString(), data.Children[i].Children[ci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Operator.ValueString(),  }
 
 			var cr gjson.Result
 			childItems := r.Get("children").Array()
@@ -925,8 +1045,8 @@ func (data *NetworkAccessAuthorizationGlobalExceptionRule) updateFromBody(ctx co
 				data.Children[i].Children[ci].Operator = types.StringNull()
 			}
 			for cci := range data.Children[i].Children[ci].Children {
-				keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
-				keyValues := [...]string{data.Children[i].Children[ci].Children[cci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Operator.ValueString()}
+				keys := [...]string{ "conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator",  }
+				keyValues := [...]string{ data.Children[i].Children[ci].Children[cci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Operator.ValueString(),  }
 
 				var ccr gjson.Result
 				cciItems := cr.Get("children").Array()
@@ -994,8 +1114,8 @@ func (data *NetworkAccessAuthorizationGlobalExceptionRule) updateFromBody(ctx co
 					data.Children[i].Children[ci].Children[cci].Operator = types.StringNull()
 				}
 				for ccci := range data.Children[i].Children[ci].Children[cci].Children {
-					keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
-					keyValues := [...]string{data.Children[i].Children[ci].Children[cci].Children[ccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Operator.ValueString()}
+					keys := [...]string{ "conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator",  }
+					keyValues := [...]string{ data.Children[i].Children[ci].Children[cci].Children[ccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Operator.ValueString(),  }
 
 					var cccr gjson.Result
 					ccciItems := ccr.Get("children").Array()
@@ -1063,8 +1183,8 @@ func (data *NetworkAccessAuthorizationGlobalExceptionRule) updateFromBody(ctx co
 						data.Children[i].Children[ci].Children[cci].Children[ccci].Operator = types.StringNull()
 					}
 					for cccci := range data.Children[i].Children[ci].Children[cci].Children[ccci].Children {
-						keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
-						keyValues := [...]string{data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator.ValueString()}
+						keys := [...]string{ "conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator",  }
+						keyValues := [...]string{ data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator.ValueString(),  }
 
 						var ccccr gjson.Result
 						cccciItems := cccr.Get("children").Array()
@@ -1132,8 +1252,8 @@ func (data *NetworkAccessAuthorizationGlobalExceptionRule) updateFromBody(ctx co
 							data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator = types.StringNull()
 						}
 						for ccccci := range data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children {
-							keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
-							keyValues := [...]string{data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Operator.ValueString()}
+							keys := [...]string{ "conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator",  }
+							keyValues := [...]string{ data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Operator.ValueString(),  }
 
 							var cccccr gjson.Result
 							ccccciItems := ccccr.Get("children").Array()
@@ -1217,7 +1337,6 @@ func (data *NetworkAccessAuthorizationGlobalExceptionRule) updateFromBody(ctx co
 		data.SecurityGroup = types.StringNull()
 	}
 }
-
 //template:end updateFromBody
 
 //template:begin isNull
@@ -1266,5 +1385,4 @@ func (data *NetworkAccessAuthorizationGlobalExceptionRule) isNull(ctx context.Co
 	}
 	return true
 }
-
 //template:end isNull

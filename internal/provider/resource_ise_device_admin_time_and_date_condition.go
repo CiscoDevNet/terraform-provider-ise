@@ -24,19 +24,33 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"sort"
 	"strings"
+	"sync"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
+	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 )
-
 //template:end imports
 
 //template:begin header
@@ -56,7 +70,6 @@ type DeviceAdminTimeAndDateConditionResource struct {
 func (r *DeviceAdminTimeAndDateConditionResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_device_admin_time_and_date_condition"
 }
-
 //template:end header
 
 //template:begin model
@@ -130,7 +143,6 @@ func (r *DeviceAdminTimeAndDateConditionResource) Schema(ctx context.Context, re
 		},
 	}
 }
-
 //template:end model
 
 //template:begin configure
@@ -141,7 +153,6 @@ func (r *DeviceAdminTimeAndDateConditionResource) Configure(_ context.Context, r
 
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
-
 //template:end configure
 
 //template:begin create
@@ -171,7 +182,6 @@ func (r *DeviceAdminTimeAndDateConditionResource) Create(ctx context.Context, re
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end create
 
 //template:begin read
@@ -207,12 +217,12 @@ func (r *DeviceAdminTimeAndDateConditionResource) Read(ctx context.Context, req 
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end read
 
 //template:begin update
 func (r *DeviceAdminTimeAndDateConditionResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state DeviceAdminTimeAndDateCondition
+
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -229,8 +239,8 @@ func (r *DeviceAdminTimeAndDateConditionResource) Update(ctx context.Context, re
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	body := plan.toBody(ctx, state)
-
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
+	
+	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -241,7 +251,6 @@ func (r *DeviceAdminTimeAndDateConditionResource) Update(ctx context.Context, re
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end update
 
 //template:begin delete
@@ -266,12 +275,10 @@ func (r *DeviceAdminTimeAndDateConditionResource) Delete(ctx context.Context, re
 
 	resp.State.RemoveResource(ctx)
 }
-
 //template:end delete
 
 //template:begin import
 func (r *DeviceAdminTimeAndDateConditionResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
-
 //template:end import

@@ -22,36 +22,72 @@ package provider
 //template:begin imports
 import (
 	"context"
+	"fmt"
+	"net/url"
+	"strconv"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
 //template:end imports
 
 //template:begin types
 type TACACSProfile struct {
-	Id                types.String                     `tfsdk:"id"`
-	Name              types.String                     `tfsdk:"name"`
-	Description       types.String                     `tfsdk:"description"`
+	Id types.String `tfsdk:"id"`
+	Name types.String `tfsdk:"name"`
+	Description types.String `tfsdk:"description"`
 	SessionAttributes []TACACSProfileSessionAttributes `tfsdk:"session_attributes"`
 }
 
+
+
+
 type TACACSProfileSessionAttributes struct {
-	Type  types.String `tfsdk:"type"`
-	Name  types.String `tfsdk:"name"`
+	Type types.String `tfsdk:"type"`
+	Name types.String `tfsdk:"name"`
 	Value types.String `tfsdk:"value"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //template:end types
 
 //template:begin getPath
 func (data TACACSProfile) getPath() string {
-	return "/ers/config/tacacsprofile"
+		return "/ers/config/tacacsprofile"
 }
-
 //template:end getPath
 
 //template:begin getPathDelete
@@ -61,10 +97,10 @@ func (data TACACSProfile) getPath() string {
 //template:begin toBody
 func (data TACACSProfile) toBody(ctx context.Context, state TACACSProfile) string {
 	body := ""
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()  {
 		body, _ = sjson.Set(body, "TacacsProfile.name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull() {
+	if !data.Description.IsNull()  {
 		body, _ = sjson.Set(body, "TacacsProfile.description", data.Description.ValueString())
 	}
 	if len(data.SessionAttributes) > 0 {
@@ -85,7 +121,6 @@ func (data TACACSProfile) toBody(ctx context.Context, state TACACSProfile) strin
 	}
 	return body
 }
-
 //template:end toBody
 
 //template:begin fromBody
@@ -124,7 +159,6 @@ func (data *TACACSProfile) fromBody(ctx context.Context, res gjson.Result) {
 		})
 	}
 }
-
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -140,8 +174,8 @@ func (data *TACACSProfile) updateFromBody(ctx context.Context, res gjson.Result)
 		data.Description = types.StringNull()
 	}
 	for i := range data.SessionAttributes {
-		keys := [...]string{"type", "name", "value"}
-		keyValues := [...]string{data.SessionAttributes[i].Type.ValueString(), data.SessionAttributes[i].Name.ValueString(), data.SessionAttributes[i].Value.ValueString()}
+		keys := [...]string{ "type", "name", "value",  }
+		keyValues := [...]string{ data.SessionAttributes[i].Type.ValueString(), data.SessionAttributes[i].Name.ValueString(), data.SessionAttributes[i].Value.ValueString(),  }
 
 		var r gjson.Result
 		parentItems := res.Get("TacacsProfile.sessionAttributes.sessionAttributeList").Array()
@@ -185,7 +219,6 @@ func (data *TACACSProfile) updateFromBody(ctx context.Context, res gjson.Result)
 		}
 	}
 }
-
 //template:end updateFromBody
 
 //template:begin isNull
@@ -201,5 +234,4 @@ func (data *TACACSProfile) isNull(ctx context.Context, res gjson.Result) bool {
 	}
 	return true
 }
-
 //template:end isNull

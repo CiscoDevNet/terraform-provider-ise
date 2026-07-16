@@ -25,7 +25,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
 //template:end imports
 
 //template:begin testAccDataSource
@@ -47,13 +46,12 @@ func TestAccDataSourceIseDeviceAdminAuthorizationRule(t *testing.T) {
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceIseDeviceAdminAuthorizationRulePrerequisitesConfig + testAccDataSourceIseDeviceAdminAuthorizationRuleConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceIseDeviceAdminAuthorizationRulePrerequisitesConfig+testAccDataSourceIseDeviceAdminAuthorizationRuleConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
-
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -78,7 +76,6 @@ resource "ise_device_admin_condition" "test" {
 }
 
 `
-
 //template:end testPrerequisites
 
 //template:begin testAccDataSourceConfig
@@ -98,7 +95,7 @@ func testAccDataSourceIseDeviceAdminAuthorizationRuleConfig() string {
 	config += `	command_sets = ["DenyAllCommands"]` + "\n"
 	config += `	profile = "Default Shell Profile"` + "\n"
 	config += `}` + "\n"
-
+	
 	config += `
 		data "ise_device_admin_authorization_rule" "test" {
 			id = ise_device_admin_authorization_rule.test.id
@@ -107,5 +104,4 @@ func testAccDataSourceIseDeviceAdminAuthorizationRuleConfig() string {
 	`
 	return config
 }
-
 //template:end testAccDataSourceConfig

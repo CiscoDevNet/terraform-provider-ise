@@ -22,32 +22,85 @@ package provider
 //template:begin imports
 import (
 	"context"
+	"fmt"
+	"net/url"
+	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
 //template:end imports
 
 //template:begin types
 type SXPDomainFilter struct {
-	Id          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
+	Id types.String `tfsdk:"id"`
+	Name types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
-	Subnet      types.String `tfsdk:"subnet"`
-	Sgt         types.String `tfsdk:"sgt"`
-	Vn          types.String `tfsdk:"vn"`
-	Domains     types.String `tfsdk:"domains"`
+	Subnet types.String `tfsdk:"subnet"`
+	Sgt types.String `tfsdk:"sgt"`
+	Vn types.String `tfsdk:"vn"`
+	Domains types.String `tfsdk:"domains"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //template:end types
 
 //template:begin getPath
 func (data SXPDomainFilter) getPath() string {
-	return "/ers/config/filterpolicy"
+		return "/ers/config/filterpolicy"
 }
-
 //template:end getPath
 
 //template:begin getPathDelete
@@ -57,27 +110,26 @@ func (data SXPDomainFilter) getPath() string {
 //template:begin toBody
 func (data SXPDomainFilter) toBody(ctx context.Context, state SXPDomainFilter) string {
 	body := ""
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()  {
 		body, _ = sjson.Set(body, "ERSFilterPolicy.name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull() {
+	if !data.Description.IsNull()  {
 		body, _ = sjson.Set(body, "ERSFilterPolicy.description", data.Description.ValueString())
 	}
-	if !data.Subnet.IsNull() {
+	if !data.Subnet.IsNull()  {
 		body, _ = sjson.Set(body, "ERSFilterPolicy.subnet", data.Subnet.ValueString())
 	}
-	if !data.Sgt.IsNull() {
+	if !data.Sgt.IsNull()  {
 		body, _ = sjson.Set(body, "ERSFilterPolicy.sgt", data.Sgt.ValueString())
 	}
-	if !data.Vn.IsNull() {
+	if !data.Vn.IsNull()  {
 		body, _ = sjson.Set(body, "ERSFilterPolicy.vn", data.Vn.ValueString())
 	}
-	if !data.Domains.IsNull() {
+	if !data.Domains.IsNull()  {
 		body, _ = sjson.Set(body, "ERSFilterPolicy.domains", data.Domains.ValueString())
 	}
 	return body
 }
-
 //template:end toBody
 
 //template:begin fromBody
@@ -108,7 +160,6 @@ func (data *SXPDomainFilter) fromBody(ctx context.Context, res gjson.Result) {
 		data.Domains = types.StringNull()
 	}
 }
-
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -139,7 +190,6 @@ func (data *SXPDomainFilter) updateFromBody(ctx context.Context, res gjson.Resul
 		data.Domains = types.StringNull()
 	}
 }
-
 //template:end updateFromBody
 
 //template:begin isNull
@@ -164,5 +214,4 @@ func (data *SXPDomainFilter) isNull(ctx context.Context, res gjson.Result) bool 
 	}
 	return true
 }
-
 //template:end isNull

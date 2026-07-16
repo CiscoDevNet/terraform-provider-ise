@@ -22,40 +22,148 @@ package provider
 //template:begin imports
 import (
 	"context"
+	"fmt"
+	"net/url"
+	"strconv"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
 //template:end imports
 
 //template:begin types
 type NetworkAccessTimeAndDateCondition struct {
-	Id                 types.String `tfsdk:"id"`
-	Name               types.String `tfsdk:"name"`
-	Description        types.String `tfsdk:"description"`
-	IsNegate           types.Bool   `tfsdk:"is_negate"`
-	WeekDays           types.Set    `tfsdk:"week_days"`
-	WeekDaysException  types.Set    `tfsdk:"week_days_exception"`
-	StartDate          types.String `tfsdk:"start_date"`
-	EndDate            types.String `tfsdk:"end_date"`
+	Id types.String `tfsdk:"id"`
+	Name types.String `tfsdk:"name"`
+	Description types.String `tfsdk:"description"`
+	IsNegate types.Bool `tfsdk:"is_negate"`
+	WeekDays types.Set `tfsdk:"week_days"`
+	WeekDaysException types.Set `tfsdk:"week_days_exception"`
+	StartDate types.String `tfsdk:"start_date"`
+	EndDate types.String `tfsdk:"end_date"`
 	ExceptionStartDate types.String `tfsdk:"exception_start_date"`
-	ExceptionEndDate   types.String `tfsdk:"exception_end_date"`
-	StartTime          types.String `tfsdk:"start_time"`
-	EndTime            types.String `tfsdk:"end_time"`
+	ExceptionEndDate types.String `tfsdk:"exception_end_date"`
+	StartTime types.String `tfsdk:"start_time"`
+	EndTime types.String `tfsdk:"end_time"`
 	ExceptionStartTime types.String `tfsdk:"exception_start_time"`
-	ExceptionEndTime   types.String `tfsdk:"exception_end_time"`
+	ExceptionEndTime types.String `tfsdk:"exception_end_time"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //template:end types
 
 //template:begin getPath
 func (data NetworkAccessTimeAndDateCondition) getPath() string {
-	return "/api/v1/policy/network-access/time-condition"
+		return "/api/v1/policy/network-access/time-condition"
 }
-
 //template:end getPath
 
 //template:begin getPathDelete
@@ -65,14 +173,14 @@ func (data NetworkAccessTimeAndDateCondition) getPath() string {
 //template:begin toBody
 func (data NetworkAccessTimeAndDateCondition) toBody(ctx context.Context, state NetworkAccessTimeAndDateCondition) string {
 	body := ""
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()  {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull() {
+	if !data.Description.IsNull()  {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
 	body, _ = sjson.Set(body, "conditionType", "TimeAndDateCondition")
-	if !data.IsNegate.IsNull() {
+	if !data.IsNegate.IsNull()  {
 		body, _ = sjson.Set(body, "isNegate", data.IsNegate.ValueBool())
 	}
 	if !data.WeekDays.IsNull() {
@@ -85,33 +193,32 @@ func (data NetworkAccessTimeAndDateCondition) toBody(ctx context.Context, state 
 		data.WeekDaysException.ElementsAs(ctx, &values, false)
 		body, _ = sjson.Set(body, "weekDaysException", values)
 	}
-	if !data.StartDate.IsNull() {
+	if !data.StartDate.IsNull()  {
 		body, _ = sjson.Set(body, "datesRange.startDate", data.StartDate.ValueString())
 	}
-	if !data.EndDate.IsNull() {
+	if !data.EndDate.IsNull()  {
 		body, _ = sjson.Set(body, "datesRange.endDate", data.EndDate.ValueString())
 	}
-	if !data.ExceptionStartDate.IsNull() {
+	if !data.ExceptionStartDate.IsNull()  {
 		body, _ = sjson.Set(body, "datesRangeException.startDate", data.ExceptionStartDate.ValueString())
 	}
-	if !data.ExceptionEndDate.IsNull() {
+	if !data.ExceptionEndDate.IsNull()  {
 		body, _ = sjson.Set(body, "datesRangeException.endDate", data.ExceptionEndDate.ValueString())
 	}
-	if !data.StartTime.IsNull() {
+	if !data.StartTime.IsNull()  {
 		body, _ = sjson.Set(body, "hoursRange.startTime", data.StartTime.ValueString())
 	}
-	if !data.EndTime.IsNull() {
+	if !data.EndTime.IsNull()  {
 		body, _ = sjson.Set(body, "hoursRange.endTime", data.EndTime.ValueString())
 	}
-	if !data.ExceptionStartTime.IsNull() {
+	if !data.ExceptionStartTime.IsNull()  {
 		body, _ = sjson.Set(body, "hoursRangeException.startTime", data.ExceptionStartTime.ValueString())
 	}
-	if !data.ExceptionEndTime.IsNull() {
+	if !data.ExceptionEndTime.IsNull()  {
 		body, _ = sjson.Set(body, "hoursRangeException.endTime", data.ExceptionEndTime.ValueString())
 	}
 	return body
 }
-
 //template:end toBody
 
 //template:begin fromBody
@@ -182,7 +289,6 @@ func (data *NetworkAccessTimeAndDateCondition) fromBody(ctx context.Context, res
 		data.ExceptionEndTime = types.StringNull()
 	}
 }
-
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -253,7 +359,6 @@ func (data *NetworkAccessTimeAndDateCondition) updateFromBody(ctx context.Contex
 		data.ExceptionEndTime = types.StringNull()
 	}
 }
-
 //template:end updateFromBody
 
 //template:begin isNull
@@ -299,5 +404,4 @@ func (data *NetworkAccessTimeAndDateCondition) isNull(ctx context.Context, res g
 	}
 	return true
 }
-
 //template:end isNull

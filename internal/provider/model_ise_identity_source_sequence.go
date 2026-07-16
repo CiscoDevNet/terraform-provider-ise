@@ -22,38 +22,87 @@ package provider
 //template:begin imports
 import (
 	"context"
+	"fmt"
+	"net/url"
 	"strconv"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
 //template:end imports
 
 //template:begin types
 type IdentitySourceSequence struct {
-	Id                               types.String                            `tfsdk:"id"`
-	Name                             types.String                            `tfsdk:"name"`
-	Description                      types.String                            `tfsdk:"description"`
-	BreakOnStoreFail                 types.Bool                              `tfsdk:"break_on_store_fail"`
-	CertificateAuthenticationProfile types.String                            `tfsdk:"certificate_authentication_profile"`
-	IdentitySources                  []IdentitySourceSequenceIdentitySources `tfsdk:"identity_sources"`
+	Id types.String `tfsdk:"id"`
+	Name types.String `tfsdk:"name"`
+	Description types.String `tfsdk:"description"`
+	BreakOnStoreFail types.Bool `tfsdk:"break_on_store_fail"`
+	CertificateAuthenticationProfile types.String `tfsdk:"certificate_authentication_profile"`
+	IdentitySources []IdentitySourceSequenceIdentitySources `tfsdk:"identity_sources"`
 }
 
+
+
+
+
+
 type IdentitySourceSequenceIdentitySources struct {
-	Name  types.String `tfsdk:"name"`
-	Order types.Int64  `tfsdk:"order"`
+	Name types.String `tfsdk:"name"`
+	Order types.Int64 `tfsdk:"order"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //template:end types
 
 //template:begin getPath
 func (data IdentitySourceSequence) getPath() string {
-	return "/ers/config/idstoresequence"
+		return "/ers/config/idstoresequence"
 }
-
 //template:end getPath
 
 //template:begin getPathDelete
@@ -63,16 +112,16 @@ func (data IdentitySourceSequence) getPath() string {
 //template:begin toBody
 func (data IdentitySourceSequence) toBody(ctx context.Context, state IdentitySourceSequence) string {
 	body := ""
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()  {
 		body, _ = sjson.Set(body, "IdStoreSequence.name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull() {
+	if !data.Description.IsNull()  {
 		body, _ = sjson.Set(body, "IdStoreSequence.description", data.Description.ValueString())
 	}
-	if !data.BreakOnStoreFail.IsNull() {
+	if !data.BreakOnStoreFail.IsNull()  {
 		body, _ = sjson.Set(body, "IdStoreSequence.breakOnStoreFail", data.BreakOnStoreFail.ValueBool())
 	}
-	if !data.CertificateAuthenticationProfile.IsNull() {
+	if !data.CertificateAuthenticationProfile.IsNull()  {
 		body, _ = sjson.Set(body, "IdStoreSequence.certificateAuthenticationProfile", data.CertificateAuthenticationProfile.ValueString())
 	}
 	if len(data.IdentitySources) > 0 {
@@ -90,7 +139,6 @@ func (data IdentitySourceSequence) toBody(ctx context.Context, state IdentitySou
 	}
 	return body
 }
-
 //template:end toBody
 
 //template:begin fromBody
@@ -134,7 +182,6 @@ func (data *IdentitySourceSequence) fromBody(ctx context.Context, res gjson.Resu
 		})
 	}
 }
-
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -160,8 +207,8 @@ func (data *IdentitySourceSequence) updateFromBody(ctx context.Context, res gjso
 		data.CertificateAuthenticationProfile = types.StringNull()
 	}
 	for i := range data.IdentitySources {
-		keys := [...]string{"idstore", "order"}
-		keyValues := [...]string{data.IdentitySources[i].Name.ValueString(), strconv.FormatInt(data.IdentitySources[i].Order.ValueInt64(), 10)}
+		keys := [...]string{ "idstore", "order",  }
+		keyValues := [...]string{ data.IdentitySources[i].Name.ValueString(), strconv.FormatInt(data.IdentitySources[i].Order.ValueInt64(), 10),  }
 
 		var r gjson.Result
 		parentItems := res.Get("IdStoreSequence.idSeqItem").Array()
@@ -200,7 +247,6 @@ func (data *IdentitySourceSequence) updateFromBody(ctx context.Context, res gjso
 		}
 	}
 }
-
 //template:end updateFromBody
 
 //template:begin isNull
@@ -222,5 +268,4 @@ func (data *IdentitySourceSequence) isNull(ctx context.Context, res gjson.Result
 	}
 	return true
 }
-
 //template:end isNull

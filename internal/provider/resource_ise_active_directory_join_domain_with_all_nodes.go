@@ -24,17 +24,33 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"sort"
+	"strings"
+	"sync"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
+	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 )
-
 //template:end imports
 
 //template:begin header
@@ -53,7 +69,6 @@ type ActiveDirectoryJoinDomainWithAllNodesResource struct {
 func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_active_directory_join_domain_with_all_nodes"
 }
-
 //template:end header
 
 //template:begin model
@@ -96,7 +111,6 @@ func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Schema(ctx context.Conte
 		},
 	}
 }
-
 //template:end model
 
 //template:begin configure
@@ -107,7 +121,6 @@ func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Configure(_ context.Cont
 
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
-
 //template:end configure
 
 //template:begin create
@@ -126,7 +139,7 @@ func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Create(ctx context.Conte
 	// Create object
 	body := plan.toBody(ctx, ActiveDirectoryJoinDomainWithAllNodes{})
 	params := ""
-	res, err := r.client.Put(plan.getPath()+params, body)
+	res, err := r.client.Put(plan.getPath() + params, body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -138,7 +151,6 @@ func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Create(ctx context.Conte
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end create
 
 //template:begin read
@@ -159,12 +171,12 @@ func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Read(ctx context.Context
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end read
 
 //template:begin update
 func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state ActiveDirectoryJoinDomainWithAllNodes
+
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -181,8 +193,8 @@ func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Update(ctx context.Conte
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	body := plan.toBody(ctx, state)
-
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
+	
+	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -193,7 +205,6 @@ func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Update(ctx context.Conte
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end update
 
 //template:begin delete
@@ -219,7 +230,6 @@ func (r *ActiveDirectoryJoinDomainWithAllNodesResource) Delete(ctx context.Conte
 
 	resp.State.RemoveResource(ctx)
 }
-
 //template:end delete
 
 //template:begin import

@@ -21,18 +21,16 @@ package provider
 
 //template:begin imports
 import (
-	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
 //template:end imports
 
 //template:begin testAcc
 func TestAccIseTrustSecMatrix(t *testing.T) {
 	if os.Getenv("ISE35") == "" {
-		t.Skip("skipping test, set environment variable ISE35")
+        t.Skip("skipping test, set environment variable ISE35")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("ise_trustsec_matrix.test", "name", "MyMatrix"))
@@ -41,21 +39,20 @@ func TestAccIseTrustSecMatrix(t *testing.T) {
 
 	var steps []resource.TestStep
 	steps = append(steps, resource.TestStep{
-		Config: testAccIseTrustSecMatrixPrerequisitesConfig + testAccIseTrustSecMatrixConfig_all(),
-		Check:  resource.ComposeTestCheckFunc(checks...),
+		Config: testAccIseTrustSecMatrixPrerequisitesConfig+testAccIseTrustSecMatrixConfig_all(),
+		Check: resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
-		ResourceName: "ise_trustsec_matrix.test",
-		ImportState:  true,
+		ResourceName:  "ise_trustsec_matrix.test",
+		ImportState:   true,
 	})
-
+	
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-		Steps:                    steps,
+		Steps: steps,
 	})
 }
-
 //template:end testAcc
 
 //template:begin testPrerequisites
@@ -67,7 +64,6 @@ resource "ise_trustsec_work_process_settings" "test" {
 }
 
 `
-
 //template:end testPrerequisites
 
 //template:begin testAccConfigMinimal
@@ -77,7 +73,6 @@ func testAccIseTrustSecMatrixConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
-
 //template:end testAccConfigMinimal
 
 //template:begin testAccConfigAll
@@ -89,5 +84,4 @@ func testAccIseTrustSecMatrixConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
-
 //template:end testAccConfigAll

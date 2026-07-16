@@ -24,40 +24,67 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"strconv"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
 //template:end imports
 
 //template:begin types
 type ActiveDirectoryJoinDomainWithAllNodes struct {
-	Id             types.String                                          `tfsdk:"id"`
-	JoinPointId    types.String                                          `tfsdk:"join_point_id"`
+	Id types.String `tfsdk:"id"`
+	JoinPointId types.String `tfsdk:"join_point_id"`
 	AdditionalData []ActiveDirectoryJoinDomainWithAllNodesAdditionalData `tfsdk:"additional_data"`
 }
 
+
+
 type ActiveDirectoryJoinDomainWithAllNodesAdditionalData struct {
-	Name  types.String `tfsdk:"name"`
+	Name types.String `tfsdk:"name"`
 	Value types.String `tfsdk:"value"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //template:end types
 
 //template:begin getPath
 func (data ActiveDirectoryJoinDomainWithAllNodes) getPath() string {
-	return fmt.Sprintf("/ers/config/activedirectory/%v/joinAllNodes", url.QueryEscape(data.JoinPointId.ValueString()))
+		return fmt.Sprintf("/ers/config/activedirectory/%v/joinAllNodes", url.QueryEscape(data.JoinPointId.ValueString()))
 }
-
 //template:end getPath
 
 //template:begin getPathDelete
 
 func (data ActiveDirectoryJoinDomainWithAllNodes) getPathDelete() string {
-	return fmt.Sprintf("/ers/config/activedirectory/%v/leaveAllNodes", url.QueryEscape(data.JoinPointId.ValueString()))
+		return fmt.Sprintf("/ers/config/activedirectory/%v/leaveAllNodes", url.QueryEscape(data.JoinPointId.ValueString()))
 }
 
 //template:end getPathDelete
@@ -80,7 +107,6 @@ func (data ActiveDirectoryJoinDomainWithAllNodes) toBody(ctx context.Context, st
 	}
 	return body
 }
-
 //template:end toBody
 
 //template:begin fromBody
@@ -104,14 +130,13 @@ func (data *ActiveDirectoryJoinDomainWithAllNodes) fromBody(ctx context.Context,
 		})
 	}
 }
-
 //template:end fromBody
 
 //template:begin updateFromBody
 func (data *ActiveDirectoryJoinDomainWithAllNodes) updateFromBody(ctx context.Context, res gjson.Result) {
 	for i := range data.AdditionalData {
-		keys := [...]string{"name"}
-		keyValues := [...]string{data.AdditionalData[i].Name.ValueString()}
+		keys := [...]string{ "name",  }
+		keyValues := [...]string{ data.AdditionalData[i].Name.ValueString(),  }
 
 		var r gjson.Result
 		parentItems := res.Get("OperationAdditionalData.additionalData").Array()
@@ -150,7 +175,6 @@ func (data *ActiveDirectoryJoinDomainWithAllNodes) updateFromBody(ctx context.Co
 		}
 	}
 }
-
 //template:end updateFromBody
 
 //template:begin isNull
@@ -160,5 +184,4 @@ func (data *ActiveDirectoryJoinDomainWithAllNodes) isNull(ctx context.Context, r
 	}
 	return true
 }
-
 //template:end isNull

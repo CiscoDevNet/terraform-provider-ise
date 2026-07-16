@@ -21,12 +21,10 @@ package provider
 
 //template:begin imports
 import (
-	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
 //template:end imports
 
 //template:begin testAcc
@@ -50,21 +48,20 @@ func TestAccIseDeviceAdminAuthenticationRule(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccIseDeviceAdminAuthenticationRulePrerequisitesConfig + testAccIseDeviceAdminAuthenticationRuleConfig_minimum(),
+			Config: testAccIseDeviceAdminAuthenticationRulePrerequisitesConfig+testAccIseDeviceAdminAuthenticationRuleConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccIseDeviceAdminAuthenticationRulePrerequisitesConfig + testAccIseDeviceAdminAuthenticationRuleConfig_all(),
-		Check:  resource.ComposeTestCheckFunc(checks...),
+		Config: testAccIseDeviceAdminAuthenticationRulePrerequisitesConfig+testAccIseDeviceAdminAuthenticationRuleConfig_all(),
+		Check: resource.ComposeTestCheckFunc(checks...),
 	})
-
+	
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-		Steps:                    steps,
+		Steps: steps,
 	})
 }
-
 //template:end testAcc
 
 //template:begin testPrerequisites
@@ -89,7 +86,6 @@ resource "ise_device_admin_condition" "test" {
 }
 
 `
-
 //template:end testPrerequisites
 
 //template:begin testAccConfigMinimal
@@ -105,7 +101,6 @@ func testAccIseDeviceAdminAuthenticationRuleConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
-
 //template:end testAccConfigMinimal
 
 //template:begin testAccConfigAll
@@ -129,5 +124,4 @@ func testAccIseDeviceAdminAuthenticationRuleConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
-
 //template:end testAccConfigAll

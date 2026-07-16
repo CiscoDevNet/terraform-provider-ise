@@ -25,16 +25,15 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/datasourcevalidator"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
-	"github.com/tidwall/gjson"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 )
-
 //template:end imports
 
 //template:begin header
@@ -56,7 +55,6 @@ type AllowedProtocolsTACACSDataSource struct {
 func (d *AllowedProtocolsTACACSDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_allowed_protocols_tacacs"
 }
-
 //template:end header
 
 //template:begin model
@@ -95,19 +93,17 @@ func (d *AllowedProtocolsTACACSDataSource) Schema(ctx context.Context, req datas
 		},
 	}
 }
-
 //template:end model
 
 //template:begin configValidators
 func (d *AllowedProtocolsTACACSDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
-	return []datasource.ConfigValidator{
-		datasourcevalidator.ExactlyOneOf(
-			path.MatchRoot("id"),
-			path.MatchRoot("name"),
-		),
-	}
+    return []datasource.ConfigValidator{
+        datasourcevalidator.ExactlyOneOf(
+            path.MatchRoot("id"),
+            path.MatchRoot("name"),
+        ),
+    }
 }
-
 //template:end configValidators
 
 //template:end configure
@@ -174,5 +170,4 @@ func (d *AllowedProtocolsTACACSDataSource) Read(ctx context.Context, req datasou
 	diags = resp.State.Set(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end read

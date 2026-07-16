@@ -25,7 +25,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
 //template:end imports
 
 //template:begin testAccDataSource
@@ -38,13 +37,12 @@ func TestAccDataSourceIseTrustSecIPToSGTMappingGroup(t *testing.T) {
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceIseTrustSecIPToSGTMappingGroupPrerequisitesConfig + testAccDataSourceIseTrustSecIPToSGTMappingGroupConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceIseTrustSecIPToSGTMappingGroupPrerequisitesConfig+testAccDataSourceIseTrustSecIPToSGTMappingGroupConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
-
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -58,7 +56,6 @@ resource "ise_trustsec_security_group" "test" {
 }
 
 `
-
 //template:end testPrerequisites
 
 //template:begin testAccDataSourceConfig
@@ -68,7 +65,7 @@ func testAccDataSourceIseTrustSecIPToSGTMappingGroupConfig() string {
 	config += `	deploy_type = "ALL"` + "\n"
 	config += `	sgt = ise_trustsec_security_group.test.id` + "\n"
 	config += `}` + "\n"
-
+	
 	config += `
 		data "ise_trustsec_ip_to_sgt_mapping_group" "test" {
 			id = ise_trustsec_ip_to_sgt_mapping_group.test.id
@@ -76,5 +73,4 @@ func testAccDataSourceIseTrustSecIPToSGTMappingGroupConfig() string {
 	`
 	return config
 }
-
 //template:end testAccDataSourceConfig

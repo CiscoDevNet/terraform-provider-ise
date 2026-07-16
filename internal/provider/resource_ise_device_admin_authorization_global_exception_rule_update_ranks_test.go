@@ -25,7 +25,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
 //template:end imports
 
 //template:begin testAcc
@@ -35,17 +34,16 @@ func TestAccIseDeviceAdminAuthorizationGlobalExceptionRuleUpdateRanks(t *testing
 
 	var steps []resource.TestStep
 	steps = append(steps, resource.TestStep{
-		Config: testAccIseDeviceAdminAuthorizationGlobalExceptionRuleUpdateRanksPrerequisitesConfig + testAccIseDeviceAdminAuthorizationGlobalExceptionRuleUpdateRanksConfig_all(),
-		Check:  resource.ComposeTestCheckFunc(checks...),
+		Config: testAccIseDeviceAdminAuthorizationGlobalExceptionRuleUpdateRanksPrerequisitesConfig+testAccIseDeviceAdminAuthorizationGlobalExceptionRuleUpdateRanksConfig_all(),
+		Check: resource.ComposeTestCheckFunc(checks...),
 	})
-
+	
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-		Steps:                    steps,
+		Steps: steps,
 	})
 }
-
 //template:end testAcc
 
 //template:begin testPrerequisites
@@ -65,7 +63,6 @@ resource "ise_device_admin_authorization_global_exception_rule" "test" {
 }
 
 `
-
 //template:end testPrerequisites
 
 //template:begin testAccConfigMinimal
@@ -76,7 +73,6 @@ func testAccIseDeviceAdminAuthorizationGlobalExceptionRuleUpdateRanksConfig_mini
 	config += `}` + "\n"
 	return config
 }
-
 //template:end testAccConfigMinimal
 
 //template:begin testAccConfigAll
@@ -89,5 +85,4 @@ func testAccIseDeviceAdminAuthorizationGlobalExceptionRuleUpdateRanksConfig_all(
 	config += `}` + "\n"
 	return config
 }
-
 //template:end testAccConfigAll

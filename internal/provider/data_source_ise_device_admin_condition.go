@@ -25,16 +25,15 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/datasourcevalidator"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
-	"github.com/tidwall/gjson"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 )
-
 //template:end imports
 
 //template:begin header
@@ -56,7 +55,6 @@ type DeviceAdminConditionDataSource struct {
 func (d *DeviceAdminConditionDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_device_admin_condition"
 }
-
 //template:end header
 
 //template:begin model
@@ -331,19 +329,17 @@ func (d *DeviceAdminConditionDataSource) Schema(ctx context.Context, req datasou
 		},
 	}
 }
-
 //template:end model
 
 //template:begin configValidators
 func (d *DeviceAdminConditionDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
-	return []datasource.ConfigValidator{
-		datasourcevalidator.ExactlyOneOf(
-			path.MatchRoot("id"),
-			path.MatchRoot("name"),
-		),
-	}
+    return []datasource.ConfigValidator{
+        datasourcevalidator.ExactlyOneOf(
+            path.MatchRoot("id"),
+            path.MatchRoot("name"),
+        ),
+    }
 }
-
 //template:end configValidators
 
 //template:end configure
@@ -410,5 +406,4 @@ func (d *DeviceAdminConditionDataSource) Read(ctx context.Context, req datasourc
 	diags = resp.State.Set(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end read

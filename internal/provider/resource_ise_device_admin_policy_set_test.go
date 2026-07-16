@@ -21,12 +21,10 @@ package provider
 
 //template:begin imports
 import (
-	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
 //template:end imports
 
 //template:begin testAcc
@@ -48,25 +46,24 @@ func TestAccIseDeviceAdminPolicySet(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccIseDeviceAdminPolicySetPrerequisitesConfig + testAccIseDeviceAdminPolicySetConfig_minimum(),
+			Config: testAccIseDeviceAdminPolicySetPrerequisitesConfig+testAccIseDeviceAdminPolicySetConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccIseDeviceAdminPolicySetPrerequisitesConfig + testAccIseDeviceAdminPolicySetConfig_all(),
-		Check:  resource.ComposeTestCheckFunc(checks...),
+		Config: testAccIseDeviceAdminPolicySetPrerequisitesConfig+testAccIseDeviceAdminPolicySetConfig_all(),
+		Check: resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
-		ResourceName: "ise_device_admin_policy_set.test",
-		ImportState:  true,
+		ResourceName:  "ise_device_admin_policy_set.test",
+		ImportState:   true,
 	})
-
+	
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-		Steps:                    steps,
+		Steps: steps,
 	})
 }
-
 //template:end testAcc
 
 //template:begin testPrerequisites
@@ -81,7 +78,6 @@ resource "ise_device_admin_condition" "test" {
 }
 
 `
-
 //template:end testPrerequisites
 
 //template:begin testAccConfigMinimal
@@ -94,7 +90,6 @@ func testAccIseDeviceAdminPolicySetConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
-
 //template:end testAccConfigMinimal
 
 //template:begin testAccConfigAll
@@ -115,5 +110,4 @@ func testAccIseDeviceAdminPolicySetConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
-
 //template:end testAccConfigAll

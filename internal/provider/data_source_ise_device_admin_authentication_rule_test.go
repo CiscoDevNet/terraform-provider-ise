@@ -25,7 +25,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
 //template:end imports
 
 //template:begin testAccDataSource
@@ -50,13 +49,12 @@ func TestAccDataSourceIseDeviceAdminAuthenticationRule(t *testing.T) {
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceIseDeviceAdminAuthenticationRulePrerequisitesConfig + testAccDataSourceIseDeviceAdminAuthenticationRuleConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceIseDeviceAdminAuthenticationRulePrerequisitesConfig+testAccDataSourceIseDeviceAdminAuthenticationRuleConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
-
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -81,7 +79,6 @@ resource "ise_device_admin_condition" "test" {
 }
 
 `
-
 //template:end testPrerequisites
 
 //template:begin testAccDataSourceConfig
@@ -103,7 +100,7 @@ func testAccDataSourceIseDeviceAdminAuthenticationRuleConfig() string {
 	config += `	if_process_fail = "DROP"` + "\n"
 	config += `	if_user_not_found = "REJECT"` + "\n"
 	config += `}` + "\n"
-
+	
 	config += `
 		data "ise_device_admin_authentication_rule" "test" {
 			id = ise_device_admin_authentication_rule.test.id
@@ -112,5 +109,4 @@ func testAccDataSourceIseDeviceAdminAuthenticationRuleConfig() string {
 	`
 	return config
 }
-
 //template:end testAccDataSourceConfig

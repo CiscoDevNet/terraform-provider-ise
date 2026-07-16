@@ -24,39 +24,101 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"strconv"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
 //template:end imports
 
 //template:begin types
 type NetworkAccessDictionaryAttribute struct {
-	Id             types.String                                    `tfsdk:"id"`
-	DictionaryName types.String                                    `tfsdk:"dictionary_name"`
-	Name           types.String                                    `tfsdk:"name"`
-	Description    types.String                                    `tfsdk:"description"`
-	DataType       types.String                                    `tfsdk:"data_type"`
-	DirectionType  types.String                                    `tfsdk:"direction_type"`
-	InternalName   types.String                                    `tfsdk:"internal_name"`
-	AllowedValues  []NetworkAccessDictionaryAttributeAllowedValues `tfsdk:"allowed_values"`
+	Id types.String `tfsdk:"id"`
+	DictionaryName types.String `tfsdk:"dictionary_name"`
+	Name types.String `tfsdk:"name"`
+	Description types.String `tfsdk:"description"`
+	DataType types.String `tfsdk:"data_type"`
+	DirectionType types.String `tfsdk:"direction_type"`
+	InternalName types.String `tfsdk:"internal_name"`
+	AllowedValues []NetworkAccessDictionaryAttributeAllowedValues `tfsdk:"allowed_values"`
 }
 
+
+
+
+
+
+
+
 type NetworkAccessDictionaryAttributeAllowedValues struct {
-	Key   types.String `tfsdk:"key"`
+	Key types.String `tfsdk:"key"`
 	Value types.String `tfsdk:"value"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //template:end types
 
 //template:begin getPath
 func (data NetworkAccessDictionaryAttribute) getPath() string {
-	return fmt.Sprintf("/api/v1/policy/network-access/dictionaries/%v/attribute", url.QueryEscape(data.DictionaryName.ValueString()))
+		return fmt.Sprintf("/api/v1/policy/network-access/dictionaries/%v/attribute", url.QueryEscape(data.DictionaryName.ValueString()))
 }
-
 //template:end getPath
 
 //template:begin getPathDelete
@@ -66,19 +128,19 @@ func (data NetworkAccessDictionaryAttribute) getPath() string {
 //template:begin toBody
 func (data NetworkAccessDictionaryAttribute) toBody(ctx context.Context, state NetworkAccessDictionaryAttribute) string {
 	body := ""
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()  {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull() {
+	if !data.Description.IsNull()  {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.DataType.IsNull() {
+	if !data.DataType.IsNull()  {
 		body, _ = sjson.Set(body, "dataType", data.DataType.ValueString())
 	}
-	if !data.DirectionType.IsNull() {
+	if !data.DirectionType.IsNull()  {
 		body, _ = sjson.Set(body, "directionType", data.DirectionType.ValueString())
 	}
-	if !data.InternalName.IsNull() {
+	if !data.InternalName.IsNull()  {
 		body, _ = sjson.Set(body, "internalName", data.InternalName.ValueString())
 	}
 	if len(data.AllowedValues) > 0 {
@@ -96,7 +158,6 @@ func (data NetworkAccessDictionaryAttribute) toBody(ctx context.Context, state N
 	}
 	return body
 }
-
 //template:end toBody
 
 //template:begin fromBody
@@ -145,7 +206,6 @@ func (data *NetworkAccessDictionaryAttribute) fromBody(ctx context.Context, res 
 		})
 	}
 }
-
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -176,8 +236,8 @@ func (data *NetworkAccessDictionaryAttribute) updateFromBody(ctx context.Context
 		data.InternalName = types.StringNull()
 	}
 	for i := range data.AllowedValues {
-		keys := [...]string{"key", "value"}
-		keyValues := [...]string{data.AllowedValues[i].Key.ValueString(), data.AllowedValues[i].Value.ValueString()}
+		keys := [...]string{ "key", "value",  }
+		keyValues := [...]string{ data.AllowedValues[i].Key.ValueString(), data.AllowedValues[i].Value.ValueString(),  }
 
 		var r gjson.Result
 		parentItems := res.Get("response.allowedValues").Array()
@@ -216,7 +276,6 @@ func (data *NetworkAccessDictionaryAttribute) updateFromBody(ctx context.Context
 		}
 	}
 }
-
 //template:end updateFromBody
 
 //template:begin isNull
@@ -241,5 +300,4 @@ func (data *NetworkAccessDictionaryAttribute) isNull(ctx context.Context, res gj
 	}
 	return true
 }
-
 //template:end isNull

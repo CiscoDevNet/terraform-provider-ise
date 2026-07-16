@@ -57,7 +57,7 @@ type IseProviderModel struct {
 
 // IseProviderData describes the data maintained by the provider.
 type IseProviderData struct {
-	Client                  *ise.Client
+	Client *ise.Client
 	NetworkDeviceGroupMutex *sync.Mutex
 }
 
@@ -397,5 +397,4 @@ func New(version string) func() provider.Provider {
 		}
 	}
 }
-
 //template:end provider

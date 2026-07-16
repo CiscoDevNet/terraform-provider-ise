@@ -22,34 +22,55 @@ package provider
 //template:begin imports
 import (
 	"context"
+	"fmt"
+	"net/url"
 	"strconv"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
 //template:end imports
 
 //template:begin types
 type DeviceAdminAuthorizationGlobalExceptionRuleUpdateRanks struct {
-	Id    types.String                                                  `tfsdk:"id"`
+	Id types.String `tfsdk:"id"`
 	Rules []DeviceAdminAuthorizationGlobalExceptionRuleUpdateRanksRules `tfsdk:"rules"`
 }
 
+
 type DeviceAdminAuthorizationGlobalExceptionRuleUpdateRanksRules struct {
-	Id   types.String `tfsdk:"id"`
-	Rank types.Int64  `tfsdk:"rank"`
+	Id types.String `tfsdk:"id"`
+	Rank types.Int64 `tfsdk:"rank"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //template:end types
 
 //template:begin getPath
 func (data DeviceAdminAuthorizationGlobalExceptionRuleUpdateRanks) getPath() string {
-	return "/api/v1/policy/device-admin/policy-set/global-exception"
+		return "/api/v1/policy/device-admin/policy-set/global-exception"
 }
-
 //template:end getPath
 
 //template:begin getPathDelete
@@ -74,7 +95,6 @@ func (data DeviceAdminAuthorizationGlobalExceptionRuleUpdateRanks) toBody(ctx co
 	}
 	return body
 }
-
 //template:end toBody
 
 //template:begin fromBody
@@ -98,14 +118,13 @@ func (data *DeviceAdminAuthorizationGlobalExceptionRuleUpdateRanks) fromBody(ctx
 		})
 	}
 }
-
 //template:end fromBody
 
 //template:begin updateFromBody
 func (data *DeviceAdminAuthorizationGlobalExceptionRuleUpdateRanks) updateFromBody(ctx context.Context, res gjson.Result) {
 	for i := range data.Rules {
-		keys := [...]string{"rule.id", "rule.rank"}
-		keyValues := [...]string{data.Rules[i].Id.ValueString(), strconv.FormatInt(data.Rules[i].Rank.ValueInt64(), 10)}
+		keys := [...]string{ "rule.id", "rule.rank",  }
+		keyValues := [...]string{ data.Rules[i].Id.ValueString(), strconv.FormatInt(data.Rules[i].Rank.ValueInt64(), 10),  }
 
 		var r gjson.Result
 		parentItems := res.Get("response").Array()
@@ -144,7 +163,6 @@ func (data *DeviceAdminAuthorizationGlobalExceptionRuleUpdateRanks) updateFromBo
 		}
 	}
 }
-
 //template:end updateFromBody
 
 //template:begin isNull
@@ -154,5 +172,4 @@ func (data *DeviceAdminAuthorizationGlobalExceptionRuleUpdateRanks) isNull(ctx c
 	}
 	return true
 }
-
 //template:end isNull

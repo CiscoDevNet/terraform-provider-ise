@@ -22,34 +22,55 @@ package provider
 //template:begin imports
 import (
 	"context"
+	"fmt"
+	"net/url"
 	"strconv"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
 //template:end imports
 
 //template:begin types
 type NetworkAccessPolicySetUpdateRanks struct {
-	Id       types.String                                `tfsdk:"id"`
+	Id types.String `tfsdk:"id"`
 	Policies []NetworkAccessPolicySetUpdateRanksPolicies `tfsdk:"policies"`
 }
 
+
 type NetworkAccessPolicySetUpdateRanksPolicies struct {
-	Id   types.String `tfsdk:"id"`
-	Rank types.Int64  `tfsdk:"rank"`
+	Id types.String `tfsdk:"id"`
+	Rank types.Int64 `tfsdk:"rank"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //template:end types
 
 //template:begin getPath
 func (data NetworkAccessPolicySetUpdateRanks) getPath() string {
-	return "/api/v1/policy/network-access/policy-set"
+		return "/api/v1/policy/network-access/policy-set"
 }
-
 //template:end getPath
 
 //template:begin getPathDelete
@@ -74,7 +95,6 @@ func (data NetworkAccessPolicySetUpdateRanks) toBody(ctx context.Context, state 
 	}
 	return body
 }
-
 //template:end toBody
 
 //template:begin fromBody
@@ -98,14 +118,13 @@ func (data *NetworkAccessPolicySetUpdateRanks) fromBody(ctx context.Context, res
 		})
 	}
 }
-
 //template:end fromBody
 
 //template:begin updateFromBody
 func (data *NetworkAccessPolicySetUpdateRanks) updateFromBody(ctx context.Context, res gjson.Result) {
 	for i := range data.Policies {
-		keys := [...]string{"id", "rank"}
-		keyValues := [...]string{data.Policies[i].Id.ValueString(), strconv.FormatInt(data.Policies[i].Rank.ValueInt64(), 10)}
+		keys := [...]string{ "id", "rank",  }
+		keyValues := [...]string{ data.Policies[i].Id.ValueString(), strconv.FormatInt(data.Policies[i].Rank.ValueInt64(), 10),  }
 
 		var r gjson.Result
 		parentItems := res.Get("response").Array()
@@ -144,7 +163,6 @@ func (data *NetworkAccessPolicySetUpdateRanks) updateFromBody(ctx context.Contex
 		}
 	}
 }
-
 //template:end updateFromBody
 
 //template:begin isNull
@@ -154,5 +172,4 @@ func (data *NetworkAccessPolicySetUpdateRanks) isNull(ctx context.Context, res g
 	}
 	return true
 }
-
 //template:end isNull

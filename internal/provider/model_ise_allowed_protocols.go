@@ -22,103 +22,653 @@ package provider
 //template:begin imports
 import (
 	"context"
+	"fmt"
+	"net/url"
+	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
 //template:end imports
 
 //template:begin types
 type AllowedProtocols struct {
-	Id                                         types.String `tfsdk:"id"`
-	Name                                       types.String `tfsdk:"name"`
-	Description                                types.String `tfsdk:"description"`
-	ProcessHostLookup                          types.Bool   `tfsdk:"process_host_lookup"`
-	AllowPapAscii                              types.Bool   `tfsdk:"allow_pap_ascii"`
-	AllowChap                                  types.Bool   `tfsdk:"allow_chap"`
-	AllowMsChapV1                              types.Bool   `tfsdk:"allow_ms_chap_v1"`
-	AllowMsChapV2                              types.Bool   `tfsdk:"allow_ms_chap_v2"`
-	AllowEapMd5                                types.Bool   `tfsdk:"allow_eap_md5"`
-	AllowLeap                                  types.Bool   `tfsdk:"allow_leap"`
-	AllowEapTls                                types.Bool   `tfsdk:"allow_eap_tls"`
-	AllowEapTtls                               types.Bool   `tfsdk:"allow_eap_ttls"`
-	AllowEapFast                               types.Bool   `tfsdk:"allow_eap_fast"`
-	AllowPeap                                  types.Bool   `tfsdk:"allow_peap"`
-	AllowTeap                                  types.Bool   `tfsdk:"allow_teap"`
-	AllowPreferredEapProtocol                  types.Bool   `tfsdk:"allow_preferred_eap_protocol"`
-	PreferredEapProtocol                       types.String `tfsdk:"preferred_eap_protocol"`
-	EapTlsLBit                                 types.Bool   `tfsdk:"eap_tls_l_bit"`
-	AllowWeakCiphersForEap                     types.Bool   `tfsdk:"allow_weak_ciphers_for_eap"`
-	RequireMessageAuth                         types.Bool   `tfsdk:"require_message_auth"`
-	EapTlsAllowAuthOfExpiredCerts              types.Bool   `tfsdk:"eap_tls_allow_auth_of_expired_certs"`
-	EapTlsEnableStatelessSessionResume         types.Bool   `tfsdk:"eap_tls_enable_stateless_session_resume"`
-	EapTlsSessionTicketTtl                     types.Int64  `tfsdk:"eap_tls_session_ticket_ttl"`
-	EapTlsSessionTicketTtlUnit                 types.String `tfsdk:"eap_tls_session_ticket_ttl_unit"`
-	EapTlsSessionTicketPercentage              types.Int64  `tfsdk:"eap_tls_session_ticket_percentage"`
-	PeapAllowPeapEapMsChapV2                   types.Bool   `tfsdk:"peap_allow_peap_eap_ms_chap_v2"`
-	PeapAllowPeapEapMsChapV2PwdChange          types.Bool   `tfsdk:"peap_allow_peap_eap_ms_chap_v2_pwd_change"`
-	PeapAllowPeapEapMsChapV2PwdChangeRetries   types.Int64  `tfsdk:"peap_allow_peap_eap_ms_chap_v2_pwd_change_retries"`
-	PeapAllowPeapEapGtc                        types.Bool   `tfsdk:"peap_allow_peap_eap_gtc"`
-	PeapAllowPeapEapGtcPwdChange               types.Bool   `tfsdk:"peap_allow_peap_eap_gtc_pwd_change"`
-	PeapAllowPeapEapGtcPwdChangeRetries        types.Int64  `tfsdk:"peap_allow_peap_eap_gtc_pwd_change_retries"`
-	PeapAllowPeapEapTls                        types.Bool   `tfsdk:"peap_allow_peap_eap_tls"`
-	PeapAllowPeapEapTlsAuthOfExpiredCerts      types.Bool   `tfsdk:"peap_allow_peap_eap_tls_auth_of_expired_certs"`
-	RequireCryptobinding                       types.Bool   `tfsdk:"require_cryptobinding"`
-	PeapPeapV0                                 types.Bool   `tfsdk:"peap_peap_v0"`
-	EapTtlsPapAscii                            types.Bool   `tfsdk:"eap_ttls_pap_ascii"`
-	EapTtlsChap                                types.Bool   `tfsdk:"eap_ttls_chap"`
-	EapTtlsMsChapV1                            types.Bool   `tfsdk:"eap_ttls_ms_chap_v1"`
-	EapTtlsMsChapV2                            types.Bool   `tfsdk:"eap_ttls_ms_chap_v2"`
-	EapTtlsEapMd5                              types.Bool   `tfsdk:"eap_ttls_eap_md5"`
-	EapTtlsEapMsChapV2                         types.Bool   `tfsdk:"eap_ttls_eap_ms_chap_v2"`
-	EapTtlsEapMsChapV2PwdChange                types.Bool   `tfsdk:"eap_ttls_eap_ms_chap_v2_pwd_change"`
-	EapTtlsEapMsChapV2PwdChangeRetries         types.Int64  `tfsdk:"eap_ttls_eap_ms_chap_v2_pwd_change_retries"`
-	EapFastEapMsChapV2                         types.Bool   `tfsdk:"eap_fast_eap_ms_chap_v2"`
-	EapFastEapMsChapV2PwdChange                types.Bool   `tfsdk:"eap_fast_eap_ms_chap_v2_pwd_change"`
-	EapFastEapMsChapV2PwdChangeRetries         types.Int64  `tfsdk:"eap_fast_eap_ms_chap_v2_pwd_change_retries"`
-	EapFastEapGtc                              types.Bool   `tfsdk:"eap_fast_eap_gtc"`
-	EapFastEapGtcPwdChange                     types.Bool   `tfsdk:"eap_fast_eap_gtc_pwd_change"`
-	EapFastEapGtcPwdChangeRetries              types.Int64  `tfsdk:"eap_fast_eap_gtc_pwd_change_retries"`
-	EapFastEapTls                              types.Bool   `tfsdk:"eap_fast_eap_tls"`
-	EapFastEapTlsAuthOfExpiredCerts            types.Bool   `tfsdk:"eap_fast_eap_tls_auth_of_expired_certs"`
-	EapFastEnableEapChaining                   types.Bool   `tfsdk:"eap_fast_enable_eap_chaining"`
-	EapFastUsePacs                             types.Bool   `tfsdk:"eap_fast_use_pacs"`
-	EapFastPacsTunnelPacTtl                    types.Int64  `tfsdk:"eap_fast_pacs_tunnel_pac_ttl"`
-	EapFastPacsTunnelPacTtlUnit                types.String `tfsdk:"eap_fast_pacs_tunnel_pac_ttl_unit"`
-	EapFastPacsUseProactivePacUpdatePercentage types.Int64  `tfsdk:"eap_fast_pacs_use_proactive_pac_update_percentage"`
-	EapFastPacsAllowAnonymousProvisioning      types.Bool   `tfsdk:"eap_fast_pacs_allow_anonymous_provisioning"`
-	EapFastPacsAllowAuthenticatedProvisioning  types.Bool   `tfsdk:"eap_fast_pacs_allow_authenticated_provisioning"`
-	EapFastPacsServerReturns                   types.Bool   `tfsdk:"eap_fast_pacs_server_returns"`
-	EapFastPacsAllowClientCert                 types.Bool   `tfsdk:"eap_fast_pacs_allow_client_cert"`
-	EapFastPacsAllowMachineAuthentication      types.Bool   `tfsdk:"eap_fast_pacs_allow_machine_authentication"`
-	EapFastPacsMachinePacTtl                   types.Int64  `tfsdk:"eap_fast_pacs_machine_pac_ttl"`
-	EapFastPacsMachinePacTtlUnit               types.String `tfsdk:"eap_fast_pacs_machine_pac_ttl_unit"`
-	EapFastPacsStatelessSessionResume          types.Bool   `tfsdk:"eap_fast_pacs_stateless_session_resume"`
-	EapFastPacsAuthorizationPacTtl             types.Int64  `tfsdk:"eap_fast_pacs_authorization_pac_ttl"`
-	EapFastPacsAuthorizationPacTtlUnit         types.String `tfsdk:"eap_fast_pacs_authorization_pac_ttl_unit"`
-	EapFastAcceptClientCert                    types.Bool   `tfsdk:"eap_fast_accept_client_cert"`
-	EapFastAllowMachineAuthentication          types.Bool   `tfsdk:"eap_fast_allow_machine_authentication"`
-	TeapEapMsChapV2                            types.Bool   `tfsdk:"teap_eap_ms_chap_v2"`
-	TeapEapMsChapV2PwdChange                   types.Bool   `tfsdk:"teap_eap_ms_chap_v2_pwd_change"`
-	TeapEapMsChapV2PwdChangeRetries            types.Int64  `tfsdk:"teap_eap_ms_chap_v2_pwd_change_retries"`
-	TeapEapTls                                 types.Bool   `tfsdk:"teap_eap_tls"`
-	TeapEapTlsAuthOfExpiredCerts               types.Bool   `tfsdk:"teap_eap_tls_auth_of_expired_certs"`
-	TeapEapAcceptClientCertDuringTunnelEst     types.Bool   `tfsdk:"teap_eap_accept_client_cert_during_tunnel_est"`
-	TeapEapChaining                            types.Bool   `tfsdk:"teap_eap_chaining"`
-	TeapDowngradeMsk                           types.Bool   `tfsdk:"teap_downgrade_msk"`
-	TeapRequestBasicPwdAuth                    types.Bool   `tfsdk:"teap_request_basic_pwd_auth"`
-	Allow5g                                    types.Bool   `tfsdk:"allow_5g"`
+	Id types.String `tfsdk:"id"`
+	Name types.String `tfsdk:"name"`
+	Description types.String `tfsdk:"description"`
+	ProcessHostLookup types.Bool `tfsdk:"process_host_lookup"`
+	AllowPapAscii types.Bool `tfsdk:"allow_pap_ascii"`
+	AllowChap types.Bool `tfsdk:"allow_chap"`
+	AllowMsChapV1 types.Bool `tfsdk:"allow_ms_chap_v1"`
+	AllowMsChapV2 types.Bool `tfsdk:"allow_ms_chap_v2"`
+	AllowEapMd5 types.Bool `tfsdk:"allow_eap_md5"`
+	AllowLeap types.Bool `tfsdk:"allow_leap"`
+	AllowEapTls types.Bool `tfsdk:"allow_eap_tls"`
+	AllowEapTtls types.Bool `tfsdk:"allow_eap_ttls"`
+	AllowEapFast types.Bool `tfsdk:"allow_eap_fast"`
+	AllowPeap types.Bool `tfsdk:"allow_peap"`
+	AllowTeap types.Bool `tfsdk:"allow_teap"`
+	AllowPreferredEapProtocol types.Bool `tfsdk:"allow_preferred_eap_protocol"`
+	PreferredEapProtocol types.String `tfsdk:"preferred_eap_protocol"`
+	EapTlsLBit types.Bool `tfsdk:"eap_tls_l_bit"`
+	AllowWeakCiphersForEap types.Bool `tfsdk:"allow_weak_ciphers_for_eap"`
+	RequireMessageAuth types.Bool `tfsdk:"require_message_auth"`
+	EapTlsAllowAuthOfExpiredCerts types.Bool `tfsdk:"eap_tls_allow_auth_of_expired_certs"`
+	EapTlsEnableStatelessSessionResume types.Bool `tfsdk:"eap_tls_enable_stateless_session_resume"`
+	EapTlsSessionTicketTtl types.Int64 `tfsdk:"eap_tls_session_ticket_ttl"`
+	EapTlsSessionTicketTtlUnit types.String `tfsdk:"eap_tls_session_ticket_ttl_unit"`
+	EapTlsSessionTicketPercentage types.Int64 `tfsdk:"eap_tls_session_ticket_percentage"`
+	PeapAllowPeapEapMsChapV2 types.Bool `tfsdk:"peap_allow_peap_eap_ms_chap_v2"`
+	PeapAllowPeapEapMsChapV2PwdChange types.Bool `tfsdk:"peap_allow_peap_eap_ms_chap_v2_pwd_change"`
+	PeapAllowPeapEapMsChapV2PwdChangeRetries types.Int64 `tfsdk:"peap_allow_peap_eap_ms_chap_v2_pwd_change_retries"`
+	PeapAllowPeapEapGtc types.Bool `tfsdk:"peap_allow_peap_eap_gtc"`
+	PeapAllowPeapEapGtcPwdChange types.Bool `tfsdk:"peap_allow_peap_eap_gtc_pwd_change"`
+	PeapAllowPeapEapGtcPwdChangeRetries types.Int64 `tfsdk:"peap_allow_peap_eap_gtc_pwd_change_retries"`
+	PeapAllowPeapEapTls types.Bool `tfsdk:"peap_allow_peap_eap_tls"`
+	PeapAllowPeapEapTlsAuthOfExpiredCerts types.Bool `tfsdk:"peap_allow_peap_eap_tls_auth_of_expired_certs"`
+	RequireCryptobinding types.Bool `tfsdk:"require_cryptobinding"`
+	PeapPeapV0 types.Bool `tfsdk:"peap_peap_v0"`
+	EapTtlsPapAscii types.Bool `tfsdk:"eap_ttls_pap_ascii"`
+	EapTtlsChap types.Bool `tfsdk:"eap_ttls_chap"`
+	EapTtlsMsChapV1 types.Bool `tfsdk:"eap_ttls_ms_chap_v1"`
+	EapTtlsMsChapV2 types.Bool `tfsdk:"eap_ttls_ms_chap_v2"`
+	EapTtlsEapMd5 types.Bool `tfsdk:"eap_ttls_eap_md5"`
+	EapTtlsEapMsChapV2 types.Bool `tfsdk:"eap_ttls_eap_ms_chap_v2"`
+	EapTtlsEapMsChapV2PwdChange types.Bool `tfsdk:"eap_ttls_eap_ms_chap_v2_pwd_change"`
+	EapTtlsEapMsChapV2PwdChangeRetries types.Int64 `tfsdk:"eap_ttls_eap_ms_chap_v2_pwd_change_retries"`
+	EapFastEapMsChapV2 types.Bool `tfsdk:"eap_fast_eap_ms_chap_v2"`
+	EapFastEapMsChapV2PwdChange types.Bool `tfsdk:"eap_fast_eap_ms_chap_v2_pwd_change"`
+	EapFastEapMsChapV2PwdChangeRetries types.Int64 `tfsdk:"eap_fast_eap_ms_chap_v2_pwd_change_retries"`
+	EapFastEapGtc types.Bool `tfsdk:"eap_fast_eap_gtc"`
+	EapFastEapGtcPwdChange types.Bool `tfsdk:"eap_fast_eap_gtc_pwd_change"`
+	EapFastEapGtcPwdChangeRetries types.Int64 `tfsdk:"eap_fast_eap_gtc_pwd_change_retries"`
+	EapFastEapTls types.Bool `tfsdk:"eap_fast_eap_tls"`
+	EapFastEapTlsAuthOfExpiredCerts types.Bool `tfsdk:"eap_fast_eap_tls_auth_of_expired_certs"`
+	EapFastEnableEapChaining types.Bool `tfsdk:"eap_fast_enable_eap_chaining"`
+	EapFastUsePacs types.Bool `tfsdk:"eap_fast_use_pacs"`
+	EapFastPacsTunnelPacTtl types.Int64 `tfsdk:"eap_fast_pacs_tunnel_pac_ttl"`
+	EapFastPacsTunnelPacTtlUnit types.String `tfsdk:"eap_fast_pacs_tunnel_pac_ttl_unit"`
+	EapFastPacsUseProactivePacUpdatePercentage types.Int64 `tfsdk:"eap_fast_pacs_use_proactive_pac_update_percentage"`
+	EapFastPacsAllowAnonymousProvisioning types.Bool `tfsdk:"eap_fast_pacs_allow_anonymous_provisioning"`
+	EapFastPacsAllowAuthenticatedProvisioning types.Bool `tfsdk:"eap_fast_pacs_allow_authenticated_provisioning"`
+	EapFastPacsServerReturns types.Bool `tfsdk:"eap_fast_pacs_server_returns"`
+	EapFastPacsAllowClientCert types.Bool `tfsdk:"eap_fast_pacs_allow_client_cert"`
+	EapFastPacsAllowMachineAuthentication types.Bool `tfsdk:"eap_fast_pacs_allow_machine_authentication"`
+	EapFastPacsMachinePacTtl types.Int64 `tfsdk:"eap_fast_pacs_machine_pac_ttl"`
+	EapFastPacsMachinePacTtlUnit types.String `tfsdk:"eap_fast_pacs_machine_pac_ttl_unit"`
+	EapFastPacsStatelessSessionResume types.Bool `tfsdk:"eap_fast_pacs_stateless_session_resume"`
+	EapFastPacsAuthorizationPacTtl types.Int64 `tfsdk:"eap_fast_pacs_authorization_pac_ttl"`
+	EapFastPacsAuthorizationPacTtlUnit types.String `tfsdk:"eap_fast_pacs_authorization_pac_ttl_unit"`
+	EapFastAcceptClientCert types.Bool `tfsdk:"eap_fast_accept_client_cert"`
+	EapFastAllowMachineAuthentication types.Bool `tfsdk:"eap_fast_allow_machine_authentication"`
+	TeapEapMsChapV2 types.Bool `tfsdk:"teap_eap_ms_chap_v2"`
+	TeapEapMsChapV2PwdChange types.Bool `tfsdk:"teap_eap_ms_chap_v2_pwd_change"`
+	TeapEapMsChapV2PwdChangeRetries types.Int64 `tfsdk:"teap_eap_ms_chap_v2_pwd_change_retries"`
+	TeapEapTls types.Bool `tfsdk:"teap_eap_tls"`
+	TeapEapTlsAuthOfExpiredCerts types.Bool `tfsdk:"teap_eap_tls_auth_of_expired_certs"`
+	TeapEapAcceptClientCertDuringTunnelEst types.Bool `tfsdk:"teap_eap_accept_client_cert_during_tunnel_est"`
+	TeapEapChaining types.Bool `tfsdk:"teap_eap_chaining"`
+	TeapDowngradeMsk types.Bool `tfsdk:"teap_downgrade_msk"`
+	TeapRequestBasicPwdAuth types.Bool `tfsdk:"teap_request_basic_pwd_auth"`
+	Allow5g types.Bool `tfsdk:"allow_5g"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //template:end types
 
 //template:begin getPath
 func (data AllowedProtocols) getPath() string {
-	return "/ers/config/allowedprotocols"
+		return "/ers/config/allowedprotocols"
 }
-
 //template:end getPath
 
 //template:begin getPathDelete
@@ -128,240 +678,239 @@ func (data AllowedProtocols) getPath() string {
 //template:begin toBody
 func (data AllowedProtocols) toBody(ctx context.Context, state AllowedProtocols) string {
 	body := ""
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull() {
+	if !data.Description.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.description", data.Description.ValueString())
 	}
-	if !data.ProcessHostLookup.IsNull() {
+	if !data.ProcessHostLookup.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.processHostLookup", data.ProcessHostLookup.ValueBool())
 	}
-	if !data.AllowPapAscii.IsNull() {
+	if !data.AllowPapAscii.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.allowPapAscii", data.AllowPapAscii.ValueBool())
 	}
-	if !data.AllowChap.IsNull() {
+	if !data.AllowChap.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.allowChap", data.AllowChap.ValueBool())
 	}
-	if !data.AllowMsChapV1.IsNull() {
+	if !data.AllowMsChapV1.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.allowMsChapV1", data.AllowMsChapV1.ValueBool())
 	}
-	if !data.AllowMsChapV2.IsNull() {
+	if !data.AllowMsChapV2.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.allowMsChapV2", data.AllowMsChapV2.ValueBool())
 	}
-	if !data.AllowEapMd5.IsNull() {
+	if !data.AllowEapMd5.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.allowEapMd5", data.AllowEapMd5.ValueBool())
 	}
-	if !data.AllowLeap.IsNull() {
+	if !data.AllowLeap.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.allowLeap", data.AllowLeap.ValueBool())
 	}
-	if !data.AllowEapTls.IsNull() {
+	if !data.AllowEapTls.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.allowEapTls", data.AllowEapTls.ValueBool())
 	}
-	if !data.AllowEapTtls.IsNull() {
+	if !data.AllowEapTtls.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.allowEapTtls", data.AllowEapTtls.ValueBool())
 	}
-	if !data.AllowEapFast.IsNull() {
+	if !data.AllowEapFast.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.allowEapFast", data.AllowEapFast.ValueBool())
 	}
-	if !data.AllowPeap.IsNull() {
+	if !data.AllowPeap.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.allowPeap", data.AllowPeap.ValueBool())
 	}
-	if !data.AllowTeap.IsNull() {
+	if !data.AllowTeap.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.allowTeap", data.AllowTeap.ValueBool())
 	}
-	if !data.AllowPreferredEapProtocol.IsNull() {
+	if !data.AllowPreferredEapProtocol.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.allowPreferredEapProtocol", data.AllowPreferredEapProtocol.ValueBool())
 	}
-	if !data.PreferredEapProtocol.IsNull() {
+	if !data.PreferredEapProtocol.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.preferredEapProtocol", data.PreferredEapProtocol.ValueString())
 	}
-	if !data.EapTlsLBit.IsNull() {
+	if !data.EapTlsLBit.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapTlsLBit", data.EapTlsLBit.ValueBool())
 	}
-	if !data.AllowWeakCiphersForEap.IsNull() {
+	if !data.AllowWeakCiphersForEap.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.allowWeakCiphersForEap", data.AllowWeakCiphersForEap.ValueBool())
 	}
-	if !data.RequireMessageAuth.IsNull() {
+	if !data.RequireMessageAuth.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.requireMessageAuth", data.RequireMessageAuth.ValueBool())
 	}
-	if !data.EapTlsAllowAuthOfExpiredCerts.IsNull() {
+	if !data.EapTlsAllowAuthOfExpiredCerts.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapTls.allowEapTlsAuthOfExpiredCerts", data.EapTlsAllowAuthOfExpiredCerts.ValueBool())
 	}
-	if !data.EapTlsEnableStatelessSessionResume.IsNull() {
+	if !data.EapTlsEnableStatelessSessionResume.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapTls.eapTlsEnableStatelessSessionResume", data.EapTlsEnableStatelessSessionResume.ValueBool())
 	}
-	if !data.EapTlsSessionTicketTtl.IsNull() {
+	if !data.EapTlsSessionTicketTtl.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapTls.eapTlsSessionTicketTtl", data.EapTlsSessionTicketTtl.ValueInt64())
 	}
-	if !data.EapTlsSessionTicketTtlUnit.IsNull() {
+	if !data.EapTlsSessionTicketTtlUnit.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapTls.eapTlsSessionTicketTtlUnits", data.EapTlsSessionTicketTtlUnit.ValueString())
 	}
-	if !data.EapTlsSessionTicketPercentage.IsNull() {
+	if !data.EapTlsSessionTicketPercentage.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapTls.eapTlsSessionTicketPrecentage", data.EapTlsSessionTicketPercentage.ValueInt64())
 	}
-	if !data.PeapAllowPeapEapMsChapV2.IsNull() {
+	if !data.PeapAllowPeapEapMsChapV2.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.peap.allowPeapEapMsChapV2", data.PeapAllowPeapEapMsChapV2.ValueBool())
 	}
-	if !data.PeapAllowPeapEapMsChapV2PwdChange.IsNull() {
+	if !data.PeapAllowPeapEapMsChapV2PwdChange.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.peap.allowPeapEapMsChapV2PwdChange", data.PeapAllowPeapEapMsChapV2PwdChange.ValueBool())
 	}
-	if !data.PeapAllowPeapEapMsChapV2PwdChangeRetries.IsNull() {
+	if !data.PeapAllowPeapEapMsChapV2PwdChangeRetries.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.peap.allowPeapEapMsChapV2PwdChangeRetries", data.PeapAllowPeapEapMsChapV2PwdChangeRetries.ValueInt64())
 	}
-	if !data.PeapAllowPeapEapGtc.IsNull() {
+	if !data.PeapAllowPeapEapGtc.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.peap.allowPeapEapGtc", data.PeapAllowPeapEapGtc.ValueBool())
 	}
-	if !data.PeapAllowPeapEapGtcPwdChange.IsNull() {
+	if !data.PeapAllowPeapEapGtcPwdChange.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.peap.allowPeapEapGtcPwdChange", data.PeapAllowPeapEapGtcPwdChange.ValueBool())
 	}
-	if !data.PeapAllowPeapEapGtcPwdChangeRetries.IsNull() {
+	if !data.PeapAllowPeapEapGtcPwdChangeRetries.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.peap.allowPeapEapGtcPwdChangeRetries", data.PeapAllowPeapEapGtcPwdChangeRetries.ValueInt64())
 	}
-	if !data.PeapAllowPeapEapTls.IsNull() {
+	if !data.PeapAllowPeapEapTls.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.peap.allowPeapEapTls", data.PeapAllowPeapEapTls.ValueBool())
 	}
-	if !data.PeapAllowPeapEapTlsAuthOfExpiredCerts.IsNull() {
+	if !data.PeapAllowPeapEapTlsAuthOfExpiredCerts.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.peap.allowPeapEapTlsAuthOfExpiredCerts", data.PeapAllowPeapEapTlsAuthOfExpiredCerts.ValueBool())
 	}
-	if !data.RequireCryptobinding.IsNull() {
+	if !data.RequireCryptobinding.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.peap.requireCryptobinding", data.RequireCryptobinding.ValueBool())
 	}
-	if !data.PeapPeapV0.IsNull() {
+	if !data.PeapPeapV0.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.peap.allowPeapV0", data.PeapPeapV0.ValueBool())
 	}
-	if !data.EapTtlsPapAscii.IsNull() {
+	if !data.EapTtlsPapAscii.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapTtls.eapTtlsPapAscii", data.EapTtlsPapAscii.ValueBool())
 	}
-	if !data.EapTtlsChap.IsNull() {
+	if !data.EapTtlsChap.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapTtls.eapTtlsChap", data.EapTtlsChap.ValueBool())
 	}
-	if !data.EapTtlsMsChapV1.IsNull() {
+	if !data.EapTtlsMsChapV1.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapTtls.eapTtlsMsChapV1", data.EapTtlsMsChapV1.ValueBool())
 	}
-	if !data.EapTtlsMsChapV2.IsNull() {
+	if !data.EapTtlsMsChapV2.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapTtls.eapTtlsMsChapV2", data.EapTtlsMsChapV2.ValueBool())
 	}
-	if !data.EapTtlsEapMd5.IsNull() {
+	if !data.EapTtlsEapMd5.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapTtls.eapTtlsEapMd5", data.EapTtlsEapMd5.ValueBool())
 	}
-	if !data.EapTtlsEapMsChapV2.IsNull() {
+	if !data.EapTtlsEapMsChapV2.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapTtls.eapTtlsEapMsChapV2", data.EapTtlsEapMsChapV2.ValueBool())
 	}
-	if !data.EapTtlsEapMsChapV2PwdChange.IsNull() {
+	if !data.EapTtlsEapMsChapV2PwdChange.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapTtls.eapTtlsEapMsChapV2PwdChange", data.EapTtlsEapMsChapV2PwdChange.ValueBool())
 	}
-	if !data.EapTtlsEapMsChapV2PwdChangeRetries.IsNull() {
+	if !data.EapTtlsEapMsChapV2PwdChangeRetries.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapTtls.eapTtlsEapMsChapV2PwdChangeRetries", data.EapTtlsEapMsChapV2PwdChangeRetries.ValueInt64())
 	}
-	if !data.EapFastEapMsChapV2.IsNull() {
+	if !data.EapFastEapMsChapV2.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.allowEapFastEapMsChapV2", data.EapFastEapMsChapV2.ValueBool())
 	}
-	if !data.EapFastEapMsChapV2PwdChange.IsNull() {
+	if !data.EapFastEapMsChapV2PwdChange.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.allowEapFastEapMsChapV2PwdChange", data.EapFastEapMsChapV2PwdChange.ValueBool())
 	}
-	if !data.EapFastEapMsChapV2PwdChangeRetries.IsNull() {
+	if !data.EapFastEapMsChapV2PwdChangeRetries.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.allowEapFastEapMsChapV2PwdChangeRetries", data.EapFastEapMsChapV2PwdChangeRetries.ValueInt64())
 	}
-	if !data.EapFastEapGtc.IsNull() {
+	if !data.EapFastEapGtc.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.allowEapFastEapGtc", data.EapFastEapGtc.ValueBool())
 	}
-	if !data.EapFastEapGtcPwdChange.IsNull() {
+	if !data.EapFastEapGtcPwdChange.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.allowEapFastEapGtcPwdChange", data.EapFastEapGtcPwdChange.ValueBool())
 	}
-	if !data.EapFastEapGtcPwdChangeRetries.IsNull() {
+	if !data.EapFastEapGtcPwdChangeRetries.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.allowEapFastEapGtcPwdChangeRetries", data.EapFastEapGtcPwdChangeRetries.ValueInt64())
 	}
-	if !data.EapFastEapTls.IsNull() {
+	if !data.EapFastEapTls.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.allowEapFastEapTls", data.EapFastEapTls.ValueBool())
 	}
-	if !data.EapFastEapTlsAuthOfExpiredCerts.IsNull() {
+	if !data.EapFastEapTlsAuthOfExpiredCerts.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.allowEapFastEapTlsAuthOfExpiredCerts", data.EapFastEapTlsAuthOfExpiredCerts.ValueBool())
 	}
-	if !data.EapFastEnableEapChaining.IsNull() {
+	if !data.EapFastEnableEapChaining.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.eapFastEnableEAPChaining", data.EapFastEnableEapChaining.ValueBool())
 	}
-	if !data.EapFastUsePacs.IsNull() {
+	if !data.EapFastUsePacs.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.eapFastUsePacs", data.EapFastUsePacs.ValueBool())
 	}
-	if !data.EapFastPacsTunnelPacTtl.IsNull() {
+	if !data.EapFastPacsTunnelPacTtl.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.eapFastUsePacsTunnelPacTtl", data.EapFastPacsTunnelPacTtl.ValueInt64())
 	}
-	if !data.EapFastPacsTunnelPacTtlUnit.IsNull() {
+	if !data.EapFastPacsTunnelPacTtlUnit.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.eapFastUsePacsTunnelPacTtlUnits", data.EapFastPacsTunnelPacTtlUnit.ValueString())
 	}
-	if !data.EapFastPacsUseProactivePacUpdatePercentage.IsNull() {
+	if !data.EapFastPacsUseProactivePacUpdatePercentage.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.eapFastUsePacsUseProactivePacUpdatePrecentage", data.EapFastPacsUseProactivePacUpdatePercentage.ValueInt64())
 	}
-	if !data.EapFastPacsAllowAnonymousProvisioning.IsNull() {
+	if !data.EapFastPacsAllowAnonymousProvisioning.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.eapFastUsePacsAllowAnonymProvisioning", data.EapFastPacsAllowAnonymousProvisioning.ValueBool())
 	}
-	if !data.EapFastPacsAllowAuthenticatedProvisioning.IsNull() {
+	if !data.EapFastPacsAllowAuthenticatedProvisioning.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.eapFastUsePacsAllowAuthenProvisioning", data.EapFastPacsAllowAuthenticatedProvisioning.ValueBool())
 	}
-	if !data.EapFastPacsServerReturns.IsNull() {
+	if !data.EapFastPacsServerReturns.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.eapFastUsePacsServerReturns", data.EapFastPacsServerReturns.ValueBool())
 	}
-	if !data.EapFastPacsAllowClientCert.IsNull() {
+	if !data.EapFastPacsAllowClientCert.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.eapFastUsePacsAcceptClientCert", data.EapFastPacsAllowClientCert.ValueBool())
 	}
-	if !data.EapFastPacsAllowMachineAuthentication.IsNull() {
+	if !data.EapFastPacsAllowMachineAuthentication.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.eapFastUsePacsAllowMachineAuthentication", data.EapFastPacsAllowMachineAuthentication.ValueBool())
 	}
-	if !data.EapFastPacsMachinePacTtl.IsNull() {
+	if !data.EapFastPacsMachinePacTtl.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.eapFastUsePacsMachinePacTtl", data.EapFastPacsMachinePacTtl.ValueInt64())
 	}
-	if !data.EapFastPacsMachinePacTtlUnit.IsNull() {
+	if !data.EapFastPacsMachinePacTtlUnit.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.eapFastUsePacsMachinePacTtlUnits", data.EapFastPacsMachinePacTtlUnit.ValueString())
 	}
-	if !data.EapFastPacsStatelessSessionResume.IsNull() {
+	if !data.EapFastPacsStatelessSessionResume.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.eapFastUsePacsStatelessSessionResume", data.EapFastPacsStatelessSessionResume.ValueBool())
 	}
-	if !data.EapFastPacsAuthorizationPacTtl.IsNull() {
+	if !data.EapFastPacsAuthorizationPacTtl.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.eapFastUsePacsAuthorizationPacTtl", data.EapFastPacsAuthorizationPacTtl.ValueInt64())
 	}
-	if !data.EapFastPacsAuthorizationPacTtlUnit.IsNull() {
+	if !data.EapFastPacsAuthorizationPacTtlUnit.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.eapFastUsePacsAuthorizationPacTtlUnits", data.EapFastPacsAuthorizationPacTtlUnit.ValueString())
 	}
-	if !data.EapFastAcceptClientCert.IsNull() {
+	if !data.EapFastAcceptClientCert.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.eapFastDontUsePacsAcceptClientCert", data.EapFastAcceptClientCert.ValueBool())
 	}
-	if !data.EapFastAllowMachineAuthentication.IsNull() {
+	if !data.EapFastAllowMachineAuthentication.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.eapFast.eapFastDontUsePacsAllowMachineAuthentication", data.EapFastAllowMachineAuthentication.ValueBool())
 	}
-	if !data.TeapEapMsChapV2.IsNull() {
+	if !data.TeapEapMsChapV2.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.teap.allowTeapEapMsChapV2", data.TeapEapMsChapV2.ValueBool())
 	}
-	if !data.TeapEapMsChapV2PwdChange.IsNull() {
+	if !data.TeapEapMsChapV2PwdChange.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.teap.allowTeapEapMsChapV2PwdChange", data.TeapEapMsChapV2PwdChange.ValueBool())
 	}
-	if !data.TeapEapMsChapV2PwdChangeRetries.IsNull() {
+	if !data.TeapEapMsChapV2PwdChangeRetries.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.teap.allowTeapEapMsChapV2PwdChangeRetries", data.TeapEapMsChapV2PwdChangeRetries.ValueInt64())
 	}
-	if !data.TeapEapTls.IsNull() {
+	if !data.TeapEapTls.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.teap.allowTeapEapTls", data.TeapEapTls.ValueBool())
 	}
-	if !data.TeapEapTlsAuthOfExpiredCerts.IsNull() {
+	if !data.TeapEapTlsAuthOfExpiredCerts.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.teap.allowTeapEapTlsAuthOfExpiredCerts", data.TeapEapTlsAuthOfExpiredCerts.ValueBool())
 	}
-	if !data.TeapEapAcceptClientCertDuringTunnelEst.IsNull() {
+	if !data.TeapEapAcceptClientCertDuringTunnelEst.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.teap.acceptClientCertDuringTunnelEst", data.TeapEapAcceptClientCertDuringTunnelEst.ValueBool())
 	}
-	if !data.TeapEapChaining.IsNull() {
+	if !data.TeapEapChaining.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.teap.enableEapChaining", data.TeapEapChaining.ValueBool())
 	}
-	if !data.TeapDowngradeMsk.IsNull() {
+	if !data.TeapDowngradeMsk.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.teap.allowDowngradeMsk", data.TeapDowngradeMsk.ValueBool())
 	}
-	if !data.TeapRequestBasicPwdAuth.IsNull() {
+	if !data.TeapRequestBasicPwdAuth.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.teap.requestBasicPwdAuth", data.TeapRequestBasicPwdAuth.ValueBool())
 	}
-	if !data.Allow5g.IsNull() {
+	if !data.Allow5g.IsNull()  {
 		body, _ = sjson.Set(body, "AllowedProtocols.fiveG", data.Allow5g.ValueBool())
 	}
 	return body
 }
-
 //template:end toBody
 
 //template:begin fromBody
@@ -747,7 +1296,6 @@ func (data *AllowedProtocols) fromBody(ctx context.Context, res gjson.Result) {
 		data.Allow5g = types.BoolNull()
 	}
 }
-
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -1133,7 +1681,6 @@ func (data *AllowedProtocols) updateFromBody(ctx context.Context, res gjson.Resu
 		data.Allow5g = types.BoolNull()
 	}
 }
-
 //template:end updateFromBody
 
 //template:begin isNull
@@ -1371,5 +1918,4 @@ func (data *AllowedProtocols) isNull(ctx context.Context, res gjson.Result) bool
 	}
 	return true
 }
-
 //template:end isNull

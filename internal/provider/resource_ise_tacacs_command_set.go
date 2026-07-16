@@ -24,22 +24,33 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"sort"
 	"strings"
+	"sync"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
+	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 )
-
 //template:end imports
 
 //template:begin header
@@ -59,7 +70,6 @@ type TACACSCommandSetResource struct {
 func (r *TACACSCommandSetResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_tacacs_command_set"
 }
-
 //template:end header
 
 //template:begin model
@@ -96,10 +106,10 @@ func (r *TACACSCommandSetResource) Schema(ctx context.Context, req resource.Sche
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"grant": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Grant").AddStringEnumDescription("PERMIT", "DENY", "DENY_ALWAYS").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Grant").AddStringEnumDescription("PERMIT", "DENY", "DENY_ALWAYS", ).String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("PERMIT", "DENY", "DENY_ALWAYS"),
+								stringvalidator.OneOf("PERMIT", "DENY", "DENY_ALWAYS", ),
 							},
 						},
 						"command": schema.StringAttribute{
@@ -116,7 +126,6 @@ func (r *TACACSCommandSetResource) Schema(ctx context.Context, req resource.Sche
 		},
 	}
 }
-
 //template:end model
 
 //template:begin configure
@@ -127,7 +136,6 @@ func (r *TACACSCommandSetResource) Configure(_ context.Context, req resource.Con
 
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
-
 //template:end configure
 
 //template:begin create
@@ -158,7 +166,6 @@ func (r *TACACSCommandSetResource) Create(ctx context.Context, req resource.Crea
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end create
 
 //template:begin read
@@ -194,12 +201,12 @@ func (r *TACACSCommandSetResource) Read(ctx context.Context, req resource.ReadRe
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end read
 
 //template:begin update
 func (r *TACACSCommandSetResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state TACACSCommandSet
+
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -216,8 +223,8 @@ func (r *TACACSCommandSetResource) Update(ctx context.Context, req resource.Upda
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	body := plan.toBody(ctx, state)
-
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
+	
+	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -228,7 +235,6 @@ func (r *TACACSCommandSetResource) Update(ctx context.Context, req resource.Upda
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end update
 
 //template:begin delete
@@ -253,12 +259,10 @@ func (r *TACACSCommandSetResource) Delete(ctx context.Context, req resource.Dele
 
 	resp.State.RemoveResource(ctx)
 }
-
 //template:end delete
 
 //template:begin import
 func (r *TACACSCommandSetResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
-
 //template:end import

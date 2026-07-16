@@ -24,22 +24,33 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"sort"
 	"strings"
+	"sync"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
+	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 )
-
 //template:end imports
 
 //template:begin header
@@ -59,7 +70,6 @@ type DownloadableACLResource struct {
 func (r *DownloadableACLResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_downloadable_acl"
 }
-
 //template:end header
 
 //template:begin model
@@ -89,18 +99,17 @@ func (r *DownloadableACLResource) Schema(ctx context.Context, req resource.Schem
 				Required:            true,
 			},
 			"dacl_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The type of ACL").AddStringEnumDescription("IPV4", "IPV6", "IP_AGNOSTIC").AddDefaultValueDescription("IPV4").String,
+				MarkdownDescription: helpers.NewAttributeDescription("The type of ACL").AddStringEnumDescription("IPV4", "IPV6", "IP_AGNOSTIC", ).AddDefaultValueDescription("IPV4").String,
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("IPV4", "IPV6", "IP_AGNOSTIC"),
+					stringvalidator.OneOf("IPV4", "IPV6", "IP_AGNOSTIC", ),
 				},
-				Default: stringdefault.StaticString("IPV4"),
+				Default:             stringdefault.StaticString("IPV4"),
 			},
 		},
 	}
 }
-
 //template:end model
 
 //template:begin configure
@@ -111,7 +120,6 @@ func (r *DownloadableACLResource) Configure(_ context.Context, req resource.Conf
 
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
-
 //template:end configure
 
 //template:begin create
@@ -142,7 +150,6 @@ func (r *DownloadableACLResource) Create(ctx context.Context, req resource.Creat
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end create
 
 //template:begin read
@@ -178,12 +185,12 @@ func (r *DownloadableACLResource) Read(ctx context.Context, req resource.ReadReq
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end read
 
 //template:begin update
 func (r *DownloadableACLResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state DownloadableACL
+
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -200,8 +207,8 @@ func (r *DownloadableACLResource) Update(ctx context.Context, req resource.Updat
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	body := plan.toBody(ctx, state)
-
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
+	
+	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -212,7 +219,6 @@ func (r *DownloadableACLResource) Update(ctx context.Context, req resource.Updat
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end update
 
 //template:begin delete
@@ -237,12 +243,10 @@ func (r *DownloadableACLResource) Delete(ctx context.Context, req resource.Delet
 
 	resp.State.RemoveResource(ctx)
 }
-
 //template:end delete
 
 //template:begin import
 func (r *DownloadableACLResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
-
 //template:end import

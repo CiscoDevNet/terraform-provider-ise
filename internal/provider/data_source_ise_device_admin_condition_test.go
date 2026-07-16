@@ -25,7 +25,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
 //template:end imports
 
 //template:begin testAccDataSource
@@ -45,12 +44,11 @@ func TestAccDataSourceIseDeviceAdminCondition(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseDeviceAdminConditionConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
-
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -68,7 +66,7 @@ func testAccDataSourceIseDeviceAdminConditionConfig() string {
 	config += `	dictionary_name = "TACACS"` + "\n"
 	config += `	operator = "equals"` + "\n"
 	config += `}` + "\n"
-
+	
 	config += `
 		data "ise_device_admin_condition" "test" {
 			id = ise_device_admin_condition.test.id
@@ -76,5 +74,4 @@ func testAccDataSourceIseDeviceAdminConditionConfig() string {
 	`
 	return config
 }
-
 //template:end testAccDataSourceConfig

@@ -25,7 +25,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
 //template:end imports
 
 //template:begin testAcc
@@ -35,17 +34,16 @@ func TestAccIseNetworkAccessAuthenticationRuleUpdateRank(t *testing.T) {
 
 	var steps []resource.TestStep
 	steps = append(steps, resource.TestStep{
-		Config: testAccIseNetworkAccessAuthenticationRuleUpdateRankPrerequisitesConfig + testAccIseNetworkAccessAuthenticationRuleUpdateRankConfig_all(),
-		Check:  resource.ComposeTestCheckFunc(checks...),
+		Config: testAccIseNetworkAccessAuthenticationRuleUpdateRankPrerequisitesConfig+testAccIseNetworkAccessAuthenticationRuleUpdateRankConfig_all(),
+		Check: resource.ComposeTestCheckFunc(checks...),
 	})
-
+	
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-		Steps:                    steps,
+		Steps: steps,
 	})
 }
-
 //template:end testAcc
 
 //template:begin testPrerequisites
@@ -77,7 +75,6 @@ resource "ise_network_access_authentication_rule" "test" {
   if_user_not_found         = "REJECT"
 }
 `
-
 //template:end testPrerequisites
 
 //template:begin testAccConfigMinimal
@@ -89,7 +86,6 @@ func testAccIseNetworkAccessAuthenticationRuleUpdateRankConfig_minimum() string 
 	config += `}` + "\n"
 	return config
 }
-
 //template:end testAccConfigMinimal
 
 //template:begin testAccConfigAll
@@ -101,5 +97,4 @@ func testAccIseNetworkAccessAuthenticationRuleUpdateRankConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
-
 //template:end testAccConfigAll

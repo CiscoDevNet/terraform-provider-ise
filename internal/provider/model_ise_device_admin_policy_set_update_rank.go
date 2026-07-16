@@ -22,28 +22,53 @@ package provider
 //template:begin imports
 import (
 	"context"
+	"fmt"
+	"net/url"
+	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
 //template:end imports
 
 //template:begin types
 type DeviceAdminPolicySetUpdateRank struct {
-	Id          types.String `tfsdk:"id"`
+	Id types.String `tfsdk:"id"`
 	PolicySetId types.String `tfsdk:"policy_set_id"`
-	Rank        types.Int64  `tfsdk:"rank"`
+	Rank types.Int64 `tfsdk:"rank"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //template:end types
 
 //template:begin getPath
 func (data DeviceAdminPolicySetUpdateRank) getPath() string {
-	return "/api/v1/policy/device-admin/policy-set"
+		return "/api/v1/policy/device-admin/policy-set"
 }
-
 //template:end getPath
 
 //template:begin getPathDelete
@@ -53,15 +78,14 @@ func (data DeviceAdminPolicySetUpdateRank) getPath() string {
 //template:begin toBody
 func (data DeviceAdminPolicySetUpdateRank) toBody(ctx context.Context, state DeviceAdminPolicySetUpdateRank) string {
 	body := ""
-	if !data.PolicySetId.IsNull() {
+	if !data.PolicySetId.IsNull()  {
 		body, _ = sjson.Set(body, "", data.PolicySetId.ValueString())
 	}
-	if !data.Rank.IsNull() {
+	if !data.Rank.IsNull()  {
 		body, _ = sjson.Set(body, "rank", data.Rank.ValueInt64())
 	}
 	return body
 }
-
 //template:end toBody
 
 //template:begin fromBody
@@ -72,7 +96,6 @@ func (data *DeviceAdminPolicySetUpdateRank) fromBody(ctx context.Context, res gj
 		data.Rank = types.Int64Null()
 	}
 }
-
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -83,7 +106,6 @@ func (data *DeviceAdminPolicySetUpdateRank) updateFromBody(ctx context.Context, 
 		data.Rank = types.Int64Null()
 	}
 }
-
 //template:end updateFromBody
 
 //template:begin isNull
@@ -96,5 +118,4 @@ func (data *DeviceAdminPolicySetUpdateRank) isNull(ctx context.Context, res gjso
 	}
 	return true
 }
-
 //template:end isNull

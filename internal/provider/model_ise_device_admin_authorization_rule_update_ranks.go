@@ -26,33 +26,59 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
 //template:end imports
 
 //template:begin types
 type DeviceAdminAuthorizationRuleUpdateRanks struct {
-	Id          types.String                                   `tfsdk:"id"`
-	PolicySetId types.String                                   `tfsdk:"policy_set_id"`
-	Rules       []DeviceAdminAuthorizationRuleUpdateRanksRules `tfsdk:"rules"`
+	Id types.String `tfsdk:"id"`
+	PolicySetId types.String `tfsdk:"policy_set_id"`
+	Rules []DeviceAdminAuthorizationRuleUpdateRanksRules `tfsdk:"rules"`
 }
 
+
+
 type DeviceAdminAuthorizationRuleUpdateRanksRules struct {
-	Id   types.String `tfsdk:"id"`
-	Rank types.Int64  `tfsdk:"rank"`
+	Id types.String `tfsdk:"id"`
+	Rank types.Int64 `tfsdk:"rank"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //template:end types
 
 //template:begin getPath
 func (data DeviceAdminAuthorizationRuleUpdateRanks) getPath() string {
-	return fmt.Sprintf("/api/v1/policy/device-admin/policy-set/%v/authorization", url.QueryEscape(data.PolicySetId.ValueString()))
+		return fmt.Sprintf("/api/v1/policy/device-admin/policy-set/%v/authorization", url.QueryEscape(data.PolicySetId.ValueString()))
 }
-
 //template:end getPath
 
 //template:begin getPathDelete
@@ -77,7 +103,6 @@ func (data DeviceAdminAuthorizationRuleUpdateRanks) toBody(ctx context.Context, 
 	}
 	return body
 }
-
 //template:end toBody
 
 //template:begin fromBody
@@ -101,14 +126,13 @@ func (data *DeviceAdminAuthorizationRuleUpdateRanks) fromBody(ctx context.Contex
 		})
 	}
 }
-
 //template:end fromBody
 
 //template:begin updateFromBody
 func (data *DeviceAdminAuthorizationRuleUpdateRanks) updateFromBody(ctx context.Context, res gjson.Result) {
 	for i := range data.Rules {
-		keys := [...]string{"rule.id", "rule.rank"}
-		keyValues := [...]string{data.Rules[i].Id.ValueString(), strconv.FormatInt(data.Rules[i].Rank.ValueInt64(), 10)}
+		keys := [...]string{ "rule.id", "rule.rank",  }
+		keyValues := [...]string{ data.Rules[i].Id.ValueString(), strconv.FormatInt(data.Rules[i].Rank.ValueInt64(), 10),  }
 
 		var r gjson.Result
 		parentItems := res.Get("response").Array()
@@ -147,7 +171,6 @@ func (data *DeviceAdminAuthorizationRuleUpdateRanks) updateFromBody(ctx context.
 		}
 	}
 }
-
 //template:end updateFromBody
 
 //template:begin isNull
@@ -157,5 +180,4 @@ func (data *DeviceAdminAuthorizationRuleUpdateRanks) isNull(ctx context.Context,
 	}
 	return true
 }
-
 //template:end isNull

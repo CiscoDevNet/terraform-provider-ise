@@ -22,29 +22,61 @@ package provider
 //template:begin imports
 import (
 	"context"
+	"fmt"
+	"net/url"
+	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
 //template:end imports
 
 //template:begin types
 type UserIdentityGroup struct {
-	Id          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
+	Id types.String `tfsdk:"id"`
+	Name types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
-	Parent      types.String `tfsdk:"parent"`
+	Parent types.String `tfsdk:"parent"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //template:end types
 
 //template:begin getPath
 func (data UserIdentityGroup) getPath() string {
-	return "/ers/config/identitygroup"
+		return "/ers/config/identitygroup"
 }
-
 //template:end getPath
 
 //template:begin getPathDelete
@@ -54,18 +86,17 @@ func (data UserIdentityGroup) getPath() string {
 //template:begin toBody
 func (data UserIdentityGroup) toBody(ctx context.Context, state UserIdentityGroup) string {
 	body := ""
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()  {
 		body, _ = sjson.Set(body, "IdentityGroup.name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull() {
+	if !data.Description.IsNull()  {
 		body, _ = sjson.Set(body, "IdentityGroup.description", data.Description.ValueString())
 	}
-	if !data.Parent.IsNull() {
+	if !data.Parent.IsNull()  {
 		body, _ = sjson.Set(body, "IdentityGroup.parent", data.Parent.ValueString())
 	}
 	return body
 }
-
 //template:end toBody
 
 //template:begin fromBody
@@ -86,7 +117,6 @@ func (data *UserIdentityGroup) fromBody(ctx context.Context, res gjson.Result) {
 		data.Parent = types.StringNull()
 	}
 }
-
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -107,7 +137,6 @@ func (data *UserIdentityGroup) updateFromBody(ctx context.Context, res gjson.Res
 		data.Parent = types.StringNull()
 	}
 }
-
 //template:end updateFromBody
 
 //template:begin isNull
@@ -123,5 +152,4 @@ func (data *UserIdentityGroup) isNull(ctx context.Context, res gjson.Result) boo
 	}
 	return true
 }
-
 //template:end isNull

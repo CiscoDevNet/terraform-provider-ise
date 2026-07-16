@@ -24,23 +24,33 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"sort"
 	"strings"
+	"sync"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
+	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 )
-
 //template:end imports
 
 //template:begin header
@@ -60,7 +70,6 @@ type CertificateAuthenticationProfileResource struct {
 func (r *CertificateAuthenticationProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_certificate_authentication_profile"
 }
-
 //template:end header
 
 //template:begin model
@@ -98,34 +107,33 @@ func (r *CertificateAuthenticationProfileResource) Schema(ctx context.Context, r
 				Default:             stringdefault.StaticString("[not applicable]"),
 			},
 			"certificate_attribute_name": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Attribute name of the Certificate Profile - used only when CERTIFICATE is chosen in `username_from`. When `username_from` is set to UPN, ISE automatically sets this to ALL_SUBJECT_AND_ALTERNATIVE_NAMES.").AddStringEnumDescription("SUBJECT_COMMON_NAME", "SUBJECT_ALTERNATIVE_NAME", "SUBJECT_SERIAL_NUMBER", "SUBJECT", "SUBJECT_ALTERNATIVE_NAME_OTHER_NAME", "SUBJECT_ALTERNATIVE_NAME_EMAIL", "SUBJECT_ALTERNATIVE_NAME_DNS", "ALL_SUBJECT_AND_ALTERNATIVE_NAMES").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Attribute name of the Certificate Profile - used only when CERTIFICATE is chosen in `username_from`. When `username_from` is set to UPN, ISE automatically sets this to ALL_SUBJECT_AND_ALTERNATIVE_NAMES.").AddStringEnumDescription("SUBJECT_COMMON_NAME", "SUBJECT_ALTERNATIVE_NAME", "SUBJECT_SERIAL_NUMBER", "SUBJECT", "SUBJECT_ALTERNATIVE_NAME_OTHER_NAME", "SUBJECT_ALTERNATIVE_NAME_EMAIL", "SUBJECT_ALTERNATIVE_NAME_DNS", "ALL_SUBJECT_AND_ALTERNATIVE_NAMES", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("SUBJECT_COMMON_NAME", "SUBJECT_ALTERNATIVE_NAME", "SUBJECT_SERIAL_NUMBER", "SUBJECT", "SUBJECT_ALTERNATIVE_NAME_OTHER_NAME", "SUBJECT_ALTERNATIVE_NAME_EMAIL", "SUBJECT_ALTERNATIVE_NAME_DNS", "ALL_SUBJECT_AND_ALTERNATIVE_NAMES"),
+					stringvalidator.OneOf("SUBJECT_COMMON_NAME", "SUBJECT_ALTERNATIVE_NAME", "SUBJECT_SERIAL_NUMBER", "SUBJECT", "SUBJECT_ALTERNATIVE_NAME_OTHER_NAME", "SUBJECT_ALTERNATIVE_NAME_EMAIL", "SUBJECT_ALTERNATIVE_NAME_DNS", "ALL_SUBJECT_AND_ALTERNATIVE_NAMES", ),
 				},
 			},
 			"match_mode": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Match mode of the Certificate Profile. Allowed values: NEVER, RESOLVE_IDENTITY_AMBIGUITY, BINARY_COMPARISON").AddStringEnumDescription("NEVER", "RESOLVE_IDENTITY_AMBIGUITY", "BINARY_COMPARISON").AddDefaultValueDescription("NEVER").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Match mode of the Certificate Profile. Allowed values: NEVER, RESOLVE_IDENTITY_AMBIGUITY, BINARY_COMPARISON").AddStringEnumDescription("NEVER", "RESOLVE_IDENTITY_AMBIGUITY", "BINARY_COMPARISON", ).AddDefaultValueDescription("NEVER").String,
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("NEVER", "RESOLVE_IDENTITY_AMBIGUITY", "BINARY_COMPARISON"),
+					stringvalidator.OneOf("NEVER", "RESOLVE_IDENTITY_AMBIGUITY", "BINARY_COMPARISON", ),
 				},
-				Default: stringdefault.StaticString("NEVER"),
+				Default:             stringdefault.StaticString("NEVER"),
 			},
 			"username_from": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The attribute in the certificate where the user name should be taken from. Allowed values: `CERTIFICATE` (for a specific attribute as defined in certificateAttributeName), `UPN` (for using any Subject or Alternative Name Attributes in the Certificate - an option only in AD)").AddStringEnumDescription("CERTIFICATE", "UPN").AddDefaultValueDescription("CERTIFICATE").String,
+				MarkdownDescription: helpers.NewAttributeDescription("The attribute in the certificate where the user name should be taken from. Allowed values: `CERTIFICATE` (for a specific attribute as defined in certificateAttributeName), `UPN` (for using any Subject or Alternative Name Attributes in the Certificate - an option only in AD)").AddStringEnumDescription("CERTIFICATE", "UPN", ).AddDefaultValueDescription("CERTIFICATE").String,
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("CERTIFICATE", "UPN"),
+					stringvalidator.OneOf("CERTIFICATE", "UPN", ),
 				},
-				Default: stringdefault.StaticString("CERTIFICATE"),
+				Default:             stringdefault.StaticString("CERTIFICATE"),
 			},
 		},
 	}
 }
-
 //template:end model
 
 //template:begin configure
@@ -136,7 +144,6 @@ func (r *CertificateAuthenticationProfileResource) Configure(_ context.Context, 
 
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
-
 //template:end configure
 
 //template:begin create
@@ -167,7 +174,6 @@ func (r *CertificateAuthenticationProfileResource) Create(ctx context.Context, r
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end create
 
 //template:begin read
@@ -203,12 +209,12 @@ func (r *CertificateAuthenticationProfileResource) Read(ctx context.Context, req
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end read
 
 //template:begin update
 func (r *CertificateAuthenticationProfileResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state CertificateAuthenticationProfile
+
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -225,8 +231,8 @@ func (r *CertificateAuthenticationProfileResource) Update(ctx context.Context, r
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	body := plan.toBody(ctx, state)
-
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
+	
+	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -237,7 +243,6 @@ func (r *CertificateAuthenticationProfileResource) Update(ctx context.Context, r
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end update
 
 //template:begin delete
@@ -262,12 +267,10 @@ func (r *CertificateAuthenticationProfileResource) Delete(ctx context.Context, r
 
 	resp.State.RemoveResource(ctx)
 }
-
 //template:end delete
 
 //template:begin import
 func (r *CertificateAuthenticationProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
-
 //template:end import

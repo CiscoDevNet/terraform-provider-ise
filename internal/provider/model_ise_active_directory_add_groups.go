@@ -24,40 +24,102 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"strconv"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
 //template:end imports
 
 //template:begin types
 type ActiveDirectoryAddGroups struct {
-	Id                      types.String                     `tfsdk:"id"`
-	JoinPointId             types.String                     `tfsdk:"join_point_id"`
-	Name                    types.String                     `tfsdk:"name"`
-	Description             types.String                     `tfsdk:"description"`
-	Domain                  types.String                     `tfsdk:"domain"`
-	AdScopesNames           types.String                     `tfsdk:"ad_scopes_names"`
-	EnableDomainAllowedList types.Bool                       `tfsdk:"enable_domain_allowed_list"`
-	Groups                  []ActiveDirectoryAddGroupsGroups `tfsdk:"groups"`
+	Id types.String `tfsdk:"id"`
+	JoinPointId types.String `tfsdk:"join_point_id"`
+	Name types.String `tfsdk:"name"`
+	Description types.String `tfsdk:"description"`
+	Domain types.String `tfsdk:"domain"`
+	AdScopesNames types.String `tfsdk:"ad_scopes_names"`
+	EnableDomainAllowedList types.Bool `tfsdk:"enable_domain_allowed_list"`
+	Groups []ActiveDirectoryAddGroupsGroups `tfsdk:"groups"`
 }
+
+
+
+
+
+
+
 
 type ActiveDirectoryAddGroupsGroups struct {
 	Name types.String `tfsdk:"name"`
-	Sid  types.String `tfsdk:"sid"`
+	Sid types.String `tfsdk:"sid"`
 	Type types.String `tfsdk:"type"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //template:end types
 
 //template:begin getPath
 func (data ActiveDirectoryAddGroups) getPath() string {
-	return fmt.Sprintf("/ers/config/activedirectory/%v/addGroups", url.QueryEscape(data.JoinPointId.ValueString()))
+		return fmt.Sprintf("/ers/config/activedirectory/%v/addGroups", url.QueryEscape(data.JoinPointId.ValueString()))
 }
-
 //template:end getPath
 
 //template:begin getPathDelete
@@ -67,19 +129,19 @@ func (data ActiveDirectoryAddGroups) getPath() string {
 //template:begin toBody
 func (data ActiveDirectoryAddGroups) toBody(ctx context.Context, state ActiveDirectoryAddGroups) string {
 	body := ""
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()  {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull() {
+	if !data.Description.IsNull()  {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.description", data.Description.ValueString())
 	}
-	if !data.Domain.IsNull() {
+	if !data.Domain.IsNull()  {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.domain", data.Domain.ValueString())
 	}
-	if !data.AdScopesNames.IsNull() {
+	if !data.AdScopesNames.IsNull()  {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.adScopesNames", data.AdScopesNames.ValueString())
 	}
-	if !data.EnableDomainAllowedList.IsNull() {
+	if !data.EnableDomainAllowedList.IsNull()  {
 		body, _ = sjson.Set(body, "ERSActiveDirectory.enableDomainAllowedList", data.EnableDomainAllowedList.ValueBool())
 	}
 	if len(data.Groups) > 0 {
@@ -100,7 +162,6 @@ func (data ActiveDirectoryAddGroups) toBody(ctx context.Context, state ActiveDir
 	}
 	return body
 }
-
 //template:end toBody
 
 //template:begin fromBody
@@ -149,7 +210,6 @@ func (data *ActiveDirectoryAddGroups) fromBody(ctx context.Context, res gjson.Re
 		})
 	}
 }
-
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -180,8 +240,8 @@ func (data *ActiveDirectoryAddGroups) updateFromBody(ctx context.Context, res gj
 		data.EnableDomainAllowedList = types.BoolNull()
 	}
 	for i := range data.Groups {
-		keys := [...]string{"sid"}
-		keyValues := [...]string{data.Groups[i].Sid.ValueString()}
+		keys := [...]string{ "sid",  }
+		keyValues := [...]string{ data.Groups[i].Sid.ValueString(),  }
 
 		var r gjson.Result
 		parentItems := res.Get("ERSActiveDirectory.adgroups.groups").Array()
@@ -220,7 +280,6 @@ func (data *ActiveDirectoryAddGroups) updateFromBody(ctx context.Context, res gj
 		}
 	}
 }
-
 //template:end updateFromBody
 
 //template:begin isNull
@@ -245,5 +304,4 @@ func (data *ActiveDirectoryAddGroups) isNull(ctx context.Context, res gjson.Resu
 	}
 	return true
 }
-
 //template:end isNull

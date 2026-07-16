@@ -25,7 +25,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
 //template:end imports
 
 //template:begin testAccDataSource
@@ -40,12 +39,11 @@ func TestAccDataSourceIseSXPDomainFilter(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseSXPDomainFilterConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
-
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -58,7 +56,7 @@ func testAccDataSourceIseSXPDomainFilterConfig() string {
 	config += `	vn = "VN1"` + "\n"
 	config += `	domains = "default"` + "\n"
 	config += `}` + "\n"
-
+	
 	config += `
 		data "ise_sxp_domain_filter" "test" {
 			id = ise_sxp_domain_filter.test.id
@@ -66,5 +64,4 @@ func testAccDataSourceIseSXPDomainFilterConfig() string {
 	`
 	return config
 }
-
 //template:end testAccDataSourceConfig

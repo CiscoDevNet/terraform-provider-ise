@@ -24,21 +24,33 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"sort"
 	"strings"
+	"sync"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
+	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 )
-
 //template:end imports
 
 //template:begin header
@@ -58,7 +70,6 @@ type NetworkAccessDictionaryAttributeResource struct {
 func (r *NetworkAccessDictionaryAttributeResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_network_access_dictionary_attribute"
 }
-
 //template:end header
 
 //template:begin model
@@ -94,17 +105,17 @@ func (r *NetworkAccessDictionaryAttributeResource) Schema(ctx context.Context, r
 				Optional:            true,
 			},
 			"data_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The data type for the dictionary attribute").AddStringEnumDescription("BOOLEAN", "DATE", "FLOAT", "INT", "IP", "IPv4", "IPv6", "IPV6PREFIX", "LONG", "OCTET_STRING", "STRING", "UNIT32", "UNIT64").String,
+				MarkdownDescription: helpers.NewAttributeDescription("The data type for the dictionary attribute").AddStringEnumDescription("BOOLEAN", "DATE", "FLOAT", "INT", "IP", "IPv4", "IPv6", "IPV6PREFIX", "LONG", "OCTET_STRING", "STRING", "UNIT32", "UNIT64", ).String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("BOOLEAN", "DATE", "FLOAT", "INT", "IP", "IPv4", "IPv6", "IPV6PREFIX", "LONG", "OCTET_STRING", "STRING", "UNIT32", "UNIT64"),
+					stringvalidator.OneOf("BOOLEAN", "DATE", "FLOAT", "INT", "IP", "IPv4", "IPv6", "IPV6PREFIX", "LONG", "OCTET_STRING", "STRING", "UNIT32", "UNIT64", ),
 				},
 			},
 			"direction_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The direction type for the dictionary attribute").AddStringEnumDescription("BOTH", "IN", "NONE", "OUT").String,
+				MarkdownDescription: helpers.NewAttributeDescription("The direction type for the dictionary attribute").AddStringEnumDescription("BOTH", "IN", "NONE", "OUT", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("BOTH", "IN", "NONE", "OUT"),
+					stringvalidator.OneOf("BOTH", "IN", "NONE", "OUT", ),
 				},
 			},
 			"internal_name": schema.StringAttribute{
@@ -130,7 +141,6 @@ func (r *NetworkAccessDictionaryAttributeResource) Schema(ctx context.Context, r
 		},
 	}
 }
-
 //template:end model
 
 //template:begin configure
@@ -141,7 +151,6 @@ func (r *NetworkAccessDictionaryAttributeResource) Configure(_ context.Context, 
 
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
-
 //template:end configure
 
 //template:begin create
@@ -171,7 +180,6 @@ func (r *NetworkAccessDictionaryAttributeResource) Create(ctx context.Context, r
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end create
 
 //template:begin read
@@ -207,12 +215,12 @@ func (r *NetworkAccessDictionaryAttributeResource) Read(ctx context.Context, req
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end read
 
 //template:begin update
 func (r *NetworkAccessDictionaryAttributeResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state NetworkAccessDictionaryAttribute
+
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -229,8 +237,8 @@ func (r *NetworkAccessDictionaryAttributeResource) Update(ctx context.Context, r
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	body := plan.toBody(ctx, state)
-
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
+	
+	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -241,7 +249,6 @@ func (r *NetworkAccessDictionaryAttributeResource) Update(ctx context.Context, r
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end update
 
 //template:begin delete
@@ -266,22 +273,20 @@ func (r *NetworkAccessDictionaryAttributeResource) Delete(ctx context.Context, r
 
 	resp.State.RemoveResource(ctx)
 }
-
 //template:end delete
 
 //template:begin import
 func (r *NetworkAccessDictionaryAttributeResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	idParts := strings.Split(req.ID, ",")
 
-	if len(idParts) != 2 || idParts[0] == "" || idParts[1] == "" {
-		resp.Diagnostics.AddError(
-			"Unexpected Import Identifier",
-			fmt.Sprintf("Expected import identifier with format: <dictionary_name>,<id>. Got: %q", req.ID),
-		)
-		return
-	}
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("dictionary_name"), idParts[0])...)
+    if len(idParts) != 2 || idParts[0] == ""  || idParts[1] == "" {
+        resp.Diagnostics.AddError(
+            "Unexpected Import Identifier",
+            fmt.Sprintf("Expected import identifier with format: <dictionary_name>,<id>. Got: %q", req.ID),
+        )
+        return
+    }
+    resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("dictionary_name"), idParts[0])...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), idParts[1])...)
 }
-
 //template:end import
