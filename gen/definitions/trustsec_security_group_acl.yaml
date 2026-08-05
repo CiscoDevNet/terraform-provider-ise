@@ -13,6 +13,7 @@ attributes:
   - model_name: description
     data_path: [Sgacl]
     type: String
+    normalize_empty_string: true
     description: Description
     example: SG ACL 1
   - model_name: aclcontent

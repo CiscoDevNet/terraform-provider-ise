@@ -12,6 +12,7 @@ attributes:
     example: Dict1
   - model_name: description
     type: String
+    normalize_empty_string: true
     description: The description of the dictionary
     example: My description
   - model_name: version

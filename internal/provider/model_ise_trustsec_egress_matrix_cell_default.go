@@ -83,7 +83,7 @@ func (data TrustSecEgressMatrixCellDefault) toBody(ctx context.Context, state Tr
 
 //template:begin fromBody
 func (data *TrustSecEgressMatrixCellDefault) fromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("EgressMatrixCell.description"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("EgressMatrixCell.description"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
@@ -109,7 +109,7 @@ func (data *TrustSecEgressMatrixCellDefault) fromBody(ctx context.Context, res g
 
 //template:begin updateFromBody
 func (data *TrustSecEgressMatrixCellDefault) updateFromBody(ctx context.Context, res gjson.Result) {
-	if value := res.Get("EgressMatrixCell.description"); value.Exists() && !data.Description.IsNull() {
+	if value := res.Get("EgressMatrixCell.description"); value.Exists() && !data.Description.IsNull() && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()

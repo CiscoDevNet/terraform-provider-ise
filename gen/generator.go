@@ -145,6 +145,10 @@ type YamlConfigAttribute struct {
 	ComputedWhen     string                `yaml:"computed_when"`
 	Immutable        bool                  `yaml:"immutable"`
 	WriteOnly        bool                  `yaml:"write_only"`
+	NormalizeEmptyJson   bool                  `yaml:"normalize_empty_json"`
+	NormalizeEmptyString bool                  `yaml:"normalize_empty_string"`
+	PreserveEmptyString  bool                  `yaml:"preserve_empty_string"`
+	NormalizeOperator    bool                  `yaml:"normalize_operator"`
 	WriteChangesOnly bool                  `yaml:"write_changes_only"`
 	ExcludeUpdate    bool                  `yaml:"exclude_update"`
 	ExcludeTest      bool                  `yaml:"exclude_test"`
@@ -427,6 +431,37 @@ var functions = template.FuncMap{
 	"isNestedList":           IsNestedList,
 	"isNestedSet":            IsNestedSet,
 	"hasAttribute":           HasAttribute,
+	"goValueType":            GoValueType,
+	"goValueCtor":            GoValueCtor,
+	"goNullCtor":             GoNullCtor,
+}
+
+// GoValueType returns the Go type for an attribute's model struct field.
+// String attributes flagged normalize_operator use the custom helpers.OperatorValue
+// type so the framework folds ISE's ip*-alias operator spellings via semantic equality.
+func GoValueType(attr YamlConfigAttribute) string {
+	if attr.Type == "String" && attr.NormalizeOperator {
+		return "helpers.OperatorValue"
+	}
+	return "types." + attr.Type
+}
+
+// GoValueCtor returns the constructor call (including the argument) that builds a
+// known value for an attribute, honoring the custom operator type.
+func GoValueCtor(attr YamlConfigAttribute, arg string) string {
+	if attr.Type == "String" && attr.NormalizeOperator {
+		return "helpers.NewOperatorValue(" + arg + ")"
+	}
+	return "types." + attr.Type + "Value(" + arg + ")"
+}
+
+// GoNullCtor returns the constructor call that builds a null value for an attribute,
+// honoring the custom operator type.
+func GoNullCtor(attr YamlConfigAttribute) string {
+	if attr.Type == "String" && attr.NormalizeOperator {
+		return "helpers.NewOperatorNull()"
+	}
+	return "types." + attr.Type + "Null()"
 }
 
 func augmentAttribute(attr *YamlConfigAttribute) {

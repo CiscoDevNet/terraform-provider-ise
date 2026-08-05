@@ -23,6 +23,7 @@ package provider
 import (
 	"context"
 
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
@@ -104,6 +105,7 @@ func (data *LicenseTierState) updateFromBody(ctx context.Context, res gjson.Resu
 	for i := range data.Licenses {
 		keys := [...]string{"name"}
 		keyValues := [...]string{data.Licenses[i].Name.ValueString()}
+		keyNormalize := [...]bool{false}
 
 		var r gjson.Result
 		parentItems := res.Array()
@@ -111,7 +113,7 @@ func (data *LicenseTierState) updateFromBody(ctx context.Context, res gjson.Resu
 		for _, v := range parentItems {
 			found := false
 			for ik := range keys {
-				if v.Get(keys[ik]).String() == keyValues[ik] {
+				if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 					found = true
 					continue
 				}

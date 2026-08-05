@@ -48,7 +48,7 @@ type {{camelCase .Name}} struct {
 {{- if isNestedListSet .}}
 	{{toGoName .TfName}} []{{$name}}{{toGoName .TfName}} `tfsdk:"{{.TfName}}"`
 {{- else}}
-	{{toGoName .TfName}} types.{{.Type}} `tfsdk:"{{.TfName}}"`
+	{{toGoName .TfName}} {{goValueType .}} `tfsdk:"{{.TfName}}"`
 {{- end}}
 {{- end}}
 {{- end}}
@@ -64,7 +64,7 @@ type {{$name}}{{toGoName .TfName}} struct {
 {{- if isNestedListSet .}}
 	{{toGoName .TfName}} []{{$name}}{{$childName}}{{toGoName .TfName}} `tfsdk:"{{.TfName}}"`
 {{- else}}
-	{{toGoName .TfName}} types.{{.Type}} `tfsdk:"{{.TfName}}"`
+	{{toGoName .TfName}} {{goValueType .}} `tfsdk:"{{.TfName}}"`
 {{- end}}
 {{- end}}
 {{- end}}
@@ -87,7 +87,7 @@ type {{$name}}{{$childName}}{{toGoName .TfName}} struct {
 {{- if isNestedListSet .}}
 	{{toGoName .TfName}} []{{$name}}{{$childName}}{{$childChildName}}{{toGoName .TfName}} `tfsdk:"{{.TfName}}"`
 {{- else}}
-	{{toGoName .TfName}} types.{{.Type}} `tfsdk:"{{.TfName}}"`
+	{{toGoName .TfName}} {{goValueType .}} `tfsdk:"{{.TfName}}"`
 {{- end}}
 {{- end}}
 {{- end}}
@@ -118,7 +118,7 @@ type {{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}} struct {
 {{- if isNestedListSet .}}
 	{{toGoName .TfName}} []{{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}}{{toGoName .TfName}} `tfsdk:"{{.TfName}}"`
 {{- else}}
-	{{toGoName .TfName}} types.{{.Type}} `tfsdk:"{{.TfName}}"`
+	{{toGoName .TfName}} {{goValueType .}} `tfsdk:"{{.TfName}}"`
 {{- end}}
 {{- end}}
 {{- end}}
@@ -156,7 +156,7 @@ type {{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}}{{$childC
 {{- if isNestedListSet .}}
 	{{toGoName .TfName}} []{{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}}{{$childChildChildChildName}}{{toGoName .TfName}} `tfsdk:"{{.TfName}}"`
 {{- else}}
-	{{toGoName .TfName}} types.{{.Type}} `tfsdk:"{{.TfName}}"`
+	{{toGoName .TfName}} {{goValueType .}} `tfsdk:"{{.TfName}}"`
 {{- end}}
 {{- end}}
 {{- end}}
@@ -201,7 +201,7 @@ type {{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}}{{$childC
 {{- if isNestedListSet .}}
 	{{toGoName .TfName}} []{{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}}{{$childChildChildChildName}}{{$childChildChildChildChildName}}{{toGoName .TfName}} `tfsdk:"{{.TfName}}"`
 {{- else}}
-	{{toGoName .TfName}} types.{{.Type}} `tfsdk:"{{.TfName}}"`
+	{{toGoName .TfName}} {{goValueType .}} `tfsdk:"{{.TfName}}"`
 {{- end}}
 {{- end}}
 {{- end}}
@@ -253,7 +253,7 @@ type {{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}}{{$childC
 {{- if isNestedListSet .}}
 	{{toGoName .TfName}} []{{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}}{{$childChildChildChildName}}{{$childChildChildChildChildName}}{{$childChildChildChildChildChildName}}{{toGoName .TfName}} `tfsdk:"{{.TfName}}"`
 {{- else}}
-	{{toGoName .TfName}} types.{{.Type}} `tfsdk:"{{.TfName}}"`
+	{{toGoName .TfName}} {{goValueType .}} `tfsdk:"{{.TfName}}"`
 {{- end}}
 {{- end}}
 {{- end}}
@@ -308,7 +308,7 @@ type {{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}}{{$childC
 type {{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}}{{$childChildChildChildName}}{{$childChildChildChildChildName}}{{$childChildChildChildChildChildName}}{{toGoName .TfName}} struct {
 {{- range .Attributes}}
 {{- if not .Value}}
-	{{toGoName .TfName}} types.{{.Type}} `tfsdk:"{{.TfName}}"`
+	{{toGoName .TfName}} {{goValueType .}} `tfsdk:"{{.TfName}}"`
 {{- end}}
 {{- end}}
 }
@@ -380,7 +380,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 	}
 	{{- else}}
 	if !data.{{toGoName .TfName}}.IsNull() {{if .ComputedWhen}}&& !data.{{toGoName .TfName}}.IsUnknown(){{end}}{{if .WriteChangesOnly}}&& data.{{toGoName .TfName}} != state.{{toGoName .TfName}}{{end}} {
-		body, _ = sjson.Set(body, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", data.{{toGoName .TfName}}.Value{{.Type}}())
+		body, _ = sjson.Set(body, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if and (eq .Type "String") .NormalizeOperator}}helpers.NormalizeOperator(data.{{toGoName .TfName}}.ValueString()){{else}}data.{{toGoName .TfName}}.Value{{.Type}}(){{end}})
 	}
 	{{- end}}
 	{{- else if isListSet .}}
@@ -406,7 +406,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 			{{- else if not .Reference}}
 			{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 			if !item.{{toGoName .TfName}}.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", item.{{toGoName .TfName}}.Value{{.Type}}())
+				itemBody, _ = sjson.Set(itemBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if and (eq .Type "String") .NormalizeOperator}}helpers.NormalizeOperator(item.{{toGoName .TfName}}.ValueString()){{else}}item.{{toGoName .TfName}}.Value{{.Type}}(){{end}})
 			}
 			{{- else if isListSet .}}
 			if !item.{{toGoName .TfName}}.IsNull() {
@@ -431,7 +431,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 					{{- else if not .Reference}}
 					{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 					if !childItem.{{toGoName .TfName}}.IsNull() {
-						itemChildBody, _ = sjson.Set(itemChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", childItem.{{toGoName .TfName}}.Value{{.Type}}())
+						itemChildBody, _ = sjson.Set(itemChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if and (eq .Type "String") .NormalizeOperator}}helpers.NormalizeOperator(childItem.{{toGoName .TfName}}.ValueString()){{else}}childItem.{{toGoName .TfName}}.Value{{.Type}}(){{end}})
 					}
 					{{- else if isListSet .}}
 					if !childItem.{{toGoName .TfName}}.IsNull() {
@@ -456,7 +456,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 							{{- else if not .Reference}}
 							{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 							if !childChildItem.{{toGoName .TfName}}.IsNull() {
-								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", childChildItem.{{toGoName .TfName}}.Value{{.Type}}())
+								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if and (eq .Type "String") .NormalizeOperator}}helpers.NormalizeOperator(childChildItem.{{toGoName .TfName}}.ValueString()){{else}}childChildItem.{{toGoName .TfName}}.Value{{.Type}}(){{end}})
 							}
 							{{- else if isListSet .}}
 							if !childChildItem.{{toGoName .TfName}}.IsNull() {
@@ -481,7 +481,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 									{{- else if not .Reference}}
 									{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 									if !childChildChildItem.{{toGoName .TfName}}.IsNull() {
-										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", childChildChildItem.{{toGoName .TfName}}.Value{{.Type}}())
+										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if and (eq .Type "String") .NormalizeOperator}}helpers.NormalizeOperator(childChildChildItem.{{toGoName .TfName}}.ValueString()){{else}}childChildChildItem.{{toGoName .TfName}}.Value{{.Type}}(){{end}})
 									}
 									{{- else if isListSet .}}
 									if !childChildChildItem.{{toGoName .TfName}}.IsNull() {
@@ -506,7 +506,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 											{{- else if not .Reference}}
 											{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 											if !childChildChildChildItem.{{toGoName .TfName}}.IsNull() {
-												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", childChildChildChildItem.{{toGoName .TfName}}.Value{{.Type}}())
+												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if and (eq .Type "String") .NormalizeOperator}}helpers.NormalizeOperator(childChildChildChildItem.{{toGoName .TfName}}.ValueString()){{else}}childChildChildChildItem.{{toGoName .TfName}}.Value{{.Type}}(){{end}})
 											}
 											{{- else if isListSet .}}
 											if !childChildChildChildItem.{{toGoName .TfName}}.IsNull() {
@@ -531,7 +531,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 													{{- else if not .Reference}}
 													{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 													if !childChildChildChildChildItem.{{toGoName .TfName}}.IsNull() {
-														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", childChildChildChildChildItem.{{toGoName .TfName}}.Value{{.Type}}())
+														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if and (eq .Type "String") .NormalizeOperator}}helpers.NormalizeOperator(childChildChildChildChildItem.{{toGoName .TfName}}.ValueString()){{else}}childChildChildChildChildItem.{{toGoName .TfName}}.Value{{.Type}}(){{end}})
 													}
 													{{- else if isListSet .}}
 													if !childChildChildChildChildItem.{{toGoName .TfName}}.IsNull() {
@@ -605,13 +605,13 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 		data.{{toGoName .TfName}} = types.{{.Type}}Null()
 	}
 	{{- else}}
-	if value := res.Get("{{if .ResponseDataPath}}{{.ResponseDataPath}}{{else}}{{if $openApi}}response.{{end}}{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}{{end}}"); value.Exists() && value.Type != gjson.Null{{if and (eq .Type "String") (not .DefaultValue) (hasComputedWhen $.Attributes)}} && value.String() != ""{{end}} {
-		data.{{toGoName .TfName}} = types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
+	if value := res.Get("{{if .ResponseDataPath}}{{.ResponseDataPath}}{{else}}{{if $openApi}}response.{{end}}{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}{{end}}"); value.Exists() && value.Type != gjson.Null{{if .NormalizeEmptyJson}} && !((value.Type == gjson.JSON && len(value.Map()) == 0) || (value.Type == gjson.String && value.String() == "{}")){{end}}{{if .NormalizeEmptyString}} && value.String() != ""{{end}}{{if and (eq .Type "String") (not .DefaultValue) (hasComputedWhen $.Attributes)}} && value.String() != ""{{end}} {
+		data.{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(value.String())){{else}}types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
 	} else {
 		{{- if .DefaultValue}}
 		data.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
 		{{- else}}
-		data.{{toGoName .TfName}} = types.{{.Type}}Null()
+		data.{{toGoName .TfName}} = {{goNullCtor .}}
 		{{- end}}
 	}
 	{{- end}}
@@ -624,7 +624,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 	{{- else if eq .Type "Map"}}
 	if value := res.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() {
 		{{- if .FilterEmptyValues}}
-		data.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(value.Map())
+		data.{{toGoName .TfName}} = helpers.GetStringMapNonEmptyOrNull(value.Map())
 		{{- else}}
 		data.{{toGoName .TfName}} = helpers.GetStringMap(value.Map())
 		{{- end}}
@@ -641,12 +641,14 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 			{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
 			{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 			if cValue := v.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cValue.Exists() && cValue.Type != gjson.Null {
-				item.{{toGoName .TfName}} = types.{{.Type}}Value(cValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
+				item.{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(cValue.String())){{else}}types.{{.Type}}Value(cValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
 			} else {
 				{{- if .DefaultValue}}
 				item.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
+				{{- else if and (eq .Type "String") .PreserveEmptyString}}
+				item.{{toGoName .TfName}} = types.StringValue("")
 				{{- else}}
-				item.{{toGoName .TfName}} = types.{{.Type}}Null()
+				item.{{toGoName .TfName}} = {{goNullCtor .}}
 				{{- end}}
 			}
 			{{- else if isListSet .}}
@@ -658,7 +660,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 			{{- else if eq .Type "Map"}}
 			if cValue := v.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cValue.Exists() {
 				{{- if .FilterEmptyValues}}
-				item.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(cValue.Map())
+				item.{{toGoName .TfName}} = helpers.GetStringMapNonEmptyOrNull(cValue.Map())
 				{{- else}}
 				item.{{toGoName .TfName}} = helpers.GetStringMap(cValue.Map())
 				{{- end}}
@@ -674,14 +676,16 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 					{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
 					{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 					if ccValue := cv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccValue.Exists() && ccValue.Type != gjson.Null {
-						cItem.{{toGoName .TfName}} = types.{{.Type}}Value(ccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
-					} else {
-						{{- if .DefaultValue}}
-						cItem.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
-						{{- else}}
-						cItem.{{toGoName .TfName}} = types.{{.Type}}Null()
-						{{- end}}
-					}
+						cItem.{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(ccValue.String())){{else}}types.{{.Type}}Value(ccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
+						} else {
+							{{- if .DefaultValue}}
+							cItem.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
+							{{- else if and (eq .Type "String") .PreserveEmptyString}}
+							cItem.{{toGoName .TfName}} = types.StringValue("")
+							{{- else}}
+							cItem.{{toGoName .TfName}} = {{goNullCtor .}}
+							{{- end}}
+						}
 					{{- else if isListSet .}}
 					if ccValue := cv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccValue.Exists() {
 						cItem.{{toGoName .TfName}} = helpers.Get{{.ElementType}}{{.Type}}(ccValue.Array())
@@ -691,7 +695,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 					{{- else if eq .Type "Map"}}
 					if ccValue := cv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccValue.Exists() {
 						{{- if .FilterEmptyValues}}
-						cItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(ccValue.Map())
+						cItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmptyOrNull(ccValue.Map())
 						{{- else}}
 						cItem.{{toGoName .TfName}} = helpers.GetStringMap(ccValue.Map())
 						{{- end}}
@@ -708,12 +712,14 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 							{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
 							{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 							if cccValue := ccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccValue.Exists() && cccValue.Type != gjson.Null {
-								ccItem.{{toGoName .TfName}} = types.{{.Type}}Value(cccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
+								ccItem.{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(cccValue.String())){{else}}types.{{.Type}}Value(cccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
 							} else {
 								{{- if .DefaultValue}}
 								ccItem.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
+								{{- else if and (eq .Type "String") .PreserveEmptyString}}
+								ccItem.{{toGoName .TfName}} = types.StringValue("")
 								{{- else}}
-								ccItem.{{toGoName .TfName}} = types.{{.Type}}Null()
+								ccItem.{{toGoName .TfName}} = {{goNullCtor .}}
 								{{- end}}
 							}
 							{{- else if isListSet .}}
@@ -725,7 +731,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 							{{- else if eq .Type "Map"}}
 							if cccValue := ccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccValue.Exists() {
 								{{- if .FilterEmptyValues}}
-								ccItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(cccValue.Map())
+								ccItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmptyOrNull(cccValue.Map())
 								{{- else}}
 								ccItem.{{toGoName .TfName}} = helpers.GetStringMap(cccValue.Map())
 								{{- end}}
@@ -742,12 +748,14 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 									{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
 									{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 									if ccccValue := cccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccccValue.Exists() && ccccValue.Type != gjson.Null {
-										cccItem.{{toGoName .TfName}} = types.{{.Type}}Value(ccccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
+										cccItem.{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(ccccValue.String())){{else}}types.{{.Type}}Value(ccccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
 									} else {
 										{{- if .DefaultValue}}
 										cccItem.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
+										{{- else if and (eq .Type "String") .PreserveEmptyString}}
+										cccItem.{{toGoName .TfName}} = types.StringValue("")
 										{{- else}}
-										cccItem.{{toGoName .TfName}} = types.{{.Type}}Null()
+										cccItem.{{toGoName .TfName}} = {{goNullCtor .}}
 										{{- end}}
 									}
 									{{- else if isListSet .}}
@@ -759,7 +767,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 									{{- else if eq .Type "Map"}}
 									if ccccValue := cccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccccValue.Exists() {
 										{{- if .FilterEmptyValues}}
-										cccItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(ccccValue.Map())
+										cccItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmptyOrNull(ccccValue.Map())
 										{{- else}}
 										cccItem.{{toGoName .TfName}} = helpers.GetStringMap(ccccValue.Map())
 										{{- end}}
@@ -776,12 +784,12 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 											{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
 											{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 											if cccccValue := ccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccccValue.Exists() && cccccValue.Type != gjson.Null {
-												ccccItem.{{toGoName .TfName}} = types.{{.Type}}Value(cccccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
+												ccccItem.{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(cccccValue.String())){{else}}types.{{.Type}}Value(cccccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
 											} else {
 												{{- if .DefaultValue}}
 												ccccItem.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
 												{{- else}}
-												ccccItem.{{toGoName .TfName}} = types.{{.Type}}Null()
+												ccccItem.{{toGoName .TfName}} = {{goNullCtor .}}
 												{{- end}}
 											}
 											{{- else if isListSet .}}
@@ -793,7 +801,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 											{{- else if eq .Type "Map"}}
 											if cccccValue := ccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccccValue.Exists() {
 												{{- if .FilterEmptyValues}}
-												ccccItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(cccccValue.Map())
+												ccccItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmptyOrNull(cccccValue.Map())
 												{{- else}}
 												ccccItem.{{toGoName .TfName}} = helpers.GetStringMap(cccccValue.Map())
 												{{- end}}
@@ -809,12 +817,12 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 													{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
 													{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 													if ccccccValue := cccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccccccValue.Exists() && ccccccValue.Type != gjson.Null {
-														cccccItem.{{toGoName .TfName}} = types.{{.Type}}Value(ccccccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
+														cccccItem.{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(ccccccValue.String())){{else}}types.{{.Type}}Value(ccccccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
 													} else {
 														{{- if .DefaultValue}}
 														cccccItem.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
 														{{- else}}
-														cccccItem.{{toGoName .TfName}} = types.{{.Type}}Null()
+														cccccItem.{{toGoName .TfName}} = {{goNullCtor .}}
 														{{- end}}
 													}
 													{{- else if isListSet .}}
@@ -826,7 +834,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 													{{- else if eq .Type "Map"}}
 													if ccccccValue := cccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccccccValue.Exists() {
 														{{- if .FilterEmptyValues}}
-														cccccItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmpty(ccccccValue.Map())
+														cccccItem.{{toGoName .TfName}} = helpers.GetStringMapNonEmptyOrNull(ccccccValue.Map())
 														{{- else}}
 														cccccItem.{{toGoName .TfName}} = helpers.GetStringMap(ccccccValue.Map())
 														{{- end}}
@@ -887,10 +895,10 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 
 	{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
 	{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
-	if value := res.Get("{{if .ResponseDataPath}}{{.ResponseDataPath}}{{else}}{{if $openApi}}response.{{end}}{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}{{end}}"); value.Exists() && !data.{{toGoName .TfName}}.IsNull() {
-		data.{{toGoName .TfName}} = types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
+	if value := res.Get("{{if .ResponseDataPath}}{{.ResponseDataPath}}{{else}}{{if $openApi}}response.{{end}}{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}{{end}}"); value.Exists() && !data.{{toGoName .TfName}}.IsNull(){{if .NormalizeEmptyJson}} && !((value.Type == gjson.JSON && len(value.Map()) == 0) || (value.Type == gjson.String && value.String() == "{}")){{end}}{{if .NormalizeEmptyString}} && value.String() != ""{{end}} {
+		data.{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(value.String())){{else}}types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
 	} else {{if .DefaultValue}}if data.{{toGoName .TfName}}.Value{{.Type}}() != {{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}} {{end}}{
-		data.{{toGoName .TfName}} = types.{{.Type}}Null()
+		data.{{toGoName .TfName}} = {{goNullCtor .}}
 	}
 	{{- else if isListSet .}}
 	if value := res.Get("{{if .ResponseDataPath}}{{.ResponseDataPath}}{{else}}{{if $openApi}}response.{{end}}{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}{{end}}"); value.Exists() && !data.{{toGoName .TfName}}.IsNull() {
@@ -909,6 +917,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 	for i := range data.{{toGoName .TfName}} {
 		keys := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if or (eq .Type "Int64") (eq .Type "Bool") (eq .Type "String")}}"{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{end}}{{end}}{{end}} }
 		keyValues := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if eq .Type "Int64"}}strconv.FormatInt(data.{{$list}}[i].{{toGoName .TfName}}.ValueInt64(), 10), {{else if eq .Type "Bool"}}strconv.FormatBool(data.{{$list}}[i].{{toGoName .TfName}}.ValueBool()), {{else if eq .Type "String"}}data.{{$list}}[i].{{toGoName .TfName}}.Value{{.Type}}(), {{end}}{{end}}{{end}} }
+		keyNormalize := [...]bool{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if or (eq .Type "Int64") (eq .Type "Bool") (eq .Type "String")}}{{if and (eq .Type "String") .NormalizeOperator}}true{{else}}false{{end}}, {{end}}{{end}}{{end}} }
 
 		var r gjson.Result
 		{{- if strContains (camelCase $.Name) "UpdateRanks" }}
@@ -922,7 +931,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 		for _, v := range parentItems {
 			found := false
 			for ik := range keys {
-				if v.Get(keys[ik]).String() == keyValues[ik] {
+				if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 					found = true
 					continue
 				}
@@ -946,9 +955,13 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 		{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
 		{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 		if value := r.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{toGoName .TfName}}.IsNull() {
-			data.{{$list}}[i].{{toGoName .TfName}} = types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
+			data.{{$list}}[i].{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(value.String())){{else}}types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
 		} else {{if .DefaultValue}}if data.{{$list}}[i].{{toGoName .TfName}}.Value{{.Type}}() != {{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}} {{end}}{
-			data.{{$list}}[i].{{toGoName .TfName}} = types.{{.Type}}Null()
+			{{- if and (eq .Type "String") .PreserveEmptyString}}
+			data.{{$list}}[i].{{toGoName .TfName}} = types.StringValue("")
+			{{- else}}
+			data.{{$list}}[i].{{toGoName .TfName}} = {{goNullCtor .}}
+			{{- end}}
 		}
 		{{- else if isListSet .}}
 		if value := r.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{toGoName .TfName}}.IsNull() {
@@ -967,6 +980,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 		for ci := range data.{{$list}}[i].{{toGoName .TfName}} {
 			keys := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if or (eq .Type "Int64") (eq .Type "Bool") (eq .Type "String")}}"{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{end}}{{end}}{{end}} }
 			keyValues := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if eq .Type "Int64"}}strconv.FormatInt(data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}}.ValueInt64(), 10), {{else if eq .Type "Bool"}}strconv.FormatBool(data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}}.ValueBool()), {{else if eq .Type "String"}}data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}}.Value{{.Type}}(), {{end}}{{end}}{{end}} }
+			keyNormalize := [...]bool{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if or (eq .Type "Int64") (eq .Type "Bool") (eq .Type "String")}}{{if and (eq .Type "String") .NormalizeOperator}}true{{else}}false{{end}}, {{end}}{{end}}{{end}} }
 
 			var cr gjson.Result
 			childItems := r.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").Array()
@@ -974,7 +988,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 			for _, v := range childItems {
 				found := false
 				for ik := range keys {
-					if v.Get(keys[ik]).String() == keyValues[ik] {
+					if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 						found = true
 						continue
 					}
@@ -998,9 +1012,9 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 			{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
 			{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 			if value := cr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}}.IsNull() {
-				data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}} = types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
+				data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(value.String())){{else}}types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
 			} else {{if .DefaultValue}}if data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}}.Value{{.Type}}() != {{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}} {{end}}{
-				data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}} = types.{{.Type}}Null()
+				data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}} = {{goNullCtor .}}
 			}
 			{{- else if isListSet .}}
 			if value := cr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}}.IsNull() {
@@ -1019,6 +1033,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 			for cci := range data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}} {
 				keys := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if or (eq .Type "Int64") (eq .Type "Bool") (eq .Type "String")}}"{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{end}}{{end}}{{end}} }
 				keyValues := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if eq .Type "Int64"}}strconv.FormatInt(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}}.ValueInt64(), 10), {{else if eq .Type "Bool"}}strconv.FormatBool(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}}.ValueBool()), {{else if eq .Type "String"}}data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}}.Value{{.Type}}(), {{end}}{{end}}{{end}} }
+				keyNormalize := [...]bool{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if or (eq .Type "Int64") (eq .Type "Bool") (eq .Type "String")}}{{if and (eq .Type "String") .NormalizeOperator}}true{{else}}false{{end}}, {{end}}{{end}}{{end}} }
 
 				var ccr gjson.Result
 				cciItems := cr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").Array()
@@ -1026,7 +1041,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 				for _, v := range cciItems {
 					found := false
 					for ik := range keys {
-						if v.Get(keys[ik]).String() == keyValues[ik] {
+						if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 							found = true
 							continue
 						}
@@ -1050,9 +1065,9 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 				{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
 				{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 				if value := ccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}}.IsNull() {
-					data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}} = types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
+					data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(value.String())){{else}}types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
 				} else {{if .DefaultValue}}if data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}}.Value{{.Type}}() != {{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}} {{end}}{
-					data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}} = types.{{.Type}}Null()
+					data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}} = {{goNullCtor .}}
 				}
 				{{- else if isListSet .}}
 				if value := ccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}}.IsNull() {
@@ -1071,6 +1086,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 				for ccci := range data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}} {
 					keys := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if or (eq .Type "Int64") (eq .Type "Bool") (eq .Type "String")}}"{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{end}}{{end}}{{end}} }
 					keyValues := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if eq .Type "Int64"}}strconv.FormatInt(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}}.ValueInt64(), 10), {{else if eq .Type "Bool"}}strconv.FormatBool(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}}.ValueBool()), {{else if eq .Type "String"}}data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}}.Value{{.Type}}(), {{end}}{{end}}{{end}} }
+					keyNormalize := [...]bool{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if or (eq .Type "Int64") (eq .Type "Bool") (eq .Type "String")}}{{if and (eq .Type "String") .NormalizeOperator}}true{{else}}false{{end}}, {{end}}{{end}}{{end}} }
 
 					var cccr gjson.Result
 					ccciItems := ccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").Array()
@@ -1078,7 +1094,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 					for _, v := range ccciItems {
 						found := false
 						for ik := range keys {
-							if v.Get(keys[ik]).String() == keyValues[ik] {
+							if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 								found = true
 								continue
 							}
@@ -1102,9 +1118,9 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 					{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
 					{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 					if value := cccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}}.IsNull() {
-						data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}} = types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
+						data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(value.String())){{else}}types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
 					} else {{if .DefaultValue}}if data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}}.Value{{.Type}}() != {{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}} {{end}}{
-						data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}} = types.{{.Type}}Null()
+						data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}} = {{goNullCtor .}}
 					}
 					{{- else if isListSet .}}
 					if value := cccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}}.IsNull() {
@@ -1123,6 +1139,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 					for cccci := range data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}} {
 						keys := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if or (eq .Type "Int64") (eq .Type "Bool") (eq .Type "String")}}"{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{end}}{{end}}{{end}} }
 						keyValues := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if eq .Type "Int64"}}strconv.FormatInt(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}}.ValueInt64(), 10), {{else if eq .Type "Bool"}}strconv.FormatBool(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}}.ValueBool()), {{else if eq .Type "String"}}data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}}.Value{{.Type}}(), {{end}}{{end}}{{end}} }
+						keyNormalize := [...]bool{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if or (eq .Type "Int64") (eq .Type "Bool") (eq .Type "String")}}{{if and (eq .Type "String") .NormalizeOperator}}true{{else}}false{{end}}, {{end}}{{end}}{{end}} }
 
 						var ccccr gjson.Result
 						cccciItems := cccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").Array()
@@ -1130,7 +1147,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 						for _, v := range cccciItems {
 							found := false
 							for ik := range keys {
-								if v.Get(keys[ik]).String() == keyValues[ik] {
+								if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 									found = true
 									continue
 								}
@@ -1154,9 +1171,9 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 						{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
 						{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 						if value := ccccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}}.IsNull() {
-							data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}} = types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
+							data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(value.String())){{else}}types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
 						} else {{if .DefaultValue}}if data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}}.Value{{.Type}}() != {{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}} {{end}}{
-							data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}} = types.{{.Type}}Null()
+							data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}} = {{goNullCtor .}}
 						}
 						{{- else if isListSet .}}
 						if value := ccccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}}.IsNull() {
@@ -1175,6 +1192,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 						for ccccci := range data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}} {
 							keys := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if or (eq .Type "Int64") (eq .Type "Bool") (eq .Type "String")}}"{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{end}}{{end}}{{end}} }
 							keyValues := [...]string{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if eq .Type "Int64"}}strconv.FormatInt(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}}.ValueInt64(), 10), {{else if eq .Type "Bool"}}strconv.FormatBool(data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}}.ValueBool()), {{else if eq .Type "String"}}data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}}.Value{{.Type}}(), {{end}}{{end}}{{end}} }
+							keyNormalize := [...]bool{ {{$noId := not (hasId .Attributes)}}{{range .Attributes}}{{if or .Id (and $noId (not .Value))}}{{if or (eq .Type "Int64") (eq .Type "Bool") (eq .Type "String")}}{{if and (eq .Type "String") .NormalizeOperator}}true{{else}}false{{end}}, {{end}}{{end}}{{end}} }
 
 							var cccccr gjson.Result
 							ccccciItems := ccccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}").Array()
@@ -1182,7 +1200,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 							for _, v := range ccccciItems {
 								found := false
 								for ik := range keys {
-									if v.Get(keys[ik]).String() == keyValues[ik] {
+									if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 										found = true
 										continue
 									}
@@ -1206,9 +1224,9 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 							{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
 							{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 							if value := cccccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}}.IsNull() {
-								data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}} = types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
+								data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(value.String())){{else}}types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
 							} else {{if .DefaultValue}}if data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}}.Value{{.Type}}() != {{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}} {{end}}{
-								data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}} = types.{{.Type}}Null()
+								data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}} = {{goNullCtor .}}
 							}
 							{{- else if isListSet .}}
 							if value := cccccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}}.IsNull() {
@@ -1258,12 +1276,14 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 			{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
 			{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 			if cValue := v.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cValue.Exists() && cValue.Type != gjson.Null {
-				item.{{toGoName .TfName}} = types.{{.Type}}Value(cValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
+				item.{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(cValue.String())){{else}}types.{{.Type}}Value(cValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
 			} else {
 				{{- if .DefaultValue}}
 				item.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
+				{{- else if and (eq .Type "String") .PreserveEmptyString}}
+				item.{{toGoName .TfName}} = types.StringValue("")
 				{{- else}}
-				item.{{toGoName .TfName}} = types.{{.Type}}Null()
+				item.{{toGoName .TfName}} = {{goNullCtor .}}
 				{{- end}}
 			}
 			{{- else if isListSet .}}
@@ -1287,14 +1307,16 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 					{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
 					{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 					if ccValue := cv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccValue.Exists() && ccValue.Type != gjson.Null {
-						cItem.{{toGoName .TfName}} = types.{{.Type}}Value(ccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
-					} else {
-						{{- if .DefaultValue}}
-						cItem.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
-						{{- else}}
-						cItem.{{toGoName .TfName}} = types.{{.Type}}Null()
-						{{- end}}
-					}
+						cItem.{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(ccValue.String())){{else}}types.{{.Type}}Value(ccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
+						} else {
+							{{- if .DefaultValue}}
+							cItem.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
+							{{- else if and (eq .Type "String") .PreserveEmptyString}}
+							cItem.{{toGoName .TfName}} = types.StringValue("")
+							{{- else}}
+							cItem.{{toGoName .TfName}} = {{goNullCtor .}}
+							{{- end}}
+						}
 					{{- else if isListSet .}}
 					if ccValue := cv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccValue.Exists() {
 						cItem.{{toGoName .TfName}} = helpers.Get{{.ElementType}}{{.Type}}(ccValue.Array())
@@ -1316,12 +1338,14 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 							{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
 							{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 							if cccValue := ccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccValue.Exists() && cccValue.Type != gjson.Null {
-								ccItem.{{toGoName .TfName}} = types.{{.Type}}Value(cccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}())
+								ccItem.{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(cccValue.String())){{else}}types.{{.Type}}Value(cccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
 							} else {
 								{{- if .DefaultValue}}
 								ccItem.{{toGoName .TfName}} = types.{{.Type}}Value({{if eq .Type "String"}}"{{end}}{{.DefaultValue}}{{if eq .Type "String"}}"{{end}})
+								{{- else if and (eq .Type "String") .PreserveEmptyString}}
+								ccItem.{{toGoName .TfName}} = types.StringValue("")
 								{{- else}}
-								ccItem.{{toGoName .TfName}} = types.{{.Type}}Null()
+								ccItem.{{toGoName .TfName}} = {{goNullCtor .}}
 								{{- end}}
 							}
 							{{- else if isListSet .}}

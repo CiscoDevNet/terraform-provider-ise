@@ -26,6 +26,7 @@ attributes:
   - model_name: description
     data_path: [ERSActiveDirectory]
     type: String
+    normalize_empty_string: true
     requires_replace: true
     description: Join point Description
     example: My AD join point

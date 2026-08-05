@@ -84,6 +84,7 @@ attributes:
   - model_name: operator
     data_path: [rule, condition]
     tf_name: condition_operator
+    normalize_operator: true
     type: String
     enum_values:
       [
@@ -157,6 +158,7 @@ attributes:
         example: abc
       - model_name: operator
         type: String
+        normalize_operator: true
         enum_values:
           [
             contains,
@@ -233,6 +235,7 @@ attributes:
             example: abc
           - model_name: operator
             type: String
+            normalize_operator: true
             enum_values:
               [
                 contains,
@@ -292,6 +295,7 @@ attributes:
                 description: Dictionary value
               - model_name: operator
                 type: String
+                normalize_operator: true
                 enum_values:
                   [
                     contains,
@@ -350,6 +354,7 @@ attributes:
                     description: Dictionary value
                   - model_name: operator
                     type: String
+                    normalize_operator: true
                     enum_values:
                       [
                         contains,
@@ -402,6 +407,7 @@ attributes:
                         description: Dictionary value
                       - model_name: operator
                         type: String
+                        normalize_operator: true
                         enum_values: [contains, endsWith, equals, greaterOrEquals, greaterThan, in, ipEquals, ipGreaterThan, ipLessThan, ipNotEquals, lessOrEquals, lessThan, matches, notContains, notEndsWith, notEquals, notIn, notStartsWith, startsWith]
                         description: Equality operator
                       - model_name: children
@@ -434,6 +440,7 @@ attributes:
                             description: Dictionary value
                           - model_name: operator
                             type: String
+                            normalize_operator: true
                             enum_values:
                               [
                                 contains,

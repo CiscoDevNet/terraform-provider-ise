@@ -16,6 +16,7 @@ attributes:
   - model_name: description
     data_path: [AllowedProtocols]
     type: String
+    normalize_empty_string: true
     description: Description
     example: My allowed protocols
   - model_name: processHostLookup

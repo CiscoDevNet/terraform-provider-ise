@@ -28,11 +28,13 @@ attributes:
     data_path: [InternalUser]
     type: String
     description: Email address
+    normalize_empty_string: true
     example: aaa@cisco.com
   - model_name: accountNameAlias
     data_path: [InternalUser]
     type: String
     description: The Account Name Alias will be used to send email notifications about password expiration. This field is only supported from ISE 3.2.
+    normalize_empty_string: true
     example: User 1
   - model_name: enablePassword
     data_path: [InternalUser]
@@ -55,11 +57,13 @@ attributes:
     data_path: [InternalUser]
     type: String
     description: First name of the internal user
+    normalize_empty_string: true
     example: John
   - model_name: lastName
     data_path: [InternalUser]
     type: String
     description: Last name of the internal user
+    normalize_empty_string: true
     example: Doe
   - model_name: identityGroups
     data_path: [InternalUser]
@@ -71,6 +75,7 @@ attributes:
     data_path: [InternalUser]
     type: String
     description: Key value map
+    normalize_empty_json: true
     exclude_test: true
   - model_name: passwordIDStore
     data_path: [InternalUser]
@@ -98,4 +103,5 @@ attributes:
     data_path: [InternalUser]
     type: String
     description: Description
+    normalize_empty_string: true
     example: My first Terraform user

@@ -75,7 +75,7 @@ func (data *NetworkDeviceGroup) fromBody(ctx context.Context, res gjson.Result) 
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("NetworkDeviceGroup.description"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("NetworkDeviceGroup.description"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
@@ -96,7 +96,7 @@ func (data *NetworkDeviceGroup) updateFromBody(ctx context.Context, res gjson.Re
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("NetworkDeviceGroup.description"); value.Exists() && !data.Description.IsNull() {
+	if value := res.Get("NetworkDeviceGroup.description"); value.Exists() && !data.Description.IsNull() && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()

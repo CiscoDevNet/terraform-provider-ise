@@ -24,6 +24,7 @@ import (
 	"context"
 	"strconv"
 
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
@@ -382,7 +383,7 @@ func (data *NetworkAccessPolicySet) fromBody(ctx context.Context, res gjson.Resu
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("response.description"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("response.description"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
@@ -751,7 +752,7 @@ func (data *NetworkAccessPolicySet) updateFromBody(ctx context.Context, res gjso
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("response.description"); value.Exists() && !data.Description.IsNull() {
+	if value := res.Get("response.description"); value.Exists() && !data.Description.IsNull() && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
@@ -824,6 +825,7 @@ func (data *NetworkAccessPolicySet) updateFromBody(ctx context.Context, res gjso
 	for i := range data.Children {
 		keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
 		keyValues := [...]string{data.Children[i].ConditionType.ValueString(), data.Children[i].Id.ValueString(), strconv.FormatBool(data.Children[i].IsNegate.ValueBool()), data.Children[i].AttributeName.ValueString(), data.Children[i].AttributeValue.ValueString(), data.Children[i].DictionaryName.ValueString(), data.Children[i].DictionaryValue.ValueString(), data.Children[i].Operator.ValueString()}
+		keyNormalize := [...]bool{false, false, false, false, false, false, false, false}
 
 		var r gjson.Result
 		parentItems := res.Get("response.condition.children").Array()
@@ -831,7 +833,7 @@ func (data *NetworkAccessPolicySet) updateFromBody(ctx context.Context, res gjso
 		for _, v := range parentItems {
 			found := false
 			for ik := range keys {
-				if v.Get(keys[ik]).String() == keyValues[ik] {
+				if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 					found = true
 					continue
 				}
@@ -893,6 +895,7 @@ func (data *NetworkAccessPolicySet) updateFromBody(ctx context.Context, res gjso
 		for ci := range data.Children[i].Children {
 			keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
 			keyValues := [...]string{data.Children[i].Children[ci].ConditionType.ValueString(), data.Children[i].Children[ci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].IsNegate.ValueBool()), data.Children[i].Children[ci].AttributeName.ValueString(), data.Children[i].Children[ci].AttributeValue.ValueString(), data.Children[i].Children[ci].DictionaryName.ValueString(), data.Children[i].Children[ci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Operator.ValueString()}
+			keyNormalize := [...]bool{false, false, false, false, false, false, false, false}
 
 			var cr gjson.Result
 			childItems := r.Get("children").Array()
@@ -900,7 +903,7 @@ func (data *NetworkAccessPolicySet) updateFromBody(ctx context.Context, res gjso
 			for _, v := range childItems {
 				found := false
 				for ik := range keys {
-					if v.Get(keys[ik]).String() == keyValues[ik] {
+					if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 						found = true
 						continue
 					}
@@ -962,6 +965,7 @@ func (data *NetworkAccessPolicySet) updateFromBody(ctx context.Context, res gjso
 			for cci := range data.Children[i].Children[ci].Children {
 				keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
 				keyValues := [...]string{data.Children[i].Children[ci].Children[cci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Operator.ValueString()}
+				keyNormalize := [...]bool{false, false, false, false, false, false, false, false}
 
 				var ccr gjson.Result
 				cciItems := cr.Get("children").Array()
@@ -969,7 +973,7 @@ func (data *NetworkAccessPolicySet) updateFromBody(ctx context.Context, res gjso
 				for _, v := range cciItems {
 					found := false
 					for ik := range keys {
-						if v.Get(keys[ik]).String() == keyValues[ik] {
+						if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 							found = true
 							continue
 						}
@@ -1031,6 +1035,7 @@ func (data *NetworkAccessPolicySet) updateFromBody(ctx context.Context, res gjso
 				for ccci := range data.Children[i].Children[ci].Children[cci].Children {
 					keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
 					keyValues := [...]string{data.Children[i].Children[ci].Children[cci].Children[ccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Operator.ValueString()}
+					keyNormalize := [...]bool{false, false, false, false, false, false, false, false}
 
 					var cccr gjson.Result
 					ccciItems := ccr.Get("children").Array()
@@ -1038,7 +1043,7 @@ func (data *NetworkAccessPolicySet) updateFromBody(ctx context.Context, res gjso
 					for _, v := range ccciItems {
 						found := false
 						for ik := range keys {
-							if v.Get(keys[ik]).String() == keyValues[ik] {
+							if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 								found = true
 								continue
 							}
@@ -1100,6 +1105,7 @@ func (data *NetworkAccessPolicySet) updateFromBody(ctx context.Context, res gjso
 					for cccci := range data.Children[i].Children[ci].Children[cci].Children[ccci].Children {
 						keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
 						keyValues := [...]string{data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator.ValueString()}
+						keyNormalize := [...]bool{false, false, false, false, false, false, false, false}
 
 						var ccccr gjson.Result
 						cccciItems := cccr.Get("children").Array()
@@ -1107,7 +1113,7 @@ func (data *NetworkAccessPolicySet) updateFromBody(ctx context.Context, res gjso
 						for _, v := range cccciItems {
 							found := false
 							for ik := range keys {
-								if v.Get(keys[ik]).String() == keyValues[ik] {
+								if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 									found = true
 									continue
 								}
@@ -1169,6 +1175,7 @@ func (data *NetworkAccessPolicySet) updateFromBody(ctx context.Context, res gjso
 						for ccccci := range data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children {
 							keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
 							keyValues := [...]string{data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Operator.ValueString()}
+							keyNormalize := [...]bool{false, false, false, false, false, false, false, false}
 
 							var cccccr gjson.Result
 							ccccciItems := ccccr.Get("children").Array()
@@ -1176,7 +1183,7 @@ func (data *NetworkAccessPolicySet) updateFromBody(ctx context.Context, res gjso
 							for _, v := range ccccciItems {
 								found := false
 								for ik := range keys {
-									if v.Get(keys[ik]).String() == keyValues[ik] {
+									if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 										found = true
 										continue
 									}

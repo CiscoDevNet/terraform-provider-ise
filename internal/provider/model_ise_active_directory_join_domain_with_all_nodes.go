@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
@@ -111,6 +112,7 @@ func (data *ActiveDirectoryJoinDomainWithAllNodes) updateFromBody(ctx context.Co
 	for i := range data.AdditionalData {
 		keys := [...]string{"name"}
 		keyValues := [...]string{data.AdditionalData[i].Name.ValueString()}
+		keyNormalize := [...]bool{false}
 
 		var r gjson.Result
 		parentItems := res.Get("OperationAdditionalData.additionalData").Array()
@@ -118,7 +120,7 @@ func (data *ActiveDirectoryJoinDomainWithAllNodes) updateFromBody(ctx context.Co
 		for _, v := range parentItems {
 			found := false
 			for ik := range keys {
-				if v.Get(keys[ik]).String() == keyValues[ik] {
+				if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 					found = true
 					continue
 				}

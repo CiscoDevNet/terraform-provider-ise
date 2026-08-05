@@ -106,6 +106,9 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 					.AddDefaultValueDescription("{{.DefaultValue}}")
 					{{- end -}}
 					.String,
+					{{- if and (eq .Type "String") .NormalizeOperator}}
+					CustomType: helpers.OperatorType{},
+					{{- end}}
 				{{- if isListSet .}}
 				ElementType:         types.{{.ElementType}}Type,
 				{{- else if eq .Type "Map"}}
@@ -182,6 +185,9 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 								.AddDefaultValueDescription("{{.DefaultValue}}")
 								{{- end -}}
 								.String,
+								{{- if and (eq .Type "String") .NormalizeOperator}}
+								CustomType: helpers.OperatorType{},
+								{{- end}}
 							{{- if isListSet .}}
 							ElementType:         types.{{.ElementType}}Type,
 							{{- else if eq .Type "Map"}}
@@ -254,6 +260,9 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 											.AddDefaultValueDescription("{{.DefaultValue}}")
 											{{- end -}}
 											.String,
+											{{- if and (eq .Type "String") .NormalizeOperator}}
+											CustomType: helpers.OperatorType{},
+											{{- end}}
 										{{- if isListSet .}}
 										ElementType:         types.{{.ElementType}}Type,
 										{{- else if eq .Type "Map"}}
@@ -326,6 +335,9 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 														.AddDefaultValueDescription("{{.DefaultValue}}")
 														{{- end -}}
 														.String,
+														{{- if and (eq .Type "String") .NormalizeOperator}}
+														CustomType: helpers.OperatorType{},
+														{{- end}}
 													{{- if isListSet .}}
 													ElementType:         types.{{.ElementType}}Type,
 													{{- else if eq .Type "Map"}}
@@ -398,6 +410,9 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																	.AddDefaultValueDescription("{{.DefaultValue}}")
 																	{{- end -}}
 																	.String,
+																	{{- if and (eq .Type "String") .NormalizeOperator}}
+																	CustomType: helpers.OperatorType{},
+																	{{- end}}
 																{{- if isListSet .}}
 																ElementType:         types.{{.ElementType}}Type,
 																{{- else if eq .Type "Map"}}
@@ -470,6 +485,9 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																				.AddDefaultValueDescription("{{.DefaultValue}}")
 																				{{- end -}}
 																				.String,
+																				{{- if and (eq .Type "String") .NormalizeOperator}}
+																				CustomType: helpers.OperatorType{},
+																				{{- end}}
 																			{{- if isListSet .}}
 																			ElementType:         types.{{.ElementType}}Type,
 																			{{- else if eq .Type "Map"}}
@@ -542,6 +560,9 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																						.AddDefaultValueDescription("{{.DefaultValue}}")
 																						{{- end -}}
 																						.String,
+																						{{- if and (eq .Type "String") .NormalizeOperator}}
+																						CustomType: helpers.OperatorType{},
+																						{{- end}}
 																					{{- if isListSet .}}
 																					ElementType:         types.{{.ElementType}}Type,
 																					{{- else if eq .Type "Map"}}
