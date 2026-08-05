@@ -1,6 +1,7 @@
 ## 0.3.5 (unreleased)
 
 - Fix perpetual drift in the `group_id` and `profile_id` attributes of the `ise_endpoint` resource, where ISE dynamically assigns these values when `static_group_assignment` / `static_profile_assignment` are `false`, causing Terraform to report changes on every plan
+- Fix perpetual drift after importing existing (brownfield) resources, where ISE returns normalized values for policy condition operators (e.g. `ipEquals` for `equals`) and empty strings for unset optional fields such as `description`, causing Terraform to report changes on every plan
 
 ## 0.3.4
 

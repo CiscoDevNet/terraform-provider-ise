@@ -12,6 +12,7 @@ attributes:
     example: Cond1
   - model_name: description
     type: String
+    normalize_empty_string: true
     description: Condition description
     example: My description
     minimum_test_value: '"My description"' # Bug in PUT, description not updated

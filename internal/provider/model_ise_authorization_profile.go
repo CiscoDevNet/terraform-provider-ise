@@ -23,6 +23,7 @@ package provider
 import (
 	"context"
 
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
@@ -228,7 +229,7 @@ func (data *AuthorizationProfile) fromBody(ctx context.Context, res gjson.Result
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("AuthorizationProfile.description"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("AuthorizationProfile.description"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
@@ -248,7 +249,7 @@ func (data *AuthorizationProfile) fromBody(ctx context.Context, res gjson.Result
 	} else {
 		data.WebRedirectionType = types.StringNull()
 	}
-	if value := res.Get("AuthorizationProfile.webRedirection.acl"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("AuthorizationProfile.webRedirection.acl"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.WebRedirectionAcl = types.StringValue(value.String())
 	} else {
 		data.WebRedirectionAcl = types.StringNull()
@@ -432,7 +433,7 @@ func (data *AuthorizationProfile) updateFromBody(ctx context.Context, res gjson.
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("AuthorizationProfile.description"); value.Exists() && !data.Description.IsNull() {
+	if value := res.Get("AuthorizationProfile.description"); value.Exists() && !data.Description.IsNull() && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
@@ -452,7 +453,7 @@ func (data *AuthorizationProfile) updateFromBody(ctx context.Context, res gjson.
 	} else {
 		data.WebRedirectionType = types.StringNull()
 	}
-	if value := res.Get("AuthorizationProfile.webRedirection.acl"); value.Exists() && !data.WebRedirectionAcl.IsNull() {
+	if value := res.Get("AuthorizationProfile.webRedirection.acl"); value.Exists() && !data.WebRedirectionAcl.IsNull() && value.String() != "" {
 		data.WebRedirectionAcl = types.StringValue(value.String())
 	} else {
 		data.WebRedirectionAcl = types.StringNull()
@@ -580,6 +581,7 @@ func (data *AuthorizationProfile) updateFromBody(ctx context.Context, res gjson.
 	for i := range data.AdvancedAttributes {
 		keys := [...]string{"leftHandSideDictionaryAttribue.dictionaryName", "leftHandSideDictionaryAttribue.attributeName", "rightHandSideAttribueValue.AdvancedAttributeValueType", "rightHandSideAttribueValue.value", "rightHandSideAttribueValue.dictionaryName", "rightHandSideAttribueValue.attributeName"}
 		keyValues := [...]string{data.AdvancedAttributes[i].AttributeLeftDictionaryName.ValueString(), data.AdvancedAttributes[i].AttributeLeftName.ValueString(), data.AdvancedAttributes[i].AttributeRightValueType.ValueString(), data.AdvancedAttributes[i].AttributeRightValue.ValueString(), data.AdvancedAttributes[i].AttributeRightDictionaryName.ValueString(), data.AdvancedAttributes[i].AttributeRightName.ValueString()}
+		keyNormalize := [...]bool{false, false, false, false, false, false}
 
 		var r gjson.Result
 		parentItems := res.Get("AuthorizationProfile.advancedAttributes").Array()
@@ -587,7 +589,7 @@ func (data *AuthorizationProfile) updateFromBody(ctx context.Context, res gjson.
 		for _, v := range parentItems {
 			found := false
 			for ik := range keys {
-				if v.Get(keys[ik]).String() == keyValues[ik] {
+				if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 					found = true
 					continue
 				}

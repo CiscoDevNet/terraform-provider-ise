@@ -16,6 +16,7 @@ attributes:
     data_path: [AuthorizationProfile]
     type: String
     description: Description
+    normalize_empty_string: true
     example: My Authorization Profile
   - model_name: nameID
     data_path: [AuthorizationProfile, vlan]
@@ -48,6 +49,7 @@ attributes:
     tf_name: web_redirection_acl
     type: String
     description: Web redirection ACL
+    normalize_empty_string: true
     example: TEST_ACL
   - model_name: portalName
     data_path: [AuthorizationProfile, webRedirection]

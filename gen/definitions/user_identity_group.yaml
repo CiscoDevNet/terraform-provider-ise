@@ -13,6 +13,7 @@ attributes:
   - model_name: description
     data_path: [IdentityGroup]
     type: String
+    normalize_empty_string: true
     description: Description
     example: My endpoint identity group
   - model_name: parent

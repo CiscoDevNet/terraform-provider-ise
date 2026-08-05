@@ -13,6 +13,7 @@ attributes:
   - model_name: description
     data_path: [NetworkDeviceGroup]
     type: String
+    normalize_empty_string: true
     description: Description
     example: My network device group
   - model_name: othername

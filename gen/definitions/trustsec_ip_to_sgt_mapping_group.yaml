@@ -13,6 +13,7 @@ attributes:
   - model_name: description
     data_path: [SGMappingGroup]
     type: String
+    normalize_empty_string: true
     description: Description
     exclude_test: true
   - model_name: deployTo

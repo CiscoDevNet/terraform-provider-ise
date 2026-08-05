@@ -13,6 +13,7 @@ attributes:
   - model_name: description
     data_path: [TacacsProfile]
     type: String
+    normalize_empty_string: true
     description: Description
     example: My TACACS profile
   - model_name: sessionAttributeList

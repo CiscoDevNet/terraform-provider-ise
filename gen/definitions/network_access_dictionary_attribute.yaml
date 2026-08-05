@@ -21,6 +21,7 @@ attributes:
     example: Custom-Attr
   - model_name: description
     type: String
+    normalize_empty_string: true
     description: The description of the dictionary attribute
     example: My custom dictionary attribute
   - model_name: dataType

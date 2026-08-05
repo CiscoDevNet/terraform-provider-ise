@@ -43,6 +43,7 @@ func GetStringMap(result map[string]gjson.Result) types.Map {
 // GetStringMapNonEmpty is used for ISE map attributes where the API returns
 // globally-defined-but-unassigned keys as empty strings (e.g. endpoint custom
 // attributes), and "" semantically means unset. Empty-string entries are dropped.
+// When all entries are empty the result is an empty (non-null) map.
 func GetStringMapNonEmpty(result map[string]gjson.Result) types.Map {
 	v := make(map[string]attr.Value)
 	for key, value := range result {
@@ -52,6 +53,22 @@ func GetStringMapNonEmpty(result map[string]gjson.Result) types.Map {
 	}
 	// No entries: treat as unset (null) rather than an empty map, so an Optional map
 	// imported/read from a server that returns {} does not drift against a null config.
+	if len(v) == 0 {
+		return types.MapNull(types.StringType)
+	}
+	return types.MapValueMust(types.StringType, v)
+}
+
+// GetStringMapNonEmptyOrNull is like GetStringMapNonEmpty but returns null when
+// all entries are empty strings — preventing drift when a config that omits the
+// attribute is compared to an ISE response where all custom attribute values are "".
+func GetStringMapNonEmptyOrNull(result map[string]gjson.Result) types.Map {
+	v := make(map[string]attr.Value)
+	for key, value := range result {
+		if value.String() != "" {
+			v[key] = types.StringValue(value.String())
+		}
+	}
 	if len(v) == 0 {
 		return types.MapNull(types.StringType)
 	}
@@ -75,6 +92,37 @@ func GetStringMapFiltered(apiResult map[string]gjson.Result, stateMap types.Map)
 		}
 	}
 	return types.MapValueMust(types.StringType, v)
+}
+
+// NormalizeOperator maps ISE IP-specific operator variants to their standard
+// equivalents so that conditions written with "equals" are not perpetually
+// re-applied just because ISE stores and returns the same condition as "ipEquals".
+// Any operator not in the map is returned unchanged.
+func NormalizeOperator(op string) string {
+	switch op {
+	case "ipEquals":
+		return "equals"
+	case "ipNotEquals":
+		return "notEquals"
+	case "ipGreaterThan":
+		return "greaterThan"
+	case "ipLessThan":
+		return "lessThan"
+	}
+	return op
+}
+
+// MatchKey compares an API-returned key value against the desired key value for
+// keyed-list matching. When normalize is true (the key attribute carries
+// normalize_operator), both sides are run through NormalizeOperator so that an
+// ISE "ipEquals" matches a configured "equals". When normalize is false the
+// comparison is verbatim, so a literal value such as a TACACS argument of
+// "ipEquals" is never coerced.
+func MatchKey(apiValue, keyValue string, normalize bool) bool {
+	if normalize {
+		return NormalizeOperator(apiValue) == NormalizeOperator(keyValue)
+	}
+	return apiValue == keyValue
 }
 
 func GetStringList(result []gjson.Result) types.List {

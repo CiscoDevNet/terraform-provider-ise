@@ -16,6 +16,7 @@ attributes:
     type: String
     requires_replace: true
     description: Join point description
+    normalize_empty_string: true
     example: My AD join point
   - model_name: domain
     data_path: [ERSActiveDirectory]
@@ -88,6 +89,7 @@ attributes:
         type: String
         requires_replace: true
         mandatory: true
+        preserve_empty_string: true
         description: Required for each attribute in the attribute list. Can contain an empty string.
         example: default_string
   - model_name: rewriteRules

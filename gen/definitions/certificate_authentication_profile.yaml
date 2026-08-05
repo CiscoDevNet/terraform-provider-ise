@@ -15,6 +15,7 @@ attributes:
   - model_name: description
     data_path: [CertificateProfile]
     type: String
+    normalize_empty_string: true
     description: Description
     example: My cert profile
   - model_name: allowedAsUserName

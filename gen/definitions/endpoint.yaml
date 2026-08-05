@@ -15,6 +15,7 @@ attributes:
     data_path: [ERSEndPoint]
     type: String
     description: Description
+    normalize_empty_string: true
     example: My endpoint
   - model_name: mac
     data_path: [ERSEndPoint]
@@ -72,16 +73,19 @@ attributes:
     data_path: [ERSEndPoint]
     type: String
     description: Identity Store
+    normalize_empty_string: true
     exclude_test: true
   - model_name: identityStoreId
     data_path: [ERSEndPoint]
     type: String
     description: Identity Store Id
+    normalize_empty_string: true
     exclude_test: true
   - model_name: portalUser
     data_path: [ERSEndPoint]
     type: String
     description: Portal User
+    normalize_empty_string: true
     exclude_test: true
   - model_name: mdmServerName
     data_path: [ERSEndPoint, mdmAttributes]
