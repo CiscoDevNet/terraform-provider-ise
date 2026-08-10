@@ -23,6 +23,7 @@ package provider
 import (
 	"context"
 
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
@@ -99,7 +100,7 @@ func (data InternalUser) toBody(ctx context.Context, state InternalUser) string 
 		body, _ = sjson.Set(body, "InternalUser.identityGroups", data.IdentityGroups.ValueString())
 	}
 	if !data.CustomAttributes.IsNull() {
-		body, _ = sjson.Set(body, "InternalUser.customAttributes", data.CustomAttributes.ValueString())
+		body, _ = sjson.SetRaw(body, "InternalUser.customAttributes", data.CustomAttributes.ValueString())
 	}
 	if !data.PasswordIdStore.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.passwordIDStore", data.PasswordIdStore.ValueString())
@@ -160,7 +161,7 @@ func (data *InternalUser) fromBody(ctx context.Context, res gjson.Result) {
 		data.IdentityGroups = types.StringNull()
 	}
 	if value := res.Get("InternalUser.customAttributes"); value.Exists() && value.Type != gjson.Null && !((value.Type == gjson.JSON && len(value.Map()) == 0) || (value.Type == gjson.String && value.String() == "{}")) {
-		data.CustomAttributes = types.StringValue(value.String())
+		data.CustomAttributes = types.StringValue(helpers.CompactJson(value.Raw))
 	} else {
 		data.CustomAttributes = types.StringNull()
 	}
@@ -226,7 +227,7 @@ func (data *InternalUser) updateFromBody(ctx context.Context, res gjson.Result) 
 		data.IdentityGroups = types.StringNull()
 	}
 	if value := res.Get("InternalUser.customAttributes"); value.Exists() && !data.CustomAttributes.IsNull() && !((value.Type == gjson.JSON && len(value.Map()) == 0) || (value.Type == gjson.String && value.String() == "{}")) {
-		data.CustomAttributes = types.StringValue(value.String())
+		data.CustomAttributes = types.StringValue(helpers.CompactJson(value.Raw))
 	} else {
 		data.CustomAttributes = types.StringNull()
 	}

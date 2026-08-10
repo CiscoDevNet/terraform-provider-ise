@@ -11,6 +11,7 @@ description: |-
 
 - Fix perpetual drift in the `group_id` and `profile_id` attributes of the `ise_endpoint` resource, where ISE dynamically assigns these values when `static_group_assignment` / `static_profile_assignment` are `false`, causing Terraform to report changes on every plan
 - Fix perpetual drift after importing existing (brownfield) resources, where ISE returns normalized values for policy condition operators (e.g. `ipEquals` for `equals`) and empty strings for unset optional fields such as `description`, causing Terraform to report changes on every plan
+- Fix `custom_attributes` in `ise_internal_user` being serialized as a quoted JSON string instead of a raw JSON object, causing ISE to reject create and update requests with HTTP 400; also fix perpetual drift caused by ISE returning pretty-printed JSON that did not match the compact form produced by `jsonencode`
 
 ## 0.3.4
 

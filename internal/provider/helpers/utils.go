@@ -18,6 +18,9 @@
 package helpers
 
 import (
+	"bytes"
+	"encoding/json"
+
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
@@ -92,6 +95,18 @@ func GetStringMapFiltered(apiResult map[string]gjson.Result, stateMap types.Map)
 		}
 	}
 	return types.MapValueMust(types.StringType, v)
+}
+
+// CompactJson normalizes a raw JSON string to compact form (no extra whitespace).
+// This prevents perpetual drift when an API returns pretty-printed JSON while
+// Terraform config uses jsonencode, which always produces compact JSON.
+// If the input is not valid JSON it is returned unchanged.
+func CompactJson(s string) string {
+	var buf bytes.Buffer
+	if err := json.Compact(&buf, []byte(s)); err != nil {
+		return s
+	}
+	return buf.String()
 }
 
 // NormalizeOperator maps ISE IP-specific operator variants to their standard
