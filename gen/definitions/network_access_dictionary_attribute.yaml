@@ -27,7 +27,7 @@ attributes:
   - model_name: dataType
     type: String
     mandatory: true
-    enum_values: [BOOLEAN, DATE, FLOAT, INT, IP, IPv4, IPv6, IPV6PREFIX, LONG, OCTET_STRING, STRING, UNIT32, UNIT64]
+    enum_values: [BOOLEAN, DATE, FLOAT, INT, IP, IPv4, IPv6, IPV6PREFIX, LONG, OCTET_STRING, STRING, UNIT32, UINT64]
     description: The data type for the dictionary attribute
     example: STRING
   - model_name: directionType
