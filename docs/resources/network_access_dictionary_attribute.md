@@ -35,7 +35,7 @@ resource "ise_network_access_dictionary_attribute" "example" {
 ### Required
 
 - `data_type` (String) The data type for the dictionary attribute
-  - Choices: `BOOLEAN`, `DATE`, `FLOAT`, `INT`, `IP`, `IPv4`, `IPv6`, `IPV6PREFIX`, `LONG`, `OCTET_STRING`, `STRING`, `UNIT32`, `UNIT64`
+  - Choices: `BOOLEAN`, `DATE`, `FLOAT`, `INT`, `IP`, `IPv4`, `IPv6`, `IPV6PREFIX`, `LONG`, `OCTET_STRING`, `STRING`, `UNIT32`, `UINT64`
 - `dictionary_name` (String) The name of the dictionary the attribute belongs to
 - `name` (String) The dictionary attribute name
 
