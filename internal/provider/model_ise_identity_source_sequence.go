@@ -24,6 +24,7 @@ import (
 	"context"
 	"strconv"
 
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
@@ -99,7 +100,7 @@ func (data *IdentitySourceSequence) fromBody(ctx context.Context, res gjson.Resu
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("IdStoreSequence.description"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("IdStoreSequence.description"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
@@ -143,7 +144,7 @@ func (data *IdentitySourceSequence) updateFromBody(ctx context.Context, res gjso
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("IdStoreSequence.description"); value.Exists() && !data.Description.IsNull() {
+	if value := res.Get("IdStoreSequence.description"); value.Exists() && !data.Description.IsNull() && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
@@ -161,6 +162,7 @@ func (data *IdentitySourceSequence) updateFromBody(ctx context.Context, res gjso
 	for i := range data.IdentitySources {
 		keys := [...]string{"idstore", "order"}
 		keyValues := [...]string{data.IdentitySources[i].Name.ValueString(), strconv.FormatInt(data.IdentitySources[i].Order.ValueInt64(), 10)}
+		keyNormalize := [...]bool{false, false}
 
 		var r gjson.Result
 		parentItems := res.Get("IdStoreSequence.idSeqItem").Array()
@@ -168,7 +170,7 @@ func (data *IdentitySourceSequence) updateFromBody(ctx context.Context, res gjso
 		for _, v := range parentItems {
 			found := false
 			for ik := range keys {
-				if v.Get(keys[ik]).String() == keyValues[ik] {
+				if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 					found = true
 					continue
 				}

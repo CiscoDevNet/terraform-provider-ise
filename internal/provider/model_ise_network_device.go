@@ -280,7 +280,7 @@ func (data *NetworkDevice) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.description"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("NetworkDevice.description"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
@@ -290,7 +290,7 @@ func (data *NetworkDevice) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.AuthenticationEnableKeyWrap = types.BoolNull()
 	}
-	if value := res.Get("NetworkDevice.authenticationSettings.keyEncryptionKey"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("NetworkDevice.authenticationSettings.keyEncryptionKey"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.AuthenticationEncryptionKey = types.StringValue(value.String())
 	} else {
 		data.AuthenticationEncryptionKey = types.StringNull()
@@ -300,7 +300,7 @@ func (data *NetworkDevice) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.AuthenticationEncryptionKeyFormat = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.authenticationSettings.messageAuthenticatorCodeKey"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("NetworkDevice.authenticationSettings.messageAuthenticatorCodeKey"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.AuthenticationMessageAuthenticatorCodeKey = types.StringValue(value.String())
 	} else {
 		data.AuthenticationMessageAuthenticatorCodeKey = types.StringNull()
@@ -539,7 +539,7 @@ func (data *NetworkDevice) updateFromBody(ctx context.Context, res gjson.Result)
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.description"); value.Exists() && !data.Description.IsNull() {
+	if value := res.Get("NetworkDevice.description"); value.Exists() && !data.Description.IsNull() && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
@@ -549,7 +549,7 @@ func (data *NetworkDevice) updateFromBody(ctx context.Context, res gjson.Result)
 	} else {
 		data.AuthenticationEnableKeyWrap = types.BoolNull()
 	}
-	if value := res.Get("NetworkDevice.authenticationSettings.keyEncryptionKey"); value.Exists() && !data.AuthenticationEncryptionKey.IsNull() {
+	if value := res.Get("NetworkDevice.authenticationSettings.keyEncryptionKey"); value.Exists() && !data.AuthenticationEncryptionKey.IsNull() && value.String() != "" {
 		data.AuthenticationEncryptionKey = types.StringValue(value.String())
 	} else {
 		data.AuthenticationEncryptionKey = types.StringNull()
@@ -559,7 +559,7 @@ func (data *NetworkDevice) updateFromBody(ctx context.Context, res gjson.Result)
 	} else {
 		data.AuthenticationEncryptionKeyFormat = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.authenticationSettings.messageAuthenticatorCodeKey"); value.Exists() && !data.AuthenticationMessageAuthenticatorCodeKey.IsNull() {
+	if value := res.Get("NetworkDevice.authenticationSettings.messageAuthenticatorCodeKey"); value.Exists() && !data.AuthenticationMessageAuthenticatorCodeKey.IsNull() && value.String() != "" {
 		data.AuthenticationMessageAuthenticatorCodeKey = types.StringValue(value.String())
 	} else {
 		data.AuthenticationMessageAuthenticatorCodeKey = types.StringNull()
@@ -602,6 +602,7 @@ func (data *NetworkDevice) updateFromBody(ctx context.Context, res gjson.Result)
 	for i := range data.Ips {
 		keys := [...]string{"ipaddress"}
 		keyValues := [...]string{data.Ips[i].Ipaddress.ValueString()}
+		keyNormalize := [...]bool{false}
 
 		var r gjson.Result
 		parentItems := res.Get("NetworkDevice.NetworkDeviceIPList").Array()
@@ -609,7 +610,7 @@ func (data *NetworkDevice) updateFromBody(ctx context.Context, res gjson.Result)
 		for _, v := range parentItems {
 			found := false
 			for ik := range keys {
-				if v.Get(keys[ik]).String() == keyValues[ik] {
+				if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 					found = true
 					continue
 				}

@@ -23,6 +23,7 @@ package provider
 import (
 	"context"
 
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
@@ -256,7 +257,7 @@ func (data *ActiveDirectoryJoinPoint) fromBody(ctx context.Context, res gjson.Re
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.description"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("ERSActiveDirectory.description"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
@@ -316,7 +317,7 @@ func (data *ActiveDirectoryJoinPoint) fromBody(ctx context.Context, res gjson.Re
 			if cValue := v.Get("defaultValue"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.DefaultValue = types.StringValue(cValue.String())
 			} else {
-				item.DefaultValue = types.StringNull()
+				item.DefaultValue = types.StringValue("")
 			}
 			data.Attributes = append(data.Attributes, item)
 			return true
@@ -481,7 +482,7 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("ERSActiveDirectory.description"); value.Exists() && !data.Description.IsNull() {
+	if value := res.Get("ERSActiveDirectory.description"); value.Exists() && !data.Description.IsNull() && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
@@ -504,6 +505,7 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 	for i := range data.Groups {
 		keys := [...]string{"sid"}
 		keyValues := [...]string{data.Groups[i].Sid.ValueString()}
+		keyNormalize := [...]bool{false}
 
 		var r gjson.Result
 		parentItems := res.Get("ERSActiveDirectory.adgroups.groups").Array()
@@ -511,7 +513,7 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 		for _, v := range parentItems {
 			found := false
 			for ik := range keys {
-				if v.Get(keys[ik]).String() == keyValues[ik] {
+				if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 					found = true
 					continue
 				}
@@ -544,6 +546,7 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 	for i := range data.Attributes {
 		keys := [...]string{"name", "type", "internalName", "defaultValue"}
 		keyValues := [...]string{data.Attributes[i].Name.ValueString(), data.Attributes[i].Type.ValueString(), data.Attributes[i].InternalName.ValueString(), data.Attributes[i].DefaultValue.ValueString()}
+		keyNormalize := [...]bool{false, false, false, false}
 
 		var r gjson.Result
 		parentItems := res.Get("ERSActiveDirectory.adAttributes.attributes").Array()
@@ -551,7 +554,7 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 		for _, v := range parentItems {
 			found := false
 			for ik := range keys {
-				if v.Get(keys[ik]).String() == keyValues[ik] {
+				if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 					found = true
 					continue
 				}
@@ -588,12 +591,13 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 		if value := r.Get("defaultValue"); value.Exists() && !data.Attributes[i].DefaultValue.IsNull() {
 			data.Attributes[i].DefaultValue = types.StringValue(value.String())
 		} else {
-			data.Attributes[i].DefaultValue = types.StringNull()
+			data.Attributes[i].DefaultValue = types.StringValue("")
 		}
 	}
 	for i := range data.RewriteRules {
 		keys := [...]string{"rowId", "rewriteMatch", "rewriteResult"}
 		keyValues := [...]string{data.RewriteRules[i].RowId.ValueString(), data.RewriteRules[i].RewriteMatch.ValueString(), data.RewriteRules[i].RewriteResult.ValueString()}
+		keyNormalize := [...]bool{false, false, false}
 
 		var r gjson.Result
 		parentItems := res.Get("ERSActiveDirectory.advancedSettings.rewriteRules").Array()
@@ -601,7 +605,7 @@ func (data *ActiveDirectoryJoinPoint) updateFromBody(ctx context.Context, res gj
 		for _, v := range parentItems {
 			found := false
 			for ik := range keys {
-				if v.Get(keys[ik]).String() == keyValues[ik] {
+				if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 					found = true
 					continue
 				}

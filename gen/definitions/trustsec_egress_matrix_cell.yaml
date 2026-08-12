@@ -7,6 +7,7 @@ attributes:
   - model_name: description
     data_path: [EgressMatrixCell]
     type: String
+    normalize_empty_string: true
     description: Description
     example: EgressMatrixCell Description
   - model_name: defaultRule

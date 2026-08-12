@@ -12,6 +12,7 @@ attributes:
     example: Cond1
   - model_name: description
     type: String
+    normalize_empty_string: true
     description: Condition description
     example: My description
   - model_name: conditionType
@@ -84,6 +85,7 @@ attributes:
         macStartsWith,
       ]
     description: Equality operator
+    normalize_operator: true
     example: equals
     minimum_test_value: '"equals"'
   - model_name: children
@@ -98,6 +100,7 @@ attributes:
         example: Cond1
       - model_name: description
         type: String
+        normalize_empty_string: true
         description: Condition description
         example: My description
       - model_name: conditionType
@@ -174,6 +177,7 @@ attributes:
             macStartsWith,
           ]
         description: Equality operator
+        normalize_operator: true
         example: equals
       - model_name: children
         type: List
@@ -187,6 +191,7 @@ attributes:
             example: Cond1
           - model_name: description
             type: String
+            normalize_empty_string: true
             description: Condition description
             example: My description
           - model_name: conditionType
@@ -259,6 +264,7 @@ attributes:
                 startsWith,
               ]
             description: Equality operator
+            normalize_operator: true
             example: equals
           - model_name: children
             type: List
@@ -318,6 +324,7 @@ attributes:
                     startsWith,
                   ]
                 description: Equality operator
+                normalize_operator: true
               - model_name: children
                 type: List
                 description: List of child conditions
@@ -376,6 +383,7 @@ attributes:
                         startsWith,
                       ]
                     description: Equality operator
+                    normalize_operator: true
                   - model_name: children
                     type: List
                     description: List of child conditions
@@ -434,6 +442,7 @@ attributes:
                             startsWith,
                           ]
                         description: Equality operator
+                        normalize_operator: true
                       - model_name: children
                         type: List
                         description: List of child conditions
@@ -486,3 +495,4 @@ attributes:
                                 startsWith,
                               ]
                             description: Equality operator
+                            normalize_operator: true

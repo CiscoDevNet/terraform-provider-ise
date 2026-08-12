@@ -79,7 +79,7 @@ func (data *EndpointIdentityGroup) fromBody(ctx context.Context, res gjson.Resul
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("EndPointGroup.description"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("EndPointGroup.description"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
@@ -105,7 +105,7 @@ func (data *EndpointIdentityGroup) updateFromBody(ctx context.Context, res gjson
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("EndPointGroup.description"); value.Exists() && !data.Description.IsNull() {
+	if value := res.Get("EndPointGroup.description"); value.Exists() && !data.Description.IsNull() && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()

@@ -13,6 +13,7 @@ attributes:
   - model_name: description
     data_path: [TacacsCommandSets]
     type: String
+    normalize_empty_string: true
     description: Description
     example: My TACACS command set
   - model_name: permitUnmatched

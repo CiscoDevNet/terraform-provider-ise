@@ -13,6 +13,7 @@ attributes:
   - model_name: description
     data_path: [DownloadableAcl]
     type: String
+    normalize_empty_string: true
     description: Description
     example: My first downloadable ACL
   - model_name: dacl

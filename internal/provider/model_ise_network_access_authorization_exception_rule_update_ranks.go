@@ -26,6 +26,7 @@ import (
 	"net/url"
 	"strconv"
 
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
@@ -108,6 +109,7 @@ func (data *NetworkAccessAuthorizationExceptionRuleUpdateRanks) updateFromBody(c
 	for i := range data.Rules {
 		keys := [...]string{"rule.id", "rule.rank"}
 		keyValues := [...]string{data.Rules[i].Id.ValueString(), strconv.FormatInt(data.Rules[i].Rank.ValueInt64(), 10)}
+		keyNormalize := [...]bool{false, false}
 
 		var r gjson.Result
 		parentItems := res.Get("response").Array()
@@ -115,7 +117,7 @@ func (data *NetworkAccessAuthorizationExceptionRuleUpdateRanks) updateFromBody(c
 		for _, v := range parentItems {
 			found := false
 			for ik := range keys {
-				if v.Get(keys[ik]).String() == keyValues[ik] {
+				if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 					found = true
 					continue
 				}

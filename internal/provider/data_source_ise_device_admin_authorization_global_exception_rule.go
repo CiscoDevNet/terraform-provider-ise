@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/datasourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -114,6 +115,7 @@ func (d *DeviceAdminAuthorizationGlobalExceptionRuleDataSource) Schema(ctx conte
 			},
 			"condition_operator": schema.StringAttribute{
 				MarkdownDescription: "Equality operator",
+				CustomType:          helpers.OperatorType{},
 				Computed:            true,
 			},
 			"children": schema.ListNestedAttribute{
@@ -151,6 +153,7 @@ func (d *DeviceAdminAuthorizationGlobalExceptionRuleDataSource) Schema(ctx conte
 						},
 						"operator": schema.StringAttribute{
 							MarkdownDescription: "Equality operator",
+							CustomType:          helpers.OperatorType{},
 							Computed:            true,
 						},
 						"children": schema.ListNestedAttribute{
@@ -188,6 +191,7 @@ func (d *DeviceAdminAuthorizationGlobalExceptionRuleDataSource) Schema(ctx conte
 									},
 									"operator": schema.StringAttribute{
 										MarkdownDescription: "Equality operator",
+										CustomType:          helpers.OperatorType{},
 										Computed:            true,
 									},
 									"children": schema.ListNestedAttribute{
@@ -225,6 +229,7 @@ func (d *DeviceAdminAuthorizationGlobalExceptionRuleDataSource) Schema(ctx conte
 												},
 												"operator": schema.StringAttribute{
 													MarkdownDescription: "Equality operator",
+													CustomType:          helpers.OperatorType{},
 													Computed:            true,
 												},
 												"children": schema.ListNestedAttribute{
@@ -262,6 +267,7 @@ func (d *DeviceAdminAuthorizationGlobalExceptionRuleDataSource) Schema(ctx conte
 															},
 															"operator": schema.StringAttribute{
 																MarkdownDescription: "Equality operator",
+																CustomType:          helpers.OperatorType{},
 																Computed:            true,
 															},
 															"children": schema.ListNestedAttribute{
@@ -299,6 +305,7 @@ func (d *DeviceAdminAuthorizationGlobalExceptionRuleDataSource) Schema(ctx conte
 																		},
 																		"operator": schema.StringAttribute{
 																			MarkdownDescription: "Equality operator",
+																			CustomType:          helpers.OperatorType{},
 																			Computed:            true,
 																		},
 																		"children": schema.ListNestedAttribute{

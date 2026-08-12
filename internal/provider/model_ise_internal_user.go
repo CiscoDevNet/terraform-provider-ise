@@ -127,12 +127,12 @@ func (data *InternalUser) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.ChangePassword = types.BoolValue(true)
 	}
-	if value := res.Get("InternalUser.email"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("InternalUser.email"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.Email = types.StringValue(value.String())
 	} else {
 		data.Email = types.StringNull()
 	}
-	if value := res.Get("InternalUser.accountNameAlias"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("InternalUser.accountNameAlias"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.AccountNameAlias = types.StringValue(value.String())
 	} else {
 		data.AccountNameAlias = types.StringNull()
@@ -147,12 +147,12 @@ func (data *InternalUser) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.PasswordNeverExpires = types.BoolValue(false)
 	}
-	if value := res.Get("InternalUser.firstName"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("InternalUser.firstName"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.FirstName = types.StringValue(value.String())
 	} else {
 		data.FirstName = types.StringNull()
 	}
-	if value := res.Get("InternalUser.lastName"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("InternalUser.lastName"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.LastName = types.StringValue(value.String())
 	} else {
 		data.LastName = types.StringNull()
@@ -163,7 +163,7 @@ func (data *InternalUser) fromBody(ctx context.Context, res gjson.Result) {
 		data.IdentityGroups = types.StringNull()
 	}
 	if value := res.Get("InternalUser.customAttributes"); value.Exists() {
-		data.CustomAttributes = helpers.GetStringMapNonEmpty(value.Map())
+		data.CustomAttributes = helpers.GetStringMapNonEmptyOrNull(value.Map())
 	} else {
 		data.CustomAttributes = types.MapNull(types.StringType)
 	}
@@ -172,7 +172,7 @@ func (data *InternalUser) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.PasswordIdStore = types.StringValue("Internal Users")
 	}
-	if value := res.Get("InternalUser.description"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("InternalUser.description"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
@@ -193,12 +193,12 @@ func (data *InternalUser) updateFromBody(ctx context.Context, res gjson.Result) 
 	} else if data.ChangePassword.ValueBool() != true {
 		data.ChangePassword = types.BoolNull()
 	}
-	if value := res.Get("InternalUser.email"); value.Exists() && !data.Email.IsNull() {
+	if value := res.Get("InternalUser.email"); value.Exists() && !data.Email.IsNull() && value.String() != "" {
 		data.Email = types.StringValue(value.String())
 	} else {
 		data.Email = types.StringNull()
 	}
-	if value := res.Get("InternalUser.accountNameAlias"); value.Exists() && !data.AccountNameAlias.IsNull() {
+	if value := res.Get("InternalUser.accountNameAlias"); value.Exists() && !data.AccountNameAlias.IsNull() && value.String() != "" {
 		data.AccountNameAlias = types.StringValue(value.String())
 	} else {
 		data.AccountNameAlias = types.StringNull()
@@ -213,12 +213,12 @@ func (data *InternalUser) updateFromBody(ctx context.Context, res gjson.Result) 
 	} else if data.PasswordNeverExpires.ValueBool() != false {
 		data.PasswordNeverExpires = types.BoolNull()
 	}
-	if value := res.Get("InternalUser.firstName"); value.Exists() && !data.FirstName.IsNull() {
+	if value := res.Get("InternalUser.firstName"); value.Exists() && !data.FirstName.IsNull() && value.String() != "" {
 		data.FirstName = types.StringValue(value.String())
 	} else {
 		data.FirstName = types.StringNull()
 	}
-	if value := res.Get("InternalUser.lastName"); value.Exists() && !data.LastName.IsNull() {
+	if value := res.Get("InternalUser.lastName"); value.Exists() && !data.LastName.IsNull() && value.String() != "" {
 		data.LastName = types.StringValue(value.String())
 	} else {
 		data.LastName = types.StringNull()
@@ -238,7 +238,7 @@ func (data *InternalUser) updateFromBody(ctx context.Context, res gjson.Result) 
 	} else if data.PasswordIdStore.ValueString() != "Internal Users" {
 		data.PasswordIdStore = types.StringNull()
 	}
-	if value := res.Get("InternalUser.description"); value.Exists() && !data.Description.IsNull() {
+	if value := res.Get("InternalUser.description"); value.Exists() && !data.Description.IsNull() && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()

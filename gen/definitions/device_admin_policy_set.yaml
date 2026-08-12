@@ -15,6 +15,7 @@ attributes:
   - model_name: description
     type: String
     description: The description of the policy set
+    normalize_empty_string: true
     example: My description
   - model_name: isProxy
     type: Bool

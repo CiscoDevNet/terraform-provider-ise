@@ -23,6 +23,7 @@ package provider
 import (
 	"context"
 
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
@@ -98,7 +99,7 @@ func (data *TACACSCommandSet) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("TacacsCommandSets.description"); value.Exists() && value.Type != gjson.Null {
+	if value := res.Get("TacacsCommandSets.description"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
@@ -142,7 +143,7 @@ func (data *TACACSCommandSet) updateFromBody(ctx context.Context, res gjson.Resu
 	} else {
 		data.Name = types.StringNull()
 	}
-	if value := res.Get("TacacsCommandSets.description"); value.Exists() && !data.Description.IsNull() {
+	if value := res.Get("TacacsCommandSets.description"); value.Exists() && !data.Description.IsNull() && value.String() != "" {
 		data.Description = types.StringValue(value.String())
 	} else {
 		data.Description = types.StringNull()
@@ -155,6 +156,7 @@ func (data *TACACSCommandSet) updateFromBody(ctx context.Context, res gjson.Resu
 	for i := range data.Commands {
 		keys := [...]string{"grant", "command", "arguments"}
 		keyValues := [...]string{data.Commands[i].Grant.ValueString(), data.Commands[i].Command.ValueString(), data.Commands[i].Arguments.ValueString()}
+		keyNormalize := [...]bool{false, false, false}
 
 		var r gjson.Result
 		parentItems := res.Get("TacacsCommandSets.commands.commandList").Array()
@@ -162,7 +164,7 @@ func (data *TACACSCommandSet) updateFromBody(ctx context.Context, res gjson.Resu
 		for _, v := range parentItems {
 			found := false
 			for ik := range keys {
-				if v.Get(keys[ik]).String() == keyValues[ik] {
+				if helpers.MatchKey(v.Get(keys[ik]).String(), keyValues[ik], keyNormalize[ik]) {
 					found = true
 					continue
 				}
