@@ -40,8 +40,9 @@ attributes:
     example: true
   - model_name: groups
     description: List of AD Groups
-    data_path: [ERSActiveDirectory, adgroups] 
+    data_path: [ERSActiveDirectory, adgroups]
     type: List
+    computed: true
     attributes:
       - model_name: name
         type: String
@@ -95,6 +96,7 @@ attributes:
   - model_name: rewriteRules
     data_path: [ERSActiveDirectory, advancedSettings]
     type: List
+    computed: true
     description: List of Rewrite rules
     attributes:
       - model_name: rowId
