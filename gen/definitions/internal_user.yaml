@@ -73,10 +73,11 @@ attributes:
     exclude_test: true
   - model_name: customAttributes
     data_path: [InternalUser]
-    type: String
-    description: Key value map
-    normalize_empty_json: true
+    type: Map
+    description: Key value map of custom attributes. The keys must be defined in the ISE identity store configuration.
     exclude_test: true
+    filter_empty_values: true
+    example: "{\"key1\" = \"value1\"}"
   - model_name: passwordIDStore
     data_path: [InternalUser]
     tf_name: password_id_store
