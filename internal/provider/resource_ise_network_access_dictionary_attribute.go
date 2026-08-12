@@ -94,10 +94,10 @@ func (r *NetworkAccessDictionaryAttributeResource) Schema(ctx context.Context, r
 				Optional:            true,
 			},
 			"data_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The data type for the dictionary attribute").AddStringEnumDescription("BOOLEAN", "DATE", "FLOAT", "INT", "IP", "IPv4", "IPv6", "IPV6PREFIX", "LONG", "OCTET_STRING", "STRING", "UNIT32", "UINT64").String,
+				MarkdownDescription: helpers.NewAttributeDescription("The data type for the dictionary attribute").AddStringEnumDescription("BOOLEAN", "DATE", "FLOAT", "INT", "IP", "IPV4", "IPV6", "IPV6PREFIX", "LONG", "OCTET_STRING", "STRING", "UNIT32", "UINT64").String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("BOOLEAN", "DATE", "FLOAT", "INT", "IP", "IPv4", "IPv6", "IPV6PREFIX", "LONG", "OCTET_STRING", "STRING", "UNIT32", "UINT64"),
+					stringvalidator.OneOf("BOOLEAN", "DATE", "FLOAT", "INT", "IP", "IPV4", "IPV6", "IPV6PREFIX", "LONG", "OCTET_STRING", "STRING", "UNIT32", "UINT64"),
 				},
 			},
 			"direction_type": schema.StringAttribute{
