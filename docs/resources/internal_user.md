@@ -41,7 +41,7 @@ resource "ise_internal_user" "example" {
 - `account_name_alias` (String) The Account Name Alias will be used to send email notifications about password expiration. This field is only supported from ISE 3.2.
 - `change_password` (Boolean) Requires the user to change the password
   - Default value: `true`
-- `custom_attributes` (String) Key value map
+- `custom_attributes` (Map of String) Key value map of custom attributes. The keys must be defined in the ISE identity store configuration.
 - `description` (String) Description
 - `email` (String) Email address
 - `enable_password` (String) This field is added in ISE 2.0 to support TACACS+

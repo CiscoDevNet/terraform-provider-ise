@@ -23,6 +23,7 @@ package provider
 import (
 	"context"
 
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
@@ -44,7 +45,7 @@ type InternalUser struct {
 	FirstName            types.String `tfsdk:"first_name"`
 	LastName             types.String `tfsdk:"last_name"`
 	IdentityGroups       types.String `tfsdk:"identity_groups"`
-	CustomAttributes     types.String `tfsdk:"custom_attributes"`
+	CustomAttributes     types.Map    `tfsdk:"custom_attributes"`
 	PasswordIdStore      types.String `tfsdk:"password_id_store"`
 	Description          types.String `tfsdk:"description"`
 }
@@ -99,7 +100,9 @@ func (data InternalUser) toBody(ctx context.Context, state InternalUser) string 
 		body, _ = sjson.Set(body, "InternalUser.identityGroups", data.IdentityGroups.ValueString())
 	}
 	if !data.CustomAttributes.IsNull() {
-		body, _ = sjson.Set(body, "InternalUser.customAttributes", data.CustomAttributes.ValueString())
+		var values map[string]string
+		data.CustomAttributes.ElementsAs(ctx, &values, false)
+		body, _ = sjson.Set(body, "InternalUser.customAttributes", values)
 	}
 	if !data.PasswordIdStore.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.passwordIDStore", data.PasswordIdStore.ValueString())
@@ -159,10 +162,10 @@ func (data *InternalUser) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.IdentityGroups = types.StringNull()
 	}
-	if value := res.Get("InternalUser.customAttributes"); value.Exists() && value.Type != gjson.Null {
-		data.CustomAttributes = types.StringValue(value.String())
+	if value := res.Get("InternalUser.customAttributes"); value.Exists() {
+		data.CustomAttributes = helpers.GetStringMapNonEmpty(value.Map())
 	} else {
-		data.CustomAttributes = types.StringNull()
+		data.CustomAttributes = types.MapNull(types.StringType)
 	}
 	if value := res.Get("InternalUser.passwordIDStore"); value.Exists() && value.Type != gjson.Null {
 		data.PasswordIdStore = types.StringValue(value.String())
@@ -226,9 +229,9 @@ func (data *InternalUser) updateFromBody(ctx context.Context, res gjson.Result) 
 		data.IdentityGroups = types.StringNull()
 	}
 	if value := res.Get("InternalUser.customAttributes"); value.Exists() && !data.CustomAttributes.IsNull() {
-		data.CustomAttributes = types.StringValue(value.String())
+		data.CustomAttributes = helpers.GetStringMapFiltered(value.Map(), data.CustomAttributes)
 	} else {
-		data.CustomAttributes = types.StringNull()
+		data.CustomAttributes = types.MapNull(types.StringType)
 	}
 	if value := res.Get("InternalUser.passwordIDStore"); value.Exists() && !data.PasswordIdStore.IsNull() {
 		data.PasswordIdStore = types.StringValue(value.String())

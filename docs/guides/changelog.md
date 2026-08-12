@@ -9,6 +9,7 @@ description: |-
 
 ## 0.3.5 (unreleased)
 
+- Change the `custom_attributes` attribute of the `ise_internal_user` resource from a JSON-encoded `String` to a `Map` of strings, fixing an HTTP 400 on apply (the value was serialized as a quoted string that ISE rejected) and perpetual drift (string comparison was sensitive to whitespace and key ordering). This matches how `ise_endpoint` already models its `custom_attributes`. **Breaking change:** configurations must now supply a native map (`custom_attributes = { key = "value" }`) instead of `jsonencode({ ... })` [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/253)
 - Fix perpetual drift in the `group_id` and `profile_id` attributes of the `ise_endpoint` resource, where ISE dynamically assigns these values when `static_group_assignment` / `static_profile_assignment` are `false`, causing Terraform to report changes on every plan
 
 ## 0.3.4

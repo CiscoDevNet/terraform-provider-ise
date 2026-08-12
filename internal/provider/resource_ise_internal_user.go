@@ -123,8 +123,9 @@ func (r *InternalUserResource) Schema(ctx context.Context, req resource.SchemaRe
 				MarkdownDescription: helpers.NewAttributeDescription("Comma separated list of identity group IDs.").String,
 				Optional:            true,
 			},
-			"custom_attributes": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Key value map").String,
+			"custom_attributes": schema.MapAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Key value map of custom attributes. The keys must be defined in the ISE identity store configuration.").String,
+				ElementType:         types.StringType,
 				Optional:            true,
 			},
 			"password_id_store": schema.StringAttribute{
