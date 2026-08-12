@@ -1,7 +1,6 @@
 ## 0.3.5 (unreleased)
 
-- Fix HTTP 400 errors in `ise_network_access_dictionary_attribute` where the `data_type` attribute accepted `IPv4`/`IPv6` but ISE only accepts `IPV4`/`IPV6`; update the valid values to match the ISE API
-- Fix HTTP 400 errors in `ise_network_access_dictionary_attribute` where the `data_type` attribute accepted `UNIT64` but ISE only accepts `UINT64`; update the valid value to match the ISE API
+- Change the `data_type` enum values in the `ise_network_access_dictionary_attribute` resource from `UNIT64`, `IPv4` and `IPv6` to `UINT64`, `IPV4` and `IPV6` to match the ISE API and avoid HTTP 400 errors
 - Fix perpetual drift in the `group_id` and `profile_id` attributes of the `ise_endpoint` resource, where ISE dynamically assigns these values when `static_group_assignment` / `static_profile_assignment` are `false`, causing Terraform to report changes on every plan
 - Fix perpetual drift after importing existing (brownfield) resources, where ISE returns normalized values for policy condition operators (e.g. `ipEquals` for `equals`) and empty strings for unset optional fields such as `description`, causing Terraform to report changes on every plan
 
