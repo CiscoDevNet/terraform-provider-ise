@@ -7,7 +7,7 @@ description: |-
 
 # Changelog
 
-## 0.4.0 (unreleased)
+## 0.4.0
 
 - Change the `custom_attributes` attribute of the `ise_internal_user` resource from a JSON-encoded `String` to a `Map` of strings, fixing an HTTP 400 on apply (the value was serialized as a quoted string that ISE rejected) and perpetual drift (string comparison was sensitive to whitespace and key ordering). This matches how `ise_endpoint` already models its `custom_attributes`. **Breaking change:** configurations must now supply a native map (`custom_attributes = { key = "value" }`) instead of `jsonencode({ ... })` [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/253)
 - Change the `data_type` enum values in the `ise_network_access_dictionary_attribute` resource from `UNIT64`, `IPv4` and `IPv6` to `UINT64`, `IPV4` and `IPV6` to match the ISE API and avoid HTTP 400 errors
