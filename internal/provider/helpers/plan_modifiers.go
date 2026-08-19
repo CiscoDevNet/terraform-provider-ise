@@ -26,6 +26,39 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+// PreserveStateIfUnconfigured returns a List plan modifier for nested list attributes
+// marked Computed: true that are managed outside the join_point resource (e.g. groups
+// managed by ise_active_directory_add_groups). When the attribute is not set in config
+// (null), it preserves the prior state value so that groups already stored in Terraform
+// state do not appear as a diff. On first create (no prior state) it returns null rather
+// than unknown, preventing the type-conversion error that listplanmodifier.UseStateForUnknown()
+// would cause when the model struct uses []T.
+func PreserveStateIfUnconfigured() planmodifier.List {
+	return preserveStateIfUnconfigured{}
+}
+
+type preserveStateIfUnconfigured struct{}
+
+func (m preserveStateIfUnconfigured) Description(_ context.Context) string {
+	return "Preserves the prior state value when the attribute is not set in config, " +
+		"preventing spurious diffs for server-managed list attributes."
+}
+
+func (m preserveStateIfUnconfigured) MarkdownDescription(ctx context.Context) string {
+	return m.Description(ctx)
+}
+
+func (m preserveStateIfUnconfigured) PlanModifyList(ctx context.Context, req planmodifier.ListRequest, resp *planmodifier.ListResponse) {
+	if !req.ConfigValue.IsNull() {
+		return
+	}
+	if !req.StateValue.IsNull() && !req.StateValue.IsUnknown() {
+		resp.PlanValue = req.StateValue
+		return
+	}
+	resp.PlanValue = types.ListNull(req.PlanValue.ElementType(ctx))
+}
+
 // ComputedWhen returns a String plan modifier backing the definition flag
 // `computed_when: <sibling>=<bool>`. When the sibling Bool equals expected and the
 // attribute is unset in config, it keeps the prior state value instead of planning a
