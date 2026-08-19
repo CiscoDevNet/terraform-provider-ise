@@ -63,6 +63,7 @@ attribute:
   max_list: int(required=False) # Maximum number of elements in a list, only relevant if type is "List"
   min_int: int(required=False) # Minimum value of an integer, only relevant if type is "Int64"
   max_int: int(required=False) # Maximum value of an integer, only relevant if type is "Int64"
+  zero_allowed: bool(required=False) # Allow 0 as a sentinel "disabled" value in addition to the min_int-max_int range, only relevant if type is "Int64"
   min_float: num(required=False) # Minimum value of a float, only relevant if type is "Float"
   max_float: num(required=False) # Maximum value of a float, only relevant if type is "Float"
   string_patterns: list(str(), required=False) # List of regular expressions that the string must match, only relevant if type is "String"

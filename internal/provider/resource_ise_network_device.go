@@ -190,10 +190,10 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional:            true,
 			},
 			"snmp_polling_interval": schema.Int64Attribute{
-				MarkdownDescription: helpers.NewAttributeDescription("SNMP Polling Interval in seconds").AddIntegerRangeDescription(600, 86400).String,
+				MarkdownDescription: helpers.NewAttributeDescription("SNMP Polling Interval in seconds").AddZeroOrIntegerRangeDescription(600, 86400).String,
 				Optional:            true,
 				Validators: []validator.Int64{
-					int64validator.Between(600, 86400),
+					int64validator.Any(int64validator.OneOf(0), int64validator.Between(600, 86400)),
 				},
 			},
 			"snmp_ro_community": schema.StringAttribute{

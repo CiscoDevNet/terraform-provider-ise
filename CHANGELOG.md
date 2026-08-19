@@ -1,3 +1,7 @@
+## 0.4.1 (unreleased)
+
+- Fix `snmp_polling_interval` on the `ise_network_device` resource rejecting `0`, which is a valid ISE value meaning "SNMP polling disabled". The validator now accepts `0` (disabled) or `600`-`86400` (enabled), matching ISE's actual constraint. The generator was also extended with a `zero_allowed` field for other attributes that follow this "sentinel or range" pattern.
+
 ## 0.4.0
 
 - Change the `custom_attributes` attribute of the `ise_internal_user` resource from a JSON-encoded `String` to a `Map` of strings, fixing an HTTP 400 on apply (the value was serialized as a quoted string that ISE rejected) and perpetual drift (string comparison was sensitive to whitespace and key ordering). This matches how `ise_endpoint` already models its `custom_attributes`. **Breaking change:** configurations must now supply a native map (`custom_attributes = { key = "value" }`) instead of `jsonencode({ ... })` [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/253)
