@@ -97,7 +97,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 					.AddStringEnumDescription({{range .EnumValues}}"{{.}}", {{end}})
 					{{- end -}}
 					{{- if or (ne .MinInt 0) (ne .MaxInt 0) -}}
-					.{{if .ZeroAllowed}}AddZeroOrIntegerRangeDescription{{else}}AddIntegerRangeDescription{{end}}({{.MinInt}}, {{.MaxInt}})
+					{{if .ZeroAllowed}}.AddZeroOrIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}, "{{.ZeroAllowedDescription}}"){{else}}.AddIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}){{end}}
 					{{- end -}}
 					{{- if or (ne .MinFloat 0.0) (ne .MaxFloat 0.0) -}}
 					.AddFloatRangeDescription({{.MinFloat}}, {{.MaxFloat}})
@@ -176,7 +176,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 								.AddStringEnumDescription({{range .EnumValues}}"{{.}}", {{end}})
 								{{- end -}}
 								{{- if or (ne .MinInt 0) (ne .MaxInt 0) -}}
-								.{{if .ZeroAllowed}}AddZeroOrIntegerRangeDescription{{else}}AddIntegerRangeDescription{{end}}({{.MinInt}}, {{.MaxInt}})
+								{{if .ZeroAllowed}}.AddZeroOrIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}, "{{.ZeroAllowedDescription}}"){{else}}.AddIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}){{end}}
 								{{- end -}}
 								{{- if or (ne .MinFloat 0.0) (ne .MaxFloat 0.0) -}}
 								.AddFloatRangeDescription({{.MinFloat}}, {{.MaxFloat}})
@@ -251,7 +251,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 											.AddStringEnumDescription({{range .EnumValues}}"{{.}}", {{end}})
 											{{- end -}}
 											{{- if or (ne .MinInt 0) (ne .MaxInt 0) -}}
-											.{{if .ZeroAllowed}}AddZeroOrIntegerRangeDescription{{else}}AddIntegerRangeDescription{{end}}({{.MinInt}}, {{.MaxInt}})
+											{{if .ZeroAllowed}}.AddZeroOrIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}, "{{.ZeroAllowedDescription}}"){{else}}.AddIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}){{end}}
 											{{- end -}}
 											{{- if or (ne .MinFloat 0.0) (ne .MaxFloat 0.0) -}}
 											.AddFloatRangeDescription({{.MinFloat}}, {{.MaxFloat}})
@@ -326,7 +326,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 														.AddStringEnumDescription({{range .EnumValues}}"{{.}}", {{end}})
 														{{- end -}}
 														{{- if or (ne .MinInt 0) (ne .MaxInt 0) -}}
-														.{{if .ZeroAllowed}}AddZeroOrIntegerRangeDescription{{else}}AddIntegerRangeDescription{{end}}({{.MinInt}}, {{.MaxInt}})
+														{{if .ZeroAllowed}}.AddZeroOrIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}, "{{.ZeroAllowedDescription}}"){{else}}.AddIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}){{end}}
 														{{- end -}}
 														{{- if or (ne .MinFloat 0.0) (ne .MaxFloat 0.0) -}}
 														.AddFloatRangeDescription({{.MinFloat}}, {{.MaxFloat}})
@@ -401,7 +401,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																	.AddStringEnumDescription({{range .EnumValues}}"{{.}}", {{end}})
 																	{{- end -}}
 																	{{- if or (ne .MinInt 0) (ne .MaxInt 0) -}}
-																	.{{if .ZeroAllowed}}AddZeroOrIntegerRangeDescription{{else}}AddIntegerRangeDescription{{end}}({{.MinInt}}, {{.MaxInt}})
+																	{{if .ZeroAllowed}}.AddZeroOrIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}, "{{.ZeroAllowedDescription}}"){{else}}.AddIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}){{end}}
 																	{{- end -}}
 																	{{- if or (ne .MinFloat 0.0) (ne .MaxFloat 0.0) -}}
 																	.AddFloatRangeDescription({{.MinFloat}}, {{.MaxFloat}})
@@ -476,7 +476,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																				.AddStringEnumDescription({{range .EnumValues}}"{{.}}", {{end}})
 																				{{- end -}}
 																				{{- if or (ne .MinInt 0) (ne .MaxInt 0) -}}
-																				.{{if .ZeroAllowed}}AddZeroOrIntegerRangeDescription{{else}}AddIntegerRangeDescription{{end}}({{.MinInt}}, {{.MaxInt}})
+																				{{if .ZeroAllowed}}.AddZeroOrIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}, "{{.ZeroAllowedDescription}}"){{else}}.AddIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}){{end}}
 																				{{- end -}}
 																				{{- if or (ne .MinFloat 0.0) (ne .MaxFloat 0.0) -}}
 																				.AddFloatRangeDescription({{.MinFloat}}, {{.MaxFloat}})
@@ -551,7 +551,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																						.AddStringEnumDescription({{range .EnumValues}}"{{.}}", {{end}})
 																						{{- end -}}
 																						{{- if or (ne .MinInt 0) (ne .MaxInt 0) -}}
-																						.{{if .ZeroAllowed}}AddZeroOrIntegerRangeDescription{{else}}AddIntegerRangeDescription{{end}}({{.MinInt}}, {{.MaxInt}})
+																						{{if .ZeroAllowed}}.AddZeroOrIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}, "{{.ZeroAllowedDescription}}"){{else}}.AddIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}){{end}}
 																						{{- end -}}
 																						{{- if or (ne .MinFloat 0.0) (ne .MaxFloat 0.0) -}}
 																						.AddFloatRangeDescription({{.MinFloat}}, {{.MaxFloat}})

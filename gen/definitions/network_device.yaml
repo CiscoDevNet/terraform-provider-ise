@@ -158,6 +158,7 @@ attributes:
     min_int: 600
     max_int: 86400
     zero_allowed: true
+    zero_allowed_description: disabled
     description: SNMP Polling Interval in seconds
     example: 1200
   - model_name: roCommunity

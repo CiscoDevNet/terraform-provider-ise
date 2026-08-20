@@ -54,8 +54,8 @@ func (d *AttributeDescription) AddIntegerRangeDescription(min, max int64) *Attri
 	return d
 }
 
-func (d *AttributeDescription) AddZeroOrIntegerRangeDescription(min, max int64) *AttributeDescription {
-	d.String = fmt.Sprintf("%s\n  - Range: `0` (disabled) or `%v`-`%v`", d.String, min, max)
+func (d *AttributeDescription) AddZeroOrIntegerRangeDescription(min, max int64, label string) *AttributeDescription {
+	d.String = fmt.Sprintf("%s\n  - Range: `0` (%s) or `%v`-`%v`", d.String, label, min, max)
 	return d
 }
 
