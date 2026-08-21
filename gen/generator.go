@@ -161,6 +161,8 @@ type YamlConfigAttribute struct {
 	MaxList          int64                 `yaml:"max_list"`
 	MinInt           int64                 `yaml:"min_int"`
 	MaxInt           int64                 `yaml:"max_int"`
+	ZeroAllowed            bool                  `yaml:"zero_allowed"`
+	ZeroAllowedDescription string                `yaml:"zero_allowed_description"`
 	MinFloat         float64               `yaml:"min_float"`
 	MaxFloat         float64               `yaml:"max_float"`
 	StringPatterns   []string              `yaml:"string_patterns"`
