@@ -1,0 +1,70 @@
+---
+name: SXP Connection
+rest_endpoint: /ers/config/sxpconnections
+data_source_name_query: true
+doc_category: TrustSec
+test_tags: [ISE33, ISE34]
+attributes:
+  - model_name: name
+    data_path: [ERSSxpConnection]
+    type: String
+    write_only: true
+    description: The name of the SXP connection.
+    example: SXPConnection1
+  - model_name: description
+    data_path: [ERSSxpConnection]
+    type: String
+    description: The description of the SXP connection
+    write_only: true
+    exclude_test: true
+  - model_name: sxpPeer
+    data_path: [ERSSxpConnection]
+    type: String
+    mandatory: true
+    description: The name of the SXP peer.
+    example: SXPPeer1
+  - model_name: sxpVpn
+    data_path: [ERSSxpConnection]
+    type: String
+    mandatory: true
+    description: The name of the SXP VPN. Since Cisco ISE 3.0, a comma-separated list of multiple SXP VPN names is supported.
+    example: default
+  - model_name: sxpNode
+    data_path: [ERSSxpConnection]
+    type: String
+    mandatory: true
+    description: The name of the SXP node.
+    example: ise1
+  - model_name: ipAddress
+    data_path: [ERSSxpConnection]
+    type: String
+    mandatory: true
+    description: The IP address of the SXP peer.
+    example: 10.0.0.1
+  - model_name: sxpMode
+    data_path: [ERSSxpConnection]
+    type: String
+    mandatory: true
+    description: "The SXP connection mode"
+    enum_values:
+      - "BOTH"
+      - "LISTENER"
+      - "SPEAKER"
+    example: SPEAKER
+  - model_name: sxpVersion
+    data_path: [ERSSxpConnection]
+    type: String
+    mandatory: true
+    description: "The SXP protocol version negotiated with the peer"
+    enum_values:
+      - "VERSION_1"
+      - "VERSION_2"
+      - "VERSION_3"
+      - "VERSION_4"
+    example: "VERSION_2"
+  - model_name: enabled
+    data_path: [ERSSxpConnection]
+    type: Bool
+    mandatory: true
+    description: Enables or disables the SXP connection.
+    example: true
