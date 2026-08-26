@@ -140,6 +140,7 @@ type YamlConfigAttribute struct {
 	Reference        bool                  `yaml:"reference"`
 	DataSourceQuery  bool                  `yaml:"data_source_query"`
 	ResponseDataPath string                `yaml:"response_data_path"`
+	ResponseValueRegex string                `yaml:"response_value_regex"`
 	Mandatory        bool                  `yaml:"mandatory"`
 	Computed         bool                  `yaml:"computed"`
 	ComputedWhen     string                `yaml:"computed_when"`

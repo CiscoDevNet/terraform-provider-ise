@@ -18,10 +18,37 @@
 package helpers
 
 import (
+	"regexp"
+	"sync"
+
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 )
+
+var responseValueRegexCache sync.Map
+
+// ExtractResponseValue applies pattern to s and returns the first capture group. Some ISE
+// endpoints render a reference in a display-only form that the API refuses on write (for
+// example an SGT is written as "Auditors" but read back as "Auditors (9/0009)"). Extracting
+// the writable portion on read keeps the attribute round-trippable, which in turn keeps plans
+// after `terraform import` clean. If the pattern does not match, s is returned unchanged so an
+// unexpected response shape surfaces as a diff rather than as a silently mangled value.
+func ExtractResponseValue(s, pattern string) string {
+	re, ok := responseValueRegexCache.Load(pattern)
+	if !ok {
+		compiled, err := regexp.Compile(pattern)
+		if err != nil {
+			return s
+		}
+		re, _ = responseValueRegexCache.LoadOrStore(pattern, compiled)
+	}
+	m := re.(*regexp.Regexp).FindStringSubmatch(s)
+	if len(m) < 2 {
+		return s
+	}
+	return m[1]
+}
 
 func Contains(s []string, str string) bool {
 	for _, v := range s {
