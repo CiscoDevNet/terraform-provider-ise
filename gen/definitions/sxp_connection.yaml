@@ -3,7 +3,7 @@ name: SXP Connection
 rest_endpoint: /ers/config/sxpconnections
 data_source_name_query: true
 doc_category: TrustSec
-test_tags: [ISE34]
+test_tags: [ISE34, ISE33]
 attributes:
   - model_name: name
     data_path: [ERSSxpConnection]

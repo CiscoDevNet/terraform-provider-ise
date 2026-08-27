@@ -31,7 +31,7 @@ import (
 //template:begin testAccDataSource
 func TestAccDataSourceIseSXPVPN(t *testing.T) {
 	var checks []resource.TestCheckFunc
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_sxp_vpn.test", "sxp_vpn_name", "SXPVpn1"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_sxp_vpn.test", "sxp_vpn_name", "sxpvpn1"))
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
@@ -52,7 +52,7 @@ func TestAccDataSourceIseSXPVPN(t *testing.T) {
 //template:begin testAccDataSourceConfig
 func testAccDataSourceIseSXPVPNConfig() string {
 	config := `resource "ise_sxp_vpn" "test" {` + "\n"
-	config += `	sxp_vpn_name = "SXPVpn1"` + "\n"
+	config += `	sxp_vpn_name = "sxpvpn1"` + "\n"
 	config += `}` + "\n"
 
 	config += `

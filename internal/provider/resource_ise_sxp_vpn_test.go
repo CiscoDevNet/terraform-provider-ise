@@ -32,7 +32,7 @@ import (
 //template:begin testAcc
 func TestAccIseSXPVPN(t *testing.T) {
 	var checks []resource.TestCheckFunc
-	checks = append(checks, resource.TestCheckResourceAttr("ise_sxp_vpn.test", "sxp_vpn_name", "SXPVpn1"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_sxp_vpn.test", "sxp_vpn_name", "sxpvpn1"))
 
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
@@ -64,7 +64,7 @@ func TestAccIseSXPVPN(t *testing.T) {
 //template:begin testAccConfigMinimal
 func testAccIseSXPVPNConfig_minimum() string {
 	config := `resource "ise_sxp_vpn" "test" {` + "\n"
-	config += `	sxp_vpn_name = "SXPVpn1"` + "\n"
+	config += `	sxp_vpn_name = "sxpvpn1"` + "\n"
 	config += `}` + "\n"
 	return config
 }
@@ -74,7 +74,7 @@ func testAccIseSXPVPNConfig_minimum() string {
 //template:begin testAccConfigAll
 func testAccIseSXPVPNConfig_all() string {
 	config := `resource "ise_sxp_vpn" "test" {` + "\n"
-	config += `	sxp_vpn_name = "SXPVpn1"` + "\n"
+	config += `	sxp_vpn_name = "sxpvpn1"` + "\n"
 	config += `}` + "\n"
 	return config
 }

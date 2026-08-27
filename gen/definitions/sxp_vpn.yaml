@@ -21,4 +21,4 @@ attributes:
     mandatory: true
     requires_replace: true
     description: The name of the SXP VPN domain, for example `default`.
-    example: SXPVpn1
+    example: sxpvpn1
