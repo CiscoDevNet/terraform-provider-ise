@@ -88,7 +88,6 @@ resource "ise_network_device" "example" {
 - `authentication_radius_shared_secret` (String) RADIUS shared secret
 - `authentication_second_radius_shared_secret` (String) Second RADIUS shared secret
 - `coa_port` (Number) CoA port
-  - Default value: `1700`
 - `description` (String) Description
 - `dtls_dns_name` (String) This value is used to verify the client identity contained in the X.509 RADIUS/DTLS client certificate
 - `model_name` (String) Model name
