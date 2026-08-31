@@ -79,7 +79,6 @@ attributes:
     data_path: [NetworkDevice]
     type: Int64
     description: CoA port
-    default_value: 1700
     example: 12345
   - model_name: dtlsDnsName
     data_path: [NetworkDevice]
@@ -157,6 +156,8 @@ attributes:
     type: Int64
     min_int: 600
     max_int: 86400
+    zero_allowed: true
+    zero_allowed_description: disabled
     description: SNMP Polling Interval in seconds
     example: 1200
   - model_name: roCommunity

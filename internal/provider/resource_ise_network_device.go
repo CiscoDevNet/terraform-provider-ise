@@ -32,7 +32,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -129,10 +128,8 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional:            true,
 			},
 			"coa_port": schema.Int64Attribute{
-				MarkdownDescription: helpers.NewAttributeDescription("CoA port").AddDefaultValueDescription("1700").String,
+				MarkdownDescription: helpers.NewAttributeDescription("CoA port").String,
 				Optional:            true,
-				Computed:            true,
-				Default:             int64default.StaticInt64(1700),
 			},
 			"dtls_dns_name": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("This value is used to verify the client identity contained in the X.509 RADIUS/DTLS client certificate").String,
@@ -190,10 +187,10 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional:            true,
 			},
 			"snmp_polling_interval": schema.Int64Attribute{
-				MarkdownDescription: helpers.NewAttributeDescription("SNMP Polling Interval in seconds").AddIntegerRangeDescription(600, 86400).String,
+				MarkdownDescription: helpers.NewAttributeDescription("SNMP Polling Interval in seconds").AddZeroOrIntegerRangeDescription(600, 86400, "disabled").String,
 				Optional:            true,
 				Validators: []validator.Int64{
-					int64validator.Between(600, 86400),
+					int64validator.Any(int64validator.OneOf(0), int64validator.Between(600, 86400)),
 				},
 			},
 			"snmp_ro_community": schema.StringAttribute{

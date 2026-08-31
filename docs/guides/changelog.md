@@ -7,11 +7,17 @@ description: |-
 
 # Changelog
 
+## 0.4.1 (unreleased)
+
+- Add `ise_sxp_connection`, `ise_sxp_vpn` and `ise_sxp_local_binding` resources and data sources
+- Fix `snmp_polling_interval` on the `ise_network_device` resource rejecting `0`, which is a valid ISE value meaning "SNMP polling disabled". The validator now accepts `0` (disabled) or `600`-`86400` (enabled), matching ISE's actual constraint. The generator was also extended with a `zero_allowed` field for other attributes that follow this "sentinel or range" pattern.
+- Fix perpetual `coa_port = 0 -> 1700` drift on the `ise_network_device` resource for TACACS-only devices. The `coa_port` attribute had a provider-level `Default(1700)` and `Computed: true` that resolved a null config value to `1700` at plan time, causing drift whenever ISE reported `coaPort: 0` (no CoA configured). Removing the schema default makes `coa_port` behave like all other optional RADIUS attributes on this resource — if not set in config, ISE retains its current value and no plan diff is generated.
+- Fix destroy/recreate of `ise_active_directory_join_point` during brownfield import, where ISE returns existing `groups` and `rewrite_rules` in the GET response but these attributes were not marked as `Computed`, causing Terraform to plan a destroy and recreate of the resource to reconcile the difference
+
 ## 0.4.0
 
 - Change the `custom_attributes` attribute of the `ise_internal_user` resource from a JSON-encoded `String` to a `Map` of strings, fixing an HTTP 400 on apply (the value was serialized as a quoted string that ISE rejected) and perpetual drift (string comparison was sensitive to whitespace and key ordering). This matches how `ise_endpoint` already models its `custom_attributes`. **Breaking change:** configurations must now supply a native map (`custom_attributes = { key = "value" }`) instead of `jsonencode({ ... })` [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/253)
 - Change the `data_type` enum values in the `ise_network_access_dictionary_attribute` resource from `UNIT64`, `IPv4` and `IPv6` to `UINT64`, `IPV4` and `IPV6` to match the ISE API and avoid HTTP 400 errors
-- Fix destroy/recreate of `ise_active_directory_join_point` during brownfield import, where ISE returns existing `groups` and `rewrite_rules` in the GET response but these attributes were not marked as `Computed`, causing Terraform to plan a destroy and recreate of the resource to reconcile the difference
 - Fix perpetual drift in the `group_id` and `profile_id` attributes of the `ise_endpoint` resource, where ISE dynamically assigns these values when `static_group_assignment` / `static_profile_assignment` are `false`, causing Terraform to report changes on every plan
 - Fix perpetual drift after importing existing (brownfield) resources, where ISE returns normalized values for policy condition operators (e.g. `ipEquals` for `equals`) and empty strings for unset optional fields such as `description`, causing Terraform to report changes on every plan
 

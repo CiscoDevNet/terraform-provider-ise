@@ -97,7 +97,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 					.AddStringEnumDescription({{range .EnumValues}}"{{.}}", {{end}})
 					{{- end -}}
 					{{- if or (ne .MinInt 0) (ne .MaxInt 0) -}}
-					.AddIntegerRangeDescription({{.MinInt}}, {{.MaxInt}})
+					{{if .ZeroAllowed}}.AddZeroOrIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}, "{{.ZeroAllowedDescription}}"){{else}}.AddIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}){{end}}
 					{{- end -}}
 					{{- if or (ne .MinFloat 0.0) (ne .MaxFloat 0.0) -}}
 					.AddFloatRangeDescription({{.MinFloat}}, {{.MaxFloat}})
@@ -137,7 +137,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 				},
 				{{- else if or (ne .MinInt 0) (ne .MaxInt 0)}}
 				Validators: []validator.Int64{
-					int64validator.Between({{.MinInt}}, {{.MaxInt}}),
+					{{if .ZeroAllowed}}int64validator.Any(int64validator.OneOf(0), int64validator.Between({{.MinInt}}, {{.MaxInt}})),{{else}}int64validator.Between({{.MinInt}}, {{.MaxInt}}),{{end}}
 				},
 				{{- else if or (ne .MinFloat 0.0) (ne .MaxFloat 0.0)}}
 				Validators: []validator.Float64{
@@ -178,7 +178,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 								.AddStringEnumDescription({{range .EnumValues}}"{{.}}", {{end}})
 								{{- end -}}
 								{{- if or (ne .MinInt 0) (ne .MaxInt 0) -}}
-								.AddIntegerRangeDescription({{.MinInt}}, {{.MaxInt}})
+								{{if .ZeroAllowed}}.AddZeroOrIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}, "{{.ZeroAllowedDescription}}"){{else}}.AddIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}){{end}}
 								{{- end -}}
 								{{- if or (ne .MinFloat 0.0) (ne .MaxFloat 0.0) -}}
 								.AddFloatRangeDescription({{.MinFloat}}, {{.MaxFloat}})
@@ -218,7 +218,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 							},
 							{{- else if or (ne .MinInt 0) (ne .MaxInt 0)}}
 							Validators: []validator.Int64{
-								int64validator.Between({{.MinInt}}, {{.MaxInt}}),
+								{{if .ZeroAllowed}}int64validator.Any(int64validator.OneOf(0), int64validator.Between({{.MinInt}}, {{.MaxInt}})),{{else}}int64validator.Between({{.MinInt}}, {{.MaxInt}}),{{end}}
 							},
 							{{- else if or (ne .MinFloat 0.0) (ne .MaxFloat 0.0)}}
 							Validators: []validator.Float64{
@@ -257,7 +257,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 											.AddStringEnumDescription({{range .EnumValues}}"{{.}}", {{end}})
 											{{- end -}}
 											{{- if or (ne .MinInt 0) (ne .MaxInt 0) -}}
-											.AddIntegerRangeDescription({{.MinInt}}, {{.MaxInt}})
+											{{if .ZeroAllowed}}.AddZeroOrIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}, "{{.ZeroAllowedDescription}}"){{else}}.AddIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}){{end}}
 											{{- end -}}
 											{{- if or (ne .MinFloat 0.0) (ne .MaxFloat 0.0) -}}
 											.AddFloatRangeDescription({{.MinFloat}}, {{.MaxFloat}})
@@ -297,7 +297,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 										},
 										{{- else if or (ne .MinInt 0) (ne .MaxInt 0)}}
 										Validators: []validator.Int64{
-											int64validator.Between({{.MinInt}}, {{.MaxInt}}),
+											{{if .ZeroAllowed}}int64validator.Any(int64validator.OneOf(0), int64validator.Between({{.MinInt}}, {{.MaxInt}})),{{else}}int64validator.Between({{.MinInt}}, {{.MaxInt}}),{{end}}
 										},
 										{{- else if or (ne .MinFloat 0.0) (ne .MaxFloat 0.0)}}
 										Validators: []validator.Float64{
@@ -336,7 +336,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 														.AddStringEnumDescription({{range .EnumValues}}"{{.}}", {{end}})
 														{{- end -}}
 														{{- if or (ne .MinInt 0) (ne .MaxInt 0) -}}
-														.AddIntegerRangeDescription({{.MinInt}}, {{.MaxInt}})
+														{{if .ZeroAllowed}}.AddZeroOrIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}, "{{.ZeroAllowedDescription}}"){{else}}.AddIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}){{end}}
 														{{- end -}}
 														{{- if or (ne .MinFloat 0.0) (ne .MaxFloat 0.0) -}}
 														.AddFloatRangeDescription({{.MinFloat}}, {{.MaxFloat}})
@@ -376,7 +376,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 													},
 													{{- else if or (ne .MinInt 0) (ne .MaxInt 0)}}
 													Validators: []validator.Int64{
-														int64validator.Between({{.MinInt}}, {{.MaxInt}}),
+														{{if .ZeroAllowed}}int64validator.Any(int64validator.OneOf(0), int64validator.Between({{.MinInt}}, {{.MaxInt}})),{{else}}int64validator.Between({{.MinInt}}, {{.MaxInt}}),{{end}}
 													},
 													{{- else if or (ne .MinFloat 0.0) (ne .MaxFloat 0.0)}}
 													Validators: []validator.Float64{
@@ -415,7 +415,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																	.AddStringEnumDescription({{range .EnumValues}}"{{.}}", {{end}})
 																	{{- end -}}
 																	{{- if or (ne .MinInt 0) (ne .MaxInt 0) -}}
-																	.AddIntegerRangeDescription({{.MinInt}}, {{.MaxInt}})
+																	{{if .ZeroAllowed}}.AddZeroOrIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}, "{{.ZeroAllowedDescription}}"){{else}}.AddIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}){{end}}
 																	{{- end -}}
 																	{{- if or (ne .MinFloat 0.0) (ne .MaxFloat 0.0) -}}
 																	.AddFloatRangeDescription({{.MinFloat}}, {{.MaxFloat}})
@@ -455,7 +455,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																},
 																{{- else if or (ne .MinInt 0) (ne .MaxInt 0)}}
 																Validators: []validator.Int64{
-																	int64validator.Between({{.MinInt}}, {{.MaxInt}}),
+																	{{if .ZeroAllowed}}int64validator.Any(int64validator.OneOf(0), int64validator.Between({{.MinInt}}, {{.MaxInt}})),{{else}}int64validator.Between({{.MinInt}}, {{.MaxInt}}),{{end}}
 																},
 																{{- else if or (ne .MinFloat 0.0) (ne .MaxFloat 0.0)}}
 																Validators: []validator.Float64{
@@ -494,7 +494,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																				.AddStringEnumDescription({{range .EnumValues}}"{{.}}", {{end}})
 																				{{- end -}}
 																				{{- if or (ne .MinInt 0) (ne .MaxInt 0) -}}
-																				.AddIntegerRangeDescription({{.MinInt}}, {{.MaxInt}})
+																				{{if .ZeroAllowed}}.AddZeroOrIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}, "{{.ZeroAllowedDescription}}"){{else}}.AddIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}){{end}}
 																				{{- end -}}
 																				{{- if or (ne .MinFloat 0.0) (ne .MaxFloat 0.0) -}}
 																				.AddFloatRangeDescription({{.MinFloat}}, {{.MaxFloat}})
@@ -534,7 +534,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																			},
 																			{{- else if or (ne .MinInt 0) (ne .MaxInt 0)}}
 																			Validators: []validator.Int64{
-																				int64validator.Between({{.MinInt}}, {{.MaxInt}}),
+																				{{if .ZeroAllowed}}int64validator.Any(int64validator.OneOf(0), int64validator.Between({{.MinInt}}, {{.MaxInt}})),{{else}}int64validator.Between({{.MinInt}}, {{.MaxInt}}),{{end}}
 																			},
 																			{{- else if or (ne .MinFloat 0.0) (ne .MaxFloat 0.0)}}
 																			Validators: []validator.Float64{
@@ -573,7 +573,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																						.AddStringEnumDescription({{range .EnumValues}}"{{.}}", {{end}})
 																						{{- end -}}
 																						{{- if or (ne .MinInt 0) (ne .MaxInt 0) -}}
-																						.AddIntegerRangeDescription({{.MinInt}}, {{.MaxInt}})
+																						{{if .ZeroAllowed}}.AddZeroOrIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}, "{{.ZeroAllowedDescription}}"){{else}}.AddIntegerRangeDescription({{.MinInt}}, {{.MaxInt}}){{end}}
 																						{{- end -}}
 																						{{- if or (ne .MinFloat 0.0) (ne .MaxFloat 0.0) -}}
 																						.AddFloatRangeDescription({{.MinFloat}}, {{.MaxFloat}})
@@ -613,7 +613,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																					},
 																					{{- else if or (ne .MinInt 0) (ne .MaxInt 0)}}
 																					Validators: []validator.Int64{
-																						int64validator.Between({{.MinInt}}, {{.MaxInt}}),
+																						{{if .ZeroAllowed}}int64validator.Any(int64validator.OneOf(0), int64validator.Between({{.MinInt}}, {{.MaxInt}})),{{else}}int64validator.Between({{.MinInt}}, {{.MaxInt}}),{{end}}
 																					},
 																					{{- else if or (ne .MinFloat 0.0) (ne .MaxFloat 0.0)}}
 																					Validators: []validator.Float64{

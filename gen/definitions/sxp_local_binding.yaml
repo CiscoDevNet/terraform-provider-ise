@@ -1,0 +1,59 @@
+---
+name: SXP Local Binding
+rest_endpoint: /ers/config/sxplocalbindings
+data_source_name_query: true
+doc_category: TrustSec
+attributes:
+  - model_name: name
+    data_path: [ERSSxpLocalBindings]
+    type: String
+    write_only: true
+    description: The name of the SXP local binding.
+    example: SXPLocalBinding1
+  - model_name: description
+    data_path: [ERSSxpLocalBindings]
+    type: String
+    write_only: true
+    description: The description of the SXP local binding.
+    exclude_test: true
+  - model_name: bindingName
+    data_path: [ERSSxpLocalBindings]
+    type: String
+    description: "The binding name. Deprecated since Cisco ISE 3.0."
+    exclude_test: true
+  - model_name: ipAddressOrHost
+    data_path: [ERSSxpLocalBindings]
+    type: String
+    mandatory: true
+    description: The IP address for the static SGT mapping. Hostnames are not supported.
+    example: 10.0.0.1
+  - model_name: sgt
+    data_path: [ERSSxpLocalBindings]
+    type: String
+    mandatory: true
+    description: The name of the Security Group (SGT) to map to the IP address. Cisco ISE renders this as `<name> (<decimal>/<hex>)` on read and rejects that form on write, so only the name is kept in state.
+    response_value_regex: '^(.*) \(\d+/[0-9A-Fa-f]+\)$'
+    example: SGT1234
+    test_value: ise_trustsec_security_group.test.name
+    minimum_test_value: ise_trustsec_security_group.test.name
+  - model_name: sxpVpn
+    data_path: [ERSSxpLocalBindings]
+    type: String
+    normalize_empty_string: true
+    description: "Comma-separated list of SXP VPN domains. Since Cisco ISE 3.0, at least one of `sxp_vpn` or `vns` must be defined."
+    example: default
+    minimum_test_value: '"default"'
+  - model_name: vns
+    data_path: [ERSSxpLocalBindings]
+    type: String
+    normalize_empty_string: true
+    description: "Comma-separated list of Virtual Networks. Added in Cisco ISE 3.0. At least one of `sxp_vpn` or `vns` must be defined."
+    exclude_test: true
+test_prerequisites: |
+  resource "ise_trustsec_security_group" "test" {
+    name              = "SGT1234"
+    description       = "My SGT"
+    value             = 1234
+    propogate_to_apic = true
+    is_read_only      = false
+  }

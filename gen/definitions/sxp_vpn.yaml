@@ -1,0 +1,24 @@
+---
+name: SXP VPN
+rest_endpoint: /ers/config/sxpvpns
+data_source_name_query: true
+doc_category: TrustSec
+no_update: true
+attributes:
+  - model_name: name
+    data_path: [ERSSxpVpn]
+    type: String
+    description: The name of the SXP VPN.
+    exclude_test: true
+  - model_name: description
+    data_path: [ERSSxpVpn]
+    type: String
+    description: The description of the SXP VPN.
+    exclude_test: true
+  - model_name: sxpVpnName
+    data_path: [ERSSxpVpn]
+    type: String
+    mandatory: true
+    requires_replace: true
+    description: The name of the SXP VPN domain, for example `default`.
+    example: SXPVpn1
