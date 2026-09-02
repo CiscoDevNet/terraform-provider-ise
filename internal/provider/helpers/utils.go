@@ -19,6 +19,8 @@ package helpers
 
 import (
 	"regexp"
+	"sort"
+	"strings"
 	"sync"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -119,6 +121,21 @@ func GetStringMapFiltered(apiResult map[string]gjson.Result, stateMap types.Map)
 		}
 	}
 	return types.MapValueMust(types.StringType, v)
+}
+
+// SortCommaSeparated splits s on commas, sorts the parts lexicographically, and
+// rejoins with commas. ISE returns comma-separated UUID lists (e.g. identityGroups)
+// in an internal order that is unpredictable and varies across ISE instances and
+// versions. Sorting on read ensures that the stored state always reflects a
+// canonical order, so the module (which also sorts before writing) never sees a
+// diff caused purely by ordering.
+func SortCommaSeparated(s string) string {
+	if s == "" {
+		return s
+	}
+	parts := strings.Split(s, ",")
+	sort.Strings(parts)
+	return strings.Join(parts, ",")
 }
 
 // NormalizeOperator maps ISE IP-specific operator variants to their standard

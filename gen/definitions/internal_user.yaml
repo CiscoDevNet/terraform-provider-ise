@@ -71,6 +71,7 @@ attributes:
     description: Comma separated list of identity group IDs.
     example: "d68f6180-66a2-11ee-9cc1-9eb2a3ecc82a"
     exclude_test: true
+    sort_comma_separated: true
   - model_name: customAttributes
     data_path: [InternalUser]
     type: Map
