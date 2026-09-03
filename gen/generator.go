@@ -150,6 +150,7 @@ type YamlConfigAttribute struct {
 	NormalizeEmptyString bool                  `yaml:"normalize_empty_string"`
 	PreserveEmptyString  bool                  `yaml:"preserve_empty_string"`
 	NormalizeOperator    bool                  `yaml:"normalize_operator"`
+	SortCommaSeparated   bool                  `yaml:"sort_comma_separated"`
 	WriteChangesOnly bool                  `yaml:"write_changes_only"`
 	ExcludeUpdate    bool                  `yaml:"exclude_update"`
 	ExcludeTest      bool                  `yaml:"exclude_test"`

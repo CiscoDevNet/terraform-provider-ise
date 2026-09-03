@@ -10,8 +10,10 @@ description: |-
 ## 0.4.1 (unreleased)
 
 - Add `rsa_pss` (ISE 3.4+) and `display_additional_tls_params` (ISE 3.5+) attributes to the `ise_allowed_protocols` resource and data source
+- Fix perpetual drift in the `identity_groups` attribute of the `ise_internal_user` resource, where ISE returns the comma-separated UUID list in an internal order that varies across ISE instances and versions, causing Terraform to report changes on every plan even when no groups were added or removed. The provider now sorts the value on read so that state always reflects a canonical ascending order, matching the sort applied by the module on write.
 - Add `ise_sxp_connection`, `ise_sxp_vpn` and `ise_sxp_local_binding` resources and data sources
 - Fix `snmp_polling_interval` on the `ise_network_device` resource rejecting `0`, which is a valid ISE value meaning "SNMP polling disabled". The validator now accepts `0` (disabled) or `600`-`86400` (enabled), matching ISE's actual constraint. The generator was also extended with a `zero_allowed` field for other attributes that follow this "sentinel or range" pattern.
+- Fix perpetual `coa_port = 0 -> 1700` drift on the `ise_network_device` resource for TACACS-only devices. The `coa_port` attribute had a provider-level `Default(1700)` and `Computed: true` that resolved a null config value to `1700` at plan time, causing drift whenever ISE reported `coaPort: 0` (no CoA configured). Removing the schema default makes `coa_port` behave like all other optional RADIUS attributes on this resource — if not set in config, ISE retains its current value and no plan diff is generated.
 
 ## 0.4.0
 

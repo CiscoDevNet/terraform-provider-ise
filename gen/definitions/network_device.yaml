@@ -79,7 +79,6 @@ attributes:
     data_path: [NetworkDevice]
     type: Int64
     description: CoA port
-    default_value: 1700
     example: 12345
   - model_name: dtlsDnsName
     data_path: [NetworkDevice]

@@ -158,7 +158,7 @@ func (data *InternalUser) fromBody(ctx context.Context, res gjson.Result) {
 		data.LastName = types.StringNull()
 	}
 	if value := res.Get("InternalUser.identityGroups"); value.Exists() && value.Type != gjson.Null {
-		data.IdentityGroups = types.StringValue(value.String())
+		data.IdentityGroups = types.StringValue(helpers.SortCommaSeparated(value.String()))
 	} else {
 		data.IdentityGroups = types.StringNull()
 	}
@@ -224,7 +224,7 @@ func (data *InternalUser) updateFromBody(ctx context.Context, res gjson.Result) 
 		data.LastName = types.StringNull()
 	}
 	if value := res.Get("InternalUser.identityGroups"); value.Exists() && !data.IdentityGroups.IsNull() {
-		data.IdentityGroups = types.StringValue(value.String())
+		data.IdentityGroups = types.StringValue(helpers.SortCommaSeparated(value.String()))
 	} else {
 		data.IdentityGroups = types.StringNull()
 	}

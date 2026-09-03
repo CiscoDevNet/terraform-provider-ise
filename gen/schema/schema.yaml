@@ -52,6 +52,7 @@ attribute:
   normalize_empty_string: bool(required=False) # Set to true to normalize an empty string ("") returned by the API to null, preventing drift when the config omits the attribute
   preserve_empty_string: bool(required=False) # Set to true to normalize null to empty string for mandatory fields that must contain "" when unset (opposite of normalize_empty_string)
   normalize_operator: bool(required=False) # Set to true to normalize IP-specific operator aliases (ipEquals -> equals, etc.) for stable key matching
+  sort_comma_separated: bool(required=False) # Set to true to sort the comma-separated values alphabetically on read, preventing drift when the API returns values in an unpredictable order
   write_changes_only: bool(required=False) # Set to true if the attribute should only be written (included in PUT payload) if it has changed
   exclude_test: bool(required=False) # Exclude attribute from example (documentation) and acceptance test
   exclude_example: bool(required=False) # Exclude attribute from acceptance test only (example/documentation is still generated)
