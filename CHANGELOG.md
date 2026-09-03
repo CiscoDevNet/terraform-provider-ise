@@ -1,4 +1,4 @@
-## 0.4.1 (unreleased)
+## 0.4.1
 
 - Add `rsa_pss` (ISE 3.4+) and `display_additional_tls_params` (ISE 3.5+) attributes to the `ise_allowed_protocols` resource and data source
 - Fix perpetual drift in the `identity_groups` attribute of the `ise_internal_user` resource, where ISE returns the comma-separated UUID list in an internal order that varies across ISE instances and versions, causing Terraform to report changes on every plan even when no groups were added or removed. The provider now sorts the value on read so that state always reflects a canonical ascending order, matching the sort applied by the module on write.
