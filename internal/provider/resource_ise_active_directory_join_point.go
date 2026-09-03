@@ -119,6 +119,10 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 			"groups": schema.ListNestedAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("List of AD Groups").String,
 				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.List{
+					helpers.PreserveStateIfUnconfigured(),
+				},
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{
@@ -187,6 +191,10 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 			"rewrite_rules": schema.ListNestedAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("List of Rewrite rules").String,
 				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.List{
+					helpers.PreserveStateIfUnconfigured(),
+				},
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"row_id": schema.StringAttribute{

@@ -14,6 +14,7 @@ description: |-
 - Add `ise_sxp_connection`, `ise_sxp_vpn` and `ise_sxp_local_binding` resources and data sources
 - Fix `snmp_polling_interval` on the `ise_network_device` resource rejecting `0`, which is a valid ISE value meaning "SNMP polling disabled". The validator now accepts `0` (disabled) or `600`-`86400` (enabled), matching ISE's actual constraint. The generator was also extended with a `zero_allowed` field for other attributes that follow this "sentinel or range" pattern.
 - Fix perpetual `coa_port = 0 -> 1700` drift on the `ise_network_device` resource for TACACS-only devices. The `coa_port` attribute had a provider-level `Default(1700)` and `Computed: true` that resolved a null config value to `1700` at plan time, causing drift whenever ISE reported `coaPort: 0` (no CoA configured). Removing the schema default makes `coa_port` behave like all other optional RADIUS attributes on this resource — if not set in config, ISE retains its current value and no plan diff is generated.
+- Fix destroy/recreate of `ise_active_directory_join_point` during brownfield import, where ISE returns existing `groups` and `rewrite_rules` in the GET response but these attributes were not marked as `Computed`, causing Terraform to plan a destroy and recreate of the resource to reconcile the difference
 
 ## 0.4.0
 
