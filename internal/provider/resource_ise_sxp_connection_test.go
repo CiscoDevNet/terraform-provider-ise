@@ -31,8 +31,8 @@ import (
 
 //template:begin testAcc
 func TestAccIseSXPConnection(t *testing.T) {
-	if os.Getenv("ISE34") == "" {
-		t.Skip("skipping test, set environment variable ISE34")
+	if os.Getenv("ISE34") == "" && os.Getenv("ISE33") == "" {
+		t.Skip("skipping test, set environment variable ISE34 or ISE33")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("ise_sxp_connection.test", "sxp_peer", "SXPPeer1"))

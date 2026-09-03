@@ -1,5 +1,6 @@
 ## 0.4.1 (unreleased)
 
+- Add `rsa_pss` (ISE 3.4+) and `display_additional_tls_params` (ISE 3.5+) attributes to the `ise_allowed_protocols` resource and data source
 - Fix perpetual drift in the `identity_groups` attribute of the `ise_internal_user` resource, where ISE returns the comma-separated UUID list in an internal order that varies across ISE instances and versions, causing Terraform to report changes on every plan even when no groups were added or removed. The provider now sorts the value on read so that state always reflects a canonical ascending order, matching the sort applied by the module on write.
 - Add `ise_sxp_connection`, `ise_sxp_vpn` and `ise_sxp_local_binding` resources and data sources
 - Fix `snmp_polling_interval` on the `ise_network_device` resource rejecting `0`, which is a valid ISE value meaning "SNMP polling disabled". The validator now accepts `0` (disabled) or `600`-`86400` (enabled), matching ISE's actual constraint. The generator was also extended with a `zero_allowed` field for other attributes that follow this "sentinel or range" pattern.

@@ -110,6 +110,8 @@ type AllowedProtocols struct {
 	TeapDowngradeMsk                           types.Bool   `tfsdk:"teap_downgrade_msk"`
 	TeapRequestBasicPwdAuth                    types.Bool   `tfsdk:"teap_request_basic_pwd_auth"`
 	Allow5g                                    types.Bool   `tfsdk:"allow_5g"`
+	RsaPss                                     types.Bool   `tfsdk:"rsa_pss"`
+	DisplayAdditionalTlsParams                 types.Bool   `tfsdk:"display_additional_tls_params"`
 }
 
 //template:end types
@@ -358,6 +360,12 @@ func (data AllowedProtocols) toBody(ctx context.Context, state AllowedProtocols)
 	}
 	if !data.Allow5g.IsNull() {
 		body, _ = sjson.Set(body, "AllowedProtocols.fiveG", data.Allow5g.ValueBool())
+	}
+	if !data.RsaPss.IsNull() {
+		body, _ = sjson.Set(body, "AllowedProtocols.rsaPss", data.RsaPss.ValueBool())
+	}
+	if !data.DisplayAdditionalTlsParams.IsNull() {
+		body, _ = sjson.Set(body, "AllowedProtocols.displayAdditionalTLSParams", data.DisplayAdditionalTlsParams.ValueBool())
 	}
 	return body
 }
@@ -746,6 +754,16 @@ func (data *AllowedProtocols) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.Allow5g = types.BoolNull()
 	}
+	if value := res.Get("AllowedProtocols.rsaPss"); value.Exists() && value.Type != gjson.Null {
+		data.RsaPss = types.BoolValue(value.Bool())
+	} else {
+		data.RsaPss = types.BoolNull()
+	}
+	if value := res.Get("AllowedProtocols.displayAdditionalTLSParams"); value.Exists() && value.Type != gjson.Null {
+		data.DisplayAdditionalTlsParams = types.BoolValue(value.Bool())
+	} else {
+		data.DisplayAdditionalTlsParams = types.BoolNull()
+	}
 }
 
 //template:end fromBody
@@ -1132,6 +1150,16 @@ func (data *AllowedProtocols) updateFromBody(ctx context.Context, res gjson.Resu
 	} else {
 		data.Allow5g = types.BoolNull()
 	}
+	if value := res.Get("AllowedProtocols.rsaPss"); value.Exists() && !data.RsaPss.IsNull() {
+		data.RsaPss = types.BoolValue(value.Bool())
+	} else {
+		data.RsaPss = types.BoolNull()
+	}
+	if value := res.Get("AllowedProtocols.displayAdditionalTLSParams"); value.Exists() && !data.DisplayAdditionalTlsParams.IsNull() {
+		data.DisplayAdditionalTlsParams = types.BoolValue(value.Bool())
+	} else {
+		data.DisplayAdditionalTlsParams = types.BoolNull()
+	}
 }
 
 //template:end updateFromBody
@@ -1367,6 +1395,12 @@ func (data *AllowedProtocols) isNull(ctx context.Context, res gjson.Result) bool
 		return false
 	}
 	if !data.Allow5g.IsNull() {
+		return false
+	}
+	if !data.RsaPss.IsNull() {
+		return false
+	}
+	if !data.DisplayAdditionalTlsParams.IsNull() {
 		return false
 	}
 	return true
