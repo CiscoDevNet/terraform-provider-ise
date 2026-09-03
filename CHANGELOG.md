@@ -1,5 +1,6 @@
 ## 0.4.1 (unreleased)
 
+- Add `rsa_pss` (ISE 3.4+) and `display_additional_tls_params` (ISE 3.5+) attributes to the `ise_allowed_protocols` resource and data source
 - Add `ise_sxp_connection`, `ise_sxp_vpn` and `ise_sxp_local_binding` resources and data sources
 - Fix `snmp_polling_interval` on the `ise_network_device` resource rejecting `0`, which is a valid ISE value meaning "SNMP polling disabled". The validator now accepts `0` (disabled) or `600`-`86400` (enabled), matching ISE's actual constraint. The generator was also extended with a `zero_allowed` field for other attributes that follow this "sentinel or range" pattern.
 

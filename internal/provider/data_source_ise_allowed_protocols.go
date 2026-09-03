@@ -380,6 +380,14 @@ func (d *AllowedProtocolsDataSource) Schema(ctx context.Context, req datasource.
 				MarkdownDescription: "Allow 5G. This field is only supported from ISE 3.2.",
 				Computed:            true,
 			},
+			"rsa_pss": schema.BoolAttribute{
+				MarkdownDescription: "Enable/Disable RSA PSS cipher based on policy. This field is only supported from ISE 3.4.",
+				Computed:            true,
+			},
+			"display_additional_tls_params": schema.BoolAttribute{
+				MarkdownDescription: "Enable/Disable display additional TLS parameters. This field is only supported from ISE 3.5.",
+				Computed:            true,
+			},
 		},
 	}
 }

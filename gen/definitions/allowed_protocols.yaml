@@ -503,3 +503,14 @@ attributes:
     description: Allow 5G. This field is only supported from ISE 3.2.
     example: true
     minimum_test_value: "true"
+  - model_name: rsaPss
+    data_path: [AllowedProtocols]
+    type: Bool
+    description: Enable/Disable RSA PSS cipher based on policy. This field is only supported from ISE 3.4.
+    exclude_test: true
+  - model_name: displayAdditionalTLSParams
+    data_path: [AllowedProtocols]
+    tf_name: display_additional_tls_params
+    type: Bool
+    description: Enable/Disable display additional TLS parameters. This field is only supported from ISE 3.5.
+    exclude_test: true

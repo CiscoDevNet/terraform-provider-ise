@@ -119,6 +119,7 @@ resource "ise_allowed_protocols" "example" {
 
 - `allow_5g` (Boolean) Allow 5G. This field is only supported from ISE 3.2.
 - `description` (String) Description
+- `display_additional_tls_params` (Boolean) Enable/Disable display additional TLS parameters. This field is only supported from ISE 3.5.
 - `eap_fast_accept_client_cert` (Boolean) Accept client certificates. Is required only if `eap_fast_use_pacs` is `false`.
 - `eap_fast_allow_machine_authentication` (Boolean) Allow machine authentication. Is required only if `eap_fast_use_pacs` is `false`.
 - `eap_fast_eap_gtc` (Boolean) Allow EAP GTC
@@ -180,6 +181,7 @@ resource "ise_allowed_protocols" "example" {
 - `preferred_eap_protocol` (String) Preferred EAP protocol
   - Choices: `EAP_FAST`, `PEAP`, `LEAP`, `EAP_MD5`, `EAP_TLS`, `EAP_TTLS`, `TEAP`
 - `require_cryptobinding` (Boolean) Require cryptobinding
+- `rsa_pss` (Boolean) Enable/Disable RSA PSS cipher based on policy. This field is only supported from ISE 3.4.
 - `teap_downgrade_msk` (Boolean) Allow downgrade to MSK
 - `teap_eap_accept_client_cert_during_tunnel_est` (Boolean) Accept client certificate during tunnel establishment
 - `teap_eap_chaining` (Boolean) Allow EAP chaining

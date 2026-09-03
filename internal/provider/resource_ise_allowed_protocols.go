@@ -423,6 +423,14 @@ func (r *AllowedProtocolsResource) Schema(ctx context.Context, req resource.Sche
 				MarkdownDescription: helpers.NewAttributeDescription("Allow 5G. This field is only supported from ISE 3.2.").String,
 				Optional:            true,
 			},
+			"rsa_pss": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Enable/Disable RSA PSS cipher based on policy. This field is only supported from ISE 3.4.").String,
+				Optional:            true,
+			},
+			"display_additional_tls_params": schema.BoolAttribute{
+				MarkdownDescription: helpers.NewAttributeDescription("Enable/Disable display additional TLS parameters. This field is only supported from ISE 3.5.").String,
+				Optional:            true,
+			},
 		},
 	}
 }
