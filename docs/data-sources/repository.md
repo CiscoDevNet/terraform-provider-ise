@@ -30,6 +30,8 @@ data "ise_repository" "example" {
 
 - `enable_pki` (Boolean) Enable PKI
 - `password` (String) Password can contain alphanumeric and/or special characters.
+- `password_wo` (String) Password can contain alphanumeric and/or special characters.
+- `password_wo_version` (Number) Rotation trigger for `password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `path` (String) Path should always start with "/" and can contain alphanumeric, underscore, hyphen and dot characters.
 - `protocol` (String) Protocol
 - `server_name` (String) Name of the server

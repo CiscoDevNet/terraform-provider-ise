@@ -94,7 +94,7 @@ resource "ise_network_device" "example" {
 - `authentication_enable_multi_secret` (Boolean) Enable multiple RADIUS shared secrets
 - `authentication_encryption_key` (String, Sensitive) Encryption key
   - Only one of `authentication_encryption_key` and `authentication_encryption_key_wo` can be set.
-  - Deprecated: The `authentication_encryption_key` attribute stores the secret in Terraform state. Use `authentication_encryption_key_wo` together with `authentication_encryption_key_wo_version` instead, which keeps it out of state.
+  - This attribute stores the secret in Terraform state. Prefer `authentication_encryption_key_wo` together with `authentication_encryption_key_wo_version`, which keeps it out of state.
 - `authentication_encryption_key_format` (String) Key input format
   - Choices: `ASCII`, `HEXADECIMAL`
 - `authentication_encryption_key_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Encryption key
@@ -102,7 +102,7 @@ resource "ise_network_device" "example" {
 - `authentication_encryption_key_wo_version` (Number) Rotation trigger for `authentication_encryption_key_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `authentication_message_authenticator_code_key` (String, Sensitive) Message authenticator code key
   - Only one of `authentication_message_authenticator_code_key` and `authentication_message_authenticator_code_key_wo` can be set.
-  - Deprecated: The `authentication_message_authenticator_code_key` attribute stores the secret in Terraform state. Use `authentication_message_authenticator_code_key_wo` together with `authentication_message_authenticator_code_key_wo_version` instead, which keeps it out of state.
+  - This attribute stores the secret in Terraform state. Prefer `authentication_message_authenticator_code_key_wo` together with `authentication_message_authenticator_code_key_wo_version`, which keeps it out of state.
 - `authentication_message_authenticator_code_key_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Message authenticator code key
   - Only one of `authentication_message_authenticator_code_key` and `authentication_message_authenticator_code_key_wo` can be set.
 - `authentication_message_authenticator_code_key_wo_version` (Number) Rotation trigger for `authentication_message_authenticator_code_key_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
@@ -110,13 +110,13 @@ resource "ise_network_device" "example" {
   - Choices: `RADIUS`, `TACACS_PLUS`
 - `authentication_radius_shared_secret` (String, Sensitive) RADIUS shared secret
   - Only one of `authentication_radius_shared_secret` and `authentication_radius_shared_secret_wo` can be set.
-  - Deprecated: The `authentication_radius_shared_secret` attribute stores the secret in Terraform state. Use `authentication_radius_shared_secret_wo` together with `authentication_radius_shared_secret_wo_version` instead, which keeps it out of state.
+  - This attribute stores the secret in Terraform state. Prefer `authentication_radius_shared_secret_wo` together with `authentication_radius_shared_secret_wo_version`, which keeps it out of state.
 - `authentication_radius_shared_secret_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) RADIUS shared secret
   - Only one of `authentication_radius_shared_secret` and `authentication_radius_shared_secret_wo` can be set.
 - `authentication_radius_shared_secret_wo_version` (Number) Rotation trigger for `authentication_radius_shared_secret_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `authentication_second_radius_shared_secret` (String, Sensitive) Second RADIUS shared secret
   - Only one of `authentication_second_radius_shared_secret` and `authentication_second_radius_shared_secret_wo` can be set.
-  - Deprecated: The `authentication_second_radius_shared_secret` attribute stores the secret in Terraform state. Use `authentication_second_radius_shared_secret_wo` together with `authentication_second_radius_shared_secret_wo_version` instead, which keeps it out of state.
+  - This attribute stores the secret in Terraform state. Prefer `authentication_second_radius_shared_secret_wo` together with `authentication_second_radius_shared_secret_wo_version`, which keeps it out of state.
 - `authentication_second_radius_shared_secret_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Second RADIUS shared secret
   - Only one of `authentication_second_radius_shared_secret` and `authentication_second_radius_shared_secret_wo` can be set.
 - `authentication_second_radius_shared_secret_wo_version` (Number) Rotation trigger for `authentication_second_radius_shared_secret_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
@@ -129,7 +129,7 @@ resource "ise_network_device" "example" {
   - Default value: `Cisco`
 - `snmp_auth_password` (String, Sensitive) SNMP authentication password. Required for snmp version 3 and securityLevel AUTH or PRIV.
   - Only one of `snmp_auth_password` and `snmp_auth_password_wo` can be set.
-  - Deprecated: The `snmp_auth_password` attribute stores the secret in Terraform state. Use `snmp_auth_password_wo` together with `snmp_auth_password_wo_version` instead, which keeps it out of state.
+  - This attribute stores the secret in Terraform state. Prefer `snmp_auth_password_wo` together with `snmp_auth_password_wo_version`, which keeps it out of state.
 - `snmp_auth_password_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) SNMP authentication password. Required for snmp version 3 and securityLevel AUTH or PRIV.
   - Only one of `snmp_auth_password` and `snmp_auth_password_wo` can be set.
 - `snmp_auth_password_wo_version` (Number) Rotation trigger for `snmp_auth_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
@@ -142,7 +142,7 @@ resource "ise_network_device" "example" {
   - Range: `0` (disabled) or `600`-`86400`
 - `snmp_privacy_password` (String, Sensitive) SNMP privacy password. Required for snmp version 3 and securityLevel PRIV
   - Only one of `snmp_privacy_password` and `snmp_privacy_password_wo` can be set.
-  - Deprecated: The `snmp_privacy_password` attribute stores the secret in Terraform state. Use `snmp_privacy_password_wo` together with `snmp_privacy_password_wo_version` instead, which keeps it out of state.
+  - This attribute stores the secret in Terraform state. Prefer `snmp_privacy_password_wo` together with `snmp_privacy_password_wo_version`, which keeps it out of state.
 - `snmp_privacy_password_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) SNMP privacy password. Required for snmp version 3 and securityLevel PRIV
   - Only one of `snmp_privacy_password` and `snmp_privacy_password_wo` can be set.
 - `snmp_privacy_password_wo_version` (Number) Rotation trigger for `snmp_privacy_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
@@ -159,7 +159,7 @@ resource "ise_network_device" "example" {
   - Choices: `OFF`, `ON_LEGACY`, `ON_DRAFT_COMPLIANT`
 - `tacacs_shared_secret` (String, Sensitive) Shared secret
   - Only one of `tacacs_shared_secret` and `tacacs_shared_secret_wo` can be set.
-  - Deprecated: The `tacacs_shared_secret` attribute stores the secret in Terraform state. Use `tacacs_shared_secret_wo` together with `tacacs_shared_secret_wo_version` instead, which keeps it out of state.
+  - This attribute stores the secret in Terraform state. Prefer `tacacs_shared_secret_wo` together with `tacacs_shared_secret_wo_version`, which keeps it out of state.
 - `tacacs_shared_secret_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Shared secret
   - Only one of `tacacs_shared_secret` and `tacacs_shared_secret_wo` can be set.
 - `tacacs_shared_secret_wo_version` (Number) Rotation trigger for `tacacs_shared_secret_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
@@ -167,7 +167,7 @@ resource "ise_network_device" "example" {
 - `trustsec_device_id` (String) TrustSec device ID
 - `trustsec_device_password` (String, Sensitive) TrustSec device password
   - Only one of `trustsec_device_password` and `trustsec_device_password_wo` can be set.
-  - Deprecated: The `trustsec_device_password` attribute stores the secret in Terraform state. Use `trustsec_device_password_wo` together with `trustsec_device_password_wo_version` instead, which keeps it out of state.
+  - This attribute stores the secret in Terraform state. Prefer `trustsec_device_password_wo` together with `trustsec_device_password_wo_version`, which keeps it out of state.
 - `trustsec_device_password_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) TrustSec device password
   - Only one of `trustsec_device_password` and `trustsec_device_password_wo` can be set.
 - `trustsec_device_password_wo_version` (Number) Rotation trigger for `trustsec_device_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
@@ -176,13 +176,13 @@ resource "ise_network_device" "example" {
 - `trustsec_download_sgacl_lists_every_x_seconds` (Number) Download SGACL lists every X seconds
 - `trustsec_enable_mode_password` (String, Sensitive) Enable mode password
   - Only one of `trustsec_enable_mode_password` and `trustsec_enable_mode_password_wo` can be set.
-  - Deprecated: The `trustsec_enable_mode_password` attribute stores the secret in Terraform state. Use `trustsec_enable_mode_password_wo` together with `trustsec_enable_mode_password_wo_version` instead, which keeps it out of state.
+  - This attribute stores the secret in Terraform state. Prefer `trustsec_enable_mode_password_wo` together with `trustsec_enable_mode_password_wo_version`, which keeps it out of state.
 - `trustsec_enable_mode_password_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Enable mode password
   - Only one of `trustsec_enable_mode_password` and `trustsec_enable_mode_password_wo` can be set.
 - `trustsec_enable_mode_password_wo_version` (Number) Rotation trigger for `trustsec_enable_mode_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `trustsec_exec_mode_password` (String, Sensitive) EXEC mode password
   - Only one of `trustsec_exec_mode_password` and `trustsec_exec_mode_password_wo` can be set.
-  - Deprecated: The `trustsec_exec_mode_password` attribute stores the secret in Terraform state. Use `trustsec_exec_mode_password_wo` together with `trustsec_exec_mode_password_wo_version` instead, which keeps it out of state.
+  - This attribute stores the secret in Terraform state. Prefer `trustsec_exec_mode_password_wo` together with `trustsec_exec_mode_password_wo_version`, which keeps it out of state.
 - `trustsec_exec_mode_password_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) EXEC mode password
   - Only one of `trustsec_exec_mode_password` and `trustsec_exec_mode_password_wo` can be set.
 - `trustsec_exec_mode_password_wo_version` (Number) Rotation trigger for `trustsec_exec_mode_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
@@ -192,7 +192,7 @@ resource "ise_network_device" "example" {
 - `trustsec_re_authentication_every_x_seconds` (Number) Re-authenticate every X seconds
 - `trustsec_rest_api_password` (String, Sensitive) REST API password
   - Only one of `trustsec_rest_api_password` and `trustsec_rest_api_password_wo` can be set.
-  - Deprecated: The `trustsec_rest_api_password` attribute stores the secret in Terraform state. Use `trustsec_rest_api_password_wo` together with `trustsec_rest_api_password_wo_version` instead, which keeps it out of state.
+  - This attribute stores the secret in Terraform state. Prefer `trustsec_rest_api_password_wo` together with `trustsec_rest_api_password_wo_version`, which keeps it out of state.
 - `trustsec_rest_api_password_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) REST API password
   - Only one of `trustsec_rest_api_password` and `trustsec_rest_api_password_wo` can be set.
 - `trustsec_rest_api_password_wo_version` (Number) Rotation trigger for `trustsec_rest_api_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.

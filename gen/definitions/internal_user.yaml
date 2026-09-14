@@ -16,7 +16,6 @@ attributes:
     type: String
     write_only: true
     write_only_tf: true
-    write_changes_only: true
     description: The password of the internal user. Required when creating a new user. When managing existing (brownfield) users the password can be omitted and the existing password will be preserved.
     example: Cisco123
   - model_name: changePassword

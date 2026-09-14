@@ -50,7 +50,7 @@ resource "ise_internal_user" "example" {
 - `email` (String) Email address
 - `enable_password` (String, Sensitive) This field is added in ISE 2.0 to support TACACS+
   - Only one of `enable_password` and `enable_password_wo` can be set.
-  - Deprecated: The `enable_password` attribute stores the secret in Terraform state. Use `enable_password_wo` together with `enable_password_wo_version` instead, which keeps it out of state.
+  - This attribute stores the secret in Terraform state. Prefer `enable_password_wo` together with `enable_password_wo_version`, which keeps it out of state.
 - `enable_password_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) This field is added in ISE 2.0 to support TACACS+
   - Only one of `enable_password` and `enable_password_wo` can be set.
 - `enable_password_wo_version` (Number) Rotation trigger for `enable_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
@@ -60,7 +60,7 @@ resource "ise_internal_user" "example" {
 - `last_name` (String) Last name of the internal user
 - `password` (String, Sensitive) The password of the internal user. Required when creating a new user. When managing existing (brownfield) users the password can be omitted and the existing password will be preserved.
   - Only one of `password` and `password_wo` can be set.
-  - Deprecated: The `password` attribute stores the secret in Terraform state. Use `password_wo` together with `password_wo_version` instead, which keeps it out of state.
+  - This attribute stores the secret in Terraform state. Prefer `password_wo` together with `password_wo_version`, which keeps it out of state.
 - `password_id_store` (String) The ID store where the internal user's password is kept
   - Default value: `Internal Users`
 - `password_never_expires` (Boolean) Set to `true` to indicate the user password never expires. This will not apply to Users who are also ISE Admins. This field is only supported from ISE 3.2.

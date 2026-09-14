@@ -90,7 +90,7 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional:            true,
 			},
 			"authentication_encryption_key": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Encryption key").AddMutualExclusivityDescription("Only one of `authentication_encryption_key` and `authentication_encryption_key_wo` can be set.").AddDeprecationDescription("The `authentication_encryption_key` attribute stores the secret in Terraform state. Use `authentication_encryption_key_wo` together with `authentication_encryption_key_wo_version` instead, which keeps it out of state.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Encryption key").AddMutualExclusivityDescription("Only one of `authentication_encryption_key` and `authentication_encryption_key_wo` can be set.").AddCoexistenceNote("This attribute stores the secret in Terraform state. Prefer `authentication_encryption_key_wo` together with `authentication_encryption_key_wo_version`, which keeps it out of state.").String,
 				Sensitive:           true,
 				Optional:            true,
 			},
@@ -112,7 +112,7 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				},
 			},
 			"authentication_message_authenticator_code_key": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Message authenticator code key").AddMutualExclusivityDescription("Only one of `authentication_message_authenticator_code_key` and `authentication_message_authenticator_code_key_wo` can be set.").AddDeprecationDescription("The `authentication_message_authenticator_code_key` attribute stores the secret in Terraform state. Use `authentication_message_authenticator_code_key_wo` together with `authentication_message_authenticator_code_key_wo_version` instead, which keeps it out of state.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Message authenticator code key").AddMutualExclusivityDescription("Only one of `authentication_message_authenticator_code_key` and `authentication_message_authenticator_code_key_wo` can be set.").AddCoexistenceNote("This attribute stores the secret in Terraform state. Prefer `authentication_message_authenticator_code_key_wo` together with `authentication_message_authenticator_code_key_wo_version`, which keeps it out of state.").String,
 				Sensitive:           true,
 				Optional:            true,
 			},
@@ -134,7 +134,7 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				},
 			},
 			"authentication_radius_shared_secret": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("RADIUS shared secret").AddMutualExclusivityDescription("Only one of `authentication_radius_shared_secret` and `authentication_radius_shared_secret_wo` can be set.").AddDeprecationDescription("The `authentication_radius_shared_secret` attribute stores the secret in Terraform state. Use `authentication_radius_shared_secret_wo` together with `authentication_radius_shared_secret_wo_version` instead, which keeps it out of state.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("RADIUS shared secret").AddMutualExclusivityDescription("Only one of `authentication_radius_shared_secret` and `authentication_radius_shared_secret_wo` can be set.").AddCoexistenceNote("This attribute stores the secret in Terraform state. Prefer `authentication_radius_shared_secret_wo` together with `authentication_radius_shared_secret_wo_version`, which keeps it out of state.").String,
 				Sensitive:           true,
 				Optional:            true,
 			},
@@ -153,7 +153,7 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional:            true,
 			},
 			"authentication_second_radius_shared_secret": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Second RADIUS shared secret").AddMutualExclusivityDescription("Only one of `authentication_second_radius_shared_secret` and `authentication_second_radius_shared_secret_wo` can be set.").AddDeprecationDescription("The `authentication_second_radius_shared_secret` attribute stores the secret in Terraform state. Use `authentication_second_radius_shared_secret_wo` together with `authentication_second_radius_shared_secret_wo_version` instead, which keeps it out of state.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Second RADIUS shared secret").AddMutualExclusivityDescription("Only one of `authentication_second_radius_shared_secret` and `authentication_second_radius_shared_secret_wo` can be set.").AddCoexistenceNote("This attribute stores the secret in Terraform state. Prefer `authentication_second_radius_shared_secret_wo` together with `authentication_second_radius_shared_secret_wo_version`, which keeps it out of state.").String,
 				Sensitive:           true,
 				Optional:            true,
 			},
@@ -267,7 +267,7 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				},
 			},
 			"snmp_auth_password": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("SNMP authentication password. Required for snmp version 3 and securityLevel AUTH or PRIV.").AddMutualExclusivityDescription("Only one of `snmp_auth_password` and `snmp_auth_password_wo` can be set.").AddDeprecationDescription("The `snmp_auth_password` attribute stores the secret in Terraform state. Use `snmp_auth_password_wo` together with `snmp_auth_password_wo_version` instead, which keeps it out of state.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("SNMP authentication password. Required for snmp version 3 and securityLevel AUTH or PRIV.").AddMutualExclusivityDescription("Only one of `snmp_auth_password` and `snmp_auth_password_wo` can be set.").AddCoexistenceNote("This attribute stores the secret in Terraform state. Prefer `snmp_auth_password_wo` together with `snmp_auth_password_wo_version`, which keeps it out of state.").String,
 				Sensitive:           true,
 				Optional:            true,
 			},
@@ -289,7 +289,7 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				},
 			},
 			"snmp_privacy_password": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("SNMP privacy password. Required for snmp version 3 and securityLevel PRIV").AddMutualExclusivityDescription("Only one of `snmp_privacy_password` and `snmp_privacy_password_wo` can be set.").AddDeprecationDescription("The `snmp_privacy_password` attribute stores the secret in Terraform state. Use `snmp_privacy_password_wo` together with `snmp_privacy_password_wo_version` instead, which keeps it out of state.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("SNMP privacy password. Required for snmp version 3 and securityLevel PRIV").AddMutualExclusivityDescription("Only one of `snmp_privacy_password` and `snmp_privacy_password_wo` can be set.").AddCoexistenceNote("This attribute stores the secret in Terraform state. Prefer `snmp_privacy_password_wo` together with `snmp_privacy_password_wo_version`, which keeps it out of state.").String,
 				Sensitive:           true,
 				Optional:            true,
 			},
@@ -311,7 +311,7 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				},
 			},
 			"tacacs_shared_secret": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Shared secret").AddMutualExclusivityDescription("Only one of `tacacs_shared_secret` and `tacacs_shared_secret_wo` can be set.").AddDeprecationDescription("The `tacacs_shared_secret` attribute stores the secret in Terraform state. Use `tacacs_shared_secret_wo` together with `tacacs_shared_secret_wo_version` instead, which keeps it out of state.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Shared secret").AddMutualExclusivityDescription("Only one of `tacacs_shared_secret` and `tacacs_shared_secret_wo` can be set.").AddCoexistenceNote("This attribute stores the secret in Terraform state. Prefer `tacacs_shared_secret_wo` together with `tacacs_shared_secret_wo_version`, which keeps it out of state.").String,
 				Sensitive:           true,
 				Optional:            true,
 			},
@@ -330,7 +330,7 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional:            true,
 			},
 			"trustsec_device_password": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("TrustSec device password").AddMutualExclusivityDescription("Only one of `trustsec_device_password` and `trustsec_device_password_wo` can be set.").AddDeprecationDescription("The `trustsec_device_password` attribute stores the secret in Terraform state. Use `trustsec_device_password_wo` together with `trustsec_device_password_wo_version` instead, which keeps it out of state.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("TrustSec device password").AddMutualExclusivityDescription("Only one of `trustsec_device_password` and `trustsec_device_password_wo` can be set.").AddCoexistenceNote("This attribute stores the secret in Terraform state. Prefer `trustsec_device_password_wo` together with `trustsec_device_password_wo_version`, which keeps it out of state.").String,
 				Sensitive:           true,
 				Optional:            true,
 			},
@@ -349,7 +349,7 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional:            true,
 			},
 			"trustsec_rest_api_password": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("REST API password").AddMutualExclusivityDescription("Only one of `trustsec_rest_api_password` and `trustsec_rest_api_password_wo` can be set.").AddDeprecationDescription("The `trustsec_rest_api_password` attribute stores the secret in Terraform state. Use `trustsec_rest_api_password_wo` together with `trustsec_rest_api_password_wo_version` instead, which keeps it out of state.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("REST API password").AddMutualExclusivityDescription("Only one of `trustsec_rest_api_password` and `trustsec_rest_api_password_wo` can be set.").AddCoexistenceNote("This attribute stores the secret in Terraform state. Prefer `trustsec_rest_api_password_wo` together with `trustsec_rest_api_password_wo_version`, which keeps it out of state.").String,
 				Sensitive:           true,
 				Optional:            true,
 			},
@@ -364,7 +364,7 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional:            true,
 			},
 			"trustsec_enable_mode_password": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Enable mode password").AddMutualExclusivityDescription("Only one of `trustsec_enable_mode_password` and `trustsec_enable_mode_password_wo` can be set.").AddDeprecationDescription("The `trustsec_enable_mode_password` attribute stores the secret in Terraform state. Use `trustsec_enable_mode_password_wo` together with `trustsec_enable_mode_password_wo_version` instead, which keeps it out of state.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Enable mode password").AddMutualExclusivityDescription("Only one of `trustsec_enable_mode_password` and `trustsec_enable_mode_password_wo` can be set.").AddCoexistenceNote("This attribute stores the secret in Terraform state. Prefer `trustsec_enable_mode_password_wo` together with `trustsec_enable_mode_password_wo_version`, which keeps it out of state.").String,
 				Sensitive:           true,
 				Optional:            true,
 			},
@@ -379,7 +379,7 @@ func (r *NetworkDeviceResource) Schema(ctx context.Context, req resource.SchemaR
 				Optional:            true,
 			},
 			"trustsec_exec_mode_password": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("EXEC mode password").AddMutualExclusivityDescription("Only one of `trustsec_exec_mode_password` and `trustsec_exec_mode_password_wo` can be set.").AddDeprecationDescription("The `trustsec_exec_mode_password` attribute stores the secret in Terraform state. Use `trustsec_exec_mode_password_wo` together with `trustsec_exec_mode_password_wo_version` instead, which keeps it out of state.").String,
+				MarkdownDescription: helpers.NewAttributeDescription("EXEC mode password").AddMutualExclusivityDescription("Only one of `trustsec_exec_mode_password` and `trustsec_exec_mode_password_wo` can be set.").AddCoexistenceNote("This attribute stores the secret in Terraform state. Prefer `trustsec_exec_mode_password_wo` together with `trustsec_exec_mode_password_wo_version`, which keeps it out of state.").String,
 				Sensitive:           true,
 				Optional:            true,
 			},
@@ -451,9 +451,8 @@ func (r *NetworkDeviceResource) Configure(_ context.Context, req resource.Config
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
 
-// ValidateConfig enforces the relationship between a deprecated secret attribute, its
-// write-only "_wo" replacement and the "_wo_version" rotation trigger, and raises the
-// deprecation warning for the old attribute.
+// ValidateConfig enforces the relationship between a secret attribute, its write-only
+// "_wo" counterpart and the "_wo_version" rotation trigger.
 //
 // These checks live here, at resource level, rather than as schema validators. The
 // equivalent validators (ConflictsWith, ExactlyOneOf, AlsoRequires) report against an
@@ -481,9 +480,6 @@ func (r *NetworkDeviceResource) ValidateConfig(ctx context.Context, req resource
 			"`authentication_encryption_key_wo_version` must be set when `authentication_encryption_key_wo` is used. The write-only value is not stored in state, so Terraform can only detect a change to it through the version.",
 		)
 	}
-	if !legacyAuthenticationEncryptionKey.IsUnknown() && !legacyAuthenticationEncryptionKey.IsNull() {
-		resp.Diagnostics.AddWarning("Attribute Deprecated", "The `authentication_encryption_key` attribute stores the secret in Terraform state. Use `authentication_encryption_key_wo` together with `authentication_encryption_key_wo_version` instead, which keeps it out of state.")
-	}
 	var legacyAuthenticationMessageAuthenticatorCodeKey types.String
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("authentication_message_authenticator_code_key"), &legacyAuthenticationMessageAuthenticatorCodeKey)...)
 	var woAuthenticationMessageAuthenticatorCodeKey types.String
@@ -501,9 +497,6 @@ func (r *NetworkDeviceResource) ValidateConfig(ctx context.Context, req resource
 			"Invalid Attribute Combination",
 			"`authentication_message_authenticator_code_key_wo_version` must be set when `authentication_message_authenticator_code_key_wo` is used. The write-only value is not stored in state, so Terraform can only detect a change to it through the version.",
 		)
-	}
-	if !legacyAuthenticationMessageAuthenticatorCodeKey.IsUnknown() && !legacyAuthenticationMessageAuthenticatorCodeKey.IsNull() {
-		resp.Diagnostics.AddWarning("Attribute Deprecated", "The `authentication_message_authenticator_code_key` attribute stores the secret in Terraform state. Use `authentication_message_authenticator_code_key_wo` together with `authentication_message_authenticator_code_key_wo_version` instead, which keeps it out of state.")
 	}
 	var legacyAuthenticationRadiusSharedSecret types.String
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("authentication_radius_shared_secret"), &legacyAuthenticationRadiusSharedSecret)...)
@@ -523,9 +516,6 @@ func (r *NetworkDeviceResource) ValidateConfig(ctx context.Context, req resource
 			"`authentication_radius_shared_secret_wo_version` must be set when `authentication_radius_shared_secret_wo` is used. The write-only value is not stored in state, so Terraform can only detect a change to it through the version.",
 		)
 	}
-	if !legacyAuthenticationRadiusSharedSecret.IsUnknown() && !legacyAuthenticationRadiusSharedSecret.IsNull() {
-		resp.Diagnostics.AddWarning("Attribute Deprecated", "The `authentication_radius_shared_secret` attribute stores the secret in Terraform state. Use `authentication_radius_shared_secret_wo` together with `authentication_radius_shared_secret_wo_version` instead, which keeps it out of state.")
-	}
 	var legacyAuthenticationSecondRadiusSharedSecret types.String
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("authentication_second_radius_shared_secret"), &legacyAuthenticationSecondRadiusSharedSecret)...)
 	var woAuthenticationSecondRadiusSharedSecret types.String
@@ -543,9 +533,6 @@ func (r *NetworkDeviceResource) ValidateConfig(ctx context.Context, req resource
 			"Invalid Attribute Combination",
 			"`authentication_second_radius_shared_secret_wo_version` must be set when `authentication_second_radius_shared_secret_wo` is used. The write-only value is not stored in state, so Terraform can only detect a change to it through the version.",
 		)
-	}
-	if !legacyAuthenticationSecondRadiusSharedSecret.IsUnknown() && !legacyAuthenticationSecondRadiusSharedSecret.IsNull() {
-		resp.Diagnostics.AddWarning("Attribute Deprecated", "The `authentication_second_radius_shared_secret` attribute stores the secret in Terraform state. Use `authentication_second_radius_shared_secret_wo` together with `authentication_second_radius_shared_secret_wo_version` instead, which keeps it out of state.")
 	}
 	var legacySnmpAuthPassword types.String
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("snmp_auth_password"), &legacySnmpAuthPassword)...)
@@ -565,9 +552,6 @@ func (r *NetworkDeviceResource) ValidateConfig(ctx context.Context, req resource
 			"`snmp_auth_password_wo_version` must be set when `snmp_auth_password_wo` is used. The write-only value is not stored in state, so Terraform can only detect a change to it through the version.",
 		)
 	}
-	if !legacySnmpAuthPassword.IsUnknown() && !legacySnmpAuthPassword.IsNull() {
-		resp.Diagnostics.AddWarning("Attribute Deprecated", "The `snmp_auth_password` attribute stores the secret in Terraform state. Use `snmp_auth_password_wo` together with `snmp_auth_password_wo_version` instead, which keeps it out of state.")
-	}
 	var legacySnmpPrivacyPassword types.String
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("snmp_privacy_password"), &legacySnmpPrivacyPassword)...)
 	var woSnmpPrivacyPassword types.String
@@ -585,9 +569,6 @@ func (r *NetworkDeviceResource) ValidateConfig(ctx context.Context, req resource
 			"Invalid Attribute Combination",
 			"`snmp_privacy_password_wo_version` must be set when `snmp_privacy_password_wo` is used. The write-only value is not stored in state, so Terraform can only detect a change to it through the version.",
 		)
-	}
-	if !legacySnmpPrivacyPassword.IsUnknown() && !legacySnmpPrivacyPassword.IsNull() {
-		resp.Diagnostics.AddWarning("Attribute Deprecated", "The `snmp_privacy_password` attribute stores the secret in Terraform state. Use `snmp_privacy_password_wo` together with `snmp_privacy_password_wo_version` instead, which keeps it out of state.")
 	}
 	var legacyTacacsSharedSecret types.String
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("tacacs_shared_secret"), &legacyTacacsSharedSecret)...)
@@ -607,9 +588,6 @@ func (r *NetworkDeviceResource) ValidateConfig(ctx context.Context, req resource
 			"`tacacs_shared_secret_wo_version` must be set when `tacacs_shared_secret_wo` is used. The write-only value is not stored in state, so Terraform can only detect a change to it through the version.",
 		)
 	}
-	if !legacyTacacsSharedSecret.IsUnknown() && !legacyTacacsSharedSecret.IsNull() {
-		resp.Diagnostics.AddWarning("Attribute Deprecated", "The `tacacs_shared_secret` attribute stores the secret in Terraform state. Use `tacacs_shared_secret_wo` together with `tacacs_shared_secret_wo_version` instead, which keeps it out of state.")
-	}
 	var legacyTrustsecDevicePassword types.String
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("trustsec_device_password"), &legacyTrustsecDevicePassword)...)
 	var woTrustsecDevicePassword types.String
@@ -627,9 +605,6 @@ func (r *NetworkDeviceResource) ValidateConfig(ctx context.Context, req resource
 			"Invalid Attribute Combination",
 			"`trustsec_device_password_wo_version` must be set when `trustsec_device_password_wo` is used. The write-only value is not stored in state, so Terraform can only detect a change to it through the version.",
 		)
-	}
-	if !legacyTrustsecDevicePassword.IsUnknown() && !legacyTrustsecDevicePassword.IsNull() {
-		resp.Diagnostics.AddWarning("Attribute Deprecated", "The `trustsec_device_password` attribute stores the secret in Terraform state. Use `trustsec_device_password_wo` together with `trustsec_device_password_wo_version` instead, which keeps it out of state.")
 	}
 	var legacyTrustsecRestApiPassword types.String
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("trustsec_rest_api_password"), &legacyTrustsecRestApiPassword)...)
@@ -649,9 +624,6 @@ func (r *NetworkDeviceResource) ValidateConfig(ctx context.Context, req resource
 			"`trustsec_rest_api_password_wo_version` must be set when `trustsec_rest_api_password_wo` is used. The write-only value is not stored in state, so Terraform can only detect a change to it through the version.",
 		)
 	}
-	if !legacyTrustsecRestApiPassword.IsUnknown() && !legacyTrustsecRestApiPassword.IsNull() {
-		resp.Diagnostics.AddWarning("Attribute Deprecated", "The `trustsec_rest_api_password` attribute stores the secret in Terraform state. Use `trustsec_rest_api_password_wo` together with `trustsec_rest_api_password_wo_version` instead, which keeps it out of state.")
-	}
 	var legacyTrustsecEnableModePassword types.String
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("trustsec_enable_mode_password"), &legacyTrustsecEnableModePassword)...)
 	var woTrustsecEnableModePassword types.String
@@ -670,9 +642,6 @@ func (r *NetworkDeviceResource) ValidateConfig(ctx context.Context, req resource
 			"`trustsec_enable_mode_password_wo_version` must be set when `trustsec_enable_mode_password_wo` is used. The write-only value is not stored in state, so Terraform can only detect a change to it through the version.",
 		)
 	}
-	if !legacyTrustsecEnableModePassword.IsUnknown() && !legacyTrustsecEnableModePassword.IsNull() {
-		resp.Diagnostics.AddWarning("Attribute Deprecated", "The `trustsec_enable_mode_password` attribute stores the secret in Terraform state. Use `trustsec_enable_mode_password_wo` together with `trustsec_enable_mode_password_wo_version` instead, which keeps it out of state.")
-	}
 	var legacyTrustsecExecModePassword types.String
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("trustsec_exec_mode_password"), &legacyTrustsecExecModePassword)...)
 	var woTrustsecExecModePassword types.String
@@ -690,9 +659,6 @@ func (r *NetworkDeviceResource) ValidateConfig(ctx context.Context, req resource
 			"Invalid Attribute Combination",
 			"`trustsec_exec_mode_password_wo_version` must be set when `trustsec_exec_mode_password_wo` is used. The write-only value is not stored in state, so Terraform can only detect a change to it through the version.",
 		)
-	}
-	if !legacyTrustsecExecModePassword.IsUnknown() && !legacyTrustsecExecModePassword.IsNull() {
-		resp.Diagnostics.AddWarning("Attribute Deprecated", "The `trustsec_exec_mode_password` attribute stores the secret in Terraform state. Use `trustsec_exec_mode_password_wo` together with `trustsec_exec_mode_password_wo_version` instead, which keeps it out of state.")
 	}
 }
 
@@ -836,57 +802,57 @@ func (r *NetworkDeviceResource) Update(ctx context.Context, req resource.UpdateR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	// Write-only value "authentication_encryption_key_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "authentication_encryption_key_wo_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
+	// Write-only value "authentication_encryption_key_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "authentication_encryption_key_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("authentication_encryption_key_wo"), &plan.AuthenticationEncryptionKeyWo)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	// Write-only value "authentication_message_authenticator_code_key_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "authentication_message_authenticator_code_key_wo_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
+	// Write-only value "authentication_message_authenticator_code_key_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "authentication_message_authenticator_code_key_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("authentication_message_authenticator_code_key_wo"), &plan.AuthenticationMessageAuthenticatorCodeKeyWo)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	// Write-only value "authentication_radius_shared_secret_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "authentication_radius_shared_secret_wo_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
+	// Write-only value "authentication_radius_shared_secret_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "authentication_radius_shared_secret_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("authentication_radius_shared_secret_wo"), &plan.AuthenticationRadiusSharedSecretWo)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	// Write-only value "authentication_second_radius_shared_secret_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "authentication_second_radius_shared_secret_wo_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
+	// Write-only value "authentication_second_radius_shared_secret_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "authentication_second_radius_shared_secret_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("authentication_second_radius_shared_secret_wo"), &plan.AuthenticationSecondRadiusSharedSecretWo)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	// Write-only value "snmp_auth_password_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "snmp_auth_password_wo_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
+	// Write-only value "snmp_auth_password_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "snmp_auth_password_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("snmp_auth_password_wo"), &plan.SnmpAuthPasswordWo)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	// Write-only value "snmp_privacy_password_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "snmp_privacy_password_wo_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
+	// Write-only value "snmp_privacy_password_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "snmp_privacy_password_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("snmp_privacy_password_wo"), &plan.SnmpPrivacyPasswordWo)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	// Write-only value "tacacs_shared_secret_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "tacacs_shared_secret_wo_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
+	// Write-only value "tacacs_shared_secret_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "tacacs_shared_secret_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("tacacs_shared_secret_wo"), &plan.TacacsSharedSecretWo)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	// Write-only value "trustsec_device_password_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "trustsec_device_password_wo_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
+	// Write-only value "trustsec_device_password_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "trustsec_device_password_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("trustsec_device_password_wo"), &plan.TrustsecDevicePasswordWo)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	// Write-only value "trustsec_rest_api_password_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "trustsec_rest_api_password_wo_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
+	// Write-only value "trustsec_rest_api_password_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "trustsec_rest_api_password_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("trustsec_rest_api_password_wo"), &plan.TrustsecRestApiPasswordWo)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	// Write-only value "trustsec_enable_mode_password_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "trustsec_enable_mode_password_wo_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
+	// Write-only value "trustsec_enable_mode_password_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "trustsec_enable_mode_password_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("trustsec_enable_mode_password_wo"), &plan.TrustsecEnableModePasswordWo)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	// Write-only value "trustsec_exec_mode_password_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "trustsec_exec_mode_password_wo_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
+	// Write-only value "trustsec_exec_mode_password_wo" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "trustsec_exec_mode_password_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("trustsec_exec_mode_password_wo"), &plan.TrustsecExecModePasswordWo)...)
 	if resp.Diagnostics.HasError() {
 		return

@@ -73,10 +73,10 @@ func (data InternalUser) toBody(ctx context.Context, state InternalUser) string 
 	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.name", data.Name.ValueString())
 	}
-	if !data.Password.IsNull() && data.Password != state.Password {
+	if !data.Password.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.password", data.Password.ValueString())
 	}
-	if !data.PasswordWo.IsNull() && data.PasswordWo != state.PasswordWo {
+	if !data.PasswordWo.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.password", data.PasswordWo.ValueString())
 	}
 	if !data.ChangePassword.IsNull() {

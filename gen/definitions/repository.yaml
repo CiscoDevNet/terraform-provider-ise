@@ -33,6 +33,7 @@ attributes:
   - model_name: password
     type: String
     write_only: true
+    write_only_tf: true
     description: Password can contain alphanumeric and/or special characters.
     example: cisco123
   - model_name: enablePki

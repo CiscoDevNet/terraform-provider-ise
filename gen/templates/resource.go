@@ -108,8 +108,8 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 					{{- if len .MutualExclusivityNote -}}
 					.AddMutualExclusivityDescription("{{.MutualExclusivityNote}}")
 					{{- end -}}
-					{{- if len .DeprecationMessage -}}
-					.AddDeprecationDescription("{{.DeprecationMessage}}")
+					{{- if len .CoexistenceNote -}}
+					.AddCoexistenceNote("{{.CoexistenceNote}}")
 					{{- end -}}
 					.String,
 					{{- if and (eq .Type "String") .NormalizeOperator}}
@@ -127,7 +127,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 				WriteOnly:           true,
 				Sensitive:           true,
 				{{- else}}
-				{{- if .LegacyWriteOnlyTF}}
+				{{- if .CoexistingSecret}}
 				Sensitive:           true,
 				{{- end}}
 				{{- if or .Reference .Mandatory}}
@@ -204,8 +204,8 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 								{{- if len .MutualExclusivityNote -}}
 								.AddMutualExclusivityDescription("{{.MutualExclusivityNote}}")
 								{{- end -}}
-								{{- if len .DeprecationMessage -}}
-								.AddDeprecationDescription("{{.DeprecationMessage}}")
+								{{- if len .CoexistenceNote -}}
+								.AddCoexistenceNote("{{.CoexistenceNote}}")
 								{{- end -}}
 								.String,
 								{{- if and (eq .Type "String") .NormalizeOperator}}
@@ -223,7 +223,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 							WriteOnly:           true,
 							Sensitive:           true,
 							{{- else}}
-							{{- if .LegacyWriteOnlyTF}}
+							{{- if .CoexistingSecret}}
 							Sensitive:           true,
 							{{- end}}
 							{{- if or .Reference .Mandatory}}
@@ -296,8 +296,8 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 											{{- if len .MutualExclusivityNote -}}
 											.AddMutualExclusivityDescription("{{.MutualExclusivityNote}}")
 											{{- end -}}
-											{{- if len .DeprecationMessage -}}
-											.AddDeprecationDescription("{{.DeprecationMessage}}")
+											{{- if len .CoexistenceNote -}}
+											.AddCoexistenceNote("{{.CoexistenceNote}}")
 											{{- end -}}
 											.String,
 											{{- if and (eq .Type "String") .NormalizeOperator}}
@@ -315,7 +315,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 										WriteOnly:           true,
 										Sensitive:           true,
 										{{- else}}
-										{{- if .LegacyWriteOnlyTF}}
+										{{- if .CoexistingSecret}}
 										Sensitive:           true,
 										{{- end}}
 										{{- if or .Reference .Mandatory}}
@@ -388,8 +388,8 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 														{{- if len .MutualExclusivityNote -}}
 														.AddMutualExclusivityDescription("{{.MutualExclusivityNote}}")
 														{{- end -}}
-														{{- if len .DeprecationMessage -}}
-														.AddDeprecationDescription("{{.DeprecationMessage}}")
+														{{- if len .CoexistenceNote -}}
+														.AddCoexistenceNote("{{.CoexistenceNote}}")
 														{{- end -}}
 														.String,
 														{{- if and (eq .Type "String") .NormalizeOperator}}
@@ -407,7 +407,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 													WriteOnly:           true,
 													Sensitive:           true,
 													{{- else}}
-													{{- if .LegacyWriteOnlyTF}}
+													{{- if .CoexistingSecret}}
 													Sensitive:           true,
 													{{- end}}
 													{{- if or .Reference .Mandatory}}
@@ -480,8 +480,8 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																	{{- if len .MutualExclusivityNote -}}
 																	.AddMutualExclusivityDescription("{{.MutualExclusivityNote}}")
 																	{{- end -}}
-																	{{- if len .DeprecationMessage -}}
-																	.AddDeprecationDescription("{{.DeprecationMessage}}")
+																	{{- if len .CoexistenceNote -}}
+																	.AddCoexistenceNote("{{.CoexistenceNote}}")
 																	{{- end -}}
 																	.String,
 																	{{- if and (eq .Type "String") .NormalizeOperator}}
@@ -499,7 +499,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																WriteOnly:           true,
 																Sensitive:           true,
 																{{- else}}
-																{{- if .LegacyWriteOnlyTF}}
+																{{- if .CoexistingSecret}}
 																Sensitive:           true,
 																{{- end}}
 																{{- if or .Reference .Mandatory}}
@@ -572,8 +572,8 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																				{{- if len .MutualExclusivityNote -}}
 																				.AddMutualExclusivityDescription("{{.MutualExclusivityNote}}")
 																				{{- end -}}
-																				{{- if len .DeprecationMessage -}}
-																				.AddDeprecationDescription("{{.DeprecationMessage}}")
+																				{{- if len .CoexistenceNote -}}
+																				.AddCoexistenceNote("{{.CoexistenceNote}}")
 																				{{- end -}}
 																				.String,
 																				{{- if and (eq .Type "String") .NormalizeOperator}}
@@ -591,7 +591,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																			WriteOnly:           true,
 																			Sensitive:           true,
 																			{{- else}}
-																			{{- if .LegacyWriteOnlyTF}}
+																			{{- if .CoexistingSecret}}
 																			Sensitive:           true,
 																			{{- end}}
 																			{{- if or .Reference .Mandatory}}
@@ -664,8 +664,8 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																						{{- if len .MutualExclusivityNote -}}
 																						.AddMutualExclusivityDescription("{{.MutualExclusivityNote}}")
 																						{{- end -}}
-																						{{- if len .DeprecationMessage -}}
-																						.AddDeprecationDescription("{{.DeprecationMessage}}")
+																						{{- if len .CoexistenceNote -}}
+																						.AddCoexistenceNote("{{.CoexistenceNote}}")
 																						{{- end -}}
 																						.String,
 																						{{- if and (eq .Type "String") .NormalizeOperator}}
@@ -683,7 +683,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																					WriteOnly:           true,
 																					Sensitive:           true,
 																					{{- else}}
-																					{{- if .LegacyWriteOnlyTF}}
+																					{{- if .CoexistingSecret}}
 																					Sensitive:           true,
 																					{{- end}}
 																					{{- if or .Reference .Mandatory}}
@@ -862,11 +862,10 @@ func (r *{{camelCase .Name}}Resource) Configure(_ context.Context, req resource.
 
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
-{{- if or (legacyWriteOnlyTFAttributes .) (legacyWriteOnlyTFParentLists .)}}
+{{- if or (coexistingSecretAttributes .) (coexistingSecretParentLists .)}}
 
-// ValidateConfig enforces the relationship between a deprecated secret attribute, its
-// write-only "_wo" replacement and the "_wo_version" rotation trigger, and raises the
-// deprecation warning for the old attribute.
+// ValidateConfig enforces the relationship between a secret attribute, its write-only
+// "_wo" counterpart and the "_wo_version" rotation trigger.
 //
 // These checks live here, at resource level, rather than as schema validators. The
 // equivalent validators (ConflictsWith, ExactlyOneOf, AlsoRequires) report against an
@@ -876,7 +875,7 @@ func (r *{{camelCase .Name}}Resource) Configure(_ context.Context, req resource.
 // header instead, so the messages name the attributes explicitly, and identify the list
 // element by index for secrets nested inside a list.
 func (r *{{camelCase .Name}}Resource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
-	{{- range legacyWriteOnlyTFAttributes .}}
+	{{- range coexistingSecretAttributes .}}
 	{{- $go := toGoName .TfName}}
 	var legacy{{$go}} types.String
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("{{.TfName}}"), &legacy{{$go}})...)
@@ -908,11 +907,8 @@ func (r *{{camelCase .Name}}Resource) ValidateConfig(ctx context.Context, req re
 		)
 	}
 	{{- end}}
-	if !legacy{{$go}}.IsUnknown() && !legacy{{$go}}.IsNull() {
-		resp.Diagnostics.AddWarning("Attribute Deprecated", "{{.DeprecationMessage}}")
-	}
 	{{- end}}
-	{{- range legacyWriteOnlyTFParentLists .}}
+	{{- range coexistingSecretParentLists .}}
 	{{- $parentTf := .TfName}}
 	{{- $parentGo := toGoName .TfName}}
 	{
@@ -922,7 +918,7 @@ func (r *{{camelCase .Name}}Resource) ValidateConfig(ctx context.Context, req re
 		var cfg{{$parentGo}} []{{camelCase $.Name}}{{$parentGo}}
 		if diags := req.Config.GetAttribute(ctx, path.Root("{{$parentTf}}"), &cfg{{$parentGo}}); !diags.HasError() {
 			for i := range cfg{{$parentGo}} {
-				{{- range legacyWriteOnlyTFChildren .}}
+				{{- range coexistingSecretChildren .}}
 				{{- $go := toGoName .TfName}}
 				if !cfg{{$parentGo}}[i].{{$go}}.IsUnknown() && !cfg{{$parentGo}}[i].{{$go}}Wo.IsUnknown() && !cfg{{$parentGo}}[i].{{$go}}.IsNull() && !cfg{{$parentGo}}[i].{{$go}}Wo.IsNull() {
 					resp.Diagnostics.AddError(
@@ -946,9 +942,6 @@ func (r *{{camelCase .Name}}Resource) ValidateConfig(ctx context.Context, req re
 					)
 				}
 				{{- end}}
-				if !cfg{{$parentGo}}[i].{{$go}}.IsUnknown() && !cfg{{$parentGo}}[i].{{$go}}.IsNull() {
-					resp.Diagnostics.AddWarning("Attribute Deprecated", fmt.Sprintf("{{.DeprecationMessage}} (`{{$parentTf}}` element %d)", i))
-				}
 				{{- end}}
 			}
 		}
@@ -1238,7 +1231,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	}
 	{{- range .Attributes}}
 	{{- if .WriteOnlyTF}}
-	// Write-only value "{{.TfName}}" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "{{.TfName}}_wo_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
+	// Write-only value "{{.TfName}}" is not stored in plan/state; read it from config so it can be sent to the API. It is read unconditionally on every Update: the whole toBody is sent and the API requires the secret to be present on every write. The "{{.TfName}}_version" companion still drives whether Terraform detects a change worth applying; it cannot make the on-wire request omit the field.
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("{{.TfName}}"), &plan.{{toGoName .TfName}})...)
 	if resp.Diagnostics.HasError() {
 		return
