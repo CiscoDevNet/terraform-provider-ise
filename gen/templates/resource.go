@@ -293,6 +293,12 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 											{{- if .DefaultValue -}}
 											.AddDefaultValueDescription("{{.DefaultValue}}")
 											{{- end -}}
+											{{- if len .MutualExclusivityNote -}}
+											.AddMutualExclusivityDescription("{{.MutualExclusivityNote}}")
+											{{- end -}}
+											{{- if len .DeprecationMessage -}}
+											.AddDeprecationDescription("{{.DeprecationMessage}}")
+											{{- end -}}
 											.String,
 											{{- if and (eq .Type "String") .NormalizeOperator}}
 											CustomType: helpers.OperatorType{},
@@ -304,6 +310,14 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 										{{- else if eq .Type "Map"}}
 										ElementType:         types.StringType,
 										{{- end}}
+										{{- if .WriteOnlyTF}}
+										Optional:            true,
+										WriteOnly:           true,
+										Sensitive:           true,
+										{{- else}}
+										{{- if .LegacyWriteOnlyTF}}
+										Sensitive:           true,
+										{{- end}}
 										{{- if or .Reference .Mandatory}}
 										Required:            true,
 										{{- else}}
@@ -311,6 +325,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 										{{- end}}
 										{{- if or .DefaultValue .Computed}}
 										Computed:            true,
+										{{- end}}
 										{{- end}}
 										{{- if len .EnumValues}}
 										Validators: []validator.String{
@@ -370,6 +385,12 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 														{{- if .DefaultValue -}}
 														.AddDefaultValueDescription("{{.DefaultValue}}")
 														{{- end -}}
+														{{- if len .MutualExclusivityNote -}}
+														.AddMutualExclusivityDescription("{{.MutualExclusivityNote}}")
+														{{- end -}}
+														{{- if len .DeprecationMessage -}}
+														.AddDeprecationDescription("{{.DeprecationMessage}}")
+														{{- end -}}
 														.String,
 														{{- if and (eq .Type "String") .NormalizeOperator}}
 														CustomType: helpers.OperatorType{},
@@ -381,6 +402,14 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 													{{- else if eq .Type "Map"}}
 													ElementType:         types.StringType,
 													{{- end}}
+													{{- if .WriteOnlyTF}}
+													Optional:            true,
+													WriteOnly:           true,
+													Sensitive:           true,
+													{{- else}}
+													{{- if .LegacyWriteOnlyTF}}
+													Sensitive:           true,
+													{{- end}}
 													{{- if or .Reference .Mandatory}}
 													Required:            true,
 													{{- else}}
@@ -388,6 +417,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 													{{- end}}
 													{{- if or .DefaultValue .Computed}}
 													Computed:            true,
+													{{- end}}
 													{{- end}}
 													{{- if len .EnumValues}}
 													Validators: []validator.String{
@@ -447,6 +477,12 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																	{{- if .DefaultValue -}}
 																	.AddDefaultValueDescription("{{.DefaultValue}}")
 																	{{- end -}}
+																	{{- if len .MutualExclusivityNote -}}
+																	.AddMutualExclusivityDescription("{{.MutualExclusivityNote}}")
+																	{{- end -}}
+																	{{- if len .DeprecationMessage -}}
+																	.AddDeprecationDescription("{{.DeprecationMessage}}")
+																	{{- end -}}
 																	.String,
 																	{{- if and (eq .Type "String") .NormalizeOperator}}
 																	CustomType: helpers.OperatorType{},
@@ -458,6 +494,14 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																{{- else if eq .Type "Map"}}
 																ElementType:         types.StringType,
 																{{- end}}
+																{{- if .WriteOnlyTF}}
+																Optional:            true,
+																WriteOnly:           true,
+																Sensitive:           true,
+																{{- else}}
+																{{- if .LegacyWriteOnlyTF}}
+																Sensitive:           true,
+																{{- end}}
 																{{- if or .Reference .Mandatory}}
 																Required:            true,
 																{{- else}}
@@ -465,6 +509,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																{{- end}}
 																{{- if or .DefaultValue .Computed}}
 																Computed:            true,
+																{{- end}}
 																{{- end}}
 																{{- if len .EnumValues}}
 																Validators: []validator.String{
@@ -524,6 +569,12 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																				{{- if .DefaultValue -}}
 																				.AddDefaultValueDescription("{{.DefaultValue}}")
 																				{{- end -}}
+																				{{- if len .MutualExclusivityNote -}}
+																				.AddMutualExclusivityDescription("{{.MutualExclusivityNote}}")
+																				{{- end -}}
+																				{{- if len .DeprecationMessage -}}
+																				.AddDeprecationDescription("{{.DeprecationMessage}}")
+																				{{- end -}}
 																				.String,
 																				{{- if and (eq .Type "String") .NormalizeOperator}}
 																				CustomType: helpers.OperatorType{},
@@ -535,6 +586,14 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																			{{- else if eq .Type "Map"}}
 																			ElementType:         types.StringType,
 																			{{- end}}
+																			{{- if .WriteOnlyTF}}
+																			Optional:            true,
+																			WriteOnly:           true,
+																			Sensitive:           true,
+																			{{- else}}
+																			{{- if .LegacyWriteOnlyTF}}
+																			Sensitive:           true,
+																			{{- end}}
 																			{{- if or .Reference .Mandatory}}
 																			Required:            true,
 																			{{- else}}
@@ -542,6 +601,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																			{{- end}}
 																			{{- if or .DefaultValue .Computed}}
 																			Computed:            true,
+																			{{- end}}
 																			{{- end}}
 																			{{- if len .EnumValues}}
 																			Validators: []validator.String{
@@ -601,6 +661,12 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																						{{- if .DefaultValue -}}
 																						.AddDefaultValueDescription("{{.DefaultValue}}")
 																						{{- end -}}
+																						{{- if len .MutualExclusivityNote -}}
+																						.AddMutualExclusivityDescription("{{.MutualExclusivityNote}}")
+																						{{- end -}}
+																						{{- if len .DeprecationMessage -}}
+																						.AddDeprecationDescription("{{.DeprecationMessage}}")
+																						{{- end -}}
 																						.String,
 																						{{- if and (eq .Type "String") .NormalizeOperator}}
 																						CustomType: helpers.OperatorType{},
@@ -612,6 +678,14 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																					{{- else if eq .Type "Map"}}
 																					ElementType:         types.StringType,
 																					{{- end}}
+																					{{- if .WriteOnlyTF}}
+																					Optional:            true,
+																					WriteOnly:           true,
+																					Sensitive:           true,
+																					{{- else}}
+																					{{- if .LegacyWriteOnlyTF}}
+																					Sensitive:           true,
+																					{{- end}}
 																					{{- if or .Reference .Mandatory}}
 																					Required:            true,
 																					{{- else}}
@@ -619,6 +693,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																					{{- end}}
 																					{{- if or .DefaultValue .Computed}}
 																					Computed:            true,
+																					{{- end}}
 																					{{- end}}
 																					{{- if len .EnumValues}}
 																					Validators: []validator.String{
