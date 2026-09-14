@@ -36,6 +36,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
+	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
 )
 
 //template:end imports
@@ -52,6 +54,7 @@ func NewEndpointResource() resource.Resource {
 
 type EndpointResource struct {
 	client *ise.Client
+	cache  *ThreadSafeCache
 }
 
 func (r *EndpointResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -206,12 +209,14 @@ func (r *EndpointResource) Configure(_ context.Context, req resource.ConfigureRe
 	}
 
 	r.client = req.ProviderData.(*IseProviderData).Client
+	r.cache = req.ProviderData.(*IseProviderData).Cache
 }
 
 //template:end configure
 
 func (r *EndpointResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan Endpoint
+	r.cache.Delete("Endpoint")
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -300,7 +305,7 @@ func (r *EndpointResource) Read(ctx context.Context, req resource.ReadRequest, r
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
-	res, err := r.client.Get(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()))
+	res, err := r.ReadCache(ctx, state)
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
@@ -324,9 +329,60 @@ func (r *EndpointResource) Read(ctx context.Context, req resource.ReadRequest, r
 
 //template:end read
 
+// ReadCache obtains all objects from the configured bulk endpoint once, then
+// returns the requested object in the response envelope expected by this ERS
+// resource's existing generated model mapper.
+//
+//template:begin readcache
+func (r *EndpointResource) ReadCache(ctx context.Context, state Endpoint) (gjson.Result, error) {
+	items, cacheHit, err := r.cache.GetOrLoad("Endpoint", func() (map[string]gjson.Result, error) {
+		allItems := make(map[string]gjson.Result)
+		for page := 1; ; page++ {
+			separator := "?"
+			if strings.Contains("/api/v1/endpoint", "?") {
+				separator = "&"
+			}
+			res, err := r.client.Get(fmt.Sprintf("/api/v1/endpoint%ssize=100&page=%d", separator, page))
+			if err != nil {
+				return nil, err
+			}
+			values := res
+			for _, value := range values.Array() {
+				if id := value.Get("id").String(); id != "" {
+					allItems[id] = value
+				}
+			}
+			if len(values.Array()) < 100 {
+				break
+			}
+		}
+		return allItems, nil
+	})
+	if err != nil {
+		return gjson.Result{}, err
+	}
+	if cacheHit {
+		tflog.Debug(ctx, "Endpoint: cache hit")
+	} else {
+		tflog.Debug(ctx, "Endpoint: cache populated", map[string]any{"objects": len(items)})
+	}
+	value, found := items[state.Id.ValueString()]
+	if !found {
+		return gjson.Result{}, fmt.Errorf("StatusCode 404: object not found in cache")
+	}
+	body, err := sjson.SetRaw("{}", "ERSEndPoint", value.Raw)
+	if err != nil {
+		return gjson.Result{}, err
+	}
+	return gjson.Parse(body), nil
+}
+
+//template:end readcache
+
 //template:begin update
 func (r *EndpointResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state Endpoint
+	r.cache.Delete("Endpoint")
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -377,6 +433,7 @@ func (r *EndpointResource) Update(ctx context.Context, req resource.UpdateReques
 //template:begin delete
 func (r *EndpointResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	var state Endpoint
+	r.cache.Delete("Endpoint")
 
 	// Read state
 	diags := req.State.Get(ctx, &state)

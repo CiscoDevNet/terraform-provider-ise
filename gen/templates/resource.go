@@ -68,6 +68,9 @@ func New{{camelCase .Name}}Resource() resource.Resource {
 
 type {{camelCase .Name}}Resource struct {
 	client *ise.Client
+	{{- if .UseCache}}
+	cache *ThreadSafeCache
+	{{- end}}
 }
 
 func (r *{{camelCase .Name}}Resource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -756,12 +759,18 @@ func (r *{{camelCase .Name}}Resource) Configure(_ context.Context, req resource.
 	}
 
 	r.client = req.ProviderData.(*IseProviderData).Client
+	{{- if .UseCache}}
+	r.cache = req.ProviderData.(*IseProviderData).Cache
+	{{- end}}
 }
 //template:end configure
 
 //template:begin create
 func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan {{camelCase .Name}}
+	{{- if .UseCache}}
+	r.cache.Delete("{{camelCase .Name}}")
+	{{- end}}
 	{{- if strContains (camelCase .Name) "UpdateRanks" }}
 	var existingData {{strReplace (camelCase .Name) "UpdateRanks" "" -1}}
 	{{- else if strContains (camelCase .Name) "UpdateRank" }}
@@ -962,7 +971,11 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 	{{- if strContains (camelCase .Name) "UpdateRanks" }}
 	res, err := r.client.Get(state.getPath())
 	{{- else}}
+	{{- if .UseCache}}
+	res, err := r.ReadCache(ctx, state)
+	{{- else}}
 	res, err := r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + url.QueryEscape(state.Id.ValueString()){{end}})
+	{{- end}}
 	{{- end}}
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
@@ -987,9 +1000,63 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 }
 //template:end read
 
+{{- if .UseCache}}
+//template:begin readcache
+func (r *{{camelCase .Name}}Resource) ReadCache(ctx context.Context, state {{camelCase .Name}}) (gjson.Result, error) {
+	items, cacheHit, err := r.cache.GetOrLoad("{{camelCase .Name}}", func() (map[string]gjson.Result, error) {
+		allItems := make(map[string]gjson.Result)
+		for page := 1; ; page++ {
+			separator := "?"
+			if strings.Contains("{{.CacheRestEndpoint}}", "?") {
+				separator = "&"
+			}
+			res, err := r.client.Get(fmt.Sprintf("{{.CacheRestEndpoint}}%ssize=100&page=%d", separator, page))
+			if err != nil {
+				return nil, err
+			}
+			values := res{{if .CacheResponsePath}}.Get("{{.CacheResponsePath}}"){{end}}
+			for _, value := range values.Array() {
+				if id := value.Get("id").String(); id != "" {
+					allItems[id] = value
+				}
+			}
+			if len(values.Array()) < 100 {
+				break
+			}
+		}
+		return allItems, nil
+	})
+	if err != nil {
+		return gjson.Result{}, err
+	}
+	if cacheHit {
+		tflog.Debug(ctx, "{{camelCase .Name}}: cache hit")
+	} else {
+		tflog.Debug(ctx, "{{camelCase .Name}}: cache populated", map[string]any{"objects": len(items)})
+	}
+	value, found := items[state.Id.ValueString()]
+	if !found {
+		return gjson.Result{}, fmt.Errorf("StatusCode 404: object not found in cache")
+	}
+	{{- if .CacheResponseWrapper}}
+	body, err := sjson.SetRaw("{}", "{{.CacheResponseWrapper}}", value.Raw)
+	if err != nil {
+		return gjson.Result{}, err
+	}
+	return gjson.Parse(body), nil
+	{{- else}}
+	return value, nil
+	{{- end}}
+}
+//template:end readcache
+{{- end}}
+
 //template:begin update
 func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state {{camelCase .Name}}
+	{{- if .UseCache}}
+	r.cache.Delete("{{camelCase .Name}}")
+	{{- end}}
 	{{- if strContains (camelCase .Name) "UpdateRanks" }}
 	var existingData {{strReplace (camelCase .Name) "UpdateRanks" "" -1}}
 	{{- else if strContains (camelCase .Name) "UpdateRank" }}
@@ -1155,6 +1222,9 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 //template:begin delete
 func (r *{{camelCase .Name}}Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	var state {{camelCase .Name}}
+	{{- if .UseCache}}
+	r.cache.Delete("{{camelCase .Name}}")
+	{{- end}}
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
