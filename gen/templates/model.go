@@ -372,7 +372,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 	{{- range .Attributes}}
 	{{- if .Value}}
 	body, _ = sjson.Set(body, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if eq .Type "String"}}"{{end}}{{.Value}}{{if eq .Type "String"}}"{{end}})
-	{{- else if not .Reference}}
+	{{- else if and (not .Reference) (not .WoVersion)}}
 	{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 	{{- if .ExcludeUpdate}}
 	if !data.{{toGoName .TfName}}.IsNull() && state.Id.ValueString() == "" {
@@ -403,7 +403,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 			{{- range .Attributes}}
 			{{- if .Value}}
 			itemBody, _ = sjson.Set(itemBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if eq .Type "String"}}"{{end}}{{.Value}}{{if eq .Type "String"}}"{{end}})
-			{{- else if not .Reference}}
+			{{- else if and (not .Reference) (not .WoVersion)}}
 			{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 			if !item.{{toGoName .TfName}}.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if and (eq .Type "String") .NormalizeOperator}}helpers.NormalizeOperator(item.{{toGoName .TfName}}.ValueString()){{else}}item.{{toGoName .TfName}}.Value{{.Type}}(){{end}})
@@ -428,7 +428,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 					{{- range .Attributes}}
 					{{- if .Value}}
 					itemChildBody, _ = sjson.Set(itemChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if eq .Type "String"}}"{{end}}{{.Value}}{{if eq .Type "String"}}"{{end}})
-					{{- else if not .Reference}}
+					{{- else if and (not .Reference) (not .WoVersion)}}
 					{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 					if !childItem.{{toGoName .TfName}}.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if and (eq .Type "String") .NormalizeOperator}}helpers.NormalizeOperator(childItem.{{toGoName .TfName}}.ValueString()){{else}}childItem.{{toGoName .TfName}}.Value{{.Type}}(){{end}})
@@ -453,7 +453,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 							{{- range .Attributes}}
 							{{- if .Value}}
 							itemChildChildBody, _ = sjson.Set(itemChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if eq .Type "String"}}"{{end}}{{.Value}}{{if eq .Type "String"}}"{{end}})
-							{{- else if not .Reference}}
+							{{- else if and (not .Reference) (not .WoVersion)}}
 							{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 							if !childChildItem.{{toGoName .TfName}}.IsNull() {
 								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if and (eq .Type "String") .NormalizeOperator}}helpers.NormalizeOperator(childChildItem.{{toGoName .TfName}}.ValueString()){{else}}childChildItem.{{toGoName .TfName}}.Value{{.Type}}(){{end}})
@@ -478,7 +478,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 									{{- range .Attributes}}
 									{{- if .Value}}
 									itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if eq .Type "String"}}"{{end}}{{.Value}}{{if eq .Type "String"}}"{{end}})
-									{{- else if not .Reference}}
+									{{- else if and (not .Reference) (not .WoVersion)}}
 									{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 									if !childChildChildItem.{{toGoName .TfName}}.IsNull() {
 										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if and (eq .Type "String") .NormalizeOperator}}helpers.NormalizeOperator(childChildChildItem.{{toGoName .TfName}}.ValueString()){{else}}childChildChildItem.{{toGoName .TfName}}.Value{{.Type}}(){{end}})
@@ -503,7 +503,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 											{{- range .Attributes}}
 											{{- if .Value}}
 											itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if eq .Type "String"}}"{{end}}{{.Value}}{{if eq .Type "String"}}"{{end}})
-											{{- else if not .Reference}}
+											{{- else if and (not .Reference) (not .WoVersion)}}
 											{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 											if !childChildChildChildItem.{{toGoName .TfName}}.IsNull() {
 												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if and (eq .Type "String") .NormalizeOperator}}helpers.NormalizeOperator(childChildChildChildItem.{{toGoName .TfName}}.ValueString()){{else}}childChildChildChildItem.{{toGoName .TfName}}.Value{{.Type}}(){{end}})
@@ -528,7 +528,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 													{{- range .Attributes}}
 													{{- if .Value}}
 													itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if eq .Type "String"}}"{{end}}{{.Value}}{{if eq .Type "String"}}"{{end}})
-													{{- else if not .Reference}}
+													{{- else if and (not .Reference) (not .WoVersion)}}
 													{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 													if !childChildChildChildChildItem.{{toGoName .TfName}}.IsNull() {
 														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if and (eq .Type "String") .NormalizeOperator}}helpers.NormalizeOperator(childChildChildChildChildItem.{{toGoName .TfName}}.ValueString()){{else}}childChildChildChildChildItem.{{toGoName .TfName}}.Value{{.Type}}(){{end}})
@@ -591,7 +591,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 //template:begin fromBody
 func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result) {
 	{{- range .Attributes}}
-	{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
+	{{- if and (not .Value) (not .WriteOnly) (not .WoVersion) (not .Reference)}}
 	{{- $cname := toGoName .TfName}}
 	{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 	{{- if .ComputedWhen}}
@@ -638,7 +638,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 			item := {{$name}}{{toGoName .TfName}}{}
 			{{- range .Attributes}}
 			{{- $ccname := toGoName .TfName}}
-			{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
+			{{- if and (not .Value) (not .WriteOnly) (not .WoVersion) (not .Reference)}}
 			{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 			if cValue := v.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(cValue.String())){{else}}types.{{.Type}}Value(cValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
@@ -673,7 +673,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 				cValue.ForEach(func(ck, cv gjson.Result) bool {
 					cItem := {{$name}}{{$cname}}{{toGoName .TfName}}{}
 					{{- range .Attributes}}
-					{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
+					{{- if and (not .Value) (not .WriteOnly) (not .WoVersion) (not .Reference)}}
 					{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 					if ccValue := cv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(ccValue.String())){{else}}types.{{.Type}}Value(ccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
@@ -709,7 +709,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 							ccItem := {{$name}}{{$cname}}{{$ccname}}{{toGoName .TfName}}{}
 							{{- range .Attributes}}
 							{{- $cccname := toGoName .TfName}}
-							{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
+							{{- if and (not .Value) (not .WriteOnly) (not .WoVersion) (not .Reference)}}
 							{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 							if cccValue := ccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccValue.Exists() && cccValue.Type != gjson.Null {
 								ccItem.{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(cccValue.String())){{else}}types.{{.Type}}Value(cccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
@@ -745,7 +745,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 									cccItem := {{$name}}{{$cname}}{{$ccname}}{{$cccname}}{{toGoName .TfName}}{}
 									{{- range .Attributes}}
 									{{- $ccccname := toGoName .TfName}}
-									{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
+									{{- if and (not .Value) (not .WriteOnly) (not .WoVersion) (not .Reference)}}
 									{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 									if ccccValue := cccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccccValue.Exists() && ccccValue.Type != gjson.Null {
 										cccItem.{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(ccccValue.String())){{else}}types.{{.Type}}Value(ccccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
@@ -781,7 +781,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 											ccccItem := {{$name}}{{$cname}}{{$ccname}}{{$cccname}}{{$ccccname}}{{toGoName .TfName}}{}
 											{{- range .Attributes}}
 											{{- $cccccname := toGoName .TfName}}
-											{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
+											{{- if and (not .Value) (not .WriteOnly) (not .WoVersion) (not .Reference)}}
 											{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 											if cccccValue := ccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccccValue.Exists() && cccccValue.Type != gjson.Null {
 												ccccItem.{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(cccccValue.String())){{else}}types.{{.Type}}Value(cccccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
@@ -814,7 +814,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 												cccccValue.ForEach(func(ccccck, cccccv gjson.Result) bool {
 													cccccItem := {{$name}}{{$cname}}{{$ccname}}{{$cccname}}{{$ccccname}}{{$cccccname}}{{toGoName .TfName}}{}
 													{{- range .Attributes}}
-													{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
+													{{- if and (not .Value) (not .WriteOnly) (not .WoVersion) (not .Reference)}}
 													{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 													if ccccccValue := cccccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccccccValue.Exists() && ccccccValue.Type != gjson.Null {
 														cccccItem.{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(ccccccValue.String())){{else}}types.{{.Type}}Value(ccccccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
@@ -893,7 +893,7 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.Result) {
 	{{- range .Attributes}}
 
-	{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
+	{{- if and (not .Value) (not .WriteOnly) (not .WoVersion) (not .Reference)}}
 	{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 	if value := res.Get("{{if .ResponseDataPath}}{{.ResponseDataPath}}{{else}}{{if $openApi}}response.{{end}}{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}{{end}}"); value.Exists() && !data.{{toGoName .TfName}}.IsNull(){{if .NormalizeEmptyJson}} && !((value.Type == gjson.JSON && len(value.Map()) == 0) || (value.Type == gjson.String && value.String() == "{}")){{end}}{{if .NormalizeEmptyString}} && value.String() != ""{{end}} {
 		data.{{toGoName .TfName}} = {{if .ResponseValueRegex}}types.{{.Type}}Value(helpers.ExtractResponseValue(value.String(), `{{.ResponseValueRegex}}`)){{else if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(value.String())){{else if and (eq .Type "String") .CaseInsensitive}}helpers.NewCaseInsensitiveStringValue(value.String()){{else if and (eq .Type "String") .SortCommaSeparated}}types.StringValue(helpers.SortCommaSeparated(value.String())){{else}}types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
@@ -952,7 +952,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 		}
 
 		{{- range .Attributes}}
-		{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
+		{{- if and (not .Value) (not .WriteOnly) (not .WoVersion) (not .Reference)}}
 		{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 		if value := r.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{toGoName .TfName}}.IsNull() {
 			data.{{$list}}[i].{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(value.String())){{else}}types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
@@ -1009,7 +1009,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 			}
 
 			{{- range .Attributes}}
-			{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
+			{{- if and (not .Value) (not .WriteOnly) (not .WoVersion) (not .Reference)}}
 			{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 			if value := cr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}}.IsNull() {
 				data.{{$list}}[i].{{$clist}}[ci].{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(value.String())){{else}}types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
@@ -1062,7 +1062,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 				}
 
 				{{- range .Attributes}}
-				{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
+				{{- if and (not .Value) (not .WriteOnly) (not .WoVersion) (not .Reference)}}
 				{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 				if value := ccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}}.IsNull() {
 					data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(value.String())){{else}}types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
@@ -1115,7 +1115,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 					}
 
 					{{- range .Attributes}}
-					{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
+					{{- if and (not .Value) (not .WriteOnly) (not .WoVersion) (not .Reference)}}
 					{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 					if value := cccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}}.IsNull() {
 						data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(value.String())){{else}}types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
@@ -1168,7 +1168,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 						}
 
 						{{- range .Attributes}}
-						{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
+						{{- if and (not .Value) (not .WriteOnly) (not .WoVersion) (not .Reference)}}
 						{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 						if value := ccccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}}.IsNull() {
 							data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(value.String())){{else}}types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
@@ -1221,7 +1221,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 							}
 
 							{{- range .Attributes}}
-							{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
+							{{- if and (not .Value) (not .WriteOnly) (not .WoVersion) (not .Reference)}}
 							{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 							if value := cccccr.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); value.Exists() && !data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}}.IsNull() {
 								data.{{$list}}[i].{{$clist}}[ci].{{$cclist}}[cci].{{$ccclist}}[ccci].{{$cccclist}}[cccci].{{$ccccclist}}[ccccci].{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(value.String())){{else}}types.{{.Type}}Value(value.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
@@ -1273,7 +1273,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 			item := {{$name}}{{toGoName .TfName}}{}
 			{{- range .Attributes}}
 			{{- $ccname := toGoName .TfName}}
-			{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
+			{{- if and (not .Value) (not .WriteOnly) (not .WoVersion) (not .Reference)}}
 			{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 			if cValue := v.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cValue.Exists() && cValue.Type != gjson.Null {
 				item.{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(cValue.String())){{else}}types.{{.Type}}Value(cValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
@@ -1304,7 +1304,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 				cValue.ForEach(func(ck, cv gjson.Result) bool {
 					cItem := {{$name}}{{$cname}}{{toGoName .TfName}}{}
 					{{- range .Attributes}}
-					{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
+					{{- if and (not .Value) (not .WriteOnly) (not .WoVersion) (not .Reference)}}
 					{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 					if ccValue := cv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(ccValue.String())){{else}}types.{{.Type}}Value(ccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}
@@ -1335,7 +1335,7 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 						ccValue.ForEach(func(cck, ccv gjson.Result) bool {
 							ccItem := {{$name}}{{$cname}}{{$ccname}}{{toGoName .TfName}}{}
 							{{- range .Attributes}}
-							{{- if and (not .Value) (not .WriteOnly) (not .Reference)}}
+							{{- if and (not .Value) (not .WriteOnly) (not .WoVersion) (not .Reference)}}
 							{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 							if cccValue := ccv.Get("{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}"); cccValue.Exists() && cccValue.Type != gjson.Null {
 								ccItem.{{toGoName .TfName}} = {{if and (eq .Type "String") .NormalizeOperator}}helpers.NewOperatorValue(helpers.NormalizeOperator(cccValue.String())){{else}}types.{{.Type}}Value(cccValue.{{if eq .Type "Int64"}}Int{{else if eq .Type "Float64"}}Float{{else}}{{.Type}}{{end}}()){{end}}

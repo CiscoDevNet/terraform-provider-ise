@@ -34,13 +34,13 @@ func TestAccDataSourceIseNetworkDevice(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "name", "Device1"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "description", "My device"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "authentication_enable_key_wrap", "true"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "authentication_encryption_key", "cisco123cisco123"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "authentication_encryption_key_wo_version", "1"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "authentication_encryption_key_format", "ASCII"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "authentication_message_authenticator_code_key", "cisco123cisco1235678"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "authentication_message_authenticator_code_key_wo_version", "1"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "authentication_network_protocol", "RADIUS"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "authentication_radius_shared_secret", "cisco123"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "authentication_radius_shared_secret_wo_version", "1"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "authentication_enable_multi_secret", "true"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "authentication_second_radius_shared_secret", "cisco12345"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "authentication_second_radius_shared_secret_wo_version", "1"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "authentication_dtls_required", "true"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "coa_port", "12345"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "dtls_dns_name", "cisco.com"))
@@ -56,16 +56,17 @@ func TestAccDataSourceIseNetworkDevice(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "snmp_username", "user123"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "snmp_security_level", "PRIV"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "snmp_auth_protocol", "SHA2"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "snmp_auth_password", "Cisco123"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "snmp_auth_password_wo_version", "1"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "snmp_privacy_protocol", "AES256"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "snmp_privacy_password", "Cisco12345"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "snmp_privacy_password_wo_version", "1"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "tacacs_connect_mode_options", "OFF"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "tacacs_shared_secret", "cisco123"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "tacacs_shared_secret_wo_version", "1"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "trustsec_device_id", "device123"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "trustsec_device_password", "cisco123"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "trustsec_device_password_wo_version", "1"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "trustsec_rest_api_username", "user123"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "trustsec_enable_mode_password", "cisco123"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "trustsec_exec_mode_password", "cisco123"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "trustsec_rest_api_password_wo_version", "1"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "trustsec_enable_mode_password_wo_version", "1"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "trustsec_exec_mode_password_wo_version", "1"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "trustsec_exec_mode_username", "user456"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "trustsec_include_when_deploying_sgt_updates", "true"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_network_device.test", "trustsec_download_environment_data_every_x_seconds", "1000"))
@@ -98,13 +99,17 @@ func testAccDataSourceIseNetworkDeviceConfig() string {
 	config += `	name = "Device1"` + "\n"
 	config += `	description = "My device"` + "\n"
 	config += `	authentication_enable_key_wrap = true` + "\n"
-	config += `	authentication_encryption_key = "cisco123cisco123"` + "\n"
+	config += `	authentication_encryption_key_wo = "cisco123cisco123"` + "\n"
+	config += `	authentication_encryption_key_wo_version = 1` + "\n"
 	config += `	authentication_encryption_key_format = "ASCII"` + "\n"
-	config += `	authentication_message_authenticator_code_key = "cisco123cisco1235678"` + "\n"
+	config += `	authentication_message_authenticator_code_key_wo = "cisco123cisco1235678"` + "\n"
+	config += `	authentication_message_authenticator_code_key_wo_version = 1` + "\n"
 	config += `	authentication_network_protocol = "RADIUS"` + "\n"
-	config += `	authentication_radius_shared_secret = "cisco123"` + "\n"
+	config += `	authentication_radius_shared_secret_wo = "cisco123"` + "\n"
+	config += `	authentication_radius_shared_secret_wo_version = 1` + "\n"
 	config += `	authentication_enable_multi_secret = true` + "\n"
-	config += `	authentication_second_radius_shared_secret = "cisco12345"` + "\n"
+	config += `	authentication_second_radius_shared_secret_wo = "cisco12345"` + "\n"
+	config += `	authentication_second_radius_shared_secret_wo_version = 1` + "\n"
 	config += `	authentication_dtls_required = true` + "\n"
 	config += `	coa_port = 12345` + "\n"
 	config += `	dtls_dns_name = "cisco.com"` + "\n"
@@ -122,17 +127,24 @@ func testAccDataSourceIseNetworkDeviceConfig() string {
 	config += `	snmp_username = "user123"` + "\n"
 	config += `	snmp_security_level = "PRIV"` + "\n"
 	config += `	snmp_auth_protocol = "SHA2"` + "\n"
-	config += `	snmp_auth_password = "Cisco123"` + "\n"
+	config += `	snmp_auth_password_wo = "Cisco123"` + "\n"
+	config += `	snmp_auth_password_wo_version = 1` + "\n"
 	config += `	snmp_privacy_protocol = "AES256"` + "\n"
-	config += `	snmp_privacy_password = "Cisco12345"` + "\n"
+	config += `	snmp_privacy_password_wo = "Cisco12345"` + "\n"
+	config += `	snmp_privacy_password_wo_version = 1` + "\n"
 	config += `	tacacs_connect_mode_options = "OFF"` + "\n"
-	config += `	tacacs_shared_secret = "cisco123"` + "\n"
+	config += `	tacacs_shared_secret_wo = "cisco123"` + "\n"
+	config += `	tacacs_shared_secret_wo_version = 1` + "\n"
 	config += `	trustsec_device_id = "device123"` + "\n"
-	config += `	trustsec_device_password = "cisco123"` + "\n"
+	config += `	trustsec_device_password_wo = "cisco123"` + "\n"
+	config += `	trustsec_device_password_wo_version = 1` + "\n"
 	config += `	trustsec_rest_api_username = "user123"` + "\n"
-	config += `	trustsec_rest_api_password = "Cisco123"` + "\n"
-	config += `	trustsec_enable_mode_password = "cisco123"` + "\n"
-	config += `	trustsec_exec_mode_password = "cisco123"` + "\n"
+	config += `	trustsec_rest_api_password_wo = "Cisco123"` + "\n"
+	config += `	trustsec_rest_api_password_wo_version = 1` + "\n"
+	config += `	trustsec_enable_mode_password_wo = "cisco123"` + "\n"
+	config += `	trustsec_enable_mode_password_wo_version = 1` + "\n"
+	config += `	trustsec_exec_mode_password_wo = "cisco123"` + "\n"
+	config += `	trustsec_exec_mode_password_wo_version = 1` + "\n"
 	config += `	trustsec_exec_mode_username = "user456"` + "\n"
 	config += `	trustsec_include_when_deploying_sgt_updates = true` + "\n"
 	config += `	trustsec_download_environment_data_every_x_seconds = 1000` + "\n"

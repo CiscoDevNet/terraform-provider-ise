@@ -34,6 +34,8 @@ data "ise_internal_user" "example" {
 - `description` (String) Description
 - `email` (String) Email address
 - `enable_password` (String) This field is added in ISE 2.0 to support TACACS+
+- `enable_password_wo` (String) This field is added in ISE 2.0 to support TACACS+
+- `enable_password_wo_version` (Number) Rotation trigger for `enable_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `enabled` (Boolean) Whether the user is enabled/disabled
 - `first_name` (String) First name of the internal user
 - `identity_groups` (String) Comma separated list of identity group IDs.
@@ -41,3 +43,5 @@ data "ise_internal_user" "example" {
 - `password` (String) The password of the internal user. Required when creating a new user. When managing existing (brownfield) users the password can be omitted and the existing password will be preserved.
 - `password_id_store` (String) The ID store where the internal user's password is kept
 - `password_never_expires` (Boolean) Set to `true` to indicate the user password never expires. This will not apply to Users who are also ISE Admins. This field is only supported from ISE 3.2.
+- `password_wo` (String) The password of the internal user. Required when creating a new user. When managing existing (brownfield) users the password can be omitted and the existing password will be preserved.
+- `password_wo_version` (Number) Rotation trigger for `password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.

@@ -48,6 +48,8 @@ attribute:
   computed: bool(required=False) # Set to true if the attribute is computed
   computed_when: str(required=False) # Conditional computed marker "<bool_attr>=<true|false>"; when the sibling Bool matches and this attribute is unset in config, keep the prior state value (conditional UseStateForUnknown, e.g. "static_profile_assignment=false")
   write_only: bool(required=False) # Set to true if the attribute is write-only, meaning we cannot read the value
+  write_only_tf: bool(required=False) # Requires `write_only` to be set as well. Terraform-core write-only: expands the attribute into three coexisting attributes - the original (kept, still stored in state), "<attr>_wo" (write-only, never stored in state/plan) and "<attr>_wo_version" (Int64, Optional) as the rotation trigger. The original and "<attr>_wo" are mutually exclusive. Requires Terraform >= 1.11 to use the "_wo" form.
+  coexistence_note: str(required=False) # Documentation note recommending the write-only spelling of an attribute. Generated automatically for the legacy twin of a `write_only_tf` attribute.
   normalize_empty_json: bool(required=False) # Set to true to normalize an empty JSON object ({} or "{}") returned by the API to null, preventing drift when the config omits the attribute
   normalize_empty_string: bool(required=False) # Set to true to normalize an empty string ("") returned by the API to null, preventing drift when the config omits the attribute
   preserve_empty_string: bool(required=False) # Set to true to normalize null to empty string for mandatory fields that must contain "" when unset (opposite of normalize_empty_string)

@@ -32,9 +32,11 @@ import (
 func TestAccDataSourceIseInternalUser(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_internal_user.test", "name", "UserTF"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_internal_user.test", "password_wo_version", "1"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_internal_user.test", "change_password", "true"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_internal_user.test", "email", "aaa@cisco.com"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_internal_user.test", "account_name_alias", "User 1"))
+	checks = append(checks, resource.TestCheckResourceAttr("data.ise_internal_user.test", "enable_password_wo_version", "1"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_internal_user.test", "enabled", "true"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_internal_user.test", "password_never_expires", "false"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_internal_user.test", "first_name", "John"))
@@ -62,11 +64,13 @@ func TestAccDataSourceIseInternalUser(t *testing.T) {
 func testAccDataSourceIseInternalUserConfig() string {
 	config := `resource "ise_internal_user" "test" {` + "\n"
 	config += `	name = "UserTF"` + "\n"
-	config += `	password = "Cisco123"` + "\n"
+	config += `	password_wo = "Cisco123"` + "\n"
+	config += `	password_wo_version = 1` + "\n"
 	config += `	change_password = true` + "\n"
 	config += `	email = "aaa@cisco.com"` + "\n"
 	config += `	account_name_alias = "User 1"` + "\n"
-	config += `	enable_password = "Cisco123"` + "\n"
+	config += `	enable_password_wo = "Cisco123"` + "\n"
+	config += `	enable_password_wo_version = 1` + "\n"
 	config += `	enabled = true` + "\n"
 	config += `	password_never_expires = false` + "\n"
 	config += `	first_name = "John"` + "\n"

@@ -38,12 +38,20 @@ type NetworkDevice struct {
 	Description                                          types.String       `tfsdk:"description"`
 	AuthenticationEnableKeyWrap                          types.Bool         `tfsdk:"authentication_enable_key_wrap"`
 	AuthenticationEncryptionKey                          types.String       `tfsdk:"authentication_encryption_key"`
+	AuthenticationEncryptionKeyWo                        types.String       `tfsdk:"authentication_encryption_key_wo"`
+	AuthenticationEncryptionKeyWoVersion                 types.Int64        `tfsdk:"authentication_encryption_key_wo_version"`
 	AuthenticationEncryptionKeyFormat                    types.String       `tfsdk:"authentication_encryption_key_format"`
 	AuthenticationMessageAuthenticatorCodeKey            types.String       `tfsdk:"authentication_message_authenticator_code_key"`
+	AuthenticationMessageAuthenticatorCodeKeyWo          types.String       `tfsdk:"authentication_message_authenticator_code_key_wo"`
+	AuthenticationMessageAuthenticatorCodeKeyWoVersion   types.Int64        `tfsdk:"authentication_message_authenticator_code_key_wo_version"`
 	AuthenticationNetworkProtocol                        types.String       `tfsdk:"authentication_network_protocol"`
 	AuthenticationRadiusSharedSecret                     types.String       `tfsdk:"authentication_radius_shared_secret"`
+	AuthenticationRadiusSharedSecretWo                   types.String       `tfsdk:"authentication_radius_shared_secret_wo"`
+	AuthenticationRadiusSharedSecretWoVersion            types.Int64        `tfsdk:"authentication_radius_shared_secret_wo_version"`
 	AuthenticationEnableMultiSecret                      types.Bool         `tfsdk:"authentication_enable_multi_secret"`
 	AuthenticationSecondRadiusSharedSecret               types.String       `tfsdk:"authentication_second_radius_shared_secret"`
+	AuthenticationSecondRadiusSharedSecretWo             types.String       `tfsdk:"authentication_second_radius_shared_secret_wo"`
+	AuthenticationSecondRadiusSharedSecretWoVersion      types.Int64        `tfsdk:"authentication_second_radius_shared_secret_wo_version"`
 	AuthenticationDtlsRequired                           types.Bool         `tfsdk:"authentication_dtls_required"`
 	CoaPort                                              types.Int64        `tfsdk:"coa_port"`
 	DtlsDnsName                                          types.String       `tfsdk:"dtls_dns_name"`
@@ -62,16 +70,30 @@ type NetworkDevice struct {
 	SnmpSecurityLevel                                    types.String       `tfsdk:"snmp_security_level"`
 	SnmpAuthProtocol                                     types.String       `tfsdk:"snmp_auth_protocol"`
 	SnmpAuthPassword                                     types.String       `tfsdk:"snmp_auth_password"`
+	SnmpAuthPasswordWo                                   types.String       `tfsdk:"snmp_auth_password_wo"`
+	SnmpAuthPasswordWoVersion                            types.Int64        `tfsdk:"snmp_auth_password_wo_version"`
 	SnmpPrivacyProtocol                                  types.String       `tfsdk:"snmp_privacy_protocol"`
 	SnmpPrivacyPassword                                  types.String       `tfsdk:"snmp_privacy_password"`
+	SnmpPrivacyPasswordWo                                types.String       `tfsdk:"snmp_privacy_password_wo"`
+	SnmpPrivacyPasswordWoVersion                         types.Int64        `tfsdk:"snmp_privacy_password_wo_version"`
 	TacacsConnectModeOptions                             types.String       `tfsdk:"tacacs_connect_mode_options"`
 	TacacsSharedSecret                                   types.String       `tfsdk:"tacacs_shared_secret"`
+	TacacsSharedSecretWo                                 types.String       `tfsdk:"tacacs_shared_secret_wo"`
+	TacacsSharedSecretWoVersion                          types.Int64        `tfsdk:"tacacs_shared_secret_wo_version"`
 	TrustsecDeviceId                                     types.String       `tfsdk:"trustsec_device_id"`
 	TrustsecDevicePassword                               types.String       `tfsdk:"trustsec_device_password"`
+	TrustsecDevicePasswordWo                             types.String       `tfsdk:"trustsec_device_password_wo"`
+	TrustsecDevicePasswordWoVersion                      types.Int64        `tfsdk:"trustsec_device_password_wo_version"`
 	TrustsecRestApiUsername                              types.String       `tfsdk:"trustsec_rest_api_username"`
 	TrustsecRestApiPassword                              types.String       `tfsdk:"trustsec_rest_api_password"`
+	TrustsecRestApiPasswordWo                            types.String       `tfsdk:"trustsec_rest_api_password_wo"`
+	TrustsecRestApiPasswordWoVersion                     types.Int64        `tfsdk:"trustsec_rest_api_password_wo_version"`
 	TrustsecEnableModePassword                           types.String       `tfsdk:"trustsec_enable_mode_password"`
+	TrustsecEnableModePasswordWo                         types.String       `tfsdk:"trustsec_enable_mode_password_wo"`
+	TrustsecEnableModePasswordWoVersion                  types.Int64        `tfsdk:"trustsec_enable_mode_password_wo_version"`
 	TrustsecExecModePassword                             types.String       `tfsdk:"trustsec_exec_mode_password"`
+	TrustsecExecModePasswordWo                           types.String       `tfsdk:"trustsec_exec_mode_password_wo"`
+	TrustsecExecModePasswordWoVersion                    types.Int64        `tfsdk:"trustsec_exec_mode_password_wo_version"`
 	TrustsecExecModeUsername                             types.String       `tfsdk:"trustsec_exec_mode_username"`
 	TrustsecIncludeWhenDeployingSgtUpdates               types.Bool         `tfsdk:"trustsec_include_when_deploying_sgt_updates"`
 	TrustsecDownloadEnvironmentDataEveryXSeconds         types.Int64        `tfsdk:"trustsec_download_environment_data_every_x_seconds"`
@@ -121,11 +143,17 @@ func (data NetworkDevice) toBody(ctx context.Context, state NetworkDevice) strin
 	if !data.AuthenticationEncryptionKey.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.authenticationSettings.keyEncryptionKey", data.AuthenticationEncryptionKey.ValueString())
 	}
+	if !data.AuthenticationEncryptionKeyWo.IsNull() {
+		body, _ = sjson.Set(body, "NetworkDevice.authenticationSettings.keyEncryptionKey", data.AuthenticationEncryptionKeyWo.ValueString())
+	}
 	if !data.AuthenticationEncryptionKeyFormat.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.authenticationSettings.keyInputFormat", data.AuthenticationEncryptionKeyFormat.ValueString())
 	}
 	if !data.AuthenticationMessageAuthenticatorCodeKey.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.authenticationSettings.messageAuthenticatorCodeKey", data.AuthenticationMessageAuthenticatorCodeKey.ValueString())
+	}
+	if !data.AuthenticationMessageAuthenticatorCodeKeyWo.IsNull() {
+		body, _ = sjson.Set(body, "NetworkDevice.authenticationSettings.messageAuthenticatorCodeKey", data.AuthenticationMessageAuthenticatorCodeKeyWo.ValueString())
 	}
 	if !data.AuthenticationNetworkProtocol.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.authenticationSettings.networkProtocol", data.AuthenticationNetworkProtocol.ValueString())
@@ -133,11 +161,17 @@ func (data NetworkDevice) toBody(ctx context.Context, state NetworkDevice) strin
 	if !data.AuthenticationRadiusSharedSecret.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.authenticationSettings.radiusSharedSecret", data.AuthenticationRadiusSharedSecret.ValueString())
 	}
+	if !data.AuthenticationRadiusSharedSecretWo.IsNull() {
+		body, _ = sjson.Set(body, "NetworkDevice.authenticationSettings.radiusSharedSecret", data.AuthenticationRadiusSharedSecretWo.ValueString())
+	}
 	if !data.AuthenticationEnableMultiSecret.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.authenticationSettings.enableMultiSecret", data.AuthenticationEnableMultiSecret.ValueBool())
 	}
 	if !data.AuthenticationSecondRadiusSharedSecret.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.authenticationSettings.secondRadiusSharedSecret", data.AuthenticationSecondRadiusSharedSecret.ValueString())
+	}
+	if !data.AuthenticationSecondRadiusSharedSecretWo.IsNull() {
+		body, _ = sjson.Set(body, "NetworkDevice.authenticationSettings.secondRadiusSharedSecret", data.AuthenticationSecondRadiusSharedSecretWo.ValueString())
 	}
 	if !data.AuthenticationDtlsRequired.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.authenticationSettings.dtlsRequired", data.AuthenticationDtlsRequired.ValueBool())
@@ -208,11 +242,17 @@ func (data NetworkDevice) toBody(ctx context.Context, state NetworkDevice) strin
 	if !data.SnmpAuthPassword.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.authPassword", data.SnmpAuthPassword.ValueString())
 	}
+	if !data.SnmpAuthPasswordWo.IsNull() {
+		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.authPassword", data.SnmpAuthPasswordWo.ValueString())
+	}
 	if !data.SnmpPrivacyProtocol.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.privacyProtocol", data.SnmpPrivacyProtocol.ValueString())
 	}
 	if !data.SnmpPrivacyPassword.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.privacyPassword", data.SnmpPrivacyPassword.ValueString())
+	}
+	if !data.SnmpPrivacyPasswordWo.IsNull() {
+		body, _ = sjson.Set(body, "NetworkDevice.snmpsettings.privacyPassword", data.SnmpPrivacyPasswordWo.ValueString())
 	}
 	if !data.TacacsConnectModeOptions.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.tacacsSettings.connectModeOptions", data.TacacsConnectModeOptions.ValueString())
@@ -220,11 +260,17 @@ func (data NetworkDevice) toBody(ctx context.Context, state NetworkDevice) strin
 	if !data.TacacsSharedSecret.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.tacacsSettings.sharedSecret", data.TacacsSharedSecret.ValueString())
 	}
+	if !data.TacacsSharedSecretWo.IsNull() {
+		body, _ = sjson.Set(body, "NetworkDevice.tacacsSettings.sharedSecret", data.TacacsSharedSecretWo.ValueString())
+	}
 	if !data.TrustsecDeviceId.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.deviceAuthenticationSettings.sgaDeviceId", data.TrustsecDeviceId.ValueString())
 	}
 	if !data.TrustsecDevicePassword.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.deviceAuthenticationSettings.sgaDevicePassword", data.TrustsecDevicePassword.ValueString())
+	}
+	if !data.TrustsecDevicePasswordWo.IsNull() {
+		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.deviceAuthenticationSettings.sgaDevicePassword", data.TrustsecDevicePasswordWo.ValueString())
 	}
 	if !data.TrustsecRestApiUsername.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.deviceAuthenticationSettings.restApiUsername", data.TrustsecRestApiUsername.ValueString())
@@ -232,11 +278,20 @@ func (data NetworkDevice) toBody(ctx context.Context, state NetworkDevice) strin
 	if !data.TrustsecRestApiPassword.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.deviceAuthenticationSettings.restApiPassword", data.TrustsecRestApiPassword.ValueString())
 	}
+	if !data.TrustsecRestApiPasswordWo.IsNull() {
+		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.deviceAuthenticationSettings.restApiPassword", data.TrustsecRestApiPasswordWo.ValueString())
+	}
 	if !data.TrustsecEnableModePassword.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.deviceConfigurationDeployment.enableModePassword", data.TrustsecEnableModePassword.ValueString())
 	}
+	if !data.TrustsecEnableModePasswordWo.IsNull() {
+		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.deviceConfigurationDeployment.enableModePassword", data.TrustsecEnableModePasswordWo.ValueString())
+	}
 	if !data.TrustsecExecModePassword.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.deviceConfigurationDeployment.execModePassword", data.TrustsecExecModePassword.ValueString())
+	}
+	if !data.TrustsecExecModePasswordWo.IsNull() {
+		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.deviceConfigurationDeployment.execModePassword", data.TrustsecExecModePasswordWo.ValueString())
 	}
 	if !data.TrustsecExecModeUsername.IsNull() {
 		body, _ = sjson.Set(body, "NetworkDevice.trustsecsettings.deviceConfigurationDeployment.execModeUsername", data.TrustsecExecModeUsername.ValueString())
@@ -290,40 +345,20 @@ func (data *NetworkDevice) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.AuthenticationEnableKeyWrap = types.BoolNull()
 	}
-	if value := res.Get("NetworkDevice.authenticationSettings.keyEncryptionKey"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
-		data.AuthenticationEncryptionKey = types.StringValue(value.String())
-	} else {
-		data.AuthenticationEncryptionKey = types.StringNull()
-	}
 	if value := res.Get("NetworkDevice.authenticationSettings.keyInputFormat"); value.Exists() && value.Type != gjson.Null {
 		data.AuthenticationEncryptionKeyFormat = types.StringValue(value.String())
 	} else {
 		data.AuthenticationEncryptionKeyFormat = types.StringNull()
-	}
-	if value := res.Get("NetworkDevice.authenticationSettings.messageAuthenticatorCodeKey"); value.Exists() && value.Type != gjson.Null && value.String() != "" {
-		data.AuthenticationMessageAuthenticatorCodeKey = types.StringValue(value.String())
-	} else {
-		data.AuthenticationMessageAuthenticatorCodeKey = types.StringNull()
 	}
 	if value := res.Get("NetworkDevice.authenticationSettings.networkProtocol"); value.Exists() && value.Type != gjson.Null {
 		data.AuthenticationNetworkProtocol = types.StringValue(value.String())
 	} else {
 		data.AuthenticationNetworkProtocol = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.authenticationSettings.radiusSharedSecret"); value.Exists() && value.Type != gjson.Null {
-		data.AuthenticationRadiusSharedSecret = types.StringValue(value.String())
-	} else {
-		data.AuthenticationRadiusSharedSecret = types.StringNull()
-	}
 	if value := res.Get("NetworkDevice.authenticationSettings.enableMultiSecret"); value.Exists() && value.Type != gjson.Null {
 		data.AuthenticationEnableMultiSecret = types.BoolValue(value.Bool())
 	} else {
 		data.AuthenticationEnableMultiSecret = types.BoolNull()
-	}
-	if value := res.Get("NetworkDevice.authenticationSettings.secondRadiusSharedSecret"); value.Exists() && value.Type != gjson.Null {
-		data.AuthenticationSecondRadiusSharedSecret = types.StringValue(value.String())
-	} else {
-		data.AuthenticationSecondRadiusSharedSecret = types.StringNull()
 	}
 	if value := res.Get("NetworkDevice.authenticationSettings.dtlsRequired"); value.Exists() && value.Type != gjson.Null {
 		data.AuthenticationDtlsRequired = types.BoolValue(value.Bool())
@@ -428,55 +463,25 @@ func (data *NetworkDevice) fromBody(ctx context.Context, res gjson.Result) {
 	} else {
 		data.SnmpAuthProtocol = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.snmpsettings.authPassword"); value.Exists() && value.Type != gjson.Null {
-		data.SnmpAuthPassword = types.StringValue(value.String())
-	} else {
-		data.SnmpAuthPassword = types.StringNull()
-	}
 	if value := res.Get("NetworkDevice.snmpsettings.privacyProtocol"); value.Exists() && value.Type != gjson.Null {
 		data.SnmpPrivacyProtocol = types.StringValue(value.String())
 	} else {
 		data.SnmpPrivacyProtocol = types.StringNull()
-	}
-	if value := res.Get("NetworkDevice.snmpsettings.privacyPassword"); value.Exists() && value.Type != gjson.Null {
-		data.SnmpPrivacyPassword = types.StringValue(value.String())
-	} else {
-		data.SnmpPrivacyPassword = types.StringNull()
 	}
 	if value := res.Get("NetworkDevice.tacacsSettings.connectModeOptions"); value.Exists() && value.Type != gjson.Null {
 		data.TacacsConnectModeOptions = types.StringValue(value.String())
 	} else {
 		data.TacacsConnectModeOptions = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.tacacsSettings.sharedSecret"); value.Exists() && value.Type != gjson.Null {
-		data.TacacsSharedSecret = types.StringValue(value.String())
-	} else {
-		data.TacacsSharedSecret = types.StringNull()
-	}
 	if value := res.Get("NetworkDevice.trustsecsettings.deviceAuthenticationSettings.sgaDeviceId"); value.Exists() && value.Type != gjson.Null {
 		data.TrustsecDeviceId = types.StringValue(value.String())
 	} else {
 		data.TrustsecDeviceId = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.trustsecsettings.deviceAuthenticationSettings.sgaDevicePassword"); value.Exists() && value.Type != gjson.Null {
-		data.TrustsecDevicePassword = types.StringValue(value.String())
-	} else {
-		data.TrustsecDevicePassword = types.StringNull()
-	}
 	if value := res.Get("NetworkDevice.trustsecsettings.deviceAuthenticationSettings.restApiUsername"); value.Exists() && value.Type != gjson.Null {
 		data.TrustsecRestApiUsername = types.StringValue(value.String())
 	} else {
 		data.TrustsecRestApiUsername = types.StringNull()
-	}
-	if value := res.Get("NetworkDevice.trustsecsettings.deviceConfigurationDeployment.enableModePassword"); value.Exists() && value.Type != gjson.Null {
-		data.TrustsecEnableModePassword = types.StringValue(value.String())
-	} else {
-		data.TrustsecEnableModePassword = types.StringNull()
-	}
-	if value := res.Get("NetworkDevice.trustsecsettings.deviceConfigurationDeployment.execModePassword"); value.Exists() && value.Type != gjson.Null {
-		data.TrustsecExecModePassword = types.StringValue(value.String())
-	} else {
-		data.TrustsecExecModePassword = types.StringNull()
 	}
 	if value := res.Get("NetworkDevice.trustsecsettings.deviceConfigurationDeployment.execModeUsername"); value.Exists() && value.Type != gjson.Null {
 		data.TrustsecExecModeUsername = types.StringValue(value.String())
@@ -549,40 +554,20 @@ func (data *NetworkDevice) updateFromBody(ctx context.Context, res gjson.Result)
 	} else {
 		data.AuthenticationEnableKeyWrap = types.BoolNull()
 	}
-	if value := res.Get("NetworkDevice.authenticationSettings.keyEncryptionKey"); value.Exists() && !data.AuthenticationEncryptionKey.IsNull() && value.String() != "" {
-		data.AuthenticationEncryptionKey = types.StringValue(value.String())
-	} else {
-		data.AuthenticationEncryptionKey = types.StringNull()
-	}
 	if value := res.Get("NetworkDevice.authenticationSettings.keyInputFormat"); value.Exists() && !data.AuthenticationEncryptionKeyFormat.IsNull() {
 		data.AuthenticationEncryptionKeyFormat = types.StringValue(value.String())
 	} else {
 		data.AuthenticationEncryptionKeyFormat = types.StringNull()
-	}
-	if value := res.Get("NetworkDevice.authenticationSettings.messageAuthenticatorCodeKey"); value.Exists() && !data.AuthenticationMessageAuthenticatorCodeKey.IsNull() && value.String() != "" {
-		data.AuthenticationMessageAuthenticatorCodeKey = types.StringValue(value.String())
-	} else {
-		data.AuthenticationMessageAuthenticatorCodeKey = types.StringNull()
 	}
 	if value := res.Get("NetworkDevice.authenticationSettings.networkProtocol"); value.Exists() && !data.AuthenticationNetworkProtocol.IsNull() {
 		data.AuthenticationNetworkProtocol = types.StringValue(value.String())
 	} else {
 		data.AuthenticationNetworkProtocol = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.authenticationSettings.radiusSharedSecret"); value.Exists() && !data.AuthenticationRadiusSharedSecret.IsNull() {
-		data.AuthenticationRadiusSharedSecret = types.StringValue(value.String())
-	} else {
-		data.AuthenticationRadiusSharedSecret = types.StringNull()
-	}
 	if value := res.Get("NetworkDevice.authenticationSettings.enableMultiSecret"); value.Exists() && !data.AuthenticationEnableMultiSecret.IsNull() {
 		data.AuthenticationEnableMultiSecret = types.BoolValue(value.Bool())
 	} else {
 		data.AuthenticationEnableMultiSecret = types.BoolNull()
-	}
-	if value := res.Get("NetworkDevice.authenticationSettings.secondRadiusSharedSecret"); value.Exists() && !data.AuthenticationSecondRadiusSharedSecret.IsNull() {
-		data.AuthenticationSecondRadiusSharedSecret = types.StringValue(value.String())
-	} else {
-		data.AuthenticationSecondRadiusSharedSecret = types.StringNull()
 	}
 	if value := res.Get("NetworkDevice.authenticationSettings.dtlsRequired"); value.Exists() && !data.AuthenticationDtlsRequired.IsNull() {
 		data.AuthenticationDtlsRequired = types.BoolValue(value.Bool())
@@ -710,55 +695,25 @@ func (data *NetworkDevice) updateFromBody(ctx context.Context, res gjson.Result)
 	} else {
 		data.SnmpAuthProtocol = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.snmpsettings.authPassword"); value.Exists() && !data.SnmpAuthPassword.IsNull() {
-		data.SnmpAuthPassword = types.StringValue(value.String())
-	} else {
-		data.SnmpAuthPassword = types.StringNull()
-	}
 	if value := res.Get("NetworkDevice.snmpsettings.privacyProtocol"); value.Exists() && !data.SnmpPrivacyProtocol.IsNull() {
 		data.SnmpPrivacyProtocol = types.StringValue(value.String())
 	} else {
 		data.SnmpPrivacyProtocol = types.StringNull()
-	}
-	if value := res.Get("NetworkDevice.snmpsettings.privacyPassword"); value.Exists() && !data.SnmpPrivacyPassword.IsNull() {
-		data.SnmpPrivacyPassword = types.StringValue(value.String())
-	} else {
-		data.SnmpPrivacyPassword = types.StringNull()
 	}
 	if value := res.Get("NetworkDevice.tacacsSettings.connectModeOptions"); value.Exists() && !data.TacacsConnectModeOptions.IsNull() {
 		data.TacacsConnectModeOptions = types.StringValue(value.String())
 	} else {
 		data.TacacsConnectModeOptions = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.tacacsSettings.sharedSecret"); value.Exists() && !data.TacacsSharedSecret.IsNull() {
-		data.TacacsSharedSecret = types.StringValue(value.String())
-	} else {
-		data.TacacsSharedSecret = types.StringNull()
-	}
 	if value := res.Get("NetworkDevice.trustsecsettings.deviceAuthenticationSettings.sgaDeviceId"); value.Exists() && !data.TrustsecDeviceId.IsNull() {
 		data.TrustsecDeviceId = types.StringValue(value.String())
 	} else {
 		data.TrustsecDeviceId = types.StringNull()
 	}
-	if value := res.Get("NetworkDevice.trustsecsettings.deviceAuthenticationSettings.sgaDevicePassword"); value.Exists() && !data.TrustsecDevicePassword.IsNull() {
-		data.TrustsecDevicePassword = types.StringValue(value.String())
-	} else {
-		data.TrustsecDevicePassword = types.StringNull()
-	}
 	if value := res.Get("NetworkDevice.trustsecsettings.deviceAuthenticationSettings.restApiUsername"); value.Exists() && !data.TrustsecRestApiUsername.IsNull() {
 		data.TrustsecRestApiUsername = types.StringValue(value.String())
 	} else {
 		data.TrustsecRestApiUsername = types.StringNull()
-	}
-	if value := res.Get("NetworkDevice.trustsecsettings.deviceConfigurationDeployment.enableModePassword"); value.Exists() && !data.TrustsecEnableModePassword.IsNull() {
-		data.TrustsecEnableModePassword = types.StringValue(value.String())
-	} else {
-		data.TrustsecEnableModePassword = types.StringNull()
-	}
-	if value := res.Get("NetworkDevice.trustsecsettings.deviceConfigurationDeployment.execModePassword"); value.Exists() && !data.TrustsecExecModePassword.IsNull() {
-		data.TrustsecExecModePassword = types.StringValue(value.String())
-	} else {
-		data.TrustsecExecModePassword = types.StringNull()
 	}
 	if value := res.Get("NetworkDevice.trustsecsettings.deviceConfigurationDeployment.execModeUsername"); value.Exists() && !data.TrustsecExecModeUsername.IsNull() {
 		data.TrustsecExecModeUsername = types.StringValue(value.String())
@@ -828,10 +783,22 @@ func (data *NetworkDevice) isNull(ctx context.Context, res gjson.Result) bool {
 	if !data.AuthenticationEncryptionKey.IsNull() {
 		return false
 	}
+	if !data.AuthenticationEncryptionKeyWo.IsNull() {
+		return false
+	}
+	if !data.AuthenticationEncryptionKeyWoVersion.IsNull() {
+		return false
+	}
 	if !data.AuthenticationEncryptionKeyFormat.IsNull() {
 		return false
 	}
 	if !data.AuthenticationMessageAuthenticatorCodeKey.IsNull() {
+		return false
+	}
+	if !data.AuthenticationMessageAuthenticatorCodeKeyWo.IsNull() {
+		return false
+	}
+	if !data.AuthenticationMessageAuthenticatorCodeKeyWoVersion.IsNull() {
 		return false
 	}
 	if !data.AuthenticationNetworkProtocol.IsNull() {
@@ -840,10 +807,22 @@ func (data *NetworkDevice) isNull(ctx context.Context, res gjson.Result) bool {
 	if !data.AuthenticationRadiusSharedSecret.IsNull() {
 		return false
 	}
+	if !data.AuthenticationRadiusSharedSecretWo.IsNull() {
+		return false
+	}
+	if !data.AuthenticationRadiusSharedSecretWoVersion.IsNull() {
+		return false
+	}
 	if !data.AuthenticationEnableMultiSecret.IsNull() {
 		return false
 	}
 	if !data.AuthenticationSecondRadiusSharedSecret.IsNull() {
+		return false
+	}
+	if !data.AuthenticationSecondRadiusSharedSecretWo.IsNull() {
+		return false
+	}
+	if !data.AuthenticationSecondRadiusSharedSecretWoVersion.IsNull() {
 		return false
 	}
 	if !data.AuthenticationDtlsRequired.IsNull() {
@@ -900,10 +879,22 @@ func (data *NetworkDevice) isNull(ctx context.Context, res gjson.Result) bool {
 	if !data.SnmpAuthPassword.IsNull() {
 		return false
 	}
+	if !data.SnmpAuthPasswordWo.IsNull() {
+		return false
+	}
+	if !data.SnmpAuthPasswordWoVersion.IsNull() {
+		return false
+	}
 	if !data.SnmpPrivacyProtocol.IsNull() {
 		return false
 	}
 	if !data.SnmpPrivacyPassword.IsNull() {
+		return false
+	}
+	if !data.SnmpPrivacyPasswordWo.IsNull() {
+		return false
+	}
+	if !data.SnmpPrivacyPasswordWoVersion.IsNull() {
 		return false
 	}
 	if !data.TacacsConnectModeOptions.IsNull() {
@@ -912,10 +903,22 @@ func (data *NetworkDevice) isNull(ctx context.Context, res gjson.Result) bool {
 	if !data.TacacsSharedSecret.IsNull() {
 		return false
 	}
+	if !data.TacacsSharedSecretWo.IsNull() {
+		return false
+	}
+	if !data.TacacsSharedSecretWoVersion.IsNull() {
+		return false
+	}
 	if !data.TrustsecDeviceId.IsNull() {
 		return false
 	}
 	if !data.TrustsecDevicePassword.IsNull() {
+		return false
+	}
+	if !data.TrustsecDevicePasswordWo.IsNull() {
+		return false
+	}
+	if !data.TrustsecDevicePasswordWoVersion.IsNull() {
 		return false
 	}
 	if !data.TrustsecRestApiUsername.IsNull() {
@@ -924,10 +927,28 @@ func (data *NetworkDevice) isNull(ctx context.Context, res gjson.Result) bool {
 	if !data.TrustsecRestApiPassword.IsNull() {
 		return false
 	}
+	if !data.TrustsecRestApiPasswordWo.IsNull() {
+		return false
+	}
+	if !data.TrustsecRestApiPasswordWoVersion.IsNull() {
+		return false
+	}
 	if !data.TrustsecEnableModePassword.IsNull() {
 		return false
 	}
+	if !data.TrustsecEnableModePasswordWo.IsNull() {
+		return false
+	}
+	if !data.TrustsecEnableModePasswordWoVersion.IsNull() {
+		return false
+	}
 	if !data.TrustsecExecModePassword.IsNull() {
+		return false
+	}
+	if !data.TrustsecExecModePasswordWo.IsNull() {
+		return false
+	}
+	if !data.TrustsecExecModePasswordWoVersion.IsNull() {
 		return false
 	}
 	if !data.TrustsecExecModeUsername.IsNull() {
