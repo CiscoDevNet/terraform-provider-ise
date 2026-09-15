@@ -120,8 +120,7 @@ type YamlConfig struct {
 	DataSourceNameQuery bool                  `yaml:"data_source_name_query"`
 	UseCache             bool                  `yaml:"use_cache"`
 	CacheRestEndpoint    string                `yaml:"cache_rest_endpoint"`
-	CacheResponsePath    string                `yaml:"cache_response_path"`
-	CacheResponseWrapper string                `yaml:"cache_response_wrapper"`
+	CachePageSize        int                   `yaml:"cache_page_size"`
 	MinimumVersion      string                `yaml:"minimum_version"`
 	DsDescription       string                `yaml:"ds_description"`
 	ResDescription      string                `yaml:"res_description"`
@@ -410,6 +409,18 @@ func HasAttribute(attributes []YamlConfigAttribute, attrName string) bool {
 	return false
 }
 
+// CacheDataPath returns the common top-level response wrapper used by a resource.
+// Cached modern API objects must be adapted to the resource's existing response
+// shape before the normal model mapper consumes them.
+func CacheDataPath(attributes []YamlConfigAttribute) string {
+	for _, attr := range attributes {
+		if len(attr.DataPath) > 0 {
+			return attr.DataPath[0]
+		}
+	}
+	return ""
+}
+
 // Map of templating functions
 var functions = template.FuncMap{
 	"toGoName":               ToGoName,
@@ -440,6 +451,7 @@ var functions = template.FuncMap{
 	"isNestedList":           IsNestedList,
 	"isNestedSet":            IsNestedSet,
 	"hasAttribute":           HasAttribute,
+	"cacheDataPath":          CacheDataPath,
 	"goValueType":            GoValueType,
 	"goValueCtor":            GoValueCtor,
 	"goNullCtor":             GoNullCtor,

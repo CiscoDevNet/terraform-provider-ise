@@ -1003,6 +1003,7 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 {{- if .UseCache}}
 //template:begin readcache
 func (r *{{camelCase .Name}}Resource) ReadCache(ctx context.Context, state {{camelCase .Name}}) (gjson.Result, error) {
+	{{- $cacheDataPath := cacheDataPath .Attributes}}
 	items, cacheHit, err := r.cache.GetOrLoad("{{camelCase .Name}}", func() (map[string]gjson.Result, error) {
 		allItems := make(map[string]gjson.Result)
 		for page := 1; ; page++ {
@@ -1010,17 +1011,17 @@ func (r *{{camelCase .Name}}Resource) ReadCache(ctx context.Context, state {{cam
 			if strings.Contains("{{.CacheRestEndpoint}}", "?") {
 				separator = "&"
 			}
-			res, err := r.client.Get(fmt.Sprintf("{{.CacheRestEndpoint}}%ssize=100&page=%d", separator, page))
+			res, err := r.client.Get(fmt.Sprintf("{{.CacheRestEndpoint}}%ssize={{.CachePageSize}}&page=%d", separator, page))
 			if err != nil {
 				return nil, err
 			}
-			values := res{{if .CacheResponsePath}}.Get("{{.CacheResponsePath}}"){{end}}
+			values := res
 			for _, value := range values.Array() {
 				if id := value.Get("id").String(); id != "" {
 					allItems[id] = value
 				}
 			}
-			if len(values.Array()) < 100 {
+			if len(values.Array()) < {{.CachePageSize}} {
 				break
 			}
 		}
@@ -1038,8 +1039,8 @@ func (r *{{camelCase .Name}}Resource) ReadCache(ctx context.Context, state {{cam
 	if !found {
 		return gjson.Result{}, fmt.Errorf("StatusCode 404: object not found in cache")
 	}
-	{{- if .CacheResponseWrapper}}
-	body, err := sjson.SetRaw("{}", "{{.CacheResponseWrapper}}", value.Raw)
+	{{- if $cacheDataPath}}
+	body, err := sjson.SetRaw("{}", "{{$cacheDataPath}}", value.Raw)
 	if err != nil {
 		return gjson.Result{}, err
 	}

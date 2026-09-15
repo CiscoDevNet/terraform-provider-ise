@@ -4,7 +4,7 @@ name: Endpoint
 rest_endpoint: /ers/config/endpoint
 use_cache: true
 cache_rest_endpoint: /api/v1/endpoint
-cache_response_wrapper: ERSEndPoint
+cache_page_size: 100
 data_source_name_query: true
 doc_category: Identity Management
 attributes:
