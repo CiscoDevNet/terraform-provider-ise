@@ -25,7 +25,8 @@ put_id_query_path: bool(required=False) # Set to true if PUT request is used to 
 data_source_name_query: bool(required=False) # Set to true if the data source supports name queries
 use_cache: bool(required=False) # Use a provider-scoped cache for resource reads
 cache_rest_endpoint: str(required=False) # Bulk GET endpoint used to populate the read cache
-cache_page_size: int(required=False) # Page size used when populating the read cache
+cache_page_size: int(required=False) # Page size used when populating the read cache. Mandatory (and validated by the generator, since yamale cannot express a conditional requirement) whenever use_cache is true.
+cache_rewrites: list(include('cache_rewrite'), required=False) # Declarative re-nesting of fields returned by the cache (modern API) endpoint so they line up with paths this resource's ERS-shaped model mapper expects (e.g. a field the modern API nests one level shallower than ERS)
 minimum_version: str(required=False) # Define a minimum supported version
 ds_description: str(required=False) # Define a data source description
 res_description: str(required=False) # Define a resource description
@@ -35,6 +36,10 @@ ignore_delete_error: str(required=False) # Ignore a specific error message when 
 attributes: list(include('attribute'), required=False) # List of attributes
 test_tags: list(str(), required=False) # List of test tags, tests are only executed if an environment variable with one of these tags is configured
 test_prerequisites: str(required=False) # HCL code that is included in the acceptance tests to define prerequisites
+---
+cache_rewrite:
+  from: str() # Path (relative to the object returned by cache_rest_endpoint) to read the raw value from
+  to: str() # Path (relative to the same object, after it has been wrapped per each attribute's data_path) to re-write that raw value to
 ---
 attribute:
   model_name: str(required=False) # Name of the attribute in the model (payload)
@@ -86,3 +91,4 @@ attribute:
   attributes: list(include('attribute'), required=False) # List of attributes, only relevant if type is "List" or "Set"
   filter_empty_values: bool(required=False) # Set to true to drop empty-string values when reading a Map attribute from the API response (e.g. ISE endpoint custom attributes where "" means unset)
   case_insensitive: bool(required=False) # Set to true on a Required/non-Computed String attribute where the API always normalizes casing server-side (e.g. ISE always returns MAC addresses in uppercase); uses a custom type with semantic equality so a case-only difference from the API is not shown as a diff, instead of a plan modifier (which cannot legally rewrite a Required attribute's planned value)
+  not_in_cache: bool(required=False) # Only relevant on a resource with use_cache. Set to true if this attribute is absent from the bulk cache endpoint's payload entirely (not merely null). On every cached Read, the current state value is re-injected into the response before mapping so the attribute is never reported as drift (it is not drift-detected via the cache). On import (state entirely null) the cache is bypassed for the whole resource and a direct GET is used instead, so the real value is read rather than fabricated from a default.

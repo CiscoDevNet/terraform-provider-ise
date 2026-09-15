@@ -22,6 +22,7 @@ package provider
 //template:begin imports
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/url"
 	"strings"
@@ -305,7 +306,24 @@ func (r *EndpointResource) Read(ctx context.Context, req resource.ReadRequest, r
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
-	res, err := r.ReadCache(ctx, state)
+	var res gjson.Result
+	var err error
+	if state.isNull(ctx, gjson.Result{}) {
+		// Import: some attributes are absent from the cache's bulk payload entirely, so
+		// ReadCache cannot populate them from state (there is none yet) without
+		// fabricating a value. Bypass the cache for the whole resource and read it
+		// directly so those attributes get their real value.
+		res, err = r.client.Get(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()))
+	} else {
+		res, err = r.ReadCache(ctx, state)
+	}
+	if errors.Is(err, errCacheMiss) {
+		// The bulk cache doesn't have this object. That only means it is missing from
+		// our in-memory snapshot -- e.g. it was created after the snapshot was taken, or
+		// the snapshot is otherwise incomplete -- not that ISE itself doesn't have it.
+		// Confirm directly against ISE before ever deleting state.
+		res, err = r.client.Get(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()))
+	}
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
@@ -368,11 +386,36 @@ func (r *EndpointResource) ReadCache(ctx context.Context, state Endpoint) (gjson
 	}
 	value, found := items[state.Id.ValueString()]
 	if !found {
-		return gjson.Result{}, fmt.Errorf("StatusCode 404: object not found in cache")
+		// A cache miss is not proof the object is gone from ISE -- it only means the
+		// object is absent from this bulk snapshot. The caller (Read) confirms with a
+		// direct GET before treating this as a real 404.
+		return gjson.Result{}, errCacheMiss
 	}
 	body, err := sjson.SetRaw("{}", "ERSEndPoint", value.Raw)
 	if err != nil {
 		return gjson.Result{}, err
+	}
+	if rw := gjson.Get(body, "ERSEndPoint.customAttributes"); rw.Exists() && rw.Type != gjson.Null {
+		body, err = sjson.Delete(body, "ERSEndPoint.customAttributes")
+		if err != nil {
+			return gjson.Result{}, err
+		}
+		body, err = sjson.SetRaw(body, "ERSEndPoint.customAttributes.customAttributes", rw.Raw)
+		if err != nil {
+			return gjson.Result{}, err
+		}
+	}
+	if !state.StaticProfileAssignmentDefined.IsNull() {
+		body, err = sjson.Set(body, "ERSEndPoint.staticProfileAssignmentDefined", state.StaticProfileAssignmentDefined.ValueBool())
+		if err != nil {
+			return gjson.Result{}, err
+		}
+	}
+	if !state.StaticGroupAssignmentDefined.IsNull() {
+		body, err = sjson.Set(body, "ERSEndPoint.staticGroupAssignmentDefined", state.StaticGroupAssignmentDefined.ValueBool())
+		if err != nil {
+			return gjson.Result{}, err
+		}
 	}
 	return gjson.Parse(body), nil
 }

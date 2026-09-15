@@ -22,6 +22,7 @@ package provider
 //template:begin provider
 import (
 	"context"
+	"errors"
 	"os"
 	"strconv"
 	"sync"
@@ -405,6 +406,14 @@ func New(version string) func() provider.Provider {
 		}
 	}
 }
+
+// errCacheMiss is returned by a use_cache resource's ReadCache when the requested
+// object is absent from the last bulk cache load. This is deliberately a typed
+// sentinel rather than a crafted "StatusCode 404" string: a cache miss only proves
+// the object is missing from OUR snapshot, never that ISE itself doesn't have it, so
+// callers must confirm with a direct GET before treating it as a real 404 and
+// deleting state.
+var errCacheMiss = errors.New("object not found in cache")
 
 // ThreadSafeCache stores bulk-read objects for one provider session. A miss is
 // loaded once per key, so Terraform parallelism cannot fan out duplicate list

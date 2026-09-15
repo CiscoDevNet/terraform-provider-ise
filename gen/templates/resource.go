@@ -1192,7 +1192,28 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 	res, err := r.client.Get(state.getPath())
 	{{- else}}
 	{{- if .UseCache}}
-	res, err := r.ReadCache(ctx, state)
+	var res gjson.Result
+	var err error
+	{{- if hasNotInCacheAttribute .Attributes}}
+	if state.isNull(ctx, gjson.Result{}) {
+		// Import: some attributes are absent from the cache's bulk payload entirely, so
+		// ReadCache cannot populate them from state (there is none yet) without
+		// fabricating a value. Bypass the cache for the whole resource and read it
+		// directly so those attributes get their real value.
+		res, err = r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + url.QueryEscape(state.Id.ValueString()){{end}})
+	} else {
+		res, err = r.ReadCache(ctx, state)
+	}
+	{{- else}}
+	res, err = r.ReadCache(ctx, state)
+	{{- end}}
+	if errors.Is(err, errCacheMiss) {
+		// The bulk cache doesn't have this object. That only means it is missing from
+		// our in-memory snapshot -- e.g. it was created after the snapshot was taken, or
+		// the snapshot is otherwise incomplete -- not that ISE itself doesn't have it.
+		// Confirm directly against ISE before ever deleting state.
+		res, err = r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + url.QueryEscape(state.Id.ValueString()){{end}})
+	}
 	{{- else}}
 	res, err := r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + url.QueryEscape(state.Id.ValueString()){{end}})
 	{{- end}}
@@ -1257,17 +1278,40 @@ func (r *{{camelCase .Name}}Resource) ReadCache(ctx context.Context, state {{cam
 	}
 	value, found := items[state.Id.ValueString()]
 	if !found {
-		return gjson.Result{}, fmt.Errorf("StatusCode 404: object not found in cache")
+		// A cache miss is not proof the object is gone from ISE -- it only means the
+		// object is absent from this bulk snapshot. The caller (Read) confirms with a
+		// direct GET before treating this as a real 404.
+		return gjson.Result{}, errCacheMiss
 	}
 	{{- if $cacheDataPath}}
 	body, err := sjson.SetRaw("{}", "{{$cacheDataPath}}", value.Raw)
 	if err != nil {
 		return gjson.Result{}, err
 	}
-	return gjson.Parse(body), nil
 	{{- else}}
-	return value, nil
+	body := value.Raw
 	{{- end}}
+	{{- range .CacheRewrites}}
+	if rw := gjson.Get(body, "{{if $cacheDataPath}}{{$cacheDataPath}}.{{end}}{{.From}}"); rw.Exists() && rw.Type != gjson.Null {
+		body, err = sjson.Delete(body, "{{if $cacheDataPath}}{{$cacheDataPath}}.{{end}}{{.From}}")
+		if err != nil {
+			return gjson.Result{}, err
+		}
+		body, err = sjson.SetRaw(body, "{{if $cacheDataPath}}{{$cacheDataPath}}.{{end}}{{.To}}", rw.Raw)
+		if err != nil {
+			return gjson.Result{}, err
+		}
+	}
+	{{- end}}
+	{{- range notInCacheAttributes .Attributes}}
+	if !state.{{toGoName .TfName}}.IsNull() {
+		body, err = sjson.Set(body, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", state.{{toGoName .TfName}}.Value{{.Type}}())
+		if err != nil {
+			return gjson.Result{}, err
+		}
+	}
+	{{- end}}
+	return gjson.Parse(body), nil
 }
 //template:end readcache
 {{- end}}

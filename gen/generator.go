@@ -121,6 +121,7 @@ type YamlConfig struct {
 	UseCache            bool                  `yaml:"use_cache"`
 	CacheRestEndpoint   string                `yaml:"cache_rest_endpoint"`
 	CachePageSize       int                   `yaml:"cache_page_size"`
+	CacheRewrites       []YamlCacheRewrite    `yaml:"cache_rewrites"`
 	MinimumVersion      string                `yaml:"minimum_version"`
 	DsDescription       string                `yaml:"ds_description"`
 	ResDescription      string                `yaml:"res_description"`
@@ -131,6 +132,16 @@ type YamlConfig struct {
 	Attributes          []YamlConfigAttribute `yaml:"attributes"`
 	TestTags            []string              `yaml:"test_tags"`
 	TestPrerequisites   string                `yaml:"test_prerequisites"`
+}
+
+// YamlCacheRewrite declares a single re-nesting of a field returned by a
+// use_cache resource's bulk (modern API) endpoint, so its shape lines up with the
+// path this resource's ERS-shaped model mapper (fromBody/updateFromBody/toBody)
+// expects. Both paths are relative to the object as wrapped under the resource's
+// cache data_path (see CacheDataPath).
+type YamlCacheRewrite struct {
+	From string `yaml:"from"`
+	To   string `yaml:"to"`
 }
 
 type YamlConfigAttribute struct {
@@ -189,6 +200,7 @@ type YamlConfigAttribute struct {
 	Attributes             []YamlConfigAttribute `yaml:"attributes"`
 	FilterEmptyValues      bool                  `yaml:"filter_empty_values"`
 	CaseInsensitive        bool                  `yaml:"case_insensitive"`
+	NotInCache             bool                  `yaml:"not_in_cache"`
 }
 
 // Templating helper function to convert TF name to GO name
@@ -510,46 +522,70 @@ func CacheDataPath(attributes []YamlConfigAttribute) string {
 	return ""
 }
 
+// NotInCacheAttributes returns the top-level attributes flagged not_in_cache, i.e.
+// attributes that are absent entirely from a use_cache resource's bulk endpoint
+// payload. ReadCache re-injects each one's current state value into the cached
+// response before the model mapper runs, so the cache never reports them as drift.
+func NotInCacheAttributes(attributes []YamlConfigAttribute) []YamlConfigAttribute {
+	var result []YamlConfigAttribute
+	for _, attr := range attributes {
+		if attr.NotInCache {
+			result = append(result, attr)
+		}
+	}
+	return result
+}
+
+// HasNotInCacheAttribute returns true if any top-level attribute is flagged
+// not_in_cache. Resources with such attributes must bypass the cache entirely on
+// import (state entirely null), since re-injecting a state value is not possible
+// when there is no prior state to read it from.
+func HasNotInCacheAttribute(attributes []YamlConfigAttribute) bool {
+	return len(NotInCacheAttributes(attributes)) > 0
+}
+
 // Map of templating functions
 var functions = template.FuncMap{
 	"toGoName":                    ToGoName,
-  "camelCase":                   CamelCase,
-  "strContains":                 strings.Contains,
-  "strReplace":                  strings.Replace,
-  "snakeCase":                   SnakeCase,
-  "sprintf":                     fmt.Sprintf,
-  "toLower":                     strings.ToLower,
-  "path":                        BuildPath,
-  "hasId":                       HasId,
-  "getId":                       GetId,
-  "computedWhenAttr":            ComputedWhenAttr,
-  "computedWhenValue":           ComputedWhenValue,
-  "computedWhenModelName":       ComputedWhenModelName,
-  "hasComputedWhen":             HasComputedWhen,
-  "hasReference":                HasReference,
-  "importParts":                 ImportParts,
-  "subtract":                    Subtract,
-  "isErs":                       IsErs,
-  "removeFirstPathElement":      RemoveFirstPathElement,
-  "isListSet":                   IsListSet,
-  "isList":                      IsList,
-  "isSet":                       IsSet,
-  "isStringListSet":             IsStringListSet,
-  "isInt64ListSet":              IsInt64ListSet,
-  "isNestedListSet":             IsNestedListSet,
-  "isNestedList":                IsNestedList,
-  "isNestedSet":                 IsNestedSet,
-  "hasAttribute":                HasAttribute,
-  "cacheDataPath":               CacheDataPath,
-  "goValueType":                 GoValueType,
-  "goValueCtor":                 GoValueCtor,
-  "goNullCtor":                  GoNullCtor,
-  "hasWriteOnlyTFChildren":      HasWriteOnlyTFChildren,
-  "writeOnlyTFChildren":         WriteOnlyTFChildren,
-  "writeOnlyTFParentLists":      WriteOnlyTFParentLists,
-  "coexistingSecretAttributes":  CoexistingSecretAttributes,
-  "coexistingSecretChildren":    CoexistingSecretChildren,
-  "coexistingSecretParentLists": CoexistingSecretParentLists,
+	"camelCase":                   CamelCase,
+	"strContains":                 strings.Contains,
+	"strReplace":                  strings.Replace,
+	"snakeCase":                   SnakeCase,
+	"sprintf":                     fmt.Sprintf,
+	"toLower":                     strings.ToLower,
+	"path":                        BuildPath,
+	"hasId":                       HasId,
+	"getId":                       GetId,
+	"computedWhenAttr":            ComputedWhenAttr,
+	"computedWhenValue":           ComputedWhenValue,
+	"computedWhenModelName":       ComputedWhenModelName,
+	"hasComputedWhen":             HasComputedWhen,
+	"hasReference":                HasReference,
+	"importParts":                 ImportParts,
+	"subtract":                    Subtract,
+	"isErs":                       IsErs,
+	"removeFirstPathElement":      RemoveFirstPathElement,
+	"isListSet":                   IsListSet,
+	"isList":                      IsList,
+	"isSet":                       IsSet,
+	"isStringListSet":             IsStringListSet,
+	"isInt64ListSet":              IsInt64ListSet,
+	"isNestedListSet":             IsNestedListSet,
+	"isNestedList":                IsNestedList,
+	"isNestedSet":                 IsNestedSet,
+	"hasAttribute":                HasAttribute,
+	"cacheDataPath":               CacheDataPath,
+	"notInCacheAttributes":        NotInCacheAttributes,
+	"hasNotInCacheAttribute":      HasNotInCacheAttribute,
+	"goValueType":                 GoValueType,
+	"goValueCtor":                 GoValueCtor,
+	"goNullCtor":                  GoNullCtor,
+	"hasWriteOnlyTFChildren":      HasWriteOnlyTFChildren,
+	"writeOnlyTFChildren":         WriteOnlyTFChildren,
+	"writeOnlyTFParentLists":      WriteOnlyTFParentLists,
+	"coexistingSecretAttributes":  CoexistingSecretAttributes,
+	"coexistingSecretChildren":    CoexistingSecretChildren,
+	"coexistingSecretParentLists": CoexistingSecretParentLists,
 }
 
 // GoValueType returns the Go type for an attribute's model struct field.
@@ -616,6 +652,15 @@ func augmentAttribute(attr *YamlConfigAttribute) {
 }
 
 func augmentConfig(config *YamlConfig) {
+	// use_cache pages through cache_rest_endpoint by comparing the page length against
+	// cache_page_size; yamale cannot express "cache_page_size is required whenever
+	// use_cache is true", so a missing or non-positive value is caught here instead. Left
+	// unchecked, `len(values.Array()) < 0` in the generated ReadCache loop is never true,
+	// so the loop never terminates and hammers the API with an unbounded number of
+	// requests.
+	if config.UseCache && config.CachePageSize <= 0 {
+		log.Fatalf("%s: use_cache is true but cache_page_size is missing or <= 0; set cache_page_size (e.g. 100) or the generated cache loader will page forever", config.Name)
+	}
 	for ia := range config.Attributes {
 		augmentAttribute(&config.Attributes[ia])
 	}

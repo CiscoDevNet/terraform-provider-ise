@@ -5,6 +5,14 @@ rest_endpoint: /ers/config/endpoint
 use_cache: true
 cache_rest_endpoint: /api/v1/endpoint
 cache_page_size: 100
+# /api/v1/endpoint nests custom attributes one level (customAttributes.<key>), but
+# ERSEndPoint (and this resource's fromBody/updateFromBody/toBody) expects them
+# double-nested (customAttributes.customAttributes.<key>). Without this rewrite every
+# cached Read collapses to an empty match, nulling custom_attributes and producing a
+# perpetual diff. mdmAttributes needs no rewrite: both APIs nest it one level deep.
+cache_rewrites:
+  - from: customAttributes
+    to: customAttributes.customAttributes
 data_source_name_query: true
 doc_category: Identity Management
 attributes:
@@ -54,6 +62,7 @@ attributes:
     type: Bool
     description: Static Profile Assignment Defined
     default_value: true
+    not_in_cache: true
     example: true
   - model_name: staticGroupAssignment
     data_path: [ERSEndPoint]
@@ -66,6 +75,7 @@ attributes:
     type: Bool
     description: staticGroupAssignmentDefined
     default_value: true
+    not_in_cache: true
     example: true
   - model_name: customAttributes
     data_path: [ERSEndPoint, customAttributes]
