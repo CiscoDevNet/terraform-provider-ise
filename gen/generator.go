@@ -118,9 +118,9 @@ type YamlConfig struct {
 	IdExample           string                `yaml:"id_example"`
 	PutIdIncludePath    string                `yaml:"put_id_include_path"`
 	DataSourceNameQuery bool                  `yaml:"data_source_name_query"`
-	UseCache             bool                  `yaml:"use_cache"`
-	CacheRestEndpoint    string                `yaml:"cache_rest_endpoint"`
-	CachePageSize        int                   `yaml:"cache_page_size"`
+	UseCache            bool                  `yaml:"use_cache"`
+	CacheRestEndpoint   string                `yaml:"cache_rest_endpoint"`
+	CachePageSize       int                   `yaml:"cache_page_size"`
 	MinimumVersion      string                `yaml:"minimum_version"`
 	DsDescription       string                `yaml:"ds_description"`
 	ResDescription      string                `yaml:"res_description"`

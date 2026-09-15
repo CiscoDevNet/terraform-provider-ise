@@ -1,6 +1,7 @@
 ## 0.4.2 (unreleased)
 
 - Fix perpetual drift on the `mac` attribute of the `ise_endpoint` resource, where ISE always normalizes MAC addresses to uppercase regardless of the case submitted, causing Terraform to report changes on every plan. `mac` now uses a case-insensitive custom string type so a case-only difference between the stored value and ISE's uppercase value is treated as no change, keeping the practitioner's original casing in state [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/273)
+- Add read cache to `ise_endpoint` resource to improve performance with large state files
 
 ## 0.4.1
 
