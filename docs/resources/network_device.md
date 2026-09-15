@@ -14,19 +14,23 @@ This resource can manage a Network Device.
 
 ```terraform
 resource "ise_network_device" "example" {
-  name                                          = "Device1"
-  description                                   = "My device"
-  authentication_enable_key_wrap                = true
-  authentication_encryption_key                 = "cisco123cisco123"
-  authentication_encryption_key_format          = "ASCII"
-  authentication_message_authenticator_code_key = "cisco123cisco1235678"
-  authentication_network_protocol               = "RADIUS"
-  authentication_radius_shared_secret           = "cisco123"
-  authentication_enable_multi_secret            = true
-  authentication_second_radius_shared_secret    = "cisco12345"
-  authentication_dtls_required                  = true
-  coa_port                                      = 12345
-  dtls_dns_name                                 = "cisco.com"
+  name                                                     = "Device1"
+  description                                              = "My device"
+  authentication_enable_key_wrap                           = true
+  authentication_encryption_key_wo                         = "cisco123cisco123"
+  authentication_encryption_key_wo_version                 = 1
+  authentication_encryption_key_format                     = "ASCII"
+  authentication_message_authenticator_code_key_wo         = "cisco123cisco1235678"
+  authentication_message_authenticator_code_key_wo_version = 1
+  authentication_network_protocol                          = "RADIUS"
+  authentication_radius_shared_secret_wo                   = "cisco123"
+  authentication_radius_shared_secret_wo_version           = 1
+  authentication_enable_multi_secret                       = true
+  authentication_second_radius_shared_secret_wo            = "cisco12345"
+  authentication_second_radius_shared_secret_wo_version    = 1
+  authentication_dtls_required                             = true
+  coa_port                                                 = 12345
+  dtls_dns_name                                            = "cisco.com"
   ips = [
     {
       ipaddress = "2.3.4.5"
@@ -43,17 +47,24 @@ resource "ise_network_device" "example" {
   snmp_username                                               = "user123"
   snmp_security_level                                         = "PRIV"
   snmp_auth_protocol                                          = "SHA2"
-  snmp_auth_password                                          = "Cisco123"
+  snmp_auth_password_wo                                       = "Cisco123"
+  snmp_auth_password_wo_version                               = 1
   snmp_privacy_protocol                                       = "AES256"
-  snmp_privacy_password                                       = "Cisco12345"
+  snmp_privacy_password_wo                                    = "Cisco12345"
+  snmp_privacy_password_wo_version                            = 1
   tacacs_connect_mode_options                                 = "OFF"
-  tacacs_shared_secret                                        = "cisco123"
+  tacacs_shared_secret_wo                                     = "cisco123"
+  tacacs_shared_secret_wo_version                             = 1
   trustsec_device_id                                          = "device123"
-  trustsec_device_password                                    = "cisco123"
+  trustsec_device_password_wo                                 = "cisco123"
+  trustsec_device_password_wo_version                         = 1
   trustsec_rest_api_username                                  = "user123"
-  trustsec_rest_api_password                                  = "Cisco123"
-  trustsec_enable_mode_password                               = "cisco123"
-  trustsec_exec_mode_password                                 = "cisco123"
+  trustsec_rest_api_password_wo                               = "Cisco123"
+  trustsec_rest_api_password_wo_version                       = 1
+  trustsec_enable_mode_password_wo                            = "cisco123"
+  trustsec_enable_mode_password_wo_version                    = 1
+  trustsec_exec_mode_password_wo                              = "cisco123"
+  trustsec_exec_mode_password_wo_version                      = 1
   trustsec_exec_mode_username                                 = "user456"
   trustsec_include_when_deploying_sgt_updates                 = true
   trustsec_download_environment_data_every_x_seconds          = 1000
@@ -76,17 +87,39 @@ resource "ise_network_device" "example" {
 
 ### Optional
 
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
 - `authentication_dtls_required` (Boolean) Enforce use of DTLS
 - `authentication_enable_key_wrap` (Boolean) Enable key wrap
 - `authentication_enable_multi_secret` (Boolean) Enable multiple RADIUS shared secrets
-- `authentication_encryption_key` (String) Encryption key
+- `authentication_encryption_key` (String, Sensitive) Encryption key
+  - Only one of `authentication_encryption_key` and `authentication_encryption_key_wo` can be set.
+  - This attribute stores the secret in Terraform state. Prefer `authentication_encryption_key_wo` together with `authentication_encryption_key_wo_version`, which keeps it out of state.
 - `authentication_encryption_key_format` (String) Key input format
   - Choices: `ASCII`, `HEXADECIMAL`
-- `authentication_message_authenticator_code_key` (String) Message authenticator code key
+- `authentication_encryption_key_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Encryption key
+  - Only one of `authentication_encryption_key` and `authentication_encryption_key_wo` can be set.
+- `authentication_encryption_key_wo_version` (Number) Rotation trigger for `authentication_encryption_key_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
+- `authentication_message_authenticator_code_key` (String, Sensitive) Message authenticator code key
+  - Only one of `authentication_message_authenticator_code_key` and `authentication_message_authenticator_code_key_wo` can be set.
+  - This attribute stores the secret in Terraform state. Prefer `authentication_message_authenticator_code_key_wo` together with `authentication_message_authenticator_code_key_wo_version`, which keeps it out of state.
+- `authentication_message_authenticator_code_key_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Message authenticator code key
+  - Only one of `authentication_message_authenticator_code_key` and `authentication_message_authenticator_code_key_wo` can be set.
+- `authentication_message_authenticator_code_key_wo_version` (Number) Rotation trigger for `authentication_message_authenticator_code_key_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `authentication_network_protocol` (String) Network protocol
   - Choices: `RADIUS`, `TACACS_PLUS`
-- `authentication_radius_shared_secret` (String) RADIUS shared secret
-- `authentication_second_radius_shared_secret` (String) Second RADIUS shared secret
+- `authentication_radius_shared_secret` (String, Sensitive) RADIUS shared secret
+  - Only one of `authentication_radius_shared_secret` and `authentication_radius_shared_secret_wo` can be set.
+  - This attribute stores the secret in Terraform state. Prefer `authentication_radius_shared_secret_wo` together with `authentication_radius_shared_secret_wo_version`, which keeps it out of state.
+- `authentication_radius_shared_secret_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) RADIUS shared secret
+  - Only one of `authentication_radius_shared_secret` and `authentication_radius_shared_secret_wo` can be set.
+- `authentication_radius_shared_secret_wo_version` (Number) Rotation trigger for `authentication_radius_shared_secret_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
+- `authentication_second_radius_shared_secret` (String, Sensitive) Second RADIUS shared secret
+  - Only one of `authentication_second_radius_shared_secret` and `authentication_second_radius_shared_secret_wo` can be set.
+  - This attribute stores the secret in Terraform state. Prefer `authentication_second_radius_shared_secret_wo` together with `authentication_second_radius_shared_secret_wo_version`, which keeps it out of state.
+- `authentication_second_radius_shared_secret_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Second RADIUS shared secret
+  - Only one of `authentication_second_radius_shared_secret` and `authentication_second_radius_shared_secret_wo` can be set.
+- `authentication_second_radius_shared_secret_wo_version` (Number) Rotation trigger for `authentication_second_radius_shared_secret_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `coa_port` (Number) CoA port
 - `description` (String) Description
 - `dtls_dns_name` (String) This value is used to verify the client identity contained in the X.509 RADIUS/DTLS client certificate
@@ -94,7 +127,12 @@ resource "ise_network_device" "example" {
 - `network_device_groups` (Set of String) List of network device groups, e.g. `Device Type#All Device Types#ACCESS`
 - `profile_name` (String) Profile name
   - Default value: `Cisco`
-- `snmp_auth_password` (String) SNMP authentication password. Required for snmp version 3 and securityLevel AUTH or PRIV.
+- `snmp_auth_password` (String, Sensitive) SNMP authentication password. Required for snmp version 3 and securityLevel AUTH or PRIV.
+  - Only one of `snmp_auth_password` and `snmp_auth_password_wo` can be set.
+  - This attribute stores the secret in Terraform state. Prefer `snmp_auth_password_wo` together with `snmp_auth_password_wo_version`, which keeps it out of state.
+- `snmp_auth_password_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) SNMP authentication password. Required for snmp version 3 and securityLevel AUTH or PRIV.
+  - Only one of `snmp_auth_password` and `snmp_auth_password_wo` can be set.
+- `snmp_auth_password_wo_version` (Number) Rotation trigger for `snmp_auth_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `snmp_auth_protocol` (String) SNMP authentication protocol. Required for snmp version 3 and securityLevel AUTH or PRIV.
   - Choices: `MD5`, `SHA`, `SHA2`
 - `snmp_link_trap_query` (Boolean) SNMP link Trap Query
@@ -102,7 +140,12 @@ resource "ise_network_device" "example" {
 - `snmp_originating_policy_service_node` (String) Originating Policy Services Node
 - `snmp_polling_interval` (Number) SNMP Polling Interval in seconds
   - Range: `0` (disabled) or `600`-`86400`
-- `snmp_privacy_password` (String) SNMP privacy password. Required for snmp version 3 and securityLevel PRIV
+- `snmp_privacy_password` (String, Sensitive) SNMP privacy password. Required for snmp version 3 and securityLevel PRIV
+  - Only one of `snmp_privacy_password` and `snmp_privacy_password_wo` can be set.
+  - This attribute stores the secret in Terraform state. Prefer `snmp_privacy_password_wo` together with `snmp_privacy_password_wo_version`, which keeps it out of state.
+- `snmp_privacy_password_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) SNMP privacy password. Required for snmp version 3 and securityLevel PRIV
+  - Only one of `snmp_privacy_password` and `snmp_privacy_password_wo` can be set.
+- `snmp_privacy_password_wo_version` (Number) Rotation trigger for `snmp_privacy_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `snmp_privacy_protocol` (String) SNMP privacy protocol. Required for snmp version 3 and securityLevel PRIV.
   - Choices: `DES`, `AES128`, `AES192`, `AES256`, `3DES`
 - `snmp_ro_community` (String) SNMP RO Community
@@ -114,20 +157,45 @@ resource "ise_network_device" "example" {
 - `software_version` (String) Software version
 - `tacacs_connect_mode_options` (String) Connect mode options
   - Choices: `OFF`, `ON_LEGACY`, `ON_DRAFT_COMPLIANT`
-- `tacacs_shared_secret` (String) Shared secret
+- `tacacs_shared_secret` (String, Sensitive) Shared secret
+  - Only one of `tacacs_shared_secret` and `tacacs_shared_secret_wo` can be set.
+  - This attribute stores the secret in Terraform state. Prefer `tacacs_shared_secret_wo` together with `tacacs_shared_secret_wo_version`, which keeps it out of state.
+- `tacacs_shared_secret_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Shared secret
+  - Only one of `tacacs_shared_secret` and `tacacs_shared_secret_wo` can be set.
+- `tacacs_shared_secret_wo_version` (Number) Rotation trigger for `tacacs_shared_secret_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `trustsec_coa_source_host` (String) CoA source host
 - `trustsec_device_id` (String) TrustSec device ID
-- `trustsec_device_password` (String) TrustSec device password
+- `trustsec_device_password` (String, Sensitive) TrustSec device password
+  - Only one of `trustsec_device_password` and `trustsec_device_password_wo` can be set.
+  - This attribute stores the secret in Terraform state. Prefer `trustsec_device_password_wo` together with `trustsec_device_password_wo_version`, which keeps it out of state.
+- `trustsec_device_password_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) TrustSec device password
+  - Only one of `trustsec_device_password` and `trustsec_device_password_wo` can be set.
+- `trustsec_device_password_wo_version` (Number) Rotation trigger for `trustsec_device_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `trustsec_download_environment_data_every_x_seconds` (Number) Download environment data every X seconds
 - `trustsec_download_peer_authorization_policy_every_x_seconds` (Number) Download peer authorization policy every X seconds
 - `trustsec_download_sgacl_lists_every_x_seconds` (Number) Download SGACL lists every X seconds
-- `trustsec_enable_mode_password` (String) Enable mode password
-- `trustsec_exec_mode_password` (String) EXEC mode password
+- `trustsec_enable_mode_password` (String, Sensitive) Enable mode password
+  - Only one of `trustsec_enable_mode_password` and `trustsec_enable_mode_password_wo` can be set.
+  - This attribute stores the secret in Terraform state. Prefer `trustsec_enable_mode_password_wo` together with `trustsec_enable_mode_password_wo_version`, which keeps it out of state.
+- `trustsec_enable_mode_password_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Enable mode password
+  - Only one of `trustsec_enable_mode_password` and `trustsec_enable_mode_password_wo` can be set.
+- `trustsec_enable_mode_password_wo_version` (Number) Rotation trigger for `trustsec_enable_mode_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
+- `trustsec_exec_mode_password` (String, Sensitive) EXEC mode password
+  - Only one of `trustsec_exec_mode_password` and `trustsec_exec_mode_password_wo` can be set.
+  - This attribute stores the secret in Terraform state. Prefer `trustsec_exec_mode_password_wo` together with `trustsec_exec_mode_password_wo_version`, which keeps it out of state.
+- `trustsec_exec_mode_password_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) EXEC mode password
+  - Only one of `trustsec_exec_mode_password` and `trustsec_exec_mode_password_wo` can be set.
+- `trustsec_exec_mode_password_wo_version` (Number) Rotation trigger for `trustsec_exec_mode_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `trustsec_exec_mode_username` (String) EXEC mode username
 - `trustsec_include_when_deploying_sgt_updates` (Boolean) Include this device when deploying Security Group Tag Mapping Updates
 - `trustsec_other_sga_devices_to_trust_this_device` (Boolean) Other TrustSec devices to trust this device
 - `trustsec_re_authentication_every_x_seconds` (Number) Re-authenticate every X seconds
-- `trustsec_rest_api_password` (String) REST API password
+- `trustsec_rest_api_password` (String, Sensitive) REST API password
+  - Only one of `trustsec_rest_api_password` and `trustsec_rest_api_password_wo` can be set.
+  - This attribute stores the secret in Terraform state. Prefer `trustsec_rest_api_password_wo` together with `trustsec_rest_api_password_wo_version`, which keeps it out of state.
+- `trustsec_rest_api_password_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) REST API password
+  - Only one of `trustsec_rest_api_password` and `trustsec_rest_api_password_wo` can be set.
+- `trustsec_rest_api_password_wo_version` (Number) Rotation trigger for `trustsec_rest_api_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `trustsec_rest_api_username` (String) REST API username
 - `trustsec_send_configuration_to_device` (Boolean) Send configuration to device
 - `trustsec_send_configuration_to_device_using` (String) Send configuration to device using

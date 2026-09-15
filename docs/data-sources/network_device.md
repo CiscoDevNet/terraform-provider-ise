@@ -33,10 +33,18 @@ data "ise_network_device" "example" {
 - `authentication_enable_multi_secret` (Boolean) Enable multiple RADIUS shared secrets
 - `authentication_encryption_key` (String) Encryption key
 - `authentication_encryption_key_format` (String) Key input format
+- `authentication_encryption_key_wo` (String) Encryption key
+- `authentication_encryption_key_wo_version` (Number) Rotation trigger for `authentication_encryption_key_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `authentication_message_authenticator_code_key` (String) Message authenticator code key
+- `authentication_message_authenticator_code_key_wo` (String) Message authenticator code key
+- `authentication_message_authenticator_code_key_wo_version` (Number) Rotation trigger for `authentication_message_authenticator_code_key_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `authentication_network_protocol` (String) Network protocol
 - `authentication_radius_shared_secret` (String) RADIUS shared secret
+- `authentication_radius_shared_secret_wo` (String) RADIUS shared secret
+- `authentication_radius_shared_secret_wo_version` (Number) Rotation trigger for `authentication_radius_shared_secret_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `authentication_second_radius_shared_secret` (String) Second RADIUS shared secret
+- `authentication_second_radius_shared_secret_wo` (String) Second RADIUS shared secret
+- `authentication_second_radius_shared_secret_wo_version` (Number) Rotation trigger for `authentication_second_radius_shared_secret_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `coa_port` (Number) CoA port
 - `description` (String) Description
 - `dtls_dns_name` (String) This value is used to verify the client identity contained in the X.509 RADIUS/DTLS client certificate
@@ -45,12 +53,16 @@ data "ise_network_device" "example" {
 - `network_device_groups` (Set of String) List of network device groups, e.g. `Device Type#All Device Types#ACCESS`
 - `profile_name` (String) Profile name
 - `snmp_auth_password` (String) SNMP authentication password. Required for snmp version 3 and securityLevel AUTH or PRIV.
+- `snmp_auth_password_wo` (String) SNMP authentication password. Required for snmp version 3 and securityLevel AUTH or PRIV.
+- `snmp_auth_password_wo_version` (Number) Rotation trigger for `snmp_auth_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `snmp_auth_protocol` (String) SNMP authentication protocol. Required for snmp version 3 and securityLevel AUTH or PRIV.
 - `snmp_link_trap_query` (Boolean) SNMP link Trap Query
 - `snmp_mac_trap_query` (Boolean) SNMP MAC Trap Query
 - `snmp_originating_policy_service_node` (String) Originating Policy Services Node
 - `snmp_polling_interval` (Number) SNMP Polling Interval in seconds
 - `snmp_privacy_password` (String) SNMP privacy password. Required for snmp version 3 and securityLevel PRIV
+- `snmp_privacy_password_wo` (String) SNMP privacy password. Required for snmp version 3 and securityLevel PRIV
+- `snmp_privacy_password_wo_version` (Number) Rotation trigger for `snmp_privacy_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `snmp_privacy_protocol` (String) SNMP privacy protocol. Required for snmp version 3 and securityLevel PRIV.
 - `snmp_ro_community` (String) SNMP RO Community
 - `snmp_security_level` (String) SNMP security level. Required for snmp version 3.
@@ -59,19 +71,29 @@ data "ise_network_device" "example" {
 - `software_version` (String) Software version
 - `tacacs_connect_mode_options` (String) Connect mode options
 - `tacacs_shared_secret` (String) Shared secret
+- `tacacs_shared_secret_wo` (String) Shared secret
+- `tacacs_shared_secret_wo_version` (Number) Rotation trigger for `tacacs_shared_secret_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `trustsec_coa_source_host` (String) CoA source host
 - `trustsec_device_id` (String) TrustSec device ID
 - `trustsec_device_password` (String) TrustSec device password
+- `trustsec_device_password_wo` (String) TrustSec device password
+- `trustsec_device_password_wo_version` (Number) Rotation trigger for `trustsec_device_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `trustsec_download_environment_data_every_x_seconds` (Number) Download environment data every X seconds
 - `trustsec_download_peer_authorization_policy_every_x_seconds` (Number) Download peer authorization policy every X seconds
 - `trustsec_download_sgacl_lists_every_x_seconds` (Number) Download SGACL lists every X seconds
 - `trustsec_enable_mode_password` (String) Enable mode password
+- `trustsec_enable_mode_password_wo` (String) Enable mode password
+- `trustsec_enable_mode_password_wo_version` (Number) Rotation trigger for `trustsec_enable_mode_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `trustsec_exec_mode_password` (String) EXEC mode password
+- `trustsec_exec_mode_password_wo` (String) EXEC mode password
+- `trustsec_exec_mode_password_wo_version` (Number) Rotation trigger for `trustsec_exec_mode_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `trustsec_exec_mode_username` (String) EXEC mode username
 - `trustsec_include_when_deploying_sgt_updates` (Boolean) Include this device when deploying Security Group Tag Mapping Updates
 - `trustsec_other_sga_devices_to_trust_this_device` (Boolean) Other TrustSec devices to trust this device
 - `trustsec_re_authentication_every_x_seconds` (Number) Re-authenticate every X seconds
 - `trustsec_rest_api_password` (String) REST API password
+- `trustsec_rest_api_password_wo` (String) REST API password
+- `trustsec_rest_api_password_wo_version` (Number) Rotation trigger for `trustsec_rest_api_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `trustsec_rest_api_username` (String) REST API username
 - `trustsec_send_configuration_to_device` (Boolean) Send configuration to device
 - `trustsec_send_configuration_to_device_using` (String) Send configuration to device using

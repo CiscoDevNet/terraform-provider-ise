@@ -33,7 +33,7 @@ jobs:
           cache: true
       - uses: hashicorp/setup-terraform@v4
         with:
-          terraform_version: 1.10.4
+          terraform_version: 1.11.4
       - run: pip install yamale
       - run: yamale -s gen/schema/schema.yaml gen/definitions/
       - run: go mod download

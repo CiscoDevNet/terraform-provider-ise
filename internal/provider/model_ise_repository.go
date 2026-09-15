@@ -32,14 +32,16 @@ import (
 
 //template:begin types
 type Repository struct {
-	Id         types.String `tfsdk:"id"`
-	Name       types.String `tfsdk:"name"`
-	Protocol   types.String `tfsdk:"protocol"`
-	Path       types.String `tfsdk:"path"`
-	ServerName types.String `tfsdk:"server_name"`
-	UserName   types.String `tfsdk:"user_name"`
-	Password   types.String `tfsdk:"password"`
-	EnablePki  types.Bool   `tfsdk:"enable_pki"`
+	Id                types.String `tfsdk:"id"`
+	Name              types.String `tfsdk:"name"`
+	Protocol          types.String `tfsdk:"protocol"`
+	Path              types.String `tfsdk:"path"`
+	ServerName        types.String `tfsdk:"server_name"`
+	UserName          types.String `tfsdk:"user_name"`
+	Password          types.String `tfsdk:"password"`
+	PasswordWo        types.String `tfsdk:"password_wo"`
+	PasswordWoVersion types.Int64  `tfsdk:"password_wo_version"`
+	EnablePki         types.Bool   `tfsdk:"enable_pki"`
 }
 
 //template:end types
@@ -75,6 +77,9 @@ func (data Repository) toBody(ctx context.Context, state Repository) string {
 	}
 	if !data.Password.IsNull() {
 		body, _ = sjson.Set(body, "password", data.Password.ValueString())
+	}
+	if !data.PasswordWo.IsNull() {
+		body, _ = sjson.Set(body, "password", data.PasswordWo.ValueString())
 	}
 	if !data.EnablePki.IsNull() {
 		body, _ = sjson.Set(body, "enablePki", data.EnablePki.ValueBool())
@@ -164,6 +169,12 @@ func (data *Repository) isNull(ctx context.Context, res gjson.Result) bool {
 		return false
 	}
 	if !data.Password.IsNull() {
+		return false
+	}
+	if !data.PasswordWo.IsNull() {
+		return false
+	}
+	if !data.PasswordWoVersion.IsNull() {
 		return false
 	}
 	if !data.EnablePki.IsNull() {

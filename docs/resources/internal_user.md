@@ -14,18 +14,20 @@ This resource can manage an Internal User.
 
 ```terraform
 resource "ise_internal_user" "example" {
-  name                   = "UserTF"
-  password               = "Cisco123"
-  change_password        = true
-  email                  = "aaa@cisco.com"
-  account_name_alias     = "User 1"
-  enable_password        = "Cisco123"
-  enabled                = true
-  password_never_expires = false
-  first_name             = "John"
-  last_name              = "Doe"
-  password_id_store      = "Internal Users"
-  description            = "My first Terraform user"
+  name                       = "UserTF"
+  password_wo                = "Cisco123"
+  password_wo_version        = 1
+  change_password            = true
+  email                      = "aaa@cisco.com"
+  account_name_alias         = "User 1"
+  enable_password_wo         = "Cisco123"
+  enable_password_wo_version = 1
+  enabled                    = true
+  password_never_expires     = false
+  first_name                 = "John"
+  last_name                  = "Doe"
+  password_id_store          = "Internal Users"
+  description                = "My first Terraform user"
 }
 ```
 
@@ -38,22 +40,34 @@ resource "ise_internal_user" "example" {
 
 ### Optional
 
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
 - `account_name_alias` (String) The Account Name Alias will be used to send email notifications about password expiration. This field is only supported from ISE 3.2.
 - `change_password` (Boolean) Requires the user to change the password
   - Default value: `true`
 - `custom_attributes` (Map of String) Key value map of custom attributes. The keys must be defined in the ISE identity store configuration.
 - `description` (String) Description
 - `email` (String) Email address
-- `enable_password` (String) This field is added in ISE 2.0 to support TACACS+
+- `enable_password` (String, Sensitive) This field is added in ISE 2.0 to support TACACS+
+  - Only one of `enable_password` and `enable_password_wo` can be set.
+  - This attribute stores the secret in Terraform state. Prefer `enable_password_wo` together with `enable_password_wo_version`, which keeps it out of state.
+- `enable_password_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) This field is added in ISE 2.0 to support TACACS+
+  - Only one of `enable_password` and `enable_password_wo` can be set.
+- `enable_password_wo_version` (Number) Rotation trigger for `enable_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `enabled` (Boolean) Whether the user is enabled/disabled
 - `first_name` (String) First name of the internal user
 - `identity_groups` (String) Comma separated list of identity group IDs.
 - `last_name` (String) Last name of the internal user
-- `password` (String) The password of the internal user. Required when creating a new user. When managing existing (brownfield) users the password can be omitted and the existing password will be preserved.
+- `password` (String, Sensitive) The password of the internal user. Required when creating a new user. When managing existing (brownfield) users the password can be omitted and the existing password will be preserved.
+  - Only one of `password` and `password_wo` can be set.
+  - This attribute stores the secret in Terraform state. Prefer `password_wo` together with `password_wo_version`, which keeps it out of state.
 - `password_id_store` (String) The ID store where the internal user's password is kept
   - Default value: `Internal Users`
 - `password_never_expires` (Boolean) Set to `true` to indicate the user password never expires. This will not apply to Users who are also ISE Admins. This field is only supported from ISE 3.2.
   - Default value: `false`
+- `password_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) The password of the internal user. Required when creating a new user. When managing existing (brownfield) users the password can be omitted and the existing password will be preserved.
+  - Only one of `password` and `password_wo` can be set.
+- `password_wo_version` (Number) Rotation trigger for `password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 
 ### Read-Only
 

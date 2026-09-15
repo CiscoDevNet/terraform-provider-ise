@@ -27,8 +27,9 @@ attributes:
     data_path: [NetworkDevice, authenticationSettings]
     tf_name: authentication_encryption_key
     type: String
+    write_only: true
+    write_only_tf: true
     description: Encryption key
-    normalize_empty_string: true
     example: cisco123cisco123
   - model_name: keyInputFormat
     data_path: [NetworkDevice, authenticationSettings]
@@ -41,8 +42,9 @@ attributes:
     data_path: [NetworkDevice, authenticationSettings]
     tf_name: authentication_message_authenticator_code_key
     type: String
+    write_only: true
+    write_only_tf: true
     description: Message authenticator code key
-    normalize_empty_string: true
     example: cisco123cisco1235678
   - model_name: networkProtocol
     data_path: [NetworkDevice, authenticationSettings]
@@ -55,6 +57,8 @@ attributes:
     data_path: [NetworkDevice, authenticationSettings]
     tf_name: authentication_radius_shared_secret
     type: String
+    write_only: true
+    write_only_tf: true
     description: RADIUS shared secret
     example: cisco123
   - model_name: enableMultiSecret
@@ -67,6 +71,8 @@ attributes:
     data_path: [NetworkDevice, authenticationSettings]
     tf_name: authentication_second_radius_shared_secret
     type: String
+    write_only: true
+    write_only_tf: true
     description: Second RADIUS shared secret
     example: cisco12345
   - model_name: dtlsRequired
@@ -198,6 +204,8 @@ attributes:
     data_path: [NetworkDevice, snmpsettings]
     tf_name: snmp_auth_password
     type: String
+    write_only: true
+    write_only_tf: true
     description: SNMP authentication password. Required for snmp version 3 and securityLevel AUTH or PRIV.
     example: Cisco123
   - model_name: privacyProtocol
@@ -211,6 +219,8 @@ attributes:
     data_path: [NetworkDevice, snmpsettings]
     tf_name: snmp_privacy_password
     type: String
+    write_only: true
+    write_only_tf: true
     description: SNMP privacy password. Required for snmp version 3 and securityLevel PRIV
     example: Cisco12345
   - model_name: connectModeOptions
@@ -224,6 +234,8 @@ attributes:
     data_path: [NetworkDevice, tacacsSettings]
     tf_name: tacacs_shared_secret
     type: String
+    write_only: true
+    write_only_tf: true
     description: Shared secret
     example: cisco123
   - model_name: sgaDeviceId
@@ -236,6 +248,8 @@ attributes:
     data_path: [NetworkDevice, trustsecsettings, deviceAuthenticationSettings]
     tf_name: trustsec_device_password
     type: String
+    write_only: true
+    write_only_tf: true
     description: TrustSec device password
     example: cisco123
   - model_name: restApiUsername
@@ -250,17 +264,22 @@ attributes:
     type: String
     description: REST API password
     write_only: true
+    write_only_tf: true
     example: Cisco123
   - model_name: enableModePassword
     data_path: [NetworkDevice, trustsecsettings, deviceConfigurationDeployment]
     tf_name: trustsec_enable_mode_password
     type: String
+    write_only: true
+    write_only_tf: true
     description: Enable mode password
     example: cisco123
   - model_name: execModePassword
     data_path: [NetworkDevice, trustsecsettings, deviceConfigurationDeployment]
     tf_name: trustsec_exec_mode_password
     type: String
+    write_only: true
+    write_only_tf: true
     description: EXEC mode password
     example: cisco123
   - model_name: execModeUsername

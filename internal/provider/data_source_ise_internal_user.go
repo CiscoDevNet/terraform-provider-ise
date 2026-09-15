@@ -80,6 +80,14 @@ func (d *InternalUserDataSource) Schema(ctx context.Context, req datasource.Sche
 				MarkdownDescription: "The password of the internal user. Required when creating a new user. When managing existing (brownfield) users the password can be omitted and the existing password will be preserved.",
 				Computed:            true,
 			},
+			"password_wo": schema.StringAttribute{
+				MarkdownDescription: "The password of the internal user. Required when creating a new user. When managing existing (brownfield) users the password can be omitted and the existing password will be preserved.",
+				Computed:            true,
+			},
+			"password_wo_version": schema.Int64Attribute{
+				MarkdownDescription: "Rotation trigger for `password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.",
+				Computed:            true,
+			},
 			"change_password": schema.BoolAttribute{
 				MarkdownDescription: "Requires the user to change the password",
 				Computed:            true,
@@ -94,6 +102,14 @@ func (d *InternalUserDataSource) Schema(ctx context.Context, req datasource.Sche
 			},
 			"enable_password": schema.StringAttribute{
 				MarkdownDescription: "This field is added in ISE 2.0 to support TACACS+",
+				Computed:            true,
+			},
+			"enable_password_wo": schema.StringAttribute{
+				MarkdownDescription: "This field is added in ISE 2.0 to support TACACS+",
+				Computed:            true,
+			},
+			"enable_password_wo_version": schema.Int64Attribute{
+				MarkdownDescription: "Rotation trigger for `enable_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.",
 				Computed:            true,
 			},
 			"enabled": schema.BoolAttribute{

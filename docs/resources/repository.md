@@ -14,13 +14,14 @@ This resource can manage a Repository.
 
 ```terraform
 resource "ise_repository" "example" {
-  name        = "repo1"
-  protocol    = "SFTP"
-  path        = "/dir"
-  server_name = "server1"
-  user_name   = "user9"
-  password    = "cisco123"
-  enable_pki  = false
+  name                = "repo1"
+  protocol            = "SFTP"
+  path                = "/dir"
+  server_name         = "server1"
+  user_name           = "user9"
+  password_wo         = "cisco123"
+  password_wo_version = 1
+  enable_pki          = false
 }
 ```
 
@@ -36,8 +37,15 @@ resource "ise_repository" "example" {
 
 ### Optional
 
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
 - `enable_pki` (Boolean) Enable PKI
-- `password` (String) Password can contain alphanumeric and/or special characters.
+- `password` (String, Sensitive) Password can contain alphanumeric and/or special characters.
+  - Only one of `password` and `password_wo` can be set.
+  - This attribute stores the secret in Terraform state. Prefer `password_wo` together with `password_wo_version`, which keeps it out of state.
+- `password_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Password can contain alphanumeric and/or special characters.
+  - Only one of `password` and `password_wo` can be set.
+- `password_wo_version` (Number) Rotation trigger for `password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.
 - `server_name` (String) Name of the server
 - `user_name` (String) User name
 
