@@ -25,7 +25,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
 //template:end imports
 
 //template:begin testAccDataSource
@@ -39,13 +38,12 @@ func TestAccDataSourceIseTrustSecEgressMatrixCell(t *testing.T) {
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceIseTrustSecEgressMatrixCellPrerequisitesConfig + testAccDataSourceIseTrustSecEgressMatrixCellConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceIseTrustSecEgressMatrixCellPrerequisitesConfig+testAccDataSourceIseTrustSecEgressMatrixCellConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
-
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -66,7 +64,6 @@ resource "ise_trustsec_security_group_acl" "test" {
 }
 
 `
-
 //template:end testPrerequisites
 
 //template:begin testAccDataSourceConfig
@@ -79,7 +76,7 @@ func testAccDataSourceIseTrustSecEgressMatrixCellConfig() string {
 	config += `	source_sgt_id = ise_trustsec_security_group.test.id` + "\n"
 	config += `	destination_sgt_id = ise_trustsec_security_group.test.id` + "\n"
 	config += `}` + "\n"
-
+	
 	config += `
 		data "ise_trustsec_egress_matrix_cell" "test" {
 			id = ise_trustsec_egress_matrix_cell.test.id
@@ -87,5 +84,4 @@ func testAccDataSourceIseTrustSecEgressMatrixCellConfig() string {
 	`
 	return config
 }
-
 //template:end testAccDataSourceConfig

@@ -25,7 +25,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
 //template:end imports
 
 //template:begin testAccDataSource
@@ -48,12 +47,11 @@ func TestAccDataSourceIseDeviceAdminTimeAndDateCondition(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseDeviceAdminTimeAndDateConditionConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
-
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -76,7 +74,7 @@ func testAccDataSourceIseDeviceAdminTimeAndDateConditionConfig() string {
 	config += `	exception_start_time = "20:00"` + "\n"
 	config += `	exception_end_time = "22:00"` + "\n"
 	config += `}` + "\n"
-
+	
 	config += `
 		data "ise_device_admin_time_and_date_condition" "test" {
 			id = ise_device_admin_time_and_date_condition.test.id
@@ -84,5 +82,4 @@ func testAccDataSourceIseDeviceAdminTimeAndDateConditionConfig() string {
 	`
 	return config
 }
-
 //template:end testAccDataSourceConfig

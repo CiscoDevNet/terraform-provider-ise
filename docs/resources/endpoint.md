@@ -23,6 +23,7 @@ resource "ise_endpoint" "example" {
   static_profile_assignment_defined = true
   static_group_assignment           = true
   static_group_assignment_defined   = true
+  custom_attributes                 = { "key1" = "value1" }
 }
 ```
 

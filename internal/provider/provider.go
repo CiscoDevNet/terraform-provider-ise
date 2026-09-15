@@ -22,7 +22,6 @@ package provider
 //template:begin provider
 import (
 	"context"
-	"errors"
 	"os"
 	"strconv"
 	"sync"
@@ -467,5 +466,4 @@ func (c *ThreadSafeCache) GetOrLoad(key string, load func() (map[string]gjson.Re
 		return value, false, nil
 	}
 }
-
 //template:end provider

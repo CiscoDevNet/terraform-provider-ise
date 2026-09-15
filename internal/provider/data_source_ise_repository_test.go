@@ -25,7 +25,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
 //template:end imports
 
 //template:begin testAccDataSource
@@ -42,12 +41,11 @@ func TestAccDataSourceIseRepository(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseRepositoryConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
-
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -65,7 +63,7 @@ func testAccDataSourceIseRepositoryConfig() string {
 	config += `	password_wo_version = 1` + "\n"
 	config += `	enable_pki = false` + "\n"
 	config += `}` + "\n"
-
+	
 	config += `
 		data "ise_repository" "test" {
 			id = ise_repository.test.id
@@ -73,5 +71,4 @@ func testAccDataSourceIseRepositoryConfig() string {
 	`
 	return config
 }
-
 //template:end testAccDataSourceConfig

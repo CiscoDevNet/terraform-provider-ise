@@ -22,113 +22,235 @@ package provider
 //template:begin imports
 import (
 	"context"
+	"fmt"
+	"net/url"
 	"strconv"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
 //template:end imports
 
 //template:begin types
 type DeviceAdminAuthorizationGlobalExceptionRule struct {
-	Id                       types.String                                          `tfsdk:"id"`
-	Name                     types.String                                          `tfsdk:"name"`
-	Rank                     types.Int64                                           `tfsdk:"rank"`
-	State                    types.String                                          `tfsdk:"state"`
-	ConditionType            types.String                                          `tfsdk:"condition_type"`
-	ConditionId              types.String                                          `tfsdk:"condition_id"`
-	ConditionIsNegate        types.Bool                                            `tfsdk:"condition_is_negate"`
-	ConditionAttributeName   types.String                                          `tfsdk:"condition_attribute_name"`
-	ConditionAttributeValue  types.String                                          `tfsdk:"condition_attribute_value"`
-	ConditionDictionaryName  types.String                                          `tfsdk:"condition_dictionary_name"`
-	ConditionDictionaryValue types.String                                          `tfsdk:"condition_dictionary_value"`
-	ConditionOperator        helpers.OperatorValue                                 `tfsdk:"condition_operator"`
-	Children                 []DeviceAdminAuthorizationGlobalExceptionRuleChildren `tfsdk:"children"`
-	CommandSets              types.Set                                             `tfsdk:"command_sets"`
-	Profile                  types.String                                          `tfsdk:"profile"`
+	Id types.String `tfsdk:"id"`
+	Name types.String `tfsdk:"name"`
+	Rank types.Int64 `tfsdk:"rank"`
+	State types.String `tfsdk:"state"`
+	ConditionType types.String `tfsdk:"condition_type"`
+	ConditionId types.String `tfsdk:"condition_id"`
+	ConditionIsNegate types.Bool `tfsdk:"condition_is_negate"`
+	ConditionAttributeName types.String `tfsdk:"condition_attribute_name"`
+	ConditionAttributeValue types.String `tfsdk:"condition_attribute_value"`
+	ConditionDictionaryName types.String `tfsdk:"condition_dictionary_name"`
+	ConditionDictionaryValue types.String `tfsdk:"condition_dictionary_value"`
+	ConditionOperator helpers.OperatorValue `tfsdk:"condition_operator"`
+	Children []DeviceAdminAuthorizationGlobalExceptionRuleChildren `tfsdk:"children"`
+	CommandSets types.Set `tfsdk:"command_sets"`
+	Profile types.String `tfsdk:"profile"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 type DeviceAdminAuthorizationGlobalExceptionRuleChildren struct {
-	ConditionType   types.String                                                  `tfsdk:"condition_type"`
-	Id              types.String                                                  `tfsdk:"id"`
-	IsNegate        types.Bool                                                    `tfsdk:"is_negate"`
-	AttributeName   types.String                                                  `tfsdk:"attribute_name"`
-	AttributeValue  types.String                                                  `tfsdk:"attribute_value"`
-	DictionaryName  types.String                                                  `tfsdk:"dictionary_name"`
-	DictionaryValue types.String                                                  `tfsdk:"dictionary_value"`
-	Operator        helpers.OperatorValue                                         `tfsdk:"operator"`
-	Children        []DeviceAdminAuthorizationGlobalExceptionRuleChildrenChildren `tfsdk:"children"`
+	ConditionType types.String `tfsdk:"condition_type"`
+	Id types.String `tfsdk:"id"`
+	IsNegate types.Bool `tfsdk:"is_negate"`
+	AttributeName types.String `tfsdk:"attribute_name"`
+	AttributeValue types.String `tfsdk:"attribute_value"`
+	DictionaryName types.String `tfsdk:"dictionary_name"`
+	DictionaryValue types.String `tfsdk:"dictionary_value"`
+	Operator helpers.OperatorValue `tfsdk:"operator"`
+	Children []DeviceAdminAuthorizationGlobalExceptionRuleChildrenChildren `tfsdk:"children"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 type DeviceAdminAuthorizationGlobalExceptionRuleChildrenChildren struct {
-	ConditionType   types.String                                                          `tfsdk:"condition_type"`
-	Id              types.String                                                          `tfsdk:"id"`
-	IsNegate        types.Bool                                                            `tfsdk:"is_negate"`
-	AttributeName   types.String                                                          `tfsdk:"attribute_name"`
-	AttributeValue  types.String                                                          `tfsdk:"attribute_value"`
-	DictionaryName  types.String                                                          `tfsdk:"dictionary_name"`
-	DictionaryValue types.String                                                          `tfsdk:"dictionary_value"`
-	Operator        helpers.OperatorValue                                                 `tfsdk:"operator"`
-	Children        []DeviceAdminAuthorizationGlobalExceptionRuleChildrenChildrenChildren `tfsdk:"children"`
+	ConditionType types.String `tfsdk:"condition_type"`
+	Id types.String `tfsdk:"id"`
+	IsNegate types.Bool `tfsdk:"is_negate"`
+	AttributeName types.String `tfsdk:"attribute_name"`
+	AttributeValue types.String `tfsdk:"attribute_value"`
+	DictionaryName types.String `tfsdk:"dictionary_name"`
+	DictionaryValue types.String `tfsdk:"dictionary_value"`
+	Operator helpers.OperatorValue `tfsdk:"operator"`
+	Children []DeviceAdminAuthorizationGlobalExceptionRuleChildrenChildrenChildren `tfsdk:"children"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 type DeviceAdminAuthorizationGlobalExceptionRuleChildrenChildrenChildren struct {
-	ConditionType   types.String                                                                  `tfsdk:"condition_type"`
-	Id              types.String                                                                  `tfsdk:"id"`
-	IsNegate        types.Bool                                                                    `tfsdk:"is_negate"`
-	AttributeName   types.String                                                                  `tfsdk:"attribute_name"`
-	AttributeValue  types.String                                                                  `tfsdk:"attribute_value"`
-	DictionaryName  types.String                                                                  `tfsdk:"dictionary_name"`
-	DictionaryValue types.String                                                                  `tfsdk:"dictionary_value"`
-	Operator        helpers.OperatorValue                                                         `tfsdk:"operator"`
-	Children        []DeviceAdminAuthorizationGlobalExceptionRuleChildrenChildrenChildrenChildren `tfsdk:"children"`
+	ConditionType types.String `tfsdk:"condition_type"`
+	Id types.String `tfsdk:"id"`
+	IsNegate types.Bool `tfsdk:"is_negate"`
+	AttributeName types.String `tfsdk:"attribute_name"`
+	AttributeValue types.String `tfsdk:"attribute_value"`
+	DictionaryName types.String `tfsdk:"dictionary_name"`
+	DictionaryValue types.String `tfsdk:"dictionary_value"`
+	Operator helpers.OperatorValue `tfsdk:"operator"`
+	Children []DeviceAdminAuthorizationGlobalExceptionRuleChildrenChildrenChildrenChildren `tfsdk:"children"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 type DeviceAdminAuthorizationGlobalExceptionRuleChildrenChildrenChildrenChildren struct {
-	ConditionType   types.String                                                                          `tfsdk:"condition_type"`
-	Id              types.String                                                                          `tfsdk:"id"`
-	IsNegate        types.Bool                                                                            `tfsdk:"is_negate"`
-	AttributeName   types.String                                                                          `tfsdk:"attribute_name"`
-	AttributeValue  types.String                                                                          `tfsdk:"attribute_value"`
-	DictionaryName  types.String                                                                          `tfsdk:"dictionary_name"`
-	DictionaryValue types.String                                                                          `tfsdk:"dictionary_value"`
-	Operator        helpers.OperatorValue                                                                 `tfsdk:"operator"`
-	Children        []DeviceAdminAuthorizationGlobalExceptionRuleChildrenChildrenChildrenChildrenChildren `tfsdk:"children"`
+	ConditionType types.String `tfsdk:"condition_type"`
+	Id types.String `tfsdk:"id"`
+	IsNegate types.Bool `tfsdk:"is_negate"`
+	AttributeName types.String `tfsdk:"attribute_name"`
+	AttributeValue types.String `tfsdk:"attribute_value"`
+	DictionaryName types.String `tfsdk:"dictionary_name"`
+	DictionaryValue types.String `tfsdk:"dictionary_value"`
+	Operator helpers.OperatorValue `tfsdk:"operator"`
+	Children []DeviceAdminAuthorizationGlobalExceptionRuleChildrenChildrenChildrenChildrenChildren `tfsdk:"children"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 type DeviceAdminAuthorizationGlobalExceptionRuleChildrenChildrenChildrenChildrenChildren struct {
-	ConditionType   types.String                                                                                  `tfsdk:"condition_type"`
-	Id              types.String                                                                                  `tfsdk:"id"`
-	IsNegate        types.Bool                                                                                    `tfsdk:"is_negate"`
-	AttributeName   types.String                                                                                  `tfsdk:"attribute_name"`
-	AttributeValue  types.String                                                                                  `tfsdk:"attribute_value"`
-	DictionaryName  types.String                                                                                  `tfsdk:"dictionary_name"`
-	DictionaryValue types.String                                                                                  `tfsdk:"dictionary_value"`
-	Operator        helpers.OperatorValue                                                                         `tfsdk:"operator"`
-	Children        []DeviceAdminAuthorizationGlobalExceptionRuleChildrenChildrenChildrenChildrenChildrenChildren `tfsdk:"children"`
+	ConditionType types.String `tfsdk:"condition_type"`
+	Id types.String `tfsdk:"id"`
+	IsNegate types.Bool `tfsdk:"is_negate"`
+	AttributeName types.String `tfsdk:"attribute_name"`
+	AttributeValue types.String `tfsdk:"attribute_value"`
+	DictionaryName types.String `tfsdk:"dictionary_name"`
+	DictionaryValue types.String `tfsdk:"dictionary_value"`
+	Operator helpers.OperatorValue `tfsdk:"operator"`
+	Children []DeviceAdminAuthorizationGlobalExceptionRuleChildrenChildrenChildrenChildrenChildrenChildren `tfsdk:"children"`
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 type DeviceAdminAuthorizationGlobalExceptionRuleChildrenChildrenChildrenChildrenChildrenChildren struct {
-	ConditionType   types.String          `tfsdk:"condition_type"`
-	Id              types.String          `tfsdk:"id"`
-	IsNegate        types.Bool            `tfsdk:"is_negate"`
-	AttributeName   types.String          `tfsdk:"attribute_name"`
-	AttributeValue  types.String          `tfsdk:"attribute_value"`
-	DictionaryName  types.String          `tfsdk:"dictionary_name"`
-	DictionaryValue types.String          `tfsdk:"dictionary_value"`
-	Operator        helpers.OperatorValue `tfsdk:"operator"`
+	ConditionType types.String `tfsdk:"condition_type"`
+	Id types.String `tfsdk:"id"`
+	IsNegate types.Bool `tfsdk:"is_negate"`
+	AttributeName types.String `tfsdk:"attribute_name"`
+	AttributeValue types.String `tfsdk:"attribute_value"`
+	DictionaryName types.String `tfsdk:"dictionary_name"`
+	DictionaryValue types.String `tfsdk:"dictionary_value"`
+	Operator helpers.OperatorValue `tfsdk:"operator"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //template:end types
 
 //template:begin getPath
 func (data DeviceAdminAuthorizationGlobalExceptionRule) getPath() string {
-	return "/api/v1/policy/device-admin/policy-set/global-exception"
+		return "/api/v1/policy/device-admin/policy-set/global-exception"
 }
-
 //template:end getPath
 
 //template:begin getPathDelete
@@ -138,37 +260,37 @@ func (data DeviceAdminAuthorizationGlobalExceptionRule) getPath() string {
 //template:begin toBody
 func (data DeviceAdminAuthorizationGlobalExceptionRule) toBody(ctx context.Context, state DeviceAdminAuthorizationGlobalExceptionRule) string {
 	body := ""
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()  {
 		body, _ = sjson.Set(body, "rule.name", data.Name.ValueString())
 	}
-	if !data.Rank.IsNull() {
+	if !data.Rank.IsNull()  {
 		body, _ = sjson.Set(body, "rule.rank", data.Rank.ValueInt64())
 	}
-	if !data.State.IsNull() {
+	if !data.State.IsNull()  {
 		body, _ = sjson.Set(body, "rule.state", data.State.ValueString())
 	}
-	if !data.ConditionType.IsNull() {
+	if !data.ConditionType.IsNull()  {
 		body, _ = sjson.Set(body, "rule.condition.conditionType", data.ConditionType.ValueString())
 	}
-	if !data.ConditionId.IsNull() {
+	if !data.ConditionId.IsNull()  {
 		body, _ = sjson.Set(body, "rule.condition.id", data.ConditionId.ValueString())
 	}
-	if !data.ConditionIsNegate.IsNull() {
+	if !data.ConditionIsNegate.IsNull()  {
 		body, _ = sjson.Set(body, "rule.condition.isNegate", data.ConditionIsNegate.ValueBool())
 	}
-	if !data.ConditionAttributeName.IsNull() {
+	if !data.ConditionAttributeName.IsNull()  {
 		body, _ = sjson.Set(body, "rule.condition.attributeName", data.ConditionAttributeName.ValueString())
 	}
-	if !data.ConditionAttributeValue.IsNull() {
+	if !data.ConditionAttributeValue.IsNull()  {
 		body, _ = sjson.Set(body, "rule.condition.attributeValue", data.ConditionAttributeValue.ValueString())
 	}
-	if !data.ConditionDictionaryName.IsNull() {
+	if !data.ConditionDictionaryName.IsNull()  {
 		body, _ = sjson.Set(body, "rule.condition.dictionaryName", data.ConditionDictionaryName.ValueString())
 	}
-	if !data.ConditionDictionaryValue.IsNull() {
+	if !data.ConditionDictionaryValue.IsNull()  {
 		body, _ = sjson.Set(body, "rule.condition.dictionaryValue", data.ConditionDictionaryValue.ValueString())
 	}
-	if !data.ConditionOperator.IsNull() {
+	if !data.ConditionOperator.IsNull()  {
 		body, _ = sjson.Set(body, "rule.condition.operator", helpers.NormalizeOperator(data.ConditionOperator.ValueString()))
 	}
 	if len(data.Children) > 0 {
@@ -362,12 +484,11 @@ func (data DeviceAdminAuthorizationGlobalExceptionRule) toBody(ctx context.Conte
 		data.CommandSets.ElementsAs(ctx, &values, false)
 		body, _ = sjson.Set(body, "commands", values)
 	}
-	if !data.Profile.IsNull() {
+	if !data.Profile.IsNull()  {
 		body, _ = sjson.Set(body, "profile", data.Profile.ValueString())
 	}
 	return body
 }
-
 //template:end toBody
 
 //template:begin fromBody
@@ -477,44 +598,44 @@ func (data *DeviceAdminAuthorizationGlobalExceptionRule) fromBody(ctx context.Co
 					cItem := DeviceAdminAuthorizationGlobalExceptionRuleChildrenChildren{}
 					if ccValue := cv.Get("conditionType"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.ConditionType = types.StringValue(ccValue.String())
-					} else {
-						cItem.ConditionType = types.StringNull()
-					}
+						} else {
+							cItem.ConditionType = types.StringNull()
+						}
 					if ccValue := cv.Get("id"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.Id = types.StringValue(ccValue.String())
-					} else {
-						cItem.Id = types.StringNull()
-					}
+						} else {
+							cItem.Id = types.StringNull()
+						}
 					if ccValue := cv.Get("isNegate"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.IsNegate = types.BoolValue(ccValue.Bool())
-					} else {
-						cItem.IsNegate = types.BoolNull()
-					}
+						} else {
+							cItem.IsNegate = types.BoolNull()
+						}
 					if ccValue := cv.Get("attributeName"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.AttributeName = types.StringValue(ccValue.String())
-					} else {
-						cItem.AttributeName = types.StringNull()
-					}
+						} else {
+							cItem.AttributeName = types.StringNull()
+						}
 					if ccValue := cv.Get("attributeValue"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.AttributeValue = types.StringValue(ccValue.String())
-					} else {
-						cItem.AttributeValue = types.StringNull()
-					}
+						} else {
+							cItem.AttributeValue = types.StringNull()
+						}
 					if ccValue := cv.Get("dictionaryName"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.DictionaryName = types.StringValue(ccValue.String())
-					} else {
-						cItem.DictionaryName = types.StringNull()
-					}
+						} else {
+							cItem.DictionaryName = types.StringNull()
+						}
 					if ccValue := cv.Get("dictionaryValue"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.DictionaryValue = types.StringValue(ccValue.String())
-					} else {
-						cItem.DictionaryValue = types.StringNull()
-					}
+						} else {
+							cItem.DictionaryValue = types.StringNull()
+						}
 					if ccValue := cv.Get("operator"); ccValue.Exists() && ccValue.Type != gjson.Null {
 						cItem.Operator = helpers.NewOperatorValue(helpers.NormalizeOperator(ccValue.String()))
-					} else {
-						cItem.Operator = helpers.NewOperatorNull()
-					}
+						} else {
+							cItem.Operator = helpers.NewOperatorNull()
+						}
 					if ccValue := cv.Get("children"); ccValue.Exists() {
 						cItem.Children = make([]DeviceAdminAuthorizationGlobalExceptionRuleChildrenChildrenChildren, 0)
 						ccValue.ForEach(func(cck, ccv gjson.Result) bool {
@@ -726,7 +847,6 @@ func (data *DeviceAdminAuthorizationGlobalExceptionRule) fromBody(ctx context.Co
 		data.Profile = types.StringNull()
 	}
 }
-
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -787,9 +907,9 @@ func (data *DeviceAdminAuthorizationGlobalExceptionRule) updateFromBody(ctx cont
 		data.ConditionOperator = helpers.NewOperatorNull()
 	}
 	for i := range data.Children {
-		keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
-		keyValues := [...]string{data.Children[i].ConditionType.ValueString(), data.Children[i].Id.ValueString(), strconv.FormatBool(data.Children[i].IsNegate.ValueBool()), data.Children[i].AttributeName.ValueString(), data.Children[i].AttributeValue.ValueString(), data.Children[i].DictionaryName.ValueString(), data.Children[i].DictionaryValue.ValueString(), data.Children[i].Operator.ValueString()}
-		keyNormalize := [...]bool{false, false, false, false, false, false, false, true}
+		keys := [...]string{ "conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator",  }
+		keyValues := [...]string{ data.Children[i].ConditionType.ValueString(), data.Children[i].Id.ValueString(), strconv.FormatBool(data.Children[i].IsNegate.ValueBool()), data.Children[i].AttributeName.ValueString(), data.Children[i].AttributeValue.ValueString(), data.Children[i].DictionaryName.ValueString(), data.Children[i].DictionaryValue.ValueString(), data.Children[i].Operator.ValueString(),  }
+		keyNormalize := [...]bool{ false, false, false, false, false, false, false, true,  }
 
 		var r gjson.Result
 		parentItems := res.Get("response.rule.condition.children").Array()
@@ -857,9 +977,9 @@ func (data *DeviceAdminAuthorizationGlobalExceptionRule) updateFromBody(ctx cont
 			data.Children[i].Operator = helpers.NewOperatorNull()
 		}
 		for ci := range data.Children[i].Children {
-			keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
-			keyValues := [...]string{data.Children[i].Children[ci].ConditionType.ValueString(), data.Children[i].Children[ci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].IsNegate.ValueBool()), data.Children[i].Children[ci].AttributeName.ValueString(), data.Children[i].Children[ci].AttributeValue.ValueString(), data.Children[i].Children[ci].DictionaryName.ValueString(), data.Children[i].Children[ci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Operator.ValueString()}
-			keyNormalize := [...]bool{false, false, false, false, false, false, false, true}
+			keys := [...]string{ "conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator",  }
+			keyValues := [...]string{ data.Children[i].Children[ci].ConditionType.ValueString(), data.Children[i].Children[ci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].IsNegate.ValueBool()), data.Children[i].Children[ci].AttributeName.ValueString(), data.Children[i].Children[ci].AttributeValue.ValueString(), data.Children[i].Children[ci].DictionaryName.ValueString(), data.Children[i].Children[ci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Operator.ValueString(),  }
+			keyNormalize := [...]bool{ false, false, false, false, false, false, false, true,  }
 
 			var cr gjson.Result
 			childItems := r.Get("children").Array()
@@ -927,9 +1047,9 @@ func (data *DeviceAdminAuthorizationGlobalExceptionRule) updateFromBody(ctx cont
 				data.Children[i].Children[ci].Operator = helpers.NewOperatorNull()
 			}
 			for cci := range data.Children[i].Children[ci].Children {
-				keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
-				keyValues := [...]string{data.Children[i].Children[ci].Children[cci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Operator.ValueString()}
-				keyNormalize := [...]bool{false, false, false, false, false, false, false, true}
+				keys := [...]string{ "conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator",  }
+				keyValues := [...]string{ data.Children[i].Children[ci].Children[cci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Operator.ValueString(),  }
+				keyNormalize := [...]bool{ false, false, false, false, false, false, false, true,  }
 
 				var ccr gjson.Result
 				cciItems := cr.Get("children").Array()
@@ -997,9 +1117,9 @@ func (data *DeviceAdminAuthorizationGlobalExceptionRule) updateFromBody(ctx cont
 					data.Children[i].Children[ci].Children[cci].Operator = helpers.NewOperatorNull()
 				}
 				for ccci := range data.Children[i].Children[ci].Children[cci].Children {
-					keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
-					keyValues := [...]string{data.Children[i].Children[ci].Children[cci].Children[ccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Operator.ValueString()}
-					keyNormalize := [...]bool{false, false, false, false, false, false, false, true}
+					keys := [...]string{ "conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator",  }
+					keyValues := [...]string{ data.Children[i].Children[ci].Children[cci].Children[ccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Operator.ValueString(),  }
+					keyNormalize := [...]bool{ false, false, false, false, false, false, false, true,  }
 
 					var cccr gjson.Result
 					ccciItems := ccr.Get("children").Array()
@@ -1067,9 +1187,9 @@ func (data *DeviceAdminAuthorizationGlobalExceptionRule) updateFromBody(ctx cont
 						data.Children[i].Children[ci].Children[cci].Children[ccci].Operator = helpers.NewOperatorNull()
 					}
 					for cccci := range data.Children[i].Children[ci].Children[cci].Children[ccci].Children {
-						keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
-						keyValues := [...]string{data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator.ValueString()}
-						keyNormalize := [...]bool{false, false, false, false, false, false, false, true}
+						keys := [...]string{ "conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator",  }
+						keyValues := [...]string{ data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator.ValueString(),  }
+						keyNormalize := [...]bool{ false, false, false, false, false, false, false, true,  }
 
 						var ccccr gjson.Result
 						cccciItems := cccr.Get("children").Array()
@@ -1137,9 +1257,9 @@ func (data *DeviceAdminAuthorizationGlobalExceptionRule) updateFromBody(ctx cont
 							data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator = helpers.NewOperatorNull()
 						}
 						for ccccci := range data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children {
-							keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
-							keyValues := [...]string{data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Operator.ValueString()}
-							keyNormalize := [...]bool{false, false, false, false, false, false, false, true}
+							keys := [...]string{ "conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator",  }
+							keyValues := [...]string{ data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Operator.ValueString(),  }
+							keyNormalize := [...]bool{ false, false, false, false, false, false, false, true,  }
 
 							var cccccr gjson.Result
 							ccccciItems := ccccr.Get("children").Array()
@@ -1223,7 +1343,6 @@ func (data *DeviceAdminAuthorizationGlobalExceptionRule) updateFromBody(ctx cont
 		data.Profile = types.StringNull()
 	}
 }
-
 //template:end updateFromBody
 
 //template:begin isNull
@@ -1272,5 +1391,4 @@ func (data *DeviceAdminAuthorizationGlobalExceptionRule) isNull(ctx context.Cont
 	}
 	return true
 }
-
 //template:end isNull

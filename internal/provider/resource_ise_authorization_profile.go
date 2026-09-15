@@ -24,24 +24,33 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"sort"
 	"strings"
+	"sync"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
+	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 )
-
 //template:end imports
 
 //template:begin header
@@ -61,7 +70,6 @@ type AuthorizationProfileResource struct {
 func (r *AuthorizationProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_authorization_profile"
 }
-
 //template:end header
 
 //template:begin model
@@ -98,10 +106,10 @@ func (r *AuthorizationProfileResource) Schema(ctx context.Context, req resource.
 				},
 			},
 			"web_redirection_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("This type must fit the `web_redirection_portal_name`").AddStringEnumDescription("CentralizedWebAuth", "HotSpot", "NativeSupplicanProvisioning", "ClientProvisioning").String,
+				MarkdownDescription: helpers.NewAttributeDescription("This type must fit the `web_redirection_portal_name`").AddStringEnumDescription("CentralizedWebAuth", "HotSpot", "NativeSupplicanProvisioning", "ClientProvisioning", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("CentralizedWebAuth", "HotSpot", "NativeSupplicanProvisioning", "ClientProvisioning"),
+					stringvalidator.OneOf("CentralizedWebAuth", "HotSpot", "NativeSupplicanProvisioning", "ClientProvisioning", ),
 				},
 			},
 			"web_redirection_acl": schema.StringAttribute{
@@ -125,13 +133,13 @@ func (r *AuthorizationProfileResource) Schema(ctx context.Context, req resource.
 				Optional:            true,
 			},
 			"access_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Access type").AddStringEnumDescription("ACCESS_ACCEPT", "ACCESS_REJECT").AddDefaultValueDescription("ACCESS_ACCEPT").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Access type").AddStringEnumDescription("ACCESS_ACCEPT", "ACCESS_REJECT", ).AddDefaultValueDescription("ACCESS_ACCEPT").String,
 				Optional:            true,
 				Computed:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("ACCESS_ACCEPT", "ACCESS_REJECT"),
+					stringvalidator.OneOf("ACCESS_ACCEPT", "ACCESS_REJECT", ),
 				},
-				Default: stringdefault.StaticString("ACCESS_ACCEPT"),
+				Default:             stringdefault.StaticString("ACCESS_ACCEPT"),
 			},
 			"profile_name": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Value needs to be an existing Network Device Profile").AddDefaultValueDescription("Cisco").String,
@@ -212,17 +220,17 @@ func (r *AuthorizationProfileResource) Schema(ctx context.Context, req resource.
 				Default:             booldefault.StaticBool(false),
 			},
 			"mac_sec_policy": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("MacSec policy").AddStringEnumDescription("MUST_SECURE", "MUST_NOT_SECURE", "SHOULD_SECURE").String,
+				MarkdownDescription: helpers.NewAttributeDescription("MacSec policy").AddStringEnumDescription("MUST_SECURE", "MUST_NOT_SECURE", "SHOULD_SECURE", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("MUST_SECURE", "MUST_NOT_SECURE", "SHOULD_SECURE"),
+					stringvalidator.OneOf("MUST_SECURE", "MUST_NOT_SECURE", "SHOULD_SECURE", ),
 				},
 			},
 			"reauthentication_connectivity": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Maintain Connectivity During Reauthentication").AddStringEnumDescription("DEFAULT", "RADIUS_REQUEST").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Maintain Connectivity During Reauthentication").AddStringEnumDescription("DEFAULT", "RADIUS_REQUEST", ).String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("DEFAULT", "RADIUS_REQUEST"),
+					stringvalidator.OneOf("DEFAULT", "RADIUS_REQUEST", ),
 				},
 			},
 			"reauthentication_timer": schema.Int64Attribute{
@@ -246,10 +254,10 @@ func (r *AuthorizationProfileResource) Schema(ctx context.Context, req resource.
 							Optional:            true,
 						},
 						"attribute_right_value_type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Advanced attribute value type").AddStringEnumDescription("AdvancedDictionaryAttribute", "AttributeValue").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Advanced attribute value type").AddStringEnumDescription("AdvancedDictionaryAttribute", "AttributeValue", ).String,
 							Optional:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("AdvancedDictionaryAttribute", "AttributeValue"),
+								stringvalidator.OneOf("AdvancedDictionaryAttribute", "AttributeValue", ),
 							},
 						},
 						"attribute_right_value": schema.StringAttribute{
@@ -278,7 +286,6 @@ func (r *AuthorizationProfileResource) Schema(ctx context.Context, req resource.
 		},
 	}
 }
-
 //template:end model
 
 //template:begin configure
@@ -289,7 +296,6 @@ func (r *AuthorizationProfileResource) Configure(_ context.Context, req resource
 
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
-
 //template:end configure
 
 //template:begin create
@@ -320,7 +326,6 @@ func (r *AuthorizationProfileResource) Create(ctx context.Context, req resource.
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end create
 
 //template:begin read
@@ -356,12 +361,12 @@ func (r *AuthorizationProfileResource) Read(ctx context.Context, req resource.Re
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end read
 
 //template:begin update
 func (r *AuthorizationProfileResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state AuthorizationProfile
+
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -378,8 +383,8 @@ func (r *AuthorizationProfileResource) Update(ctx context.Context, req resource.
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	body := plan.toBody(ctx, state)
-
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
+	
+	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -390,7 +395,6 @@ func (r *AuthorizationProfileResource) Update(ctx context.Context, req resource.
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end update
 
 //template:begin delete
@@ -415,12 +419,10 @@ func (r *AuthorizationProfileResource) Delete(ctx context.Context, req resource.
 
 	resp.State.RemoveResource(ctx)
 }
-
 //template:end delete
 
 //template:begin import
 func (r *AuthorizationProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
-
 //template:end import

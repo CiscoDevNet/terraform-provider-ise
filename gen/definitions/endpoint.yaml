@@ -85,8 +85,8 @@ attributes:
     data_path: [ERSEndPoint, customAttributes]
     type: Map
     description: Custom Attributes
-    exclude_test: true
     filter_empty_values: true
+    test_value: '{(ise_endpoint_custom_attribute.test.id) = "true"}'
     example: "{\"key1\" = \"value1\"}"
   - model_name: identityStore
     data_path: [ERSEndPoint]
@@ -178,4 +178,8 @@ test_prerequisites: |
     name           = "EndpointGroup1"
     description    = "Test endpoint identity group"
     system_defined = false
+  }
+  resource "ise_endpoint_custom_attribute" "test" {
+    attribute_name = "isCorporate"
+    attribute_type = "Boolean"
   }

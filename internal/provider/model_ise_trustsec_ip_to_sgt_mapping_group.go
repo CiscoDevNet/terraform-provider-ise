@@ -22,31 +22,77 @@ package provider
 //template:begin imports
 import (
 	"context"
+	"fmt"
+	"net/url"
+	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
 //template:end imports
 
 //template:begin types
 type TrustSecIPToSGTMappingGroup struct {
-	Id          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
+	Id types.String `tfsdk:"id"`
+	Name types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
-	DeployTo    types.String `tfsdk:"deploy_to"`
-	DeployType  types.String `tfsdk:"deploy_type"`
-	Sgt         types.String `tfsdk:"sgt"`
+	DeployTo types.String `tfsdk:"deploy_to"`
+	DeployType types.String `tfsdk:"deploy_type"`
+	Sgt types.String `tfsdk:"sgt"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //template:end types
 
 //template:begin getPath
 func (data TrustSecIPToSGTMappingGroup) getPath() string {
-	return "/ers/config/sgmappinggroup"
+		return "/ers/config/sgmappinggroup"
 }
-
 //template:end getPath
 
 //template:begin getPathDelete
@@ -56,24 +102,23 @@ func (data TrustSecIPToSGTMappingGroup) getPath() string {
 //template:begin toBody
 func (data TrustSecIPToSGTMappingGroup) toBody(ctx context.Context, state TrustSecIPToSGTMappingGroup) string {
 	body := ""
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()  {
 		body, _ = sjson.Set(body, "SGMappingGroup.name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull() {
+	if !data.Description.IsNull()  {
 		body, _ = sjson.Set(body, "SGMappingGroup.description", data.Description.ValueString())
 	}
-	if !data.DeployTo.IsNull() {
+	if !data.DeployTo.IsNull()  {
 		body, _ = sjson.Set(body, "SGMappingGroup.deployTo", data.DeployTo.ValueString())
 	}
-	if !data.DeployType.IsNull() {
+	if !data.DeployType.IsNull()  {
 		body, _ = sjson.Set(body, "SGMappingGroup.deployType", data.DeployType.ValueString())
 	}
-	if !data.Sgt.IsNull() {
+	if !data.Sgt.IsNull()  {
 		body, _ = sjson.Set(body, "SGMappingGroup.sgt", data.Sgt.ValueString())
 	}
 	return body
 }
-
 //template:end toBody
 
 //template:begin fromBody
@@ -104,7 +149,6 @@ func (data *TrustSecIPToSGTMappingGroup) fromBody(ctx context.Context, res gjson
 		data.Sgt = types.StringNull()
 	}
 }
-
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -135,7 +179,6 @@ func (data *TrustSecIPToSGTMappingGroup) updateFromBody(ctx context.Context, res
 		data.Sgt = types.StringNull()
 	}
 }
-
 //template:end updateFromBody
 
 //template:begin isNull
@@ -157,5 +200,4 @@ func (data *TrustSecIPToSGTMappingGroup) isNull(ctx context.Context, res gjson.R
 	}
 	return true
 }
-
 //template:end isNull

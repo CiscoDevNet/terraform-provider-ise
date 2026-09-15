@@ -25,12 +25,15 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 )
-
 //template:end imports
 
 //template:begin header
@@ -52,7 +55,6 @@ type EndpointCustomAttributeDataSource struct {
 func (d *EndpointCustomAttributeDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_endpoint_custom_attribute"
 }
-
 //template:end header
 
 //template:begin model
@@ -77,7 +79,6 @@ func (d *EndpointCustomAttributeDataSource) Schema(ctx context.Context, req data
 		},
 	}
 }
-
 //template:end model
 
 //template:begin configValidators
@@ -120,5 +121,4 @@ func (d *EndpointCustomAttributeDataSource) Read(ctx context.Context, req dataso
 	diags = resp.State.Set(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 }
-
 //template:end read

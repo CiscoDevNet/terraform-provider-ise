@@ -25,7 +25,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
 //template:end imports
 
 //template:begin testAccDataSource
@@ -48,13 +47,12 @@ func TestAccDataSourceIseDeviceAdminPolicySet(t *testing.T) {
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceIseDeviceAdminPolicySetPrerequisitesConfig + testAccDataSourceIseDeviceAdminPolicySetConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceIseDeviceAdminPolicySetPrerequisitesConfig+testAccDataSourceIseDeviceAdminPolicySetConfig(),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
-
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -69,7 +67,6 @@ resource "ise_device_admin_condition" "test" {
 }
 
 `
-
 //template:end testPrerequisites
 
 //template:begin testAccDataSourceConfig
@@ -88,7 +85,7 @@ func testAccDataSourceIseDeviceAdminPolicySetConfig() string {
 	config += `	condition_dictionary_name = "DEVICE"` + "\n"
 	config += `	condition_operator = "equals"` + "\n"
 	config += `}` + "\n"
-
+	
 	config += `
 		data "ise_device_admin_policy_set" "test" {
 			id = ise_device_admin_policy_set.test.id
@@ -96,5 +93,4 @@ func testAccDataSourceIseDeviceAdminPolicySetConfig() string {
 	`
 	return config
 }
-
 //template:end testAccDataSourceConfig

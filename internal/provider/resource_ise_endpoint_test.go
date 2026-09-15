@@ -21,12 +21,10 @@ package provider
 
 //template:begin imports
 import (
-	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
 //template:end imports
 
 //template:begin testAcc
@@ -44,25 +42,24 @@ func TestAccIseEndpoint(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccIseEndpointPrerequisitesConfig + testAccIseEndpointConfig_minimum(),
+			Config: testAccIseEndpointPrerequisitesConfig+testAccIseEndpointConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccIseEndpointPrerequisitesConfig + testAccIseEndpointConfig_all(),
-		Check:  resource.ComposeTestCheckFunc(checks...),
+		Config: testAccIseEndpointPrerequisitesConfig+testAccIseEndpointConfig_all(),
+		Check: resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
-		ResourceName: "ise_endpoint.test",
-		ImportState:  true,
+		ResourceName:  "ise_endpoint.test",
+		ImportState:   true,
 	})
-
+	
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-		Steps:                    steps,
+		Steps: steps,
 	})
 }
-
 //template:end testAcc
 
 //template:begin testPrerequisites
@@ -72,9 +69,12 @@ resource "ise_endpoint_identity_group" "test" {
   description    = "Test endpoint identity group"
   system_defined = false
 }
+resource "ise_endpoint_custom_attribute" "test" {
+  attribute_name = "isCorporate"
+  attribute_type = "Boolean"
+}
 
 `
-
 //template:end testPrerequisites
 
 //template:begin testAccConfigMinimal
@@ -87,7 +87,6 @@ func testAccIseEndpointConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
-
 //template:end testAccConfigMinimal
 
 //template:begin testAccConfigAll
@@ -102,8 +101,8 @@ func testAccIseEndpointConfig_all() string {
 	config += `	static_profile_assignment_defined = true` + "\n"
 	config += `	static_group_assignment = true` + "\n"
 	config += `	static_group_assignment_defined = true` + "\n"
+	config += `	custom_attributes = {(ise_endpoint_custom_attribute.test.id) = "true"}` + "\n"
 	config += `}` + "\n"
 	return config
 }
-
 //template:end testAccConfigAll

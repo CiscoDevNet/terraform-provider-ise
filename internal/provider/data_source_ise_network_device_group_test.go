@@ -25,7 +25,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
 //template:end imports
 
 //template:begin testAccDataSource
@@ -40,12 +39,11 @@ func TestAccDataSourceIseNetworkDeviceGroup(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseNetworkDeviceGroupConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
-
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -58,7 +56,7 @@ func testAccDataSourceIseNetworkDeviceGroupConfig() string {
 	config += `	description = "My network device group"` + "\n"
 	config += `	root_group = "Device Type"` + "\n"
 	config += `}` + "\n"
-
+	
 	config += `
 		data "ise_network_device_group" "test" {
 			id = ise_network_device_group.test.id
@@ -66,5 +64,4 @@ func testAccDataSourceIseNetworkDeviceGroupConfig() string {
 	`
 	return config
 }
-
 //template:end testAccDataSourceConfig

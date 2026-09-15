@@ -21,12 +21,10 @@ package provider
 
 //template:begin imports
 import (
-	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
 //template:end imports
 
 //template:begin testAcc
@@ -38,25 +36,24 @@ func TestAccIseSXPLocalBinding(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccIseSXPLocalBindingPrerequisitesConfig + testAccIseSXPLocalBindingConfig_minimum(),
+			Config: testAccIseSXPLocalBindingPrerequisitesConfig+testAccIseSXPLocalBindingConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccIseSXPLocalBindingPrerequisitesConfig + testAccIseSXPLocalBindingConfig_all(),
-		Check:  resource.ComposeTestCheckFunc(checks...),
+		Config: testAccIseSXPLocalBindingPrerequisitesConfig+testAccIseSXPLocalBindingConfig_all(),
+		Check: resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
-		ResourceName: "ise_sxp_local_binding.test",
-		ImportState:  true,
+		ResourceName:  "ise_sxp_local_binding.test",
+		ImportState:   true,
 	})
-
+	
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-		Steps:                    steps,
+		Steps: steps,
 	})
 }
-
 //template:end testAcc
 
 //template:begin testPrerequisites
@@ -70,7 +67,6 @@ resource "ise_trustsec_security_group" "test" {
 }
 
 `
-
 //template:end testPrerequisites
 
 //template:begin testAccConfigMinimal
@@ -82,7 +78,6 @@ func testAccIseSXPLocalBindingConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
-
 //template:end testAccConfigMinimal
 
 //template:begin testAccConfigAll
@@ -95,5 +90,4 @@ func testAccIseSXPLocalBindingConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
-
 //template:end testAccConfigAll

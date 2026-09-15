@@ -21,12 +21,10 @@ package provider
 
 //template:begin imports
 import (
-	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
 //template:end imports
 
 //template:begin testAcc
@@ -39,25 +37,24 @@ func TestAccIseTrustSecEgressMatrixCell(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccIseTrustSecEgressMatrixCellPrerequisitesConfig + testAccIseTrustSecEgressMatrixCellConfig_minimum(),
+			Config: testAccIseTrustSecEgressMatrixCellPrerequisitesConfig+testAccIseTrustSecEgressMatrixCellConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccIseTrustSecEgressMatrixCellPrerequisitesConfig + testAccIseTrustSecEgressMatrixCellConfig_all(),
-		Check:  resource.ComposeTestCheckFunc(checks...),
+		Config: testAccIseTrustSecEgressMatrixCellPrerequisitesConfig+testAccIseTrustSecEgressMatrixCellConfig_all(),
+		Check: resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
-		ResourceName: "ise_trustsec_egress_matrix_cell.test",
-		ImportState:  true,
+		ResourceName:  "ise_trustsec_egress_matrix_cell.test",
+		ImportState:   true,
 	})
-
+	
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-		Steps:                    steps,
+		Steps: steps,
 	})
 }
-
 //template:end testAcc
 
 //template:begin testPrerequisites
@@ -78,7 +75,6 @@ resource "ise_trustsec_security_group_acl" "test" {
 }
 
 `
-
 //template:end testPrerequisites
 
 //template:begin testAccConfigMinimal
@@ -90,7 +86,6 @@ func testAccIseTrustSecEgressMatrixCellConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
-
 //template:end testAccConfigMinimal
 
 //template:begin testAccConfigAll
@@ -105,5 +100,4 @@ func testAccIseTrustSecEgressMatrixCellConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
-
 //template:end testAccConfigAll

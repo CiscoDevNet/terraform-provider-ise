@@ -22,30 +22,69 @@ package provider
 //template:begin imports
 import (
 	"context"
+	"fmt"
+	"net/url"
+	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
-
 //template:end imports
 
 //template:begin types
 type DownloadableACL struct {
-	Id          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
+	Id types.String `tfsdk:"id"`
+	Name types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
-	Dacl        types.String `tfsdk:"dacl"`
-	DaclType    types.String `tfsdk:"dacl_type"`
+	Dacl types.String `tfsdk:"dacl"`
+	DaclType types.String `tfsdk:"dacl_type"`
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //template:end types
 
 //template:begin getPath
 func (data DownloadableACL) getPath() string {
-	return "/ers/config/downloadableacl"
+		return "/ers/config/downloadableacl"
 }
-
 //template:end getPath
 
 //template:begin getPathDelete
@@ -55,21 +94,20 @@ func (data DownloadableACL) getPath() string {
 //template:begin toBody
 func (data DownloadableACL) toBody(ctx context.Context, state DownloadableACL) string {
 	body := ""
-	if !data.Name.IsNull() {
+	if !data.Name.IsNull()  {
 		body, _ = sjson.Set(body, "DownloadableAcl.name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull() {
+	if !data.Description.IsNull()  {
 		body, _ = sjson.Set(body, "DownloadableAcl.description", data.Description.ValueString())
 	}
-	if !data.Dacl.IsNull() {
+	if !data.Dacl.IsNull()  {
 		body, _ = sjson.Set(body, "DownloadableAcl.dacl", data.Dacl.ValueString())
 	}
-	if !data.DaclType.IsNull() {
+	if !data.DaclType.IsNull()  {
 		body, _ = sjson.Set(body, "DownloadableAcl.daclType", data.DaclType.ValueString())
 	}
 	return body
 }
-
 //template:end toBody
 
 //template:begin fromBody
@@ -95,7 +133,6 @@ func (data *DownloadableACL) fromBody(ctx context.Context, res gjson.Result) {
 		data.DaclType = types.StringValue("IPV4")
 	}
 }
-
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -121,7 +158,6 @@ func (data *DownloadableACL) updateFromBody(ctx context.Context, res gjson.Resul
 		data.DaclType = types.StringNull()
 	}
 }
-
 //template:end updateFromBody
 
 //template:begin isNull
@@ -140,5 +176,4 @@ func (data *DownloadableACL) isNull(ctx context.Context, res gjson.Result) bool 
 	}
 	return true
 }
-
 //template:end isNull

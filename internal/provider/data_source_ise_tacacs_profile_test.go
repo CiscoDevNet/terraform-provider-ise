@@ -25,7 +25,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
 //template:end imports
 
 //template:begin testAccDataSource
@@ -42,12 +41,11 @@ func TestAccDataSourceIseTACACSProfile(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseTACACSProfileConfig(),
-				Check:  resource.ComposeTestCheckFunc(checks...),
+				Check: resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
-
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -64,7 +62,7 @@ func testAccDataSourceIseTACACSProfileConfig() string {
 	config += `	  value = "value"` + "\n"
 	config += `	}]` + "\n"
 	config += `}` + "\n"
-
+	
 	config += `
 		data "ise_tacacs_profile" "test" {
 			id = ise_tacacs_profile.test.id
@@ -72,5 +70,4 @@ func testAccDataSourceIseTACACSProfileConfig() string {
 	`
 	return config
 }
-
 //template:end testAccDataSourceConfig

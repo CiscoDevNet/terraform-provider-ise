@@ -21,18 +21,16 @@ package provider
 
 //template:begin imports
 import (
-	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
 //template:end imports
 
 //template:begin testAcc
 func TestAccIseActiveDirectoryJoinDomainWithAllNodes(t *testing.T) {
 	if os.Getenv("AD") == "" {
-		t.Skip("skipping test, set environment variable AD")
+        t.Skip("skipping test, set environment variable AD")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("ise_active_directory_join_domain_with_all_nodes.test", "join_point_id", "73808580-b6e6-11ee-8960-de6d7692bc40"))
@@ -42,16 +40,15 @@ func TestAccIseActiveDirectoryJoinDomainWithAllNodes(t *testing.T) {
 	var steps []resource.TestStep
 	steps = append(steps, resource.TestStep{
 		Config: testAccIseActiveDirectoryJoinDomainWithAllNodesConfig_all(),
-		Check:  resource.ComposeTestCheckFunc(checks...),
+		Check: resource.ComposeTestCheckFunc(checks...),
 	})
-
+	
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-		Steps:                    steps,
+		Steps: steps,
 	})
 }
-
 //template:end testAcc
 
 //template:begin testPrerequisites
@@ -68,7 +65,6 @@ func testAccIseActiveDirectoryJoinDomainWithAllNodesConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
-
 //template:end testAccConfigMinimal
 
 //template:begin testAccConfigAll
@@ -82,5 +78,4 @@ func testAccIseActiveDirectoryJoinDomainWithAllNodesConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
-
 //template:end testAccConfigAll
