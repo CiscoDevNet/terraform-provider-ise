@@ -22,6 +22,7 @@ package provider
 //template:begin imports
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/url"
 	"strings"
@@ -36,6 +37,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
+	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
 )
 
 //template:end imports
@@ -52,6 +55,7 @@ func NewEndpointResource() resource.Resource {
 
 type EndpointResource struct {
 	client *ise.Client
+	cache  *ThreadSafeCache
 }
 
 func (r *EndpointResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -64,7 +68,7 @@ func (r *EndpointResource) Metadata(ctx context.Context, req resource.MetadataRe
 func (r *EndpointResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage an Endpoint.").String,
+		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage an Endpoint. Reads of this resource are served from a provider-scoped cache populated from a single bulk request, rather than a per-resource GET, to keep refresh performance reasonable with large numbers of endpoints.").String,
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -206,12 +210,14 @@ func (r *EndpointResource) Configure(_ context.Context, req resource.ConfigureRe
 	}
 
 	r.client = req.ProviderData.(*IseProviderData).Client
+	r.cache = req.ProviderData.(*IseProviderData).Cache
 }
 
 //template:end configure
 
 func (r *EndpointResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan Endpoint
+	r.cache.Delete("Endpoint")
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -300,7 +306,24 @@ func (r *EndpointResource) Read(ctx context.Context, req resource.ReadRequest, r
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
-	res, err := r.client.Get(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()))
+	var res gjson.Result
+	var err error
+	if state.isNull(ctx, gjson.Result{}) {
+		// Import: some attributes are absent from the cache's bulk payload entirely, so
+		// ReadCache cannot populate them from state (there is none yet) without
+		// fabricating a value. Bypass the cache for the whole resource and read it
+		// directly so those attributes get their real value.
+		res, err = r.client.Get(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()))
+	} else {
+		res, err = r.ReadCache(ctx, state)
+	}
+	if errors.Is(err, errCacheMiss) {
+		// The bulk cache doesn't have this object. That only means it is missing from
+		// our in-memory snapshot -- e.g. it was created after the snapshot was taken, or
+		// the snapshot is otherwise incomplete -- not that ISE itself doesn't have it.
+		// Confirm directly against ISE before ever deleting state.
+		res, err = r.client.Get(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()))
+	}
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
@@ -324,9 +347,81 @@ func (r *EndpointResource) Read(ctx context.Context, req resource.ReadRequest, r
 
 //template:end read
 
+// ReadCache obtains all objects from the configured bulk endpoint once, then
+// returns the requested object in the response envelope expected by this ERS
+// resource's existing generated model mapper.
+//
+//template:begin readcache
+func (r *EndpointResource) ReadCache(ctx context.Context, state Endpoint) (gjson.Result, error) {
+	items, cacheHit, err := r.cache.GetOrLoad("Endpoint", func() (map[string]gjson.Result, error) {
+		allItems := make(map[string]gjson.Result)
+		for page := 1; ; page++ {
+			separator := "?"
+			if strings.Contains("/api/v1/endpoint", "?") {
+				separator = "&"
+			}
+			res, err := r.client.Get(fmt.Sprintf("/api/v1/endpoint%ssize=100&page=%d", separator, page))
+			if err != nil {
+				return nil, err
+			}
+			values := res
+			for _, value := range values.Array() {
+				if id := value.Get("id").String(); id != "" {
+					allItems[id] = value
+				}
+			}
+			if len(values.Array()) < 100 {
+				break
+			}
+		}
+		return allItems, nil
+	})
+	if err != nil {
+		return gjson.Result{}, err
+	}
+	if cacheHit {
+		tflog.Debug(ctx, "Endpoint: cache hit")
+	} else {
+		tflog.Debug(ctx, "Endpoint: cache populated", map[string]any{"objects": len(items)})
+	}
+	value, found := items[state.Id.ValueString()]
+	if !found {
+		// A cache miss is not proof the object is gone from ISE -- it only means the
+		// object is absent from this bulk snapshot. The caller (Read) confirms with a
+		// direct GET before treating this as a real 404.
+		return gjson.Result{}, errCacheMiss
+	}
+	body, err := sjson.SetRaw("{}", "ERSEndPoint", value.Raw)
+	if err != nil {
+		return gjson.Result{}, err
+	}
+	body, err = helpers.ApplyCacheRewrites(body, [][2]string{
+		{"ERSEndPoint.customAttributes", "ERSEndPoint.customAttributes.customAttributes"},
+	})
+	if err != nil {
+		return gjson.Result{}, err
+	}
+	if !state.StaticProfileAssignmentDefined.IsNull() {
+		body, err = sjson.Set(body, "ERSEndPoint.staticProfileAssignmentDefined", state.StaticProfileAssignmentDefined.ValueBool())
+		if err != nil {
+			return gjson.Result{}, err
+		}
+	}
+	if !state.StaticGroupAssignmentDefined.IsNull() {
+		body, err = sjson.Set(body, "ERSEndPoint.staticGroupAssignmentDefined", state.StaticGroupAssignmentDefined.ValueBool())
+		if err != nil {
+			return gjson.Result{}, err
+		}
+	}
+	return gjson.Parse(body), nil
+}
+
+//template:end readcache
+
 //template:begin update
 func (r *EndpointResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state Endpoint
+	r.cache.Delete("Endpoint")
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -377,6 +472,7 @@ func (r *EndpointResource) Update(ctx context.Context, req resource.UpdateReques
 //template:begin delete
 func (r *EndpointResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	var state Endpoint
+	r.cache.Delete("Endpoint")
 
 	// Read state
 	diags := req.State.Get(ctx, &state)

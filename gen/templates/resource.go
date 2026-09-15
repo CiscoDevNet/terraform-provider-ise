@@ -68,6 +68,9 @@ func New{{camelCase .Name}}Resource() resource.Resource {
 
 type {{camelCase .Name}}Resource struct {
 	client *ise.Client
+	{{- if .UseCache}}
+	cache *ThreadSafeCache
+	{{- end}}
 }
 
 func (r *{{camelCase .Name}}Resource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -861,6 +864,9 @@ func (r *{{camelCase .Name}}Resource) Configure(_ context.Context, req resource.
 	}
 
 	r.client = req.ProviderData.(*IseProviderData).Client
+	{{- if .UseCache}}
+	r.cache = req.ProviderData.(*IseProviderData).Cache
+	{{- end}}
 }
 {{- if or (coexistingSecretAttributes .) (coexistingSecretParentLists .)}}
 
@@ -954,6 +960,9 @@ func (r *{{camelCase .Name}}Resource) ValidateConfig(ctx context.Context, req re
 //template:begin create
 func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan {{camelCase .Name}}
+	{{- if .UseCache}}
+	r.cache.Delete("{{camelCase .Name}}")
+	{{- end}}
 	{{- if strContains (camelCase .Name) "UpdateRanks" }}
 	var existingData {{strReplace (camelCase .Name) "UpdateRanks" "" -1}}
 	{{- else if strContains (camelCase .Name) "UpdateRank" }}
@@ -1182,7 +1191,32 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 	{{- if strContains (camelCase .Name) "UpdateRanks" }}
 	res, err := r.client.Get(state.getPath())
 	{{- else}}
+	{{- if .UseCache}}
+	var res gjson.Result
+	var err error
+	{{- if hasNotInCacheAttribute .Attributes}}
+	if state.isNull(ctx, gjson.Result{}) {
+		// Import: some attributes are absent from the cache's bulk payload entirely, so
+		// ReadCache cannot populate them from state (there is none yet) without
+		// fabricating a value. Bypass the cache for the whole resource and read it
+		// directly so those attributes get their real value.
+		res, err = r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + url.QueryEscape(state.Id.ValueString()){{end}})
+	} else {
+		res, err = r.ReadCache(ctx, state)
+	}
+	{{- else}}
+	res, err = r.ReadCache(ctx, state)
+	{{- end}}
+	if errors.Is(err, errCacheMiss) {
+		// The bulk cache doesn't have this object. That only means it is missing from
+		// our in-memory snapshot -- e.g. it was created after the snapshot was taken, or
+		// the snapshot is otherwise incomplete -- not that ISE itself doesn't have it.
+		// Confirm directly against ISE before ever deleting state.
+		res, err = r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + url.QueryEscape(state.Id.ValueString()){{end}})
+	}
+	{{- else}}
 	res, err := r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + url.QueryEscape(state.Id.ValueString()){{end}})
+	{{- end}}
 	{{- end}}
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
@@ -1207,9 +1241,85 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 }
 //template:end read
 
+{{- if .UseCache}}
+//template:begin readcache
+func (r *{{camelCase .Name}}Resource) ReadCache(ctx context.Context, state {{camelCase .Name}}) (gjson.Result, error) {
+	{{- $cacheDataPath := cacheDataPath .Attributes}}
+	items, cacheHit, err := r.cache.GetOrLoad("{{camelCase .Name}}", func() (map[string]gjson.Result, error) {
+		allItems := make(map[string]gjson.Result)
+		for page := 1; ; page++ {
+			separator := "?"
+			if strings.Contains("{{.CacheRestEndpoint}}", "?") {
+				separator = "&"
+			}
+			res, err := r.client.Get(fmt.Sprintf("{{.CacheRestEndpoint}}%ssize={{.CachePageSize}}&page=%d", separator, page))
+			if err != nil {
+				return nil, err
+			}
+			values := res
+			for _, value := range values.Array() {
+				if id := value.Get("id").String(); id != "" {
+					allItems[id] = value
+				}
+			}
+			if len(values.Array()) < {{.CachePageSize}} {
+				break
+			}
+		}
+		return allItems, nil
+	})
+	if err != nil {
+		return gjson.Result{}, err
+	}
+	if cacheHit {
+		tflog.Debug(ctx, "{{camelCase .Name}}: cache hit")
+	} else {
+		tflog.Debug(ctx, "{{camelCase .Name}}: cache populated", map[string]any{"objects": len(items)})
+	}
+	value, found := items[state.Id.ValueString()]
+	if !found {
+		// A cache miss is not proof the object is gone from ISE -- it only means the
+		// object is absent from this bulk snapshot. The caller (Read) confirms with a
+		// direct GET before treating this as a real 404.
+		return gjson.Result{}, errCacheMiss
+	}
+	{{- if $cacheDataPath}}
+	body, err := sjson.SetRaw("{}", "{{$cacheDataPath}}", value.Raw)
+	if err != nil {
+		return gjson.Result{}, err
+	}
+	{{- else}}
+	body := value.Raw
+	{{- end}}
+	{{- if .CacheRewrites}}
+	body, err = helpers.ApplyCacheRewrites(body, [][2]string{
+		{{- range .CacheRewrites}}
+		{"{{if $cacheDataPath}}{{$cacheDataPath}}.{{end}}{{.From}}", "{{if $cacheDataPath}}{{$cacheDataPath}}.{{end}}{{.To}}"},
+		{{- end}}
+	})
+	if err != nil {
+		return gjson.Result{}, err
+	}
+	{{- end}}
+	{{- range notInCacheAttributes .Attributes}}
+	if !state.{{toGoName .TfName}}.IsNull() {
+		body, err = sjson.Set(body, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", state.{{toGoName .TfName}}.Value{{.Type}}())
+		if err != nil {
+			return gjson.Result{}, err
+		}
+	}
+	{{- end}}
+	return gjson.Parse(body), nil
+}
+//template:end readcache
+{{- end}}
+
 //template:begin update
 func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state {{camelCase .Name}}
+	{{- if .UseCache}}
+	r.cache.Delete("{{camelCase .Name}}")
+	{{- end}}
 	{{- if strContains (camelCase .Name) "UpdateRanks" }}
 	var existingData {{strReplace (camelCase .Name) "UpdateRanks" "" -1}}
 	{{- else if strContains (camelCase .Name) "UpdateRank" }}
@@ -1403,6 +1513,9 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 //template:begin delete
 func (r *{{camelCase .Name}}Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	var state {{camelCase .Name}}
+	{{- if .UseCache}}
+	r.cache.Delete("{{camelCase .Name}}")
+	{{- end}}
 
 	// Read state
 	diags := req.State.Get(ctx, &state)

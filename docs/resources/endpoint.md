@@ -3,12 +3,12 @@
 page_title: "ise_endpoint Resource - terraform-provider-ise"
 subcategory: "Identity Management"
 description: |-
-  This resource can manage an Endpoint.
+  This resource can manage an Endpoint. Reads of this resource are served from a provider-scoped cache populated from a single bulk request, rather than a per-resource GET, to keep refresh performance reasonable with large numbers of endpoints.
 ---
 
 # ise_endpoint (Resource)
 
-This resource can manage an Endpoint.
+This resource can manage an Endpoint. Reads of this resource are served from a provider-scoped cache populated from a single bulk request, rather than a per-resource GET, to keep refresh performance reasonable with large numbers of endpoints.
 
 ## Example Usage
 
@@ -23,6 +23,7 @@ resource "ise_endpoint" "example" {
   static_profile_assignment_defined = true
   static_group_assignment           = true
   static_group_assignment_defined   = true
+  custom_attributes                 = { "key1" = "value1" }
 }
 ```
 

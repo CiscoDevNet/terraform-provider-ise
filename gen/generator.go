@@ -118,6 +118,10 @@ type YamlConfig struct {
 	IdExample           string                `yaml:"id_example"`
 	PutIdIncludePath    string                `yaml:"put_id_include_path"`
 	DataSourceNameQuery bool                  `yaml:"data_source_name_query"`
+	UseCache            bool                  `yaml:"use_cache"`
+	CacheRestEndpoint   string                `yaml:"cache_rest_endpoint"`
+	CachePageSize       int                   `yaml:"cache_page_size"`
+	CacheRewrites       []YamlCacheRewrite    `yaml:"cache_rewrites"`
 	MinimumVersion      string                `yaml:"minimum_version"`
 	DsDescription       string                `yaml:"ds_description"`
 	ResDescription      string                `yaml:"res_description"`
@@ -128,6 +132,16 @@ type YamlConfig struct {
 	Attributes          []YamlConfigAttribute `yaml:"attributes"`
 	TestTags            []string              `yaml:"test_tags"`
 	TestPrerequisites   string                `yaml:"test_prerequisites"`
+}
+
+// YamlCacheRewrite declares a single re-nesting of a field returned by a
+// use_cache resource's bulk (modern API) endpoint, so its shape lines up with the
+// path this resource's ERS-shaped model mapper (fromBody/updateFromBody/toBody)
+// expects. Both paths are relative to the object as wrapped under the resource's
+// cache data_path (see CacheDataPath).
+type YamlCacheRewrite struct {
+	From string `yaml:"from"`
+	To   string `yaml:"to"`
 }
 
 type YamlConfigAttribute struct {
@@ -186,6 +200,7 @@ type YamlConfigAttribute struct {
 	Attributes             []YamlConfigAttribute `yaml:"attributes"`
 	FilterEmptyValues      bool                  `yaml:"filter_empty_values"`
 	CaseInsensitive        bool                  `yaml:"case_insensitive"`
+	NotInCache             bool                  `yaml:"not_in_cache"`
 }
 
 // Templating helper function to convert TF name to GO name
@@ -495,6 +510,40 @@ func HasAttribute(attributes []YamlConfigAttribute, attrName string) bool {
 	return false
 }
 
+// CacheDataPath returns the common top-level response wrapper used by a resource.
+// Cached modern API objects must be adapted to the resource's existing response
+// shape before the normal model mapper consumes them.
+func CacheDataPath(attributes []YamlConfigAttribute) string {
+	for _, attr := range attributes {
+		if len(attr.DataPath) > 0 {
+			return attr.DataPath[0]
+		}
+	}
+	return ""
+}
+
+// NotInCacheAttributes returns the top-level attributes flagged not_in_cache, i.e.
+// attributes that are absent entirely from a use_cache resource's bulk endpoint
+// payload. ReadCache re-injects each one's current state value into the cached
+// response before the model mapper runs, so the cache never reports them as drift.
+func NotInCacheAttributes(attributes []YamlConfigAttribute) []YamlConfigAttribute {
+	var result []YamlConfigAttribute
+	for _, attr := range attributes {
+		if attr.NotInCache {
+			result = append(result, attr)
+		}
+	}
+	return result
+}
+
+// HasNotInCacheAttribute returns true if any top-level attribute is flagged
+// not_in_cache. Resources with such attributes must bypass the cache entirely on
+// import (state entirely null), since re-injecting a state value is not possible
+// when there is no prior state to read it from.
+func HasNotInCacheAttribute(attributes []YamlConfigAttribute) bool {
+	return len(NotInCacheAttributes(attributes)) > 0
+}
+
 // Map of templating functions
 var functions = template.FuncMap{
 	"toGoName":                    ToGoName,
@@ -525,6 +574,9 @@ var functions = template.FuncMap{
 	"isNestedList":                IsNestedList,
 	"isNestedSet":                 IsNestedSet,
 	"hasAttribute":                HasAttribute,
+	"cacheDataPath":               CacheDataPath,
+	"notInCacheAttributes":        NotInCacheAttributes,
+	"hasNotInCacheAttribute":      HasNotInCacheAttribute,
 	"goValueType":                 GoValueType,
 	"goValueCtor":                 GoValueCtor,
 	"goNullCtor":                  GoNullCtor,
@@ -599,7 +651,101 @@ func augmentAttribute(attr *YamlConfigAttribute) {
 	}
 }
 
+// validateCacheRewrites hard-fails code generation when a resource's
+// cache_rewrites (gen/schema/schema.yaml's cache_rewrite) would produce generated
+// code that silently loses data at runtime. Both shapes below were confirmed unsafe
+// by hand-testing gjson.Get/sjson.Delete/sjson.SetRaw against reference payloads in
+// a standalone harness, not by reading their docs:
+//
+//   - "to" is an ancestor of its own "from" (e.g. from: a.b.c, to: a.b): sjson.SetRaw
+//     replaces the *entire* node at "to", so a sibling of "from" living under "to"
+//     (e.g. a.b.d) is silently destroyed. The reverse direction ("to" is a
+//     descendant of "from", e.g. endpoint's customAttributes ->
+//     customAttributes.customAttributes) is safe: "from" is deleted in full before
+//     "to" is written, so nothing of value is left behind at the old location.
+//   - two rewrite entries overlap: one entry's "to" equals another entry's "from"
+//     (the value moved into "to" is consumed away by the other rewrite's own
+//     Delete/SetRaw before it can be read back out), or two entries share the same
+//     "to" (the second SetRaw silently discards the first entry's write).
+//
+// cache_rewrites is also rejected outright when use_cache is not set, since it has
+// no effect anywhere else.
+func validateCacheRewrites(config *YamlConfig) {
+	if len(config.CacheRewrites) == 0 {
+		return
+	}
+	if !config.UseCache {
+		log.Fatalf("%s: cache_rewrites is set but use_cache is not true; cache_rewrites only has any effect on a use_cache resource's generated ReadCache", config.Name)
+	}
+	segments := func(p string) []string { return strings.Split(p, ".") }
+	// isAncestor reports whether `ancestor` is a strict, proper prefix of `descendant`
+	// (i.e. `descendant` is nested under `ancestor`, not equal to it).
+	isAncestor := func(ancestor, descendant []string) bool {
+		if len(ancestor) >= len(descendant) {
+			return false
+		}
+		for i, s := range ancestor {
+			if descendant[i] != s {
+				return false
+			}
+		}
+		return true
+	}
+	for _, rw := range config.CacheRewrites {
+		if isAncestor(segments(rw.To), segments(rw.From)) {
+			log.Fatalf("%s: cache_rewrites entry {from: %s, to: %s} is unsafe: \"to\" is an ancestor of its own \"from\"; re-writing \"to\" would silently discard any sibling data living under it that isn't part of this rewrite", config.Name, rw.From, rw.To)
+		}
+	}
+	for i, a := range config.CacheRewrites {
+		for j, b := range config.CacheRewrites {
+			if i == j {
+				continue
+			}
+			if a.To == b.From {
+				log.Fatalf("%s: cache_rewrites entries {from: %s, to: %s} and {from: %s, to: %s} overlap: the first entry's \"to\" is the second entry's \"from\", so the value moved to \"to\" is deleted/overwritten by the other rewrite before it can be read back out of there", config.Name, a.From, a.To, b.From, b.To)
+			}
+			if i < j && a.To == b.To {
+				log.Fatalf("%s: cache_rewrites entries {from: %s, to: %s} and {from: %s, to: %s} overlap: both write to the same \"to\", so the second SetRaw silently discards the first entry's write", config.Name, a.From, a.To, b.From, b.To)
+			}
+		}
+	}
+}
+
+// validateNotInCache hard-fails code generation for two not_in_cache misuses on a
+// top-level attribute (mirroring NotInCacheAttributes' scope, which likewise only
+// looks at top-level attributes):
+//
+//   - not_in_cache set without use_cache: true, since it has no effect anywhere else.
+//   - not_in_cache set on a mandatory attribute: a mandatory attribute is always
+//     supplied by config/plan, so re-injecting the prior state value into a cached
+//     Read can only ever mask real drift on that attribute, never legitimately fill
+//     in a value config didn't provide.
+func validateNotInCache(config *YamlConfig) {
+	for _, attr := range config.Attributes {
+		if !attr.NotInCache {
+			continue
+		}
+		if !config.UseCache {
+			log.Fatalf("%s: attribute %q sets not_in_cache but use_cache is not true; not_in_cache only has any effect on a use_cache resource's generated ReadCache", config.Name, attr.ModelName)
+		}
+		if attr.Mandatory {
+			log.Fatalf("%s: attribute %q sets not_in_cache but is also mandatory; a mandatory attribute is always supplied by config/plan, so re-injecting the prior state value on a cached Read can only mask real drift on it, never legitimately fill in a value", config.Name, attr.ModelName)
+		}
+	}
+}
+
 func augmentConfig(config *YamlConfig) {
+	// use_cache pages through cache_rest_endpoint by comparing the page length against
+	// cache_page_size; yamale cannot express "cache_page_size is required whenever
+	// use_cache is true", so a missing or non-positive value is caught here instead. Left
+	// unchecked, `len(values.Array()) < 0` in the generated ReadCache loop is never true,
+	// so the loop never terminates and hammers the API with an unbounded number of
+	// requests.
+	if config.UseCache && config.CachePageSize <= 0 {
+		log.Fatalf("%s: use_cache is true but cache_page_size is missing or <= 0; set cache_page_size (e.g. 100) or the generated cache loader will page forever", config.Name)
+	}
+	validateCacheRewrites(config)
+	validateNotInCache(config)
 	for ia := range config.Attributes {
 		augmentAttribute(&config.Attributes[ia])
 	}

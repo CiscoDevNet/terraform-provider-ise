@@ -22,6 +22,7 @@ package provider
 //template:begin provider
 import (
 	"context"
+	"errors"
 	"os"
 	"strconv"
 	"sync"
@@ -35,6 +36,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/netascode/go-ise"
+	"github.com/tidwall/gjson"
 )
 
 // IseProvider defines the provider implementation.
@@ -59,6 +61,7 @@ type IseProviderModel struct {
 type IseProviderData struct {
 	Client                  *ise.Client
 	NetworkDeviceGroupMutex *sync.Mutex
+	Cache                   *ThreadSafeCache
 }
 
 // Metadata returns the provider type name.
@@ -265,7 +268,7 @@ func (p *IseProvider) Configure(ctx context.Context, req provider.ConfigureReque
 		return
 	}
 
-	data := IseProviderData{Client: &c, NetworkDeviceGroupMutex: &sync.Mutex{}}
+	data := IseProviderData{Client: &c, NetworkDeviceGroupMutex: &sync.Mutex{}, Cache: NewThreadSafeCache()}
 	resp.DataSourceData = &data
 	resp.ResourceData = &data
 }
@@ -401,6 +404,67 @@ func New(version string) func() provider.Provider {
 		return &IseProvider{
 			version: version,
 		}
+	}
+}
+
+// errCacheMiss is returned by a use_cache resource's ReadCache when the requested
+// object is absent from the last bulk cache load. This is deliberately a typed
+// sentinel rather than a crafted "StatusCode 404" string: a cache miss only proves
+// the object is missing from OUR snapshot, never that ISE itself doesn't have it, so
+// callers must confirm with a direct GET before treating it as a real 404 and
+// deleting state.
+var errCacheMiss = errors.New("object not found in cache")
+
+// ThreadSafeCache stores bulk-read objects for one provider session. A miss is
+// loaded once per key, so Terraform parallelism cannot fan out duplicate list
+// requests for large inventories.
+type ThreadSafeCache struct {
+	mu          sync.Mutex
+	items       map[string]map[string]gjson.Result
+	loading     map[string]chan struct{}
+	generations map[string]uint64
+}
+
+func NewThreadSafeCache() *ThreadSafeCache {
+	return &ThreadSafeCache{items: make(map[string]map[string]gjson.Result), loading: make(map[string]chan struct{}), generations: make(map[string]uint64)}
+}
+
+func (c *ThreadSafeCache) Delete(key string) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.generations[key]++
+	delete(c.items, key)
+}
+
+func (c *ThreadSafeCache) GetOrLoad(key string, load func() (map[string]gjson.Result, error)) (map[string]gjson.Result, bool, error) {
+	for {
+		c.mu.Lock()
+		if value, found := c.items[key]; found {
+			c.mu.Unlock()
+			return value, true, nil
+		}
+		if waiting, found := c.loading[key]; found {
+			c.mu.Unlock()
+			<-waiting
+			continue
+		}
+		waiting := make(chan struct{})
+		c.loading[key] = waiting
+		generation := c.generations[key]
+		c.mu.Unlock()
+
+		value, err := load()
+		c.mu.Lock()
+		delete(c.loading, key)
+		if err == nil && c.generations[key] == generation {
+			c.items[key] = value
+		}
+		close(waiting)
+		c.mu.Unlock()
+		if err != nil {
+			return nil, false, err
+		}
+		return value, false, nil
 	}
 }
 
