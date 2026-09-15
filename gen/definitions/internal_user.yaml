@@ -15,7 +15,7 @@ attributes:
     data_path: [InternalUser]
     type: String
     write_only: true
-    write_changes_only: true
+    write_only_tf: true
     description: The password of the internal user. Required when creating a new user. When managing existing (brownfield) users the password can be omitted and the existing password will be preserved.
     example: Cisco123
   - model_name: changePassword
@@ -39,6 +39,7 @@ attributes:
   - model_name: enablePassword
     data_path: [InternalUser]
     write_only: true
+    write_only_tf: true
     type: String
     description: This field is added in ISE 2.0 to support TACACS+
     example: Cisco123

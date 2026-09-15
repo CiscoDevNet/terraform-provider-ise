@@ -20,6 +20,12 @@ All resources and data sources have been tested with the following releases.
 | ISE      | 3.4.0         |
 | ISE      | 3.5.0         |
 
+## Requirements
+
+- [Terraform](https://www.terraform.io/downloads.html) >= 1.11
+
+Resources that manage secrets expose them as [write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) (the `*_wo` attributes), which are only supported in Terraform 1.11 and later.
+
 ## Getting Started
 
 The following guides with examples exist to demonstrate the use of the provider:

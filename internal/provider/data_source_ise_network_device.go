@@ -88,12 +88,28 @@ func (d *NetworkDeviceDataSource) Schema(ctx context.Context, req datasource.Sch
 				MarkdownDescription: "Encryption key",
 				Computed:            true,
 			},
+			"authentication_encryption_key_wo": schema.StringAttribute{
+				MarkdownDescription: "Encryption key",
+				Computed:            true,
+			},
+			"authentication_encryption_key_wo_version": schema.Int64Attribute{
+				MarkdownDescription: "Rotation trigger for `authentication_encryption_key_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.",
+				Computed:            true,
+			},
 			"authentication_encryption_key_format": schema.StringAttribute{
 				MarkdownDescription: "Key input format",
 				Computed:            true,
 			},
 			"authentication_message_authenticator_code_key": schema.StringAttribute{
 				MarkdownDescription: "Message authenticator code key",
+				Computed:            true,
+			},
+			"authentication_message_authenticator_code_key_wo": schema.StringAttribute{
+				MarkdownDescription: "Message authenticator code key",
+				Computed:            true,
+			},
+			"authentication_message_authenticator_code_key_wo_version": schema.Int64Attribute{
+				MarkdownDescription: "Rotation trigger for `authentication_message_authenticator_code_key_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.",
 				Computed:            true,
 			},
 			"authentication_network_protocol": schema.StringAttribute{
@@ -104,12 +120,28 @@ func (d *NetworkDeviceDataSource) Schema(ctx context.Context, req datasource.Sch
 				MarkdownDescription: "RADIUS shared secret",
 				Computed:            true,
 			},
+			"authentication_radius_shared_secret_wo": schema.StringAttribute{
+				MarkdownDescription: "RADIUS shared secret",
+				Computed:            true,
+			},
+			"authentication_radius_shared_secret_wo_version": schema.Int64Attribute{
+				MarkdownDescription: "Rotation trigger for `authentication_radius_shared_secret_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.",
+				Computed:            true,
+			},
 			"authentication_enable_multi_secret": schema.BoolAttribute{
 				MarkdownDescription: "Enable multiple RADIUS shared secrets",
 				Computed:            true,
 			},
 			"authentication_second_radius_shared_secret": schema.StringAttribute{
 				MarkdownDescription: "Second RADIUS shared secret",
+				Computed:            true,
+			},
+			"authentication_second_radius_shared_secret_wo": schema.StringAttribute{
+				MarkdownDescription: "Second RADIUS shared secret",
+				Computed:            true,
+			},
+			"authentication_second_radius_shared_secret_wo_version": schema.Int64Attribute{
+				MarkdownDescription: "Rotation trigger for `authentication_second_radius_shared_secret_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.",
 				Computed:            true,
 			},
 			"authentication_dtls_required": schema.BoolAttribute{
@@ -201,12 +233,28 @@ func (d *NetworkDeviceDataSource) Schema(ctx context.Context, req datasource.Sch
 				MarkdownDescription: "SNMP authentication password. Required for snmp version 3 and securityLevel AUTH or PRIV.",
 				Computed:            true,
 			},
+			"snmp_auth_password_wo": schema.StringAttribute{
+				MarkdownDescription: "SNMP authentication password. Required for snmp version 3 and securityLevel AUTH or PRIV.",
+				Computed:            true,
+			},
+			"snmp_auth_password_wo_version": schema.Int64Attribute{
+				MarkdownDescription: "Rotation trigger for `snmp_auth_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.",
+				Computed:            true,
+			},
 			"snmp_privacy_protocol": schema.StringAttribute{
 				MarkdownDescription: "SNMP privacy protocol. Required for snmp version 3 and securityLevel PRIV.",
 				Computed:            true,
 			},
 			"snmp_privacy_password": schema.StringAttribute{
 				MarkdownDescription: "SNMP privacy password. Required for snmp version 3 and securityLevel PRIV",
+				Computed:            true,
+			},
+			"snmp_privacy_password_wo": schema.StringAttribute{
+				MarkdownDescription: "SNMP privacy password. Required for snmp version 3 and securityLevel PRIV",
+				Computed:            true,
+			},
+			"snmp_privacy_password_wo_version": schema.Int64Attribute{
+				MarkdownDescription: "Rotation trigger for `snmp_privacy_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.",
 				Computed:            true,
 			},
 			"tacacs_connect_mode_options": schema.StringAttribute{
@@ -217,12 +265,28 @@ func (d *NetworkDeviceDataSource) Schema(ctx context.Context, req datasource.Sch
 				MarkdownDescription: "Shared secret",
 				Computed:            true,
 			},
+			"tacacs_shared_secret_wo": schema.StringAttribute{
+				MarkdownDescription: "Shared secret",
+				Computed:            true,
+			},
+			"tacacs_shared_secret_wo_version": schema.Int64Attribute{
+				MarkdownDescription: "Rotation trigger for `tacacs_shared_secret_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.",
+				Computed:            true,
+			},
 			"trustsec_device_id": schema.StringAttribute{
 				MarkdownDescription: "TrustSec device ID",
 				Computed:            true,
 			},
 			"trustsec_device_password": schema.StringAttribute{
 				MarkdownDescription: "TrustSec device password",
+				Computed:            true,
+			},
+			"trustsec_device_password_wo": schema.StringAttribute{
+				MarkdownDescription: "TrustSec device password",
+				Computed:            true,
+			},
+			"trustsec_device_password_wo_version": schema.Int64Attribute{
+				MarkdownDescription: "Rotation trigger for `trustsec_device_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.",
 				Computed:            true,
 			},
 			"trustsec_rest_api_username": schema.StringAttribute{
@@ -233,12 +297,36 @@ func (d *NetworkDeviceDataSource) Schema(ctx context.Context, req datasource.Sch
 				MarkdownDescription: "REST API password",
 				Computed:            true,
 			},
+			"trustsec_rest_api_password_wo": schema.StringAttribute{
+				MarkdownDescription: "REST API password",
+				Computed:            true,
+			},
+			"trustsec_rest_api_password_wo_version": schema.Int64Attribute{
+				MarkdownDescription: "Rotation trigger for `trustsec_rest_api_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.",
+				Computed:            true,
+			},
 			"trustsec_enable_mode_password": schema.StringAttribute{
 				MarkdownDescription: "Enable mode password",
 				Computed:            true,
 			},
+			"trustsec_enable_mode_password_wo": schema.StringAttribute{
+				MarkdownDescription: "Enable mode password",
+				Computed:            true,
+			},
+			"trustsec_enable_mode_password_wo_version": schema.Int64Attribute{
+				MarkdownDescription: "Rotation trigger for `trustsec_enable_mode_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.",
+				Computed:            true,
+			},
 			"trustsec_exec_mode_password": schema.StringAttribute{
 				MarkdownDescription: "EXEC mode password",
+				Computed:            true,
+			},
+			"trustsec_exec_mode_password_wo": schema.StringAttribute{
+				MarkdownDescription: "EXEC mode password",
+				Computed:            true,
+			},
+			"trustsec_exec_mode_password_wo_version": schema.Int64Attribute{
+				MarkdownDescription: "Rotation trigger for `trustsec_exec_mode_password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.",
 				Computed:            true,
 			},
 			"trustsec_exec_mode_username": schema.StringAttribute{

@@ -61,7 +61,8 @@ func testAccDataSourceIseRepositoryConfig() string {
 	config += `	path = "/dir"` + "\n"
 	config += `	server_name = "server1"` + "\n"
 	config += `	user_name = "user9"` + "\n"
-	config += `	password = "cisco123"` + "\n"
+	config += `	password_wo = "cisco123"` + "\n"
+	config += `	password_wo_version = 1` + "\n"
 	config += `	enable_pki = false` + "\n"
 	config += `}` + "\n"
 

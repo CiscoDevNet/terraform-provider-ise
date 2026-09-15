@@ -37,6 +37,7 @@ func TestAccIseRepository(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("ise_repository.test", "path", "/dir"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_repository.test", "server_name", "server1"))
 	checks = append(checks, resource.TestCheckResourceAttr("ise_repository.test", "user_name", "user9"))
+	checks = append(checks, resource.TestCheckResourceAttr("ise_repository.test", "password_wo_version", "1"))
 
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
@@ -85,7 +86,8 @@ func testAccIseRepositoryConfig_all() string {
 	config += `	path = "/dir"` + "\n"
 	config += `	server_name = "server1"` + "\n"
 	config += `	user_name = "user9"` + "\n"
-	config += `	password = "cisco123"` + "\n"
+	config += `	password_wo = "cisco123"` + "\n"
+	config += `	password_wo_version = 1` + "\n"
 	config += `	enable_pki = false` + "\n"
 	config += `}` + "\n"
 	return config

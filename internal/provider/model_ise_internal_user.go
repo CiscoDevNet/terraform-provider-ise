@@ -33,21 +33,25 @@ import (
 
 //template:begin types
 type InternalUser struct {
-	Id                   types.String `tfsdk:"id"`
-	Name                 types.String `tfsdk:"name"`
-	Password             types.String `tfsdk:"password"`
-	ChangePassword       types.Bool   `tfsdk:"change_password"`
-	Email                types.String `tfsdk:"email"`
-	AccountNameAlias     types.String `tfsdk:"account_name_alias"`
-	EnablePassword       types.String `tfsdk:"enable_password"`
-	Enabled              types.Bool   `tfsdk:"enabled"`
-	PasswordNeverExpires types.Bool   `tfsdk:"password_never_expires"`
-	FirstName            types.String `tfsdk:"first_name"`
-	LastName             types.String `tfsdk:"last_name"`
-	IdentityGroups       types.String `tfsdk:"identity_groups"`
-	CustomAttributes     types.Map    `tfsdk:"custom_attributes"`
-	PasswordIdStore      types.String `tfsdk:"password_id_store"`
-	Description          types.String `tfsdk:"description"`
+	Id                      types.String `tfsdk:"id"`
+	Name                    types.String `tfsdk:"name"`
+	Password                types.String `tfsdk:"password"`
+	PasswordWo              types.String `tfsdk:"password_wo"`
+	PasswordWoVersion       types.Int64  `tfsdk:"password_wo_version"`
+	ChangePassword          types.Bool   `tfsdk:"change_password"`
+	Email                   types.String `tfsdk:"email"`
+	AccountNameAlias        types.String `tfsdk:"account_name_alias"`
+	EnablePassword          types.String `tfsdk:"enable_password"`
+	EnablePasswordWo        types.String `tfsdk:"enable_password_wo"`
+	EnablePasswordWoVersion types.Int64  `tfsdk:"enable_password_wo_version"`
+	Enabled                 types.Bool   `tfsdk:"enabled"`
+	PasswordNeverExpires    types.Bool   `tfsdk:"password_never_expires"`
+	FirstName               types.String `tfsdk:"first_name"`
+	LastName                types.String `tfsdk:"last_name"`
+	IdentityGroups          types.String `tfsdk:"identity_groups"`
+	CustomAttributes        types.Map    `tfsdk:"custom_attributes"`
+	PasswordIdStore         types.String `tfsdk:"password_id_store"`
+	Description             types.String `tfsdk:"description"`
 }
 
 //template:end types
@@ -69,8 +73,11 @@ func (data InternalUser) toBody(ctx context.Context, state InternalUser) string 
 	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.name", data.Name.ValueString())
 	}
-	if !data.Password.IsNull() && data.Password != state.Password {
+	if !data.Password.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.password", data.Password.ValueString())
+	}
+	if !data.PasswordWo.IsNull() {
+		body, _ = sjson.Set(body, "InternalUser.password", data.PasswordWo.ValueString())
 	}
 	if !data.ChangePassword.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.changePassword", data.ChangePassword.ValueBool())
@@ -83,6 +90,9 @@ func (data InternalUser) toBody(ctx context.Context, state InternalUser) string 
 	}
 	if !data.EnablePassword.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.enablePassword", data.EnablePassword.ValueString())
+	}
+	if !data.EnablePasswordWo.IsNull() {
+		body, _ = sjson.Set(body, "InternalUser.enablePassword", data.EnablePasswordWo.ValueString())
 	}
 	if !data.Enabled.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.enabled", data.Enabled.ValueBool())
@@ -255,6 +265,12 @@ func (data *InternalUser) isNull(ctx context.Context, res gjson.Result) bool {
 	if !data.Password.IsNull() {
 		return false
 	}
+	if !data.PasswordWo.IsNull() {
+		return false
+	}
+	if !data.PasswordWoVersion.IsNull() {
+		return false
+	}
 	if !data.ChangePassword.IsNull() {
 		return false
 	}
@@ -265,6 +281,12 @@ func (data *InternalUser) isNull(ctx context.Context, res gjson.Result) bool {
 		return false
 	}
 	if !data.EnablePassword.IsNull() {
+		return false
+	}
+	if !data.EnablePasswordWo.IsNull() {
+		return false
+	}
+	if !data.EnablePasswordWoVersion.IsNull() {
 		return false
 	}
 	if !data.Enabled.IsNull() {

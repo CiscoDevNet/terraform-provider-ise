@@ -96,6 +96,14 @@ func (d *RepositoryDataSource) Schema(ctx context.Context, req datasource.Schema
 				MarkdownDescription: "Password can contain alphanumeric and/or special characters.",
 				Computed:            true,
 			},
+			"password_wo": schema.StringAttribute{
+				MarkdownDescription: "Password can contain alphanumeric and/or special characters.",
+				Computed:            true,
+			},
+			"password_wo_version": schema.Int64Attribute{
+				MarkdownDescription: "Rotation trigger for `password_wo`. Increment this integer whenever the write-only value changes so Terraform sends the new secret. The value is stored in state; the secret is not.",
+				Computed:            true,
+			},
 			"enable_pki": schema.BoolAttribute{
 				MarkdownDescription: "Enable PKI",
 				Computed:            true,
