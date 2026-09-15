@@ -94,44 +94,44 @@ var templates = []t{
 }
 
 type YamlConfig struct {
-	Name                string                `yaml:"name"`
-	RestEndpoint        string                `yaml:"rest_endpoint"`
-	DeleteRestEndpoint  string                `yaml:"delete_rest_endpoint"`
-	GetNoId             bool                  `yaml:"get_no_id"`
-	NoDataSource        bool                  `yaml:"no_data_source"`
-	NoResource          bool                  `yaml:"no_resource"`
-	NoDelete            bool                  `yaml:"no_delete"`
-	NoImport            bool                  `yaml:"no_import"`
-	PostUpdate          bool                  `yaml:"post_update"`
-	PutCreate           bool                  `yaml:"put_create"`
-	PutIdQueryPath      bool                  `yaml:"put_id_query_path"`
-	PutNoId             bool                  `yaml:"put_no_id"`
-	PutDelete           bool                  `yaml:"put_delete"`
-	PutRead             bool                  `yaml:"put_read"`
-	NoRead              bool                  `yaml:"no_read"`
-	NoUpdate            bool                  `yaml:"no_update"`
-	UpdateDefault       bool                  `yaml:"update_default"`
-	RootList            bool                  `yaml:"root_list"`
-	NoReadPrefix        bool                  `yaml:"no_read_prefix"`
-	NoId                bool                  `yaml:"no_id"`
-	IdPath              string                `yaml:"id_path"`
-	IdExample           string                `yaml:"id_example"`
-	PutIdIncludePath    string                `yaml:"put_id_include_path"`
-	DataSourceNameQuery bool                  `yaml:"data_source_name_query"`
+	Name                 string                `yaml:"name"`
+	RestEndpoint         string                `yaml:"rest_endpoint"`
+	DeleteRestEndpoint   string                `yaml:"delete_rest_endpoint"`
+	GetNoId              bool                  `yaml:"get_no_id"`
+	NoDataSource         bool                  `yaml:"no_data_source"`
+	NoResource           bool                  `yaml:"no_resource"`
+	NoDelete             bool                  `yaml:"no_delete"`
+	NoImport             bool                  `yaml:"no_import"`
+	PostUpdate           bool                  `yaml:"post_update"`
+	PutCreate            bool                  `yaml:"put_create"`
+	PutIdQueryPath       bool                  `yaml:"put_id_query_path"`
+	PutNoId              bool                  `yaml:"put_no_id"`
+	PutDelete            bool                  `yaml:"put_delete"`
+	PutRead              bool                  `yaml:"put_read"`
+	NoRead               bool                  `yaml:"no_read"`
+	NoUpdate             bool                  `yaml:"no_update"`
+	UpdateDefault        bool                  `yaml:"update_default"`
+	RootList             bool                  `yaml:"root_list"`
+	NoReadPrefix         bool                  `yaml:"no_read_prefix"`
+	NoId                 bool                  `yaml:"no_id"`
+	IdPath               string                `yaml:"id_path"`
+	IdExample            string                `yaml:"id_example"`
+	PutIdIncludePath     string                `yaml:"put_id_include_path"`
+	DataSourceNameQuery  bool                  `yaml:"data_source_name_query"`
 	UseCache             bool                  `yaml:"use_cache"`
 	CacheRestEndpoint    string                `yaml:"cache_rest_endpoint"`
 	CacheResponsePath    string                `yaml:"cache_response_path"`
 	CacheResponseWrapper string                `yaml:"cache_response_wrapper"`
-	MinimumVersion      string                `yaml:"minimum_version"`
-	DsDescription       string                `yaml:"ds_description"`
-	ResDescription      string                `yaml:"res_description"`
-	DocCategory         string                `yaml:"doc_category"`
-	ExcludeTest         bool                  `yaml:"exclude_test"`
-	SkipMinimumTest     bool                  `yaml:"skip_minimum_test"`
-	IgnoreDeleteError   string                `yaml:"ignore_delete_error"`
-	Attributes          []YamlConfigAttribute `yaml:"attributes"`
-	TestTags            []string              `yaml:"test_tags"`
-	TestPrerequisites   string                `yaml:"test_prerequisites"`
+	MinimumVersion       string                `yaml:"minimum_version"`
+	DsDescription        string                `yaml:"ds_description"`
+	ResDescription       string                `yaml:"res_description"`
+	DocCategory          string                `yaml:"doc_category"`
+	ExcludeTest          bool                  `yaml:"exclude_test"`
+	SkipMinimumTest      bool                  `yaml:"skip_minimum_test"`
+	IgnoreDeleteError    string                `yaml:"ignore_delete_error"`
+	Attributes           []YamlConfigAttribute `yaml:"attributes"`
+	TestTags             []string              `yaml:"test_tags"`
+	TestPrerequisites    string                `yaml:"test_prerequisites"`
 }
 
 type YamlConfigAttribute struct {
