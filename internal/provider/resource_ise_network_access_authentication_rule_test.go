@@ -21,10 +21,12 @@ package provider
 
 //template:begin imports
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAcc
@@ -48,20 +50,21 @@ func TestAccIseNetworkAccessAuthenticationRule(t *testing.T) {
 	var steps []resource.TestStep
 	if os.Getenv("SKIP_MINIMUM_TEST") == "" {
 		steps = append(steps, resource.TestStep{
-			Config: testAccIseNetworkAccessAuthenticationRulePrerequisitesConfig+testAccIseNetworkAccessAuthenticationRuleConfig_minimum(),
+			Config: testAccIseNetworkAccessAuthenticationRulePrerequisitesConfig + testAccIseNetworkAccessAuthenticationRuleConfig_minimum(),
 		})
 	}
 	steps = append(steps, resource.TestStep{
-		Config: testAccIseNetworkAccessAuthenticationRulePrerequisitesConfig+testAccIseNetworkAccessAuthenticationRuleConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Config: testAccIseNetworkAccessAuthenticationRulePrerequisitesConfig + testAccIseNetworkAccessAuthenticationRuleConfig_all(),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
-	
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
+
 //template:end testAcc
 
 //template:begin testPrerequisites
@@ -86,6 +89,7 @@ resource "ise_network_access_condition" "test" {
 }
 
 `
+
 //template:end testPrerequisites
 
 //template:begin testAccConfigMinimal
@@ -101,6 +105,7 @@ func testAccIseNetworkAccessAuthenticationRuleConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 //template:end testAccConfigMinimal
 
 //template:begin testAccConfigAll
@@ -124,4 +129,5 @@ func testAccIseNetworkAccessAuthenticationRuleConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
+
 //template:end testAccConfigAll

@@ -22,90 +22,31 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"fmt"
-	"net/url"
-	"strconv"
 
-	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type TrustSecEgressMatrixCellDefault struct {
-	Id types.String `tfsdk:"id"`
-	Description types.String `tfsdk:"description"`
-	DefaultRule types.String `tfsdk:"default_rule"`
+	Id               types.String `tfsdk:"id"`
+	Description      types.String `tfsdk:"description"`
+	DefaultRule      types.String `tfsdk:"default_rule"`
 	MatrixCellStatus types.String `tfsdk:"matrix_cell_status"`
-	Sgacls types.Set `tfsdk:"sgacls"`
+	Sgacls           types.Set    `tfsdk:"sgacls"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data TrustSecEgressMatrixCellDefault) getPath() string {
-		return "/ers/config/egressmatrixcell"
+	return "/ers/config/egressmatrixcell"
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -119,13 +60,13 @@ func (data TrustSecEgressMatrixCellDefault) toBody(ctx context.Context, state Tr
 		body, _ = sjson.Set(body, "EgressMatrixCell.id", data.Id.ValueString())
 	}
 	body, _ = sjson.Set(body, "EgressMatrixCell.id", "92c1a900-8c01-11e6-996c-525400b48521")
-	if !data.Description.IsNull()  {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "EgressMatrixCell.description", data.Description.ValueString())
 	}
-	if !data.DefaultRule.IsNull()  {
+	if !data.DefaultRule.IsNull() {
 		body, _ = sjson.Set(body, "EgressMatrixCell.defaultRule", data.DefaultRule.ValueString())
 	}
-	if !data.MatrixCellStatus.IsNull()  {
+	if !data.MatrixCellStatus.IsNull() {
 		body, _ = sjson.Set(body, "EgressMatrixCell.matrixCellStatus", data.MatrixCellStatus.ValueString())
 	}
 	if !data.Sgacls.IsNull() {
@@ -137,6 +78,7 @@ func (data TrustSecEgressMatrixCellDefault) toBody(ctx context.Context, state Tr
 	body, _ = sjson.Set(body, "EgressMatrixCell.destinationSgtId", "92bb1950-8c01-11e6-996c-525400b48521")
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -162,6 +104,7 @@ func (data *TrustSecEgressMatrixCellDefault) fromBody(ctx context.Context, res g
 		data.Sgacls = types.SetNull(types.StringType)
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -187,6 +130,7 @@ func (data *TrustSecEgressMatrixCellDefault) updateFromBody(ctx context.Context,
 		data.Sgacls = types.SetNull(types.StringType)
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -205,4 +149,5 @@ func (data *TrustSecEgressMatrixCellDefault) isNull(ctx context.Context, res gjs
 	}
 	return true
 }
+
 //template:end isNull

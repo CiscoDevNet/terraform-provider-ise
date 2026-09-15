@@ -21,16 +21,18 @@ package provider
 
 //template:begin imports
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
 func TestAccDataSourceIseEndpointCustomAttribute(t *testing.T) {
 	if os.Getenv("ISE33") == "" {
-        t.Skip("skipping test, set environment variable ISE33")
+		t.Skip("skipping test, set environment variable ISE33")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_endpoint_custom_attribute.test", "attribute_name", "isMobile"))
@@ -41,11 +43,12 @@ func TestAccDataSourceIseEndpointCustomAttribute(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseEndpointCustomAttributeConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -57,7 +60,7 @@ func testAccDataSourceIseEndpointCustomAttributeConfig() string {
 	config += `	attribute_name = "isMobile"` + "\n"
 	config += `	attribute_type = "Boolean"` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_endpoint_custom_attribute" "test" {
 			id = ise_endpoint_custom_attribute.test.id
@@ -65,4 +68,5 @@ func testAccDataSourceIseEndpointCustomAttributeConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

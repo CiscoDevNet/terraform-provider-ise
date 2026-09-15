@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -37,11 +38,12 @@ func TestAccDataSourceIseSXPVPN(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseSXPVPNConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -52,7 +54,7 @@ func testAccDataSourceIseSXPVPNConfig() string {
 	config := `resource "ise_sxp_vpn" "test" {` + "\n"
 	config += `	sxp_vpn_name = "sxpvpn1"` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_sxp_vpn" "test" {
 			id = ise_sxp_vpn.test.id
@@ -60,4 +62,5 @@ func testAccDataSourceIseSXPVPNConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

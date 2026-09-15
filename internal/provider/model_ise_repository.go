@@ -22,109 +22,35 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"fmt"
-	"net/url"
-	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type Repository struct {
-	Id types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
-	Protocol types.String `tfsdk:"protocol"`
-	Path types.String `tfsdk:"path"`
-	ServerName types.String `tfsdk:"server_name"`
-	UserName types.String `tfsdk:"user_name"`
-	Password types.String `tfsdk:"password"`
-	PasswordWo types.String `tfsdk:"password_wo"`
-	PasswordWoVersion types.Int64 `tfsdk:"password_wo_version"`
-	EnablePki types.Bool `tfsdk:"enable_pki"`
+	Id                types.String `tfsdk:"id"`
+	Name              types.String `tfsdk:"name"`
+	Protocol          types.String `tfsdk:"protocol"`
+	Path              types.String `tfsdk:"path"`
+	ServerName        types.String `tfsdk:"server_name"`
+	UserName          types.String `tfsdk:"user_name"`
+	Password          types.String `tfsdk:"password"`
+	PasswordWo        types.String `tfsdk:"password_wo"`
+	PasswordWoVersion types.Int64  `tfsdk:"password_wo_version"`
+	EnablePki         types.Bool   `tfsdk:"enable_pki"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data Repository) getPath() string {
-		return "/api/v1/repository"
+	return "/api/v1/repository"
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -134,32 +60,33 @@ func (data Repository) getPath() string {
 //template:begin toBody
 func (data Repository) toBody(ctx context.Context, state Repository) string {
 	body := ""
-	if !data.Name.IsNull()  {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Protocol.IsNull()  {
+	if !data.Protocol.IsNull() {
 		body, _ = sjson.Set(body, "protocol", data.Protocol.ValueString())
 	}
-	if !data.Path.IsNull()  {
+	if !data.Path.IsNull() {
 		body, _ = sjson.Set(body, "path", data.Path.ValueString())
 	}
-	if !data.ServerName.IsNull()  {
+	if !data.ServerName.IsNull() {
 		body, _ = sjson.Set(body, "serverName", data.ServerName.ValueString())
 	}
-	if !data.UserName.IsNull()  {
+	if !data.UserName.IsNull() {
 		body, _ = sjson.Set(body, "userName", data.UserName.ValueString())
 	}
-	if !data.Password.IsNull()  {
+	if !data.Password.IsNull() {
 		body, _ = sjson.Set(body, "password", data.Password.ValueString())
 	}
-	if !data.PasswordWo.IsNull()  {
+	if !data.PasswordWo.IsNull() {
 		body, _ = sjson.Set(body, "password", data.PasswordWo.ValueString())
 	}
-	if !data.EnablePki.IsNull()  {
+	if !data.EnablePki.IsNull() {
 		body, _ = sjson.Set(body, "enablePki", data.EnablePki.ValueBool())
 	}
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -190,6 +117,7 @@ func (data *Repository) fromBody(ctx context.Context, res gjson.Result) {
 		data.UserName = types.StringNull()
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -220,6 +148,7 @@ func (data *Repository) updateFromBody(ctx context.Context, res gjson.Result) {
 		data.UserName = types.StringNull()
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -253,4 +182,5 @@ func (data *Repository) isNull(ctx context.Context, res gjson.Result) bool {
 	}
 	return true
 }
+
 //template:end isNull

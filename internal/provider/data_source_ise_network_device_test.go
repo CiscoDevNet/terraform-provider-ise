@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -70,11 +71,12 @@ func TestAccDataSourceIseNetworkDevice(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseNetworkDeviceConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -142,7 +144,7 @@ func testAccDataSourceIseNetworkDeviceConfig() string {
 	config += `	trustsec_send_configuration_to_device = true` + "\n"
 	config += `	trustsec_send_configuration_to_device_using = "ENABLE_USING_COA"` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_network_device" "test" {
 			id = ise_network_device.test.id
@@ -150,4 +152,5 @@ func testAccDataSourceIseNetworkDeviceConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

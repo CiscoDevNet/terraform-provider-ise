@@ -22,77 +22,31 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"fmt"
-	"net/url"
-	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type TrustSecSecurityGroup struct {
-	Id types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Value types.Int64 `tfsdk:"value"`
-	PropogateToApic types.Bool `tfsdk:"propogate_to_apic"`
-	IsReadOnly types.Bool `tfsdk:"is_read_only"`
+	Id              types.String `tfsdk:"id"`
+	Name            types.String `tfsdk:"name"`
+	Description     types.String `tfsdk:"description"`
+	Value           types.Int64  `tfsdk:"value"`
+	PropogateToApic types.Bool   `tfsdk:"propogate_to_apic"`
+	IsReadOnly      types.Bool   `tfsdk:"is_read_only"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data TrustSecSecurityGroup) getPath() string {
-		return "/ers/config/sgt"
+	return "/ers/config/sgt"
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -102,23 +56,24 @@ func (data TrustSecSecurityGroup) getPath() string {
 //template:begin toBody
 func (data TrustSecSecurityGroup) toBody(ctx context.Context, state TrustSecSecurityGroup) string {
 	body := ""
-	if !data.Name.IsNull()  {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "Sgt.name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()  {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "Sgt.description", data.Description.ValueString())
 	}
-	if !data.Value.IsNull()  {
+	if !data.Value.IsNull() {
 		body, _ = sjson.Set(body, "Sgt.value", data.Value.ValueInt64())
 	}
-	if !data.PropogateToApic.IsNull()  {
+	if !data.PropogateToApic.IsNull() {
 		body, _ = sjson.Set(body, "Sgt.propogateToApic", data.PropogateToApic.ValueBool())
 	}
-	if !data.IsReadOnly.IsNull()  {
+	if !data.IsReadOnly.IsNull() {
 		body, _ = sjson.Set(body, "Sgt.isReadOnly", data.IsReadOnly.ValueBool())
 	}
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -144,6 +99,7 @@ func (data *TrustSecSecurityGroup) fromBody(ctx context.Context, res gjson.Resul
 		data.PropogateToApic = types.BoolNull()
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -169,6 +125,7 @@ func (data *TrustSecSecurityGroup) updateFromBody(ctx context.Context, res gjson
 		data.PropogateToApic = types.BoolNull()
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -190,4 +147,5 @@ func (data *TrustSecSecurityGroup) isNull(ctx context.Context, res gjson.Result)
 	}
 	return true
 }
+
 //template:end isNull

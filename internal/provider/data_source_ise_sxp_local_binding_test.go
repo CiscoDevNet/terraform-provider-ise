@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -37,12 +38,13 @@ func TestAccDataSourceIseSXPLocalBinding(t *testing.T) {
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceIseSXPLocalBindingPrerequisitesConfig+testAccDataSourceIseSXPLocalBindingConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceIseSXPLocalBindingPrerequisitesConfig + testAccDataSourceIseSXPLocalBindingConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -56,6 +58,7 @@ resource "ise_trustsec_security_group" "test" {
 }
 
 `
+
 //template:end testPrerequisites
 
 //template:begin testAccDataSourceConfig
@@ -66,7 +69,7 @@ func testAccDataSourceIseSXPLocalBindingConfig() string {
 	config += `	sgt = ise_trustsec_security_group.test.name` + "\n"
 	config += `	sxp_vpn = "default"` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_sxp_local_binding" "test" {
 			id = ise_sxp_local_binding.test.id
@@ -74,4 +77,5 @@ func testAccDataSourceIseSXPLocalBindingConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

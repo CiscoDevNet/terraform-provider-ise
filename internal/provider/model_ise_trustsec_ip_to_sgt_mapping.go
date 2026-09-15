@@ -22,101 +22,34 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"fmt"
-	"net/url"
-	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type TrustSecIPToSGTMapping struct {
-	Id types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	DeployTo types.String `tfsdk:"deploy_to"`
-	DeployType types.String `tfsdk:"deploy_type"`
-	HostName types.String `tfsdk:"host_name"`
-	HostIp types.String `tfsdk:"host_ip"`
-	Sgt types.String `tfsdk:"sgt"`
+	Id           types.String `tfsdk:"id"`
+	Name         types.String `tfsdk:"name"`
+	Description  types.String `tfsdk:"description"`
+	DeployTo     types.String `tfsdk:"deploy_to"`
+	DeployType   types.String `tfsdk:"deploy_type"`
+	HostName     types.String `tfsdk:"host_name"`
+	HostIp       types.String `tfsdk:"host_ip"`
+	Sgt          types.String `tfsdk:"sgt"`
 	MappingGroup types.String `tfsdk:"mapping_group"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data TrustSecIPToSGTMapping) getPath() string {
-		return "/ers/config/sgmapping"
+	return "/ers/config/sgmapping"
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -126,32 +59,33 @@ func (data TrustSecIPToSGTMapping) getPath() string {
 //template:begin toBody
 func (data TrustSecIPToSGTMapping) toBody(ctx context.Context, state TrustSecIPToSGTMapping) string {
 	body := ""
-	if !data.Name.IsNull()  {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "SGMapping.name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()  {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "SGMapping.description", data.Description.ValueString())
 	}
-	if !data.DeployTo.IsNull()  {
+	if !data.DeployTo.IsNull() {
 		body, _ = sjson.Set(body, "SGMapping.deployTo", data.DeployTo.ValueString())
 	}
-	if !data.DeployType.IsNull()  {
+	if !data.DeployType.IsNull() {
 		body, _ = sjson.Set(body, "SGMapping.deployType", data.DeployType.ValueString())
 	}
-	if !data.HostName.IsNull()  {
+	if !data.HostName.IsNull() {
 		body, _ = sjson.Set(body, "SGMapping.hostName", data.HostName.ValueString())
 	}
-	if !data.HostIp.IsNull()  {
+	if !data.HostIp.IsNull() {
 		body, _ = sjson.Set(body, "SGMapping.hostIp", data.HostIp.ValueString())
 	}
-	if !data.Sgt.IsNull()  {
+	if !data.Sgt.IsNull() {
 		body, _ = sjson.Set(body, "SGMapping.sgt", data.Sgt.ValueString())
 	}
-	if !data.MappingGroup.IsNull()  {
+	if !data.MappingGroup.IsNull() {
 		body, _ = sjson.Set(body, "SGMapping.mappingGroup", data.MappingGroup.ValueString())
 	}
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -197,6 +131,7 @@ func (data *TrustSecIPToSGTMapping) fromBody(ctx context.Context, res gjson.Resu
 		data.MappingGroup = types.StringNull()
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -242,6 +177,7 @@ func (data *TrustSecIPToSGTMapping) updateFromBody(ctx context.Context, res gjso
 		data.MappingGroup = types.StringNull()
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -272,4 +208,5 @@ func (data *TrustSecIPToSGTMapping) isNull(ctx context.Context, res gjson.Result
 	}
 	return true
 }
+
 //template:end isNull

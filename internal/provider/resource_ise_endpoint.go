@@ -22,35 +22,25 @@ package provider
 //template:begin imports
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/url"
-	"sort"
 	"strings"
-	"sync"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 )
+
 //template:end imports
 
 //template:begin header
@@ -65,12 +55,13 @@ func NewEndpointResource() resource.Resource {
 
 type EndpointResource struct {
 	client *ise.Client
-	cache *ThreadSafeCache
+	cache  *ThreadSafeCache
 }
 
 func (r *EndpointResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_endpoint"
 }
+
 //template:end header
 
 //template:begin model
@@ -89,7 +80,7 @@ func (r *EndpointResource) Schema(ctx context.Context, req resource.SchemaReques
 			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("The name of the endpoint").String,
-					CustomType: helpers.CaseInsensitiveStringType{},
+				CustomType:          helpers.CaseInsensitiveStringType{},
 				Required:            true,
 			},
 			"description": schema.StringAttribute{
@@ -98,7 +89,7 @@ func (r *EndpointResource) Schema(ctx context.Context, req resource.SchemaReques
 			},
 			"mac": schema.StringAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("MAC address of the endpoint").String,
-					CustomType: helpers.CaseInsensitiveStringType{},
+				CustomType:          helpers.CaseInsensitiveStringType{},
 				Required:            true,
 			},
 			"group_id": schema.StringAttribute{
@@ -209,6 +200,7 @@ func (r *EndpointResource) Schema(ctx context.Context, req resource.SchemaReques
 		},
 	}
 }
+
 //template:end model
 
 //template:begin configure
@@ -220,6 +212,7 @@ func (r *EndpointResource) Configure(_ context.Context, req resource.ConfigureRe
 	r.client = req.ProviderData.(*IseProviderData).Client
 	r.cache = req.ProviderData.(*IseProviderData).Cache
 }
+
 //template:end configure
 
 func (r *EndpointResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -351,6 +344,7 @@ func (r *EndpointResource) Read(ctx context.Context, req resource.ReadRequest, r
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end read
 
 // ReadCache obtains all objects from the configured bulk endpoint once, then
@@ -421,13 +415,13 @@ func (r *EndpointResource) ReadCache(ctx context.Context, state Endpoint) (gjson
 	}
 	return gjson.Parse(body), nil
 }
+
 //template:end readcache
 
 //template:begin update
 func (r *EndpointResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state Endpoint
 	r.cache.Delete("Endpoint")
-
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -444,8 +438,8 @@ func (r *EndpointResource) Update(ctx context.Context, req resource.UpdateReques
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	body := plan.toBody(ctx, state)
-	
-	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body)
+
+	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -472,6 +466,7 @@ func (r *EndpointResource) Update(ctx context.Context, req resource.UpdateReques
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end update
 
 //template:begin delete
@@ -497,10 +492,12 @@ func (r *EndpointResource) Delete(ctx context.Context, req resource.DeleteReques
 
 	resp.State.RemoveResource(ctx)
 }
+
 //template:end delete
 
 //template:begin import
 func (r *EndpointResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
+
 //template:end import

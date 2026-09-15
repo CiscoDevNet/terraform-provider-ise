@@ -25,15 +25,17 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/datasourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/tidwall/gjson"
 )
+
 //template:end imports
 
 //template:begin header
@@ -55,6 +57,7 @@ type NetworkAccessAuthorizationGlobalExceptionRuleDataSource struct {
 func (d *NetworkAccessAuthorizationGlobalExceptionRuleDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_network_access_authorization_global_exception_rule"
 }
+
 //template:end header
 
 //template:begin model
@@ -112,7 +115,7 @@ func (d *NetworkAccessAuthorizationGlobalExceptionRuleDataSource) Schema(ctx con
 			},
 			"condition_operator": schema.StringAttribute{
 				MarkdownDescription: "Equality operator",
-				CustomType: helpers.OperatorType{},
+				CustomType:          helpers.OperatorType{},
 				Computed:            true,
 			},
 			"children": schema.ListNestedAttribute{
@@ -150,7 +153,7 @@ func (d *NetworkAccessAuthorizationGlobalExceptionRuleDataSource) Schema(ctx con
 						},
 						"operator": schema.StringAttribute{
 							MarkdownDescription: "Equality operator",
-							CustomType: helpers.OperatorType{},
+							CustomType:          helpers.OperatorType{},
 							Computed:            true,
 						},
 						"children": schema.ListNestedAttribute{
@@ -188,7 +191,7 @@ func (d *NetworkAccessAuthorizationGlobalExceptionRuleDataSource) Schema(ctx con
 									},
 									"operator": schema.StringAttribute{
 										MarkdownDescription: "Equality operator",
-										CustomType: helpers.OperatorType{},
+										CustomType:          helpers.OperatorType{},
 										Computed:            true,
 									},
 									"children": schema.ListNestedAttribute{
@@ -226,7 +229,7 @@ func (d *NetworkAccessAuthorizationGlobalExceptionRuleDataSource) Schema(ctx con
 												},
 												"operator": schema.StringAttribute{
 													MarkdownDescription: "Equality operator",
-													CustomType: helpers.OperatorType{},
+													CustomType:          helpers.OperatorType{},
 													Computed:            true,
 												},
 												"children": schema.ListNestedAttribute{
@@ -264,7 +267,7 @@ func (d *NetworkAccessAuthorizationGlobalExceptionRuleDataSource) Schema(ctx con
 															},
 															"operator": schema.StringAttribute{
 																MarkdownDescription: "Equality operator",
-																CustomType: helpers.OperatorType{},
+																CustomType:          helpers.OperatorType{},
 																Computed:            true,
 															},
 															"children": schema.ListNestedAttribute{
@@ -302,7 +305,7 @@ func (d *NetworkAccessAuthorizationGlobalExceptionRuleDataSource) Schema(ctx con
 																		},
 																		"operator": schema.StringAttribute{
 																			MarkdownDescription: "Equality operator",
-																			CustomType: helpers.OperatorType{},
+																			CustomType:          helpers.OperatorType{},
 																			Computed:            true,
 																		},
 																		"children": schema.ListNestedAttribute{
@@ -336,17 +339,19 @@ func (d *NetworkAccessAuthorizationGlobalExceptionRuleDataSource) Schema(ctx con
 		},
 	}
 }
+
 //template:end model
 
 //template:begin configValidators
 func (d *NetworkAccessAuthorizationGlobalExceptionRuleDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
-    return []datasource.ConfigValidator{
-        datasourcevalidator.ExactlyOneOf(
-            path.MatchRoot("id"),
-            path.MatchRoot("name"),
-        ),
-    }
+	return []datasource.ConfigValidator{
+		datasourcevalidator.ExactlyOneOf(
+			path.MatchRoot("id"),
+			path.MatchRoot("name"),
+		),
+	}
 }
+
 //template:end configValidators
 
 //template:end configure
@@ -413,4 +418,5 @@ func (d *NetworkAccessAuthorizationGlobalExceptionRuleDataSource) Read(ctx conte
 	diags = resp.State.Set(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end read

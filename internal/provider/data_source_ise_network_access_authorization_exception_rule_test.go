@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -47,12 +48,13 @@ func TestAccDataSourceIseNetworkAccessAuthorizationExceptionRule(t *testing.T) {
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceIseNetworkAccessAuthorizationExceptionRulePrerequisitesConfig+testAccDataSourceIseNetworkAccessAuthorizationExceptionRuleConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceIseNetworkAccessAuthorizationExceptionRulePrerequisitesConfig + testAccDataSourceIseNetworkAccessAuthorizationExceptionRuleConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -77,6 +79,7 @@ resource "ise_network_access_condition" "test" {
 }
 
 `
+
 //template:end testPrerequisites
 
 //template:begin testAccDataSourceConfig
@@ -96,7 +99,7 @@ func testAccDataSourceIseNetworkAccessAuthorizationExceptionRuleConfig() string 
 	config += `	profiles = ["PermitAccess"]` + "\n"
 	config += `	security_group = "BYOD"` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_network_access_authorization_exception_rule" "test" {
 			id = ise_network_access_authorization_exception_rule.test.id
@@ -105,4 +108,5 @@ func testAccDataSourceIseNetworkAccessAuthorizationExceptionRuleConfig() string 
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

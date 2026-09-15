@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -40,11 +41,12 @@ func TestAccDataSourceIseNetworkAccessDictionary(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseNetworkAccessDictionaryConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -58,7 +60,7 @@ func testAccDataSourceIseNetworkAccessDictionaryConfig() string {
 	config += `	version = "1.1"` + "\n"
 	config += `	dictionary_attr_type = "ENTITY_ATTR"` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_network_access_dictionary" "test" {
 			id = ise_network_access_dictionary.test.id
@@ -66,4 +68,5 @@ func testAccDataSourceIseNetworkAccessDictionaryConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

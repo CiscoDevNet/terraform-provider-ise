@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -39,11 +40,12 @@ func TestAccDataSourceIseTrustSecEgressMatrixCellDefault(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseTrustSecEgressMatrixCellDefaultConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -56,7 +58,7 @@ func testAccDataSourceIseTrustSecEgressMatrixCellDefaultConfig() string {
 	config += `	default_rule = "PERMIT_IP"` + "\n"
 	config += `	matrix_cell_status = "ENABLED"` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_trustsec_egress_matrix_cell_default" "test" {
 			id = ise_trustsec_egress_matrix_cell_default.test.id
@@ -64,4 +66,5 @@ func testAccDataSourceIseTrustSecEgressMatrixCellDefaultConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

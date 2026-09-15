@@ -24,33 +24,21 @@ import (
 	"context"
 	"fmt"
 	"net/url"
-	"sort"
 	"strings"
-	"sync"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
-	"github.com/tidwall/gjson"
-	"github.com/tidwall/sjson"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 )
+
 //template:end imports
 
 //template:begin header
@@ -70,6 +58,7 @@ type SXPConnectionResource struct {
 func (r *SXPConnectionResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_sxp_connection"
 }
+
 //template:end header
 
 //template:begin model
@@ -111,17 +100,17 @@ func (r *SXPConnectionResource) Schema(ctx context.Context, req resource.SchemaR
 				Required:            true,
 			},
 			"sxp_mode": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The SXP connection mode").AddStringEnumDescription("BOTH", "LISTENER", "SPEAKER", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("The SXP connection mode").AddStringEnumDescription("BOTH", "LISTENER", "SPEAKER").String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("BOTH", "LISTENER", "SPEAKER", ),
+					stringvalidator.OneOf("BOTH", "LISTENER", "SPEAKER"),
 				},
 			},
 			"sxp_version": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("The SXP protocol version negotiated with the peer").AddStringEnumDescription("VERSION_1", "VERSION_2", "VERSION_3", "VERSION_4", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("The SXP protocol version negotiated with the peer").AddStringEnumDescription("VERSION_1", "VERSION_2", "VERSION_3", "VERSION_4").String,
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("VERSION_1", "VERSION_2", "VERSION_3", "VERSION_4", ),
+					stringvalidator.OneOf("VERSION_1", "VERSION_2", "VERSION_3", "VERSION_4"),
 				},
 			},
 			"enabled": schema.BoolAttribute{
@@ -131,6 +120,7 @@ func (r *SXPConnectionResource) Schema(ctx context.Context, req resource.SchemaR
 		},
 	}
 }
+
 //template:end model
 
 //template:begin configure
@@ -141,6 +131,7 @@ func (r *SXPConnectionResource) Configure(_ context.Context, req resource.Config
 
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
+
 //template:end configure
 
 //template:begin create
@@ -171,6 +162,7 @@ func (r *SXPConnectionResource) Create(ctx context.Context, req resource.CreateR
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end create
 
 //template:begin read
@@ -206,12 +198,12 @@ func (r *SXPConnectionResource) Read(ctx context.Context, req resource.ReadReque
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end read
 
 //template:begin update
 func (r *SXPConnectionResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state SXPConnection
-
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -228,8 +220,8 @@ func (r *SXPConnectionResource) Update(ctx context.Context, req resource.UpdateR
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	body := plan.toBody(ctx, state)
-	
-	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body)
+
+	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -240,6 +232,7 @@ func (r *SXPConnectionResource) Update(ctx context.Context, req resource.UpdateR
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end update
 
 //template:begin delete
@@ -264,10 +257,12 @@ func (r *SXPConnectionResource) Delete(ctx context.Context, req resource.DeleteR
 
 	resp.State.RemoveResource(ctx)
 }
+
 //template:end delete
 
 //template:begin import
 func (r *SXPConnectionResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
+
 //template:end import

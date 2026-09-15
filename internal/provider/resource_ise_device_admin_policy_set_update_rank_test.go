@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAcc
@@ -34,16 +35,17 @@ func TestAccIseDeviceAdminPolicySetUpdateRank(t *testing.T) {
 
 	var steps []resource.TestStep
 	steps = append(steps, resource.TestStep{
-		Config: testAccIseDeviceAdminPolicySetUpdateRankPrerequisitesConfig+testAccIseDeviceAdminPolicySetUpdateRankConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Config: testAccIseDeviceAdminPolicySetUpdateRankPrerequisitesConfig + testAccIseDeviceAdminPolicySetUpdateRankConfig_all(),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
-	
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
+
 //template:end testAcc
 
 //template:begin testPrerequisites
@@ -63,6 +65,7 @@ resource "ise_device_admin_policy_set" "test" {
 }
 
 `
+
 //template:end testPrerequisites
 
 //template:begin testAccConfigMinimal
@@ -73,6 +76,7 @@ func testAccIseDeviceAdminPolicySetUpdateRankConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 //template:end testAccConfigMinimal
 
 //template:begin testAccConfigAll
@@ -83,4 +87,5 @@ func testAccIseDeviceAdminPolicySetUpdateRankConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
+
 //template:end testAccConfigAll

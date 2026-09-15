@@ -22,93 +22,34 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"fmt"
-	"net/url"
-	"strconv"
 
-	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type SXPLocalBinding struct {
-	Id types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	BindingName types.String `tfsdk:"binding_name"`
+	Id              types.String `tfsdk:"id"`
+	Name            types.String `tfsdk:"name"`
+	Description     types.String `tfsdk:"description"`
+	BindingName     types.String `tfsdk:"binding_name"`
 	IpAddressOrHost types.String `tfsdk:"ip_address_or_host"`
-	Sgt types.String `tfsdk:"sgt"`
-	SxpVpn types.String `tfsdk:"sxp_vpn"`
-	Vns types.String `tfsdk:"vns"`
+	Sgt             types.String `tfsdk:"sgt"`
+	SxpVpn          types.String `tfsdk:"sxp_vpn"`
+	Vns             types.String `tfsdk:"vns"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data SXPLocalBinding) getPath() string {
-		return "/ers/config/sxplocalbindings"
+	return "/ers/config/sxplocalbindings"
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -118,29 +59,30 @@ func (data SXPLocalBinding) getPath() string {
 //template:begin toBody
 func (data SXPLocalBinding) toBody(ctx context.Context, state SXPLocalBinding) string {
 	body := ""
-	if !data.Name.IsNull()  {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "ERSSxpLocalBindings.name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()  {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "ERSSxpLocalBindings.description", data.Description.ValueString())
 	}
-	if !data.BindingName.IsNull()  {
+	if !data.BindingName.IsNull() {
 		body, _ = sjson.Set(body, "ERSSxpLocalBindings.bindingName", data.BindingName.ValueString())
 	}
-	if !data.IpAddressOrHost.IsNull()  {
+	if !data.IpAddressOrHost.IsNull() {
 		body, _ = sjson.Set(body, "ERSSxpLocalBindings.ipAddressOrHost", data.IpAddressOrHost.ValueString())
 	}
-	if !data.Sgt.IsNull()  {
+	if !data.Sgt.IsNull() {
 		body, _ = sjson.Set(body, "ERSSxpLocalBindings.sgt", data.Sgt.ValueString())
 	}
-	if !data.SxpVpn.IsNull()  {
+	if !data.SxpVpn.IsNull() {
 		body, _ = sjson.Set(body, "ERSSxpLocalBindings.sxpVpn", data.SxpVpn.ValueString())
 	}
-	if !data.Vns.IsNull()  {
+	if !data.Vns.IsNull() {
 		body, _ = sjson.Set(body, "ERSSxpLocalBindings.vns", data.Vns.ValueString())
 	}
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -171,6 +113,7 @@ func (data *SXPLocalBinding) fromBody(ctx context.Context, res gjson.Result) {
 		data.Vns = types.StringNull()
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -201,6 +144,7 @@ func (data *SXPLocalBinding) updateFromBody(ctx context.Context, res gjson.Resul
 		data.Vns = types.StringNull()
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -228,4 +172,5 @@ func (data *SXPLocalBinding) isNull(ctx context.Context, res gjson.Result) bool 
 	}
 	return true
 }
+
 //template:end isNull

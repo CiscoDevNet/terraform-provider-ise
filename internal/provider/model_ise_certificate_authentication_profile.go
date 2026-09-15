@@ -22,93 +22,33 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"fmt"
-	"net/url"
-	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type CertificateAuthenticationProfile struct {
-	Id types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	AllowedAsUserName types.Bool `tfsdk:"allowed_as_user_name"`
+	Id                        types.String `tfsdk:"id"`
+	Name                      types.String `tfsdk:"name"`
+	Description               types.String `tfsdk:"description"`
+	AllowedAsUserName         types.Bool   `tfsdk:"allowed_as_user_name"`
 	ExternalIdentityStoreName types.String `tfsdk:"external_identity_store_name"`
-	CertificateAttributeName types.String `tfsdk:"certificate_attribute_name"`
-	MatchMode types.String `tfsdk:"match_mode"`
-	UsernameFrom types.String `tfsdk:"username_from"`
+	CertificateAttributeName  types.String `tfsdk:"certificate_attribute_name"`
+	MatchMode                 types.String `tfsdk:"match_mode"`
+	UsernameFrom              types.String `tfsdk:"username_from"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data CertificateAuthenticationProfile) getPath() string {
-		return "/ers/config/certificateprofile"
+	return "/ers/config/certificateprofile"
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -118,29 +58,30 @@ func (data CertificateAuthenticationProfile) getPath() string {
 //template:begin toBody
 func (data CertificateAuthenticationProfile) toBody(ctx context.Context, state CertificateAuthenticationProfile) string {
 	body := ""
-	if !data.Name.IsNull()  {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "CertificateProfile.name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()  {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "CertificateProfile.description", data.Description.ValueString())
 	}
-	if !data.AllowedAsUserName.IsNull()  {
+	if !data.AllowedAsUserName.IsNull() {
 		body, _ = sjson.Set(body, "CertificateProfile.allowedAsUserName", data.AllowedAsUserName.ValueBool())
 	}
-	if !data.ExternalIdentityStoreName.IsNull()  {
+	if !data.ExternalIdentityStoreName.IsNull() {
 		body, _ = sjson.Set(body, "CertificateProfile.externalIdentityStoreName", data.ExternalIdentityStoreName.ValueString())
 	}
-	if !data.CertificateAttributeName.IsNull()  {
+	if !data.CertificateAttributeName.IsNull() {
 		body, _ = sjson.Set(body, "CertificateProfile.certificateAttributeName", data.CertificateAttributeName.ValueString())
 	}
-	if !data.MatchMode.IsNull()  {
+	if !data.MatchMode.IsNull() {
 		body, _ = sjson.Set(body, "CertificateProfile.matchMode", data.MatchMode.ValueString())
 	}
-	if !data.UsernameFrom.IsNull()  {
+	if !data.UsernameFrom.IsNull() {
 		body, _ = sjson.Set(body, "CertificateProfile.usernameFrom", data.UsernameFrom.ValueString())
 	}
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -181,6 +122,7 @@ func (data *CertificateAuthenticationProfile) fromBody(ctx context.Context, res 
 		data.UsernameFrom = types.StringValue("CERTIFICATE")
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -221,6 +163,7 @@ func (data *CertificateAuthenticationProfile) updateFromBody(ctx context.Context
 		data.UsernameFrom = types.StringNull()
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -248,4 +191,5 @@ func (data *CertificateAuthenticationProfile) isNull(ctx context.Context, res gj
 	}
 	return true
 }
+
 //template:end isNull

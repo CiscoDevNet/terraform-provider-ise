@@ -22,61 +22,29 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"fmt"
-	"net/url"
-	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type SXPVPN struct {
-	Id types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
+	Id          types.String `tfsdk:"id"`
+	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
-	SxpVpnName types.String `tfsdk:"sxp_vpn_name"`
+	SxpVpnName  types.String `tfsdk:"sxp_vpn_name"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data SXPVPN) getPath() string {
-		return "/ers/config/sxpvpns"
+	return "/ers/config/sxpvpns"
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -86,17 +54,18 @@ func (data SXPVPN) getPath() string {
 //template:begin toBody
 func (data SXPVPN) toBody(ctx context.Context, state SXPVPN) string {
 	body := ""
-	if !data.Name.IsNull()  {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "ERSSxpVpn.name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()  {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "ERSSxpVpn.description", data.Description.ValueString())
 	}
-	if !data.SxpVpnName.IsNull()  {
+	if !data.SxpVpnName.IsNull() {
 		body, _ = sjson.Set(body, "ERSSxpVpn.sxpVpnName", data.SxpVpnName.ValueString())
 	}
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -117,6 +86,7 @@ func (data *SXPVPN) fromBody(ctx context.Context, res gjson.Result) {
 		data.SxpVpnName = types.StringNull()
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -137,6 +107,7 @@ func (data *SXPVPN) updateFromBody(ctx context.Context, res gjson.Result) {
 		data.SxpVpnName = types.StringNull()
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -152,4 +123,5 @@ func (data *SXPVPN) isNull(ctx context.Context, res gjson.Result) bool {
 	}
 	return true
 }
+
 //template:end isNull

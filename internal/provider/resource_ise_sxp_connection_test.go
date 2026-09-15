@@ -21,16 +21,18 @@ package provider
 
 //template:begin imports
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAcc
 func TestAccIseSXPConnection(t *testing.T) {
 	if os.Getenv("ISE34") == "" && os.Getenv("ISE33") == "" {
-        t.Skip("skipping test, set environment variable ISE34 or ISE33")
+		t.Skip("skipping test, set environment variable ISE34 or ISE33")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("ise_sxp_connection.test", "sxp_peer", "SXPPeer1"))
@@ -49,19 +51,20 @@ func TestAccIseSXPConnection(t *testing.T) {
 	}
 	steps = append(steps, resource.TestStep{
 		Config: testAccIseSXPConnectionConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
-		ResourceName:  "ise_sxp_connection.test",
-		ImportState:   true,
+		ResourceName: "ise_sxp_connection.test",
+		ImportState:  true,
 	})
-	
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
+
 //template:end testAcc
 
 //template:begin testPrerequisites
@@ -80,6 +83,7 @@ func testAccIseSXPConnectionConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 //template:end testAccConfigMinimal
 
 //template:begin testAccConfigAll
@@ -96,4 +100,5 @@ func testAccIseSXPConnectionConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
+
 //template:end testAccConfigAll

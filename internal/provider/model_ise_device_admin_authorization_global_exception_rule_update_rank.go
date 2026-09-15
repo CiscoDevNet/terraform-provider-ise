@@ -22,53 +22,28 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"fmt"
-	"net/url"
-	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type DeviceAdminAuthorizationGlobalExceptionRuleUpdateRank struct {
-	Id types.String `tfsdk:"id"`
+	Id     types.String `tfsdk:"id"`
 	RuleId types.String `tfsdk:"rule_id"`
-	Rank types.Int64 `tfsdk:"rank"`
+	Rank   types.Int64  `tfsdk:"rank"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data DeviceAdminAuthorizationGlobalExceptionRuleUpdateRank) getPath() string {
-		return "/api/v1/policy/device-admin/policy-set/global-exception"
+	return "/api/v1/policy/device-admin/policy-set/global-exception"
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -78,14 +53,15 @@ func (data DeviceAdminAuthorizationGlobalExceptionRuleUpdateRank) getPath() stri
 //template:begin toBody
 func (data DeviceAdminAuthorizationGlobalExceptionRuleUpdateRank) toBody(ctx context.Context, state DeviceAdminAuthorizationGlobalExceptionRuleUpdateRank) string {
 	body := ""
-	if !data.RuleId.IsNull()  {
+	if !data.RuleId.IsNull() {
 		body, _ = sjson.Set(body, "", data.RuleId.ValueString())
 	}
-	if !data.Rank.IsNull()  {
+	if !data.Rank.IsNull() {
 		body, _ = sjson.Set(body, "rule.rank", data.Rank.ValueInt64())
 	}
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -96,6 +72,7 @@ func (data *DeviceAdminAuthorizationGlobalExceptionRuleUpdateRank) fromBody(ctx 
 		data.Rank = types.Int64Null()
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -106,6 +83,7 @@ func (data *DeviceAdminAuthorizationGlobalExceptionRuleUpdateRank) updateFromBod
 		data.Rank = types.Int64Null()
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -118,4 +96,5 @@ func (data *DeviceAdminAuthorizationGlobalExceptionRuleUpdateRank) isNull(ctx co
 	}
 	return true
 }
+
 //template:end isNull

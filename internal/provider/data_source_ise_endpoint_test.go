@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -43,12 +44,13 @@ func TestAccDataSourceIseEndpoint(t *testing.T) {
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceIseEndpointPrerequisitesConfig+testAccDataSourceIseEndpointConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Config: testAccDataSourceIseEndpointPrerequisitesConfig + testAccDataSourceIseEndpointConfig(),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -64,6 +66,7 @@ resource "ise_endpoint_custom_attribute" "test" {
 }
 
 `
+
 //template:end testPrerequisites
 
 //template:begin testAccDataSourceConfig
@@ -80,7 +83,7 @@ func testAccDataSourceIseEndpointConfig() string {
 	config += `	static_group_assignment_defined = true` + "\n"
 	config += `	custom_attributes = {(ise_endpoint_custom_attribute.test.id) = "true"}` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_endpoint" "test" {
 			id = ise_endpoint.test.id
@@ -88,4 +91,5 @@ func testAccDataSourceIseEndpointConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

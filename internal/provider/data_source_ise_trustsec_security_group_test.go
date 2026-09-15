@@ -25,6 +25,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
@@ -40,11 +41,12 @@ func TestAccDataSourceIseTrustSecSecurityGroup(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseTrustSecSecurityGroupConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -59,7 +61,7 @@ func testAccDataSourceIseTrustSecSecurityGroupConfig() string {
 	config += `	propogate_to_apic = true` + "\n"
 	config += `	is_read_only = false` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_trustsec_security_group" "test" {
 			id = ise_trustsec_security_group.test.id
@@ -67,4 +69,5 @@ func testAccDataSourceIseTrustSecSecurityGroupConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

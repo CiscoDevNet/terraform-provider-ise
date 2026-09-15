@@ -22,181 +22,45 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"fmt"
-	"net/url"
-	"strconv"
 
-	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type InternalUser struct {
-	Id types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
-	Password types.String `tfsdk:"password"`
-	PasswordWo types.String `tfsdk:"password_wo"`
-	PasswordWoVersion types.Int64 `tfsdk:"password_wo_version"`
-	ChangePassword types.Bool `tfsdk:"change_password"`
-	Email types.String `tfsdk:"email"`
-	AccountNameAlias types.String `tfsdk:"account_name_alias"`
-	EnablePassword types.String `tfsdk:"enable_password"`
-	EnablePasswordWo types.String `tfsdk:"enable_password_wo"`
-	EnablePasswordWoVersion types.Int64 `tfsdk:"enable_password_wo_version"`
-	Enabled types.Bool `tfsdk:"enabled"`
-	PasswordNeverExpires types.Bool `tfsdk:"password_never_expires"`
-	FirstName types.String `tfsdk:"first_name"`
-	LastName types.String `tfsdk:"last_name"`
-	IdentityGroups types.String `tfsdk:"identity_groups"`
-	CustomAttributes types.Map `tfsdk:"custom_attributes"`
-	PasswordIdStore types.String `tfsdk:"password_id_store"`
-	Description types.String `tfsdk:"description"`
+	Id                      types.String `tfsdk:"id"`
+	Name                    types.String `tfsdk:"name"`
+	Password                types.String `tfsdk:"password"`
+	PasswordWo              types.String `tfsdk:"password_wo"`
+	PasswordWoVersion       types.Int64  `tfsdk:"password_wo_version"`
+	ChangePassword          types.Bool   `tfsdk:"change_password"`
+	Email                   types.String `tfsdk:"email"`
+	AccountNameAlias        types.String `tfsdk:"account_name_alias"`
+	EnablePassword          types.String `tfsdk:"enable_password"`
+	EnablePasswordWo        types.String `tfsdk:"enable_password_wo"`
+	EnablePasswordWoVersion types.Int64  `tfsdk:"enable_password_wo_version"`
+	Enabled                 types.Bool   `tfsdk:"enabled"`
+	PasswordNeverExpires    types.Bool   `tfsdk:"password_never_expires"`
+	FirstName               types.String `tfsdk:"first_name"`
+	LastName                types.String `tfsdk:"last_name"`
+	IdentityGroups          types.String `tfsdk:"identity_groups"`
+	CustomAttributes        types.Map    `tfsdk:"custom_attributes"`
+	PasswordIdStore         types.String `tfsdk:"password_id_store"`
+	Description             types.String `tfsdk:"description"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data InternalUser) getPath() string {
-		return "/ers/config/internaluser"
+	return "/ers/config/internaluser"
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -206,43 +70,43 @@ func (data InternalUser) getPath() string {
 //template:begin toBody
 func (data InternalUser) toBody(ctx context.Context, state InternalUser) string {
 	body := ""
-	if !data.Name.IsNull()  {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.name", data.Name.ValueString())
 	}
-	if !data.Password.IsNull()  {
+	if !data.Password.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.password", data.Password.ValueString())
 	}
-	if !data.PasswordWo.IsNull()  {
+	if !data.PasswordWo.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.password", data.PasswordWo.ValueString())
 	}
-	if !data.ChangePassword.IsNull()  {
+	if !data.ChangePassword.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.changePassword", data.ChangePassword.ValueBool())
 	}
-	if !data.Email.IsNull()  {
+	if !data.Email.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.email", data.Email.ValueString())
 	}
-	if !data.AccountNameAlias.IsNull()  {
+	if !data.AccountNameAlias.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.accountNameAlias", data.AccountNameAlias.ValueString())
 	}
-	if !data.EnablePassword.IsNull()  {
+	if !data.EnablePassword.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.enablePassword", data.EnablePassword.ValueString())
 	}
-	if !data.EnablePasswordWo.IsNull()  {
+	if !data.EnablePasswordWo.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.enablePassword", data.EnablePasswordWo.ValueString())
 	}
-	if !data.Enabled.IsNull()  {
+	if !data.Enabled.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.enabled", data.Enabled.ValueBool())
 	}
-	if !data.PasswordNeverExpires.IsNull()  {
+	if !data.PasswordNeverExpires.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.passwordNeverExpires", data.PasswordNeverExpires.ValueBool())
 	}
-	if !data.FirstName.IsNull()  {
+	if !data.FirstName.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.firstName", data.FirstName.ValueString())
 	}
-	if !data.LastName.IsNull()  {
+	if !data.LastName.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.lastName", data.LastName.ValueString())
 	}
-	if !data.IdentityGroups.IsNull()  {
+	if !data.IdentityGroups.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.identityGroups", data.IdentityGroups.ValueString())
 	}
 	if !data.CustomAttributes.IsNull() {
@@ -250,14 +114,15 @@ func (data InternalUser) toBody(ctx context.Context, state InternalUser) string 
 		data.CustomAttributes.ElementsAs(ctx, &values, false)
 		body, _ = sjson.Set(body, "InternalUser.customAttributes", values)
 	}
-	if !data.PasswordIdStore.IsNull()  {
+	if !data.PasswordIdStore.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.passwordIDStore", data.PasswordIdStore.ValueString())
 	}
-	if !data.Description.IsNull()  {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "InternalUser.description", data.Description.ValueString())
 	}
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -323,6 +188,7 @@ func (data *InternalUser) fromBody(ctx context.Context, res gjson.Result) {
 		data.Description = types.StringNull()
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -388,6 +254,7 @@ func (data *InternalUser) updateFromBody(ctx context.Context, res gjson.Result) 
 		data.Description = types.StringNull()
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -448,4 +315,5 @@ func (data *InternalUser) isNull(ctx context.Context, res gjson.Result) bool {
 	}
 	return true
 }
+
 //template:end isNull

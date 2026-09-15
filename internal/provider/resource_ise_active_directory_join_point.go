@@ -24,33 +24,26 @@ import (
 	"context"
 	"fmt"
 	"net/url"
-	"sort"
 	"strings"
-	"sync"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
-	"github.com/tidwall/gjson"
-	"github.com/tidwall/sjson"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 )
+
 //template:end imports
 
 //template:begin header
@@ -70,6 +63,7 @@ type ActiveDirectoryJoinPointResource struct {
 func (r *ActiveDirectoryJoinPointResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_active_directory_join_point"
 }
+
 //template:end header
 
 //template:begin model
@@ -164,10 +158,10 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 							},
 						},
 						"type": schema.StringAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Required for each group in the group list").AddStringEnumDescription("STRING", "IP", "BOOLEAN", "INT", "OCTET_STRING", ).String,
+							MarkdownDescription: helpers.NewAttributeDescription("Required for each group in the group list").AddStringEnumDescription("STRING", "IP", "BOOLEAN", "INT", "OCTET_STRING").String,
 							Required:            true,
 							Validators: []validator.String{
-								stringvalidator.OneOf("STRING", "IP", "BOOLEAN", "INT", "OCTET_STRING", ),
+								stringvalidator.OneOf("STRING", "IP", "BOOLEAN", "INT", "OCTET_STRING"),
 							},
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.RequiresReplace(),
@@ -292,30 +286,30 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 				},
 			},
 			"identity_not_in_ad_behaviour": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Identity Not In AD Behaviour").AddStringEnumDescription("REJECT", "SEARCH_JOINED_FOREST", "SEARCH_ALL", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Identity Not In AD Behaviour").AddStringEnumDescription("REJECT", "SEARCH_JOINED_FOREST", "SEARCH_ALL").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("REJECT", "SEARCH_JOINED_FOREST", "SEARCH_ALL", ),
+					stringvalidator.OneOf("REJECT", "SEARCH_JOINED_FOREST", "SEARCH_ALL"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"unreachable_domains_behaviour": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Unreachable Domains Behaviour").AddStringEnumDescription("PROCEED", "DROP", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Unreachable Domains Behaviour").AddStringEnumDescription("PROCEED", "DROP").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("PROCEED", "DROP", ),
+					stringvalidator.OneOf("PROCEED", "DROP"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"schema": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Schema").AddStringEnumDescription("ACTIVE_DIRECTORY", "CUSTOM", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Schema").AddStringEnumDescription("ACTIVE_DIRECTORY", "CUSTOM").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("ACTIVE_DIRECTORY", "CUSTOM", ),
+					stringvalidator.OneOf("ACTIVE_DIRECTORY", "CUSTOM"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -417,10 +411,10 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 				},
 			},
 			"auth_protection_type": schema.StringAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Enable prevent AD account lockout for WIRELESS/WIRED/BOTH").AddStringEnumDescription("WIRELESS", "WIRED", "BOTH", ).String,
+				MarkdownDescription: helpers.NewAttributeDescription("Enable prevent AD account lockout for WIRELESS/WIRED/BOTH").AddStringEnumDescription("WIRELESS", "WIRED", "BOTH").String,
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("WIRELESS", "WIRED", "BOTH", ),
+					stringvalidator.OneOf("WIRELESS", "WIRED", "BOTH"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -429,6 +423,7 @@ func (r *ActiveDirectoryJoinPointResource) Schema(ctx context.Context, req resou
 		},
 	}
 }
+
 //template:end model
 
 //template:begin configure
@@ -439,6 +434,7 @@ func (r *ActiveDirectoryJoinPointResource) Configure(_ context.Context, req reso
 
 	r.client = req.ProviderData.(*IseProviderData).Client
 }
+
 //template:end configure
 
 //template:begin create
@@ -469,6 +465,7 @@ func (r *ActiveDirectoryJoinPointResource) Create(ctx context.Context, req resou
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end create
 
 //template:begin read
@@ -504,12 +501,12 @@ func (r *ActiveDirectoryJoinPointResource) Read(ctx context.Context, req resourc
 	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end read
 
 //template:begin update
 func (r *ActiveDirectoryJoinPointResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state ActiveDirectoryJoinPoint
-
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -531,6 +528,7 @@ func (r *ActiveDirectoryJoinPointResource) Update(ctx context.Context, req resou
 	diags = resp.State.Set(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end update
 
 //template:begin delete
@@ -555,10 +553,12 @@ func (r *ActiveDirectoryJoinPointResource) Delete(ctx context.Context, req resou
 
 	resp.State.RemoveResource(ctx)
 }
+
 //template:end delete
 
 //template:begin import
 func (r *ActiveDirectoryJoinPointResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
+
 //template:end import

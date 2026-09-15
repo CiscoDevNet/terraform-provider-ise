@@ -21,16 +21,18 @@ package provider
 
 //template:begin imports
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAccDataSource
 func TestAccDataSourceIseSXPConnection(t *testing.T) {
 	if os.Getenv("ISE34") == "" && os.Getenv("ISE33") == "" {
-        t.Skip("skipping test, set environment variable ISE34 or ISE33")
+		t.Skip("skipping test, set environment variable ISE34 or ISE33")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_sxp_connection.test", "sxp_peer", "SXPPeer1"))
@@ -46,11 +48,12 @@ func TestAccDataSourceIseSXPConnection(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDataSourceIseSXPConnectionConfig(),
-				Check: resource.ComposeTestCheckFunc(checks...),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
 }
+
 //template:end testAccDataSource
 
 //template:begin testPrerequisites
@@ -68,7 +71,7 @@ func testAccDataSourceIseSXPConnectionConfig() string {
 	config += `	sxp_version = "VERSION_2"` + "\n"
 	config += `	enabled = true` + "\n"
 	config += `}` + "\n"
-	
+
 	config += `
 		data "ise_sxp_connection" "test" {
 			id = ise_sxp_connection.test.id
@@ -76,4 +79,5 @@ func testAccDataSourceIseSXPConnectionConfig() string {
 	`
 	return config
 }
+
 //template:end testAccDataSourceConfig

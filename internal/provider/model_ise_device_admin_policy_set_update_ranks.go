@@ -22,55 +22,34 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"fmt"
-	"net/url"
 	"strconv"
 
-	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type DeviceAdminPolicySetUpdateRanks struct {
-	Id types.String `tfsdk:"id"`
+	Id       types.String                              `tfsdk:"id"`
 	Policies []DeviceAdminPolicySetUpdateRanksPolicies `tfsdk:"policies"`
 }
 
-
 type DeviceAdminPolicySetUpdateRanksPolicies struct {
-	Id types.String `tfsdk:"id"`
-	Rank types.Int64 `tfsdk:"rank"`
+	Id   types.String `tfsdk:"id"`
+	Rank types.Int64  `tfsdk:"rank"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data DeviceAdminPolicySetUpdateRanks) getPath() string {
-		return "/api/v1/policy/device-admin/policy-set"
+	return "/api/v1/policy/device-admin/policy-set"
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -95,6 +74,7 @@ func (data DeviceAdminPolicySetUpdateRanks) toBody(ctx context.Context, state De
 	}
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -118,14 +98,15 @@ func (data *DeviceAdminPolicySetUpdateRanks) fromBody(ctx context.Context, res g
 		})
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
 func (data *DeviceAdminPolicySetUpdateRanks) updateFromBody(ctx context.Context, res gjson.Result) {
 	for i := range data.Policies {
-		keys := [...]string{ "id", "rank",  }
-		keyValues := [...]string{ data.Policies[i].Id.ValueString(), strconv.FormatInt(data.Policies[i].Rank.ValueInt64(), 10),  }
-		keyNormalize := [...]bool{ false, false,  }
+		keys := [...]string{"id", "rank"}
+		keyValues := [...]string{data.Policies[i].Id.ValueString(), strconv.FormatInt(data.Policies[i].Rank.ValueInt64(), 10)}
+		keyNormalize := [...]bool{false, false}
 
 		var r gjson.Result
 		parentItems := res.Get("response").Array()
@@ -164,6 +145,7 @@ func (data *DeviceAdminPolicySetUpdateRanks) updateFromBody(ctx context.Context,
 		}
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -173,4 +155,5 @@ func (data *DeviceAdminPolicySetUpdateRanks) isNull(ctx context.Context, res gjs
 	}
 	return true
 }
+
 //template:end isNull

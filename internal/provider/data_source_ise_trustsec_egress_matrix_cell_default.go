@@ -25,15 +25,13 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 )
+
 //template:end imports
 
 //template:begin header
@@ -55,6 +53,7 @@ type TrustSecEgressMatrixCellDefaultDataSource struct {
 func (d *TrustSecEgressMatrixCellDefaultDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_trustsec_egress_matrix_cell_default"
 }
+
 //template:end header
 
 //template:begin model
@@ -88,6 +87,7 @@ func (d *TrustSecEgressMatrixCellDefaultDataSource) Schema(ctx context.Context, 
 		},
 	}
 }
+
 //template:end model
 
 //template:begin configValidators
@@ -130,4 +130,5 @@ func (d *TrustSecEgressMatrixCellDefaultDataSource) Read(ctx context.Context, re
 	diags = resp.State.Set(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end read

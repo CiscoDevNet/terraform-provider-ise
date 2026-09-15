@@ -21,10 +21,12 @@ package provider
 
 //template:begin imports
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
 //template:end imports
 
 //template:begin testAcc
@@ -50,19 +52,20 @@ func TestAccIseDeviceAdminTimeAndDateCondition(t *testing.T) {
 	}
 	steps = append(steps, resource.TestStep{
 		Config: testAccIseDeviceAdminTimeAndDateConditionConfig_all(),
-		Check: resource.ComposeTestCheckFunc(checks...),
+		Check:  resource.ComposeTestCheckFunc(checks...),
 	})
 	steps = append(steps, resource.TestStep{
-		ResourceName:  "ise_device_admin_time_and_date_condition.test",
-		ImportState:   true,
+		ResourceName: "ise_device_admin_time_and_date_condition.test",
+		ImportState:  true,
 	})
-	
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-		Steps: steps,
+		Steps:                    steps,
 	})
 }
+
 //template:end testAcc
 
 //template:begin testPrerequisites
@@ -76,6 +79,7 @@ func testAccIseDeviceAdminTimeAndDateConditionConfig_minimum() string {
 	config += `}` + "\n"
 	return config
 }
+
 //template:end testAccConfigMinimal
 
 //template:begin testAccConfigAll
@@ -97,4 +101,5 @@ func testAccIseDeviceAdminTimeAndDateConditionConfig_all() string {
 	config += `}` + "\n"
 	return config
 }
+
 //template:end testAccConfigAll

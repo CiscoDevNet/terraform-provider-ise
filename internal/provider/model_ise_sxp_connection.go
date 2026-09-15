@@ -22,109 +22,35 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"fmt"
-	"net/url"
-	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type SXPConnection struct {
-	Id types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
+	Id          types.String `tfsdk:"id"`
+	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
-	SxpPeer types.String `tfsdk:"sxp_peer"`
-	SxpVpn types.String `tfsdk:"sxp_vpn"`
-	SxpNode types.String `tfsdk:"sxp_node"`
-	IpAddress types.String `tfsdk:"ip_address"`
-	SxpMode types.String `tfsdk:"sxp_mode"`
-	SxpVersion types.String `tfsdk:"sxp_version"`
-	Enabled types.Bool `tfsdk:"enabled"`
+	SxpPeer     types.String `tfsdk:"sxp_peer"`
+	SxpVpn      types.String `tfsdk:"sxp_vpn"`
+	SxpNode     types.String `tfsdk:"sxp_node"`
+	IpAddress   types.String `tfsdk:"ip_address"`
+	SxpMode     types.String `tfsdk:"sxp_mode"`
+	SxpVersion  types.String `tfsdk:"sxp_version"`
+	Enabled     types.Bool   `tfsdk:"enabled"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data SXPConnection) getPath() string {
-		return "/ers/config/sxpconnections"
+	return "/ers/config/sxpconnections"
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -134,35 +60,36 @@ func (data SXPConnection) getPath() string {
 //template:begin toBody
 func (data SXPConnection) toBody(ctx context.Context, state SXPConnection) string {
 	body := ""
-	if !data.Name.IsNull()  {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "ERSSxpConnection.name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()  {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "ERSSxpConnection.description", data.Description.ValueString())
 	}
-	if !data.SxpPeer.IsNull()  {
+	if !data.SxpPeer.IsNull() {
 		body, _ = sjson.Set(body, "ERSSxpConnection.sxpPeer", data.SxpPeer.ValueString())
 	}
-	if !data.SxpVpn.IsNull()  {
+	if !data.SxpVpn.IsNull() {
 		body, _ = sjson.Set(body, "ERSSxpConnection.sxpVpn", data.SxpVpn.ValueString())
 	}
-	if !data.SxpNode.IsNull()  {
+	if !data.SxpNode.IsNull() {
 		body, _ = sjson.Set(body, "ERSSxpConnection.sxpNode", data.SxpNode.ValueString())
 	}
-	if !data.IpAddress.IsNull()  {
+	if !data.IpAddress.IsNull() {
 		body, _ = sjson.Set(body, "ERSSxpConnection.ipAddress", data.IpAddress.ValueString())
 	}
-	if !data.SxpMode.IsNull()  {
+	if !data.SxpMode.IsNull() {
 		body, _ = sjson.Set(body, "ERSSxpConnection.sxpMode", data.SxpMode.ValueString())
 	}
-	if !data.SxpVersion.IsNull()  {
+	if !data.SxpVersion.IsNull() {
 		body, _ = sjson.Set(body, "ERSSxpConnection.sxpVersion", data.SxpVersion.ValueString())
 	}
-	if !data.Enabled.IsNull()  {
+	if !data.Enabled.IsNull() {
 		body, _ = sjson.Set(body, "ERSSxpConnection.enabled", data.Enabled.ValueBool())
 	}
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -203,6 +130,7 @@ func (data *SXPConnection) fromBody(ctx context.Context, res gjson.Result) {
 		data.Enabled = types.BoolNull()
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -243,6 +171,7 @@ func (data *SXPConnection) updateFromBody(ctx context.Context, res gjson.Result)
 		data.Enabled = types.BoolNull()
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -276,4 +205,5 @@ func (data *SXPConnection) isNull(ctx context.Context, res gjson.Result) bool {
 	}
 	return true
 }
+
 //template:end isNull

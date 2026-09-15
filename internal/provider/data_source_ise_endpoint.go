@@ -25,15 +25,17 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/datasourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/tidwall/gjson"
 )
+
 //template:end imports
 
 //template:begin header
@@ -55,6 +57,7 @@ type EndpointDataSource struct {
 func (d *EndpointDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_endpoint"
 }
+
 //template:end header
 
 //template:begin model
@@ -71,7 +74,7 @@ func (d *EndpointDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 			},
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The name of the endpoint",
-				CustomType: helpers.CaseInsensitiveStringType{},
+				CustomType:          helpers.CaseInsensitiveStringType{},
 				Optional:            true,
 				Computed:            true,
 			},
@@ -81,7 +84,7 @@ func (d *EndpointDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 			},
 			"mac": schema.StringAttribute{
 				MarkdownDescription: "MAC address of the endpoint",
-				CustomType: helpers.CaseInsensitiveStringType{},
+				CustomType:          helpers.CaseInsensitiveStringType{},
 				Computed:            true,
 			},
 			"group_id": schema.StringAttribute{
@@ -180,17 +183,19 @@ func (d *EndpointDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 		},
 	}
 }
+
 //template:end model
 
 //template:begin configValidators
 func (d *EndpointDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
-    return []datasource.ConfigValidator{
-        datasourcevalidator.ExactlyOneOf(
-            path.MatchRoot("id"),
-            path.MatchRoot("name"),
-        ),
-    }
+	return []datasource.ConfigValidator{
+		datasourcevalidator.ExactlyOneOf(
+			path.MatchRoot("id"),
+			path.MatchRoot("name"),
+		),
+	}
 }
+
 //template:end configValidators
 
 //template:end configure
@@ -257,4 +262,5 @@ func (d *EndpointDataSource) Read(ctx context.Context, req datasource.ReadReques
 	diags = resp.State.Set(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 }
+
 //template:end read

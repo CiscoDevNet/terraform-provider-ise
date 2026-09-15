@@ -22,69 +22,30 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"fmt"
-	"net/url"
-	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
 )
+
 //template:end imports
 
 //template:begin types
 type NetworkAccessDictionary struct {
-	Id types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Version types.String `tfsdk:"version"`
+	Id                 types.String `tfsdk:"id"`
+	Name               types.String `tfsdk:"name"`
+	Description        types.String `tfsdk:"description"`
+	Version            types.String `tfsdk:"version"`
 	DictionaryAttrType types.String `tfsdk:"dictionary_attr_type"`
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //template:end types
 
 //template:begin getPath
 func (data NetworkAccessDictionary) getPath() string {
-		return "/api/v1/policy/network-access/dictionaries"
+	return "/api/v1/policy/network-access/dictionaries"
 }
+
 //template:end getPath
 
 //template:begin getPathDelete
@@ -94,20 +55,21 @@ func (data NetworkAccessDictionary) getPath() string {
 //template:begin toBody
 func (data NetworkAccessDictionary) toBody(ctx context.Context, state NetworkAccessDictionary) string {
 	body := ""
-	if !data.Name.IsNull()  {
+	if !data.Name.IsNull() {
 		body, _ = sjson.Set(body, "name", data.Name.ValueString())
 	}
-	if !data.Description.IsNull()  {
+	if !data.Description.IsNull() {
 		body, _ = sjson.Set(body, "description", data.Description.ValueString())
 	}
-	if !data.Version.IsNull()  {
+	if !data.Version.IsNull() {
 		body, _ = sjson.Set(body, "version", data.Version.ValueString())
 	}
-	if !data.DictionaryAttrType.IsNull()  {
+	if !data.DictionaryAttrType.IsNull() {
 		body, _ = sjson.Set(body, "dictionaryAttrType", data.DictionaryAttrType.ValueString())
 	}
 	return body
 }
+
 //template:end toBody
 
 //template:begin fromBody
@@ -133,6 +95,7 @@ func (data *NetworkAccessDictionary) fromBody(ctx context.Context, res gjson.Res
 		data.DictionaryAttrType = types.StringNull()
 	}
 }
+
 //template:end fromBody
 
 //template:begin updateFromBody
@@ -158,6 +121,7 @@ func (data *NetworkAccessDictionary) updateFromBody(ctx context.Context, res gjs
 		data.DictionaryAttrType = types.StringNull()
 	}
 }
+
 //template:end updateFromBody
 
 //template:begin isNull
@@ -176,4 +140,5 @@ func (data *NetworkAccessDictionary) isNull(ctx context.Context, res gjson.Resul
 	}
 	return true
 }
+
 //template:end isNull
