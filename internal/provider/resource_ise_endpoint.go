@@ -68,7 +68,7 @@ func (r *EndpointResource) Metadata(ctx context.Context, req resource.MetadataRe
 func (r *EndpointResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage an Endpoint.").String,
+		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage an Endpoint. Reads of this resource are served from a provider-scoped cache populated from a single bulk request, rather than a per-resource GET, to keep refresh performance reasonable with large numbers of endpoints.").String,
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -395,15 +395,11 @@ func (r *EndpointResource) ReadCache(ctx context.Context, state Endpoint) (gjson
 	if err != nil {
 		return gjson.Result{}, err
 	}
-	if rw := gjson.Get(body, "ERSEndPoint.customAttributes"); rw.Exists() && rw.Type != gjson.Null {
-		body, err = sjson.Delete(body, "ERSEndPoint.customAttributes")
-		if err != nil {
-			return gjson.Result{}, err
-		}
-		body, err = sjson.SetRaw(body, "ERSEndPoint.customAttributes.customAttributes", rw.Raw)
-		if err != nil {
-			return gjson.Result{}, err
-		}
+	body, err = helpers.ApplyCacheRewrites(body, [][2]string{
+		{"ERSEndPoint.customAttributes", "ERSEndPoint.customAttributes.customAttributes"},
+	})
+	if err != nil {
+		return gjson.Result{}, err
 	}
 	if !state.StaticProfileAssignmentDefined.IsNull() {
 		body, err = sjson.Set(body, "ERSEndPoint.staticProfileAssignmentDefined", state.StaticProfileAssignmentDefined.ValueBool())

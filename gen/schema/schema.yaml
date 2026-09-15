@@ -38,8 +38,8 @@ test_tags: list(str(), required=False) # List of test tags, tests are only execu
 test_prerequisites: str(required=False) # HCL code that is included in the acceptance tests to define prerequisites
 ---
 cache_rewrite:
-  from: str() # Path (relative to the object returned by cache_rest_endpoint) to read the raw value from
-  to: str() # Path (relative to the same object, after it has been wrapped per each attribute's data_path) to re-write that raw value to
+  from: str() # Path (relative to the object returned by cache_rest_endpoint, after it has been wrapped under the resource's single cache data path -- CacheDataPath, i.e. the first attribute's data_path[0], not a per-attribute data_path) to read the raw value from
+  to: str() # Path (relative to the same wrapped object) to re-write that raw value to
 ---
 attribute:
   model_name: str(required=False) # Name of the attribute in the model (payload)

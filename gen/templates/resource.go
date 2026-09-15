@@ -1291,16 +1291,14 @@ func (r *{{camelCase .Name}}Resource) ReadCache(ctx context.Context, state {{cam
 	{{- else}}
 	body := value.Raw
 	{{- end}}
-	{{- range .CacheRewrites}}
-	if rw := gjson.Get(body, "{{if $cacheDataPath}}{{$cacheDataPath}}.{{end}}{{.From}}"); rw.Exists() && rw.Type != gjson.Null {
-		body, err = sjson.Delete(body, "{{if $cacheDataPath}}{{$cacheDataPath}}.{{end}}{{.From}}")
-		if err != nil {
-			return gjson.Result{}, err
-		}
-		body, err = sjson.SetRaw(body, "{{if $cacheDataPath}}{{$cacheDataPath}}.{{end}}{{.To}}", rw.Raw)
-		if err != nil {
-			return gjson.Result{}, err
-		}
+	{{- if .CacheRewrites}}
+	body, err = helpers.ApplyCacheRewrites(body, [][2]string{
+		{{- range .CacheRewrites}}
+		{"{{if $cacheDataPath}}{{$cacheDataPath}}.{{end}}{{.From}}", "{{if $cacheDataPath}}{{$cacheDataPath}}.{{end}}{{.To}}"},
+		{{- end}}
+	})
+	if err != nil {
+		return gjson.Result{}, err
 	}
 	{{- end}}
 	{{- range notInCacheAttributes .Attributes}}

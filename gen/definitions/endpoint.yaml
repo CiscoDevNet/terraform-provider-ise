@@ -1,6 +1,10 @@
 ---
 name: Endpoint
 #manual updates to Create method internal/provider/resource_ise_endpoint.go to update existing resource on create
+res_description:
+  'This resource can manage an Endpoint. Reads of this resource are served from a provider-scoped
+  cache populated from a single bulk request, rather than a per-resource GET, to keep refresh
+  performance reasonable with large numbers of endpoints.'
 rest_endpoint: /ers/config/endpoint
 use_cache: true
 cache_rest_endpoint: /api/v1/endpoint
