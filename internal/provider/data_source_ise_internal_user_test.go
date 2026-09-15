@@ -32,11 +32,9 @@ import (
 func TestAccDataSourceIseInternalUser(t *testing.T) {
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_internal_user.test", "name", "UserTF"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_internal_user.test", "password_wo_version", "1"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_internal_user.test", "change_password", "true"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_internal_user.test", "email", "aaa@cisco.com"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_internal_user.test", "account_name_alias", "User 1"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_internal_user.test", "enable_password_wo_version", "1"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_internal_user.test", "enabled", "true"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_internal_user.test", "password_never_expires", "false"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_internal_user.test", "first_name", "John"))

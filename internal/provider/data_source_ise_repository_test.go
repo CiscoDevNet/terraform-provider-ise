@@ -36,7 +36,6 @@ func TestAccDataSourceIseRepository(t *testing.T) {
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_repository.test", "path", "/dir"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_repository.test", "server_name", "server1"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.ise_repository.test", "user_name", "user9"))
-	checks = append(checks, resource.TestCheckResourceAttr("data.ise_repository.test", "password_wo_version", "1"))
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
