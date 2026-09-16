@@ -47,6 +47,7 @@ attribute:
   mandatory: bool(required=False) # Set to true if the attribute is mandatory
   computed: bool(required=False) # Set to true if the attribute is computed
   computed_when: str(required=False) # Conditional computed marker "<bool_attr>=<true|false>"; when the sibling Bool matches and this attribute is unset in config, keep the prior state value (conditional UseStateForUnknown, e.g. "static_profile_assignment=false")
+  preserve_state_if_unconfigured: bool(required=False) # Set to true on a computed nested list to use PreserveStateIfUnconfigured() instead of UseStateForUnknown(), preventing destroy/recreate when the attribute is omitted from config
   write_only: bool(required=False) # Set to true if the attribute is write-only, meaning we cannot read the value
   write_only_tf: bool(required=False) # Requires `write_only` to be set as well. Terraform-core write-only: expands the attribute into three coexisting attributes - the original (kept, still stored in state), "<attr>_wo" (write-only, never stored in state/plan) and "<attr>_wo_version" (Int64, Optional) as the rotation trigger. The original and "<attr>_wo" are mutually exclusive. Requires Terraform >= 1.11 to use the "_wo" form.
   coexistence_note: str(required=False) # Documentation note recommending the write-only spelling of an attribute. Generated automatically for the legacy twin of a `write_only_tf` attribute.
