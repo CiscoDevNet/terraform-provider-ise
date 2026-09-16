@@ -7,7 +7,7 @@ description: |-
 
 # Changelog
 
-## 0.5.0 (unreleased)
+## 0.5.0
 
 - Add write-only support for secret attributes on `ise_internal_user`, `ise_network_device` and `ise_repository`. Each secret gains an `<attr>_wo` [write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) variant that is never persisted to Terraform state, paired with an `<attr>_wo_version` integer that must be incremented to rotate the value. The existing attribute keeps working unchanged, and exactly one of the two spellings may be set; using the `_wo` form requires Terraform 1.11 or later
 - The secret attributes of `ise_network_device` are no longer read back from ISE: `authentication_encryption_key`, `authentication_message_authenticator_code_key`, `authentication_radius_shared_secret`, `authentication_second_radius_shared_secret`, `snmp_auth_password`, `snmp_privacy_password`, `tacacs_shared_secret`, `trustsec_device_password`, `trustsec_enable_mode_password` and `trustsec_exec_mode_password`. The Terraform configuration is now the single source of truth for them: the `ise_network_device` data source no longer returns them, `terraform import` no longer populates them, and a secret changed directly in the ISE UI is no longer reported as drift
