@@ -172,21 +172,21 @@ type YamlConfigAttribute struct {
 	MaxList                     int64                 `yaml:"max_list"`
 	MinInt                      int64                 `yaml:"min_int"`
 	MaxInt                      int64                 `yaml:"max_int"`
-	ZeroAllowed            bool                  `yaml:"zero_allowed"`
-	ZeroAllowedDescription string                `yaml:"zero_allowed_description"`
-	MinFloat               float64               `yaml:"min_float"`
-	MaxFloat               float64               `yaml:"max_float"`
-	StringPatterns         []string              `yaml:"string_patterns"`
-	StringMinLength        int64                 `yaml:"string_min_length"`
-	StringMaxLength        int64                 `yaml:"string_max_length"`
-	DefaultValue           *string               `yaml:"default_value"`
-	Value                  string                `yaml:"value"`
-	TestValue              string                `yaml:"test_value"`
-	MinimumTestValue       string                `yaml:"minimum_test_value"`
-	TestTags               []string              `yaml:"test_tags"`
-	Attributes             []YamlConfigAttribute `yaml:"attributes"`
-	FilterEmptyValues      bool                  `yaml:"filter_empty_values"`
-	CaseInsensitive        bool                  `yaml:"case_insensitive"`
+	ZeroAllowed                 bool                  `yaml:"zero_allowed"`
+	ZeroAllowedDescription      string                `yaml:"zero_allowed_description"`
+	MinFloat                    float64               `yaml:"min_float"`
+	MaxFloat                    float64               `yaml:"max_float"`
+	StringPatterns              []string              `yaml:"string_patterns"`
+	StringMinLength             int64                 `yaml:"string_min_length"`
+	StringMaxLength             int64                 `yaml:"string_max_length"`
+	DefaultValue                *string               `yaml:"default_value"`
+	Value                       string                `yaml:"value"`
+	TestValue                   string                `yaml:"test_value"`
+	MinimumTestValue            string                `yaml:"minimum_test_value"`
+	TestTags                    []string              `yaml:"test_tags"`
+	Attributes                  []YamlConfigAttribute `yaml:"attributes"`
+	FilterEmptyValues           bool                  `yaml:"filter_empty_values"`
+	CaseInsensitive             bool                  `yaml:"case_insensitive"`
 }
 
 // Templating helper function to convert TF name to GO name
@@ -592,6 +592,18 @@ func augmentAttribute(attr *YamlConfigAttribute) {
 			words = append(words, strings.ToLower(s[:l]))
 		}
 		attr.TfName = strings.Join(words, "_")
+	}
+	// gen/templates/resource.go emits helpers.PreserveStateIfUnconfigured() into a
+	// []planmodifier.<Type> slice, and helpers.PreserveStateIfUnconfigured() returns
+	// planmodifier.List only, so the flag on any other type produces code that does
+	// not compile.
+	if attr.PreserveStateIfUnconfigured && attr.Type != "List" {
+		panic(fmt.Sprintf("preserve_state_if_unconfigured is only supported on List attributes, but %q has type %q", attr.TfName, attr.Type))
+	}
+	// The template only emits the modifier inside the {{- if .Computed}} branch, so
+	// the flag on a non-computed attribute silently does nothing.
+	if attr.PreserveStateIfUnconfigured && !attr.Computed {
+		panic(fmt.Sprintf("preserve_state_if_unconfigured requires computed to be set as well, but %q sets only preserve_state_if_unconfigured", attr.TfName))
 	}
 	if attr.Type == "List" || attr.Type == "Set" {
 		for a := range attr.Attributes {
