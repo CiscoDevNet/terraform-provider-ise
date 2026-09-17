@@ -7,6 +7,10 @@ description: |-
 
 # Changelog
 
+## 0.5.1 (unreleased)
+
+- Fix perpetual drift in `children` condition attributes of the `ise_device_admin_policy_set` and `ise_network_access_policy_set` resources, where ISE normalizes IP-dictionary operators (e.g. `equals` written by the practitioner becomes `ipEquals` returned by ISE on subsequent reads). The `updateFromBody` key-matching loop now applies operator normalization when searching for the matching condition entry, so an ISE `ipEquals` is correctly matched against a state `equals` rather than failing to find the entry and wiping all condition attributes to null on every plan.
+
 ## 0.5.0
 
 - Add write-only support for secret attributes on `ise_internal_user`, `ise_network_device` and `ise_repository`. Each secret gains an `<attr>_wo` [write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) variant that is never persisted to Terraform state, paired with an `<attr>_wo_version` integer that must be incremented to rotate the value. The existing attribute keeps working unchanged, and exactly one of the two spellings may be set; using the `_wo` form requires Terraform 1.11 or later
