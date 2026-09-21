@@ -9,7 +9,7 @@ description: |-
 
 ## 0.5.1 (unreleased)
 
-- Fix perpetual drift in `children` condition attributes of the `ise_device_admin_policy_set` and `ise_network_access_policy_set` resources, where ISE normalizes IP-dictionary operators (e.g. `equals` written by the practitioner becomes `ipEquals` returned by ISE on subsequent reads). The `updateFromBody` key-matching loop now applies operator normalization when searching for the matching condition entry, so an ISE `ipEquals` is correctly matched against a state `equals` rather than failing to find the entry and wiping all condition attributes to null on every plan.
+- Fix perpetual drift in the `children` attribute of the `ise_device_admin_policy_set` and `ise_network_access_policy_set` resources, where ISE normalizes condition operators (e.g. returning `ipEquals` for `equals`), causing Terraform to fail key matching and plan attribute changes to null on every refresh. [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/277)
 
 ## 0.5.0
 
