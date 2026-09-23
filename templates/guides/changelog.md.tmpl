@@ -7,6 +7,10 @@ description: |-
 
 # Changelog
 
+## 0.5.1 (unreleased)
+
+- Fix perpetual drift in the `children` attribute of the `ise_device_admin_policy_set` and `ise_network_access_policy_set` resources, where ISE normalizes condition operators (e.g. returning `ipEquals` for `equals`), causing Terraform to fail key matching and plan attribute changes to null on every refresh. [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/277)
+
 ## 0.5.0
 
 - Add write-only support for secret attributes on `ise_internal_user`, `ise_network_device` and `ise_repository`. Each secret gains an `<attr>_wo` [write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) variant that is never persisted to Terraform state, paired with an `<attr>_wo_version` integer that must be incremented to rotate the value. The existing attribute keeps working unchanged, and exactly one of the two spellings may be set; using the `_wo` form requires Terraform 1.11 or later
