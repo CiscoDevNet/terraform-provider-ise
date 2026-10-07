@@ -44,7 +44,7 @@ type DeviceAdminAuthorizationExceptionRuleUpdateRank struct {
 
 //template:begin getPath
 func (data DeviceAdminAuthorizationExceptionRuleUpdateRank) getPath() string {
-	return fmt.Sprintf("/api/v1/policy/device-admin/policy-set/%v/exception", url.QueryEscape(data.PolicySetId.ValueString()))
+	return fmt.Sprintf("/api/v1/policy/device-admin/policy-set/%v/exception", url.PathEscape(data.PolicySetId.ValueString()))
 }
 
 //template:end getPath

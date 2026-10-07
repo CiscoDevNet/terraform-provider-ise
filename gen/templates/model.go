@@ -338,7 +338,7 @@ type {{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}}{{$childC
 //template:begin getPath
 func (data {{camelCase .Name}}) getPath() string {
 	{{- if hasReference .Attributes}}
-		return fmt.Sprintf("{{.RestEndpoint}}"{{range .Attributes}}{{if .Reference}}, url.QueryEscape(data.{{toGoName .TfName}}.Value{{.Type}}(){{end}}{{end}}))
+		return fmt.Sprintf("{{.RestEndpoint}}"{{range .Attributes}}{{if .Reference}}, url.PathEscape(data.{{toGoName .TfName}}.Value{{.Type}}(){{end}}{{end}}))
 	{{- else}}
 		return "{{.RestEndpoint}}"
 	{{- end}}
@@ -349,7 +349,7 @@ func (data {{camelCase .Name}}) getPath() string {
 {{if .DeleteRestEndpoint}}
 func (data {{camelCase .Name}}) getPathDelete() string {
 	{{- if hasReference .Attributes}}
-		return fmt.Sprintf("{{.DeleteRestEndpoint}}"{{range .Attributes}}{{if .Reference}}, url.QueryEscape(data.{{toGoName .TfName}}.Value{{.Type}}(){{end}}{{end}}))
+		return fmt.Sprintf("{{.DeleteRestEndpoint}}"{{range .Attributes}}{{if .Reference}}, url.PathEscape(data.{{toGoName .TfName}}.Value{{.Type}}(){{end}}{{end}}))
 	{{- else}}
 		return "{{.DeleteRestEndpoint}}"
 	{{- end}}
