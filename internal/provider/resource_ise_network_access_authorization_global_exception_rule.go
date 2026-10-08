@@ -480,7 +480,7 @@ func (r *NetworkAccessAuthorizationGlobalExceptionRuleResource) Read(ctx context
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
-	res, err := r.client.Get(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()))
+	res, err := r.client.Get(state.getPath() + "/" + url.PathEscape(state.Id.ValueString()))
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
@@ -528,7 +528,7 @@ func (r *NetworkAccessAuthorizationGlobalExceptionRuleResource) Update(ctx conte
 	if plan.Rank.IsNull() {
 		var existingData NetworkAccessAuthorizationGlobalExceptionRule
 		// Fetch existing data from the API
-		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+		res, err := r.client.Get(plan.getPath() + "/" + url.PathEscape(plan.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
@@ -539,7 +539,7 @@ func (r *NetworkAccessAuthorizationGlobalExceptionRuleResource) Update(ctx conte
 		body, _ = sjson.Set(body, "rule.rank", existingData.Rank.ValueInt64())
 	}
 
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
+	res, err := r.client.Put(plan.getPath()+"/"+url.PathEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -565,7 +565,7 @@ func (r *NetworkAccessAuthorizationGlobalExceptionRuleResource) Delete(ctx conte
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()))
+	res, err := r.client.Delete(state.getPath() + "/" + url.PathEscape(state.Id.ValueString()))
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return

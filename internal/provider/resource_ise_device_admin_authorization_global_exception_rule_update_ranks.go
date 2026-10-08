@@ -129,7 +129,7 @@ func (r *DeviceAdminAuthorizationGlobalExceptionRuleUpdateRanksResource) Create(
 		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()
 	})
 	for _, rule := range rules {
-		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
+		res, err := r.client.Get(plan.getPath() + "/" + url.PathEscape(rule.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
@@ -141,7 +141,7 @@ func (r *DeviceAdminAuthorizationGlobalExceptionRuleUpdateRanksResource) Create(
 
 		// Update rank
 		body, _ = sjson.Set(body, "rule.rank", rule.Rank.ValueInt64())
-		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.Id.ValueString()), body)
+		res, err = r.client.Put(plan.getPath()+"/"+url.PathEscape(rule.Id.ValueString()), body)
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 			return
@@ -218,7 +218,7 @@ func (r *DeviceAdminAuthorizationGlobalExceptionRuleUpdateRanksResource) Update(
 		return rules[i].Rank.ValueInt64() < rules[j].Rank.ValueInt64()
 	})
 	for _, rule := range rules {
-		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
+		res, err := r.client.Get(plan.getPath() + "/" + url.PathEscape(rule.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
@@ -230,7 +230,7 @@ func (r *DeviceAdminAuthorizationGlobalExceptionRuleUpdateRanksResource) Update(
 
 		// Update rank
 		body, _ = sjson.Set(body, "rule.rank", rule.Rank.ValueInt64())
-		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.Id.ValueString()), body)
+		res, err = r.client.Put(plan.getPath()+"/"+url.PathEscape(rule.Id.ValueString()), body)
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 			return

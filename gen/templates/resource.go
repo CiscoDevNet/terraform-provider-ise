@@ -1037,7 +1037,7 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	})
 	{{- end}}
 	for _, rule := range rules{
-		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
+		res, err := r.client.Get(plan.getPath() + "/" + url.PathEscape(rule.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
@@ -1050,10 +1050,10 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 		// Update rank
 		{{- if strContains (camelCase .Name) "Rule" }}
 		body, _ = sjson.Set(body, "rule.rank", rule.Rank.ValueInt64())
-		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.Id.ValueString()), body)
+		res, err = r.client.Put(plan.getPath()+"/"+url.PathEscape(rule.Id.ValueString()), body)
 		{{- else }}
 		body, _ = sjson.Set(body, "rank", rule.Rank.ValueInt64())
-		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.Id.ValueString()), body)
+		res, err = r.client.Put(plan.getPath()+"/"+url.PathEscape(rule.Id.ValueString()), body)
 		{{- end}}
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
@@ -1069,9 +1069,9 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	{{- else if strContains (camelCase .Name) "UpdateRank" }}
 	// Read existing attributes from the API
 	{{- if strContains (camelCase .Name) "Rule" }}
-	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.RuleId.ValueString()))
+	res, err := r.client.Get(plan.getPath() + "/" + url.PathEscape(plan.RuleId.ValueString()))
 	{{- else}}
-	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.PolicySetId.ValueString()))
+	res, err := r.client.Get(plan.getPath() + "/" + url.PathEscape(plan.PolicySetId.ValueString()))
 	{{- end}}
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
@@ -1085,10 +1085,10 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	// Update rank
 	{{- if strContains (camelCase .Name) "Rule" }}
 	body, _ = sjson.Set(body, "rule.rank", plan.Rank.ValueInt64())
-	res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.RuleId.ValueString()), body)
+	res, err = r.client.Put(plan.getPath()+"/"+url.PathEscape(plan.RuleId.ValueString()), body)
 	{{- else}}
 	body, _ = sjson.Set(body, "rank", plan.Rank.ValueInt64())
-	res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.PolicySetId.ValueString()), body)
+	res, err = r.client.Put(plan.getPath()+"/"+url.PathEscape(plan.PolicySetId.ValueString()), body)
 	{{- end}}
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
@@ -1113,7 +1113,7 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	{{- if .PutCreate}}
 	params := ""
 	{{- if .PutIdQueryPath}}
-	params += "/" + url.QueryEscape(gjson.Get(body, "{{.PutIdIncludePath}}.id").String())
+	params += "/" + url.PathEscape(gjson.Get(body, "{{.PutIdIncludePath}}.id").String())
 	{{- end}}
 	res, err := r.client.Put(plan.getPath() + params, body)
 	{{- else if and (isErs .RestEndpoint) (not .IdPath) (not (hasId .Attributes))}}
@@ -1153,7 +1153,7 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 		{{- end}}
 
 		// Read existing attributes from the API
-		res, err = r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+		res, err = r.client.Get(plan.getPath() + "/" + url.PathEscape(plan.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
@@ -1208,7 +1208,7 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 	{{- if strContains (camelCase .Name) "UpdateRanks" }}
 	res, err := r.client.Get(state.getPath())
 	{{- else}}
-	res, err := r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + url.QueryEscape(state.Id.ValueString()){{end}})
+	res, err := r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + url.PathEscape(state.Id.ValueString()){{end}})
 	{{- end}}
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
@@ -1300,7 +1300,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	})
 	{{- end}}
 	for _, rule := range rules{
-		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
+		res, err := r.client.Get(plan.getPath() + "/" + url.PathEscape(rule.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
@@ -1313,10 +1313,10 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 		// Update rank
 		{{- if strContains (camelCase .Name) "Rule" }}
 		body, _ = sjson.Set(body, "rule.rank", rule.Rank.ValueInt64())
-		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.Id.ValueString()), body)
+		res, err = r.client.Put(plan.getPath()+"/"+url.PathEscape(rule.Id.ValueString()), body)
 		{{- else }}
 		body, _ = sjson.Set(body, "rank", rule.Rank.ValueInt64())
-		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.Id.ValueString()), body)
+		res, err = r.client.Put(plan.getPath()+"/"+url.PathEscape(rule.Id.ValueString()), body)
 		{{- end}}
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
@@ -1334,9 +1334,9 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	
 	// Read existing attributes from the API
 	{{- if strContains (camelCase .Name) "Rule" }}
-	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.RuleId.ValueString()))
+	res, err := r.client.Get(plan.getPath() + "/" + url.PathEscape(plan.RuleId.ValueString()))
 	{{- else}}
-	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.PolicySetId.ValueString()))
+	res, err := r.client.Get(plan.getPath() + "/" + url.PathEscape(plan.PolicySetId.ValueString()))
 	{{- end}}
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
@@ -1354,7 +1354,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	body, _ = sjson.Set(body, "rank", plan.Rank.ValueInt64())
 	{{- end}}
 
-	res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
+	res, err = r.client.Put(plan.getPath()+"/"+url.PathEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -1369,7 +1369,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	if plan.Rank.IsNull() {
 		var existingData {{camelCase .Name}}
 		// Fetch existing data from the API
-		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+		res, err := r.client.Get(plan.getPath() + "/" + url.PathEscape(plan.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
@@ -1393,7 +1393,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	{{- else if .PutNoId}}
 	res, err := r.client.Put(plan.getPath(), body)
 	{{- else}}
-	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body)
+	res, err := r.client.Put(plan.getPath() + "/" + url.PathEscape(plan.Id.ValueString()), body)
 	{{- end}}
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
@@ -1403,7 +1403,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	{{- end}}
 	{{- if hasComputedWhen .Attributes}}
 
-	res, err = r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+	res, err = r.client.Get(plan.getPath() + "/" + url.PathEscape(plan.Id.ValueString()))
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to read back updated object (GET), got error: %s, %s", err, res.String()))
 		return
@@ -1444,7 +1444,7 @@ func (r *{{camelCase .Name}}Resource) Delete(ctx context.Context, req resource.D
 	body := state.toBody(ctx, state)
 	res, err := r.client.Put(state.getPathDelete(), body)
 	{{- else}}
-	res, err := r.client.Delete({{if .DeleteRestEndpoint}}state.getPathDelete(){{else}}state.getPath(){{end}} + "/" + url.QueryEscape(state.Id.ValueString()))
+	res, err := r.client.Delete({{if .DeleteRestEndpoint}}state.getPathDelete(){{else}}state.getPath(){{end}} + "/" + url.PathEscape(state.Id.ValueString()))
 	{{- end}}
 	if err != nil{{if .IgnoreDeleteError}} && !strings.Contains(res.String(), "{{.IgnoreDeleteError}}"){{end}} {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))

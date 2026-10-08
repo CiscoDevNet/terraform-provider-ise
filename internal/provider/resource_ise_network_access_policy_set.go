@@ -478,7 +478,7 @@ func (r *NetworkAccessPolicySetResource) Create(ctx context.Context, req resourc
 		plan.Id = types.StringValue(res.Get("id").String())
 
 		// Read existing attributes from the API
-		res, err = r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+		res, err = r.client.Get(plan.getPath() + "/" + url.PathEscape(plan.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
@@ -522,7 +522,7 @@ func (r *NetworkAccessPolicySetResource) Read(ctx context.Context, req resource.
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
-	res, err := r.client.Get(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()))
+	res, err := r.client.Get(state.getPath() + "/" + url.PathEscape(state.Id.ValueString()))
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
@@ -570,7 +570,7 @@ func (r *NetworkAccessPolicySetResource) Update(ctx context.Context, req resourc
 	if plan.Rank.IsNull() {
 		var existingData NetworkAccessPolicySet
 		// Fetch existing data from the API
-		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+		res, err := r.client.Get(plan.getPath() + "/" + url.PathEscape(plan.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
@@ -585,7 +585,7 @@ func (r *NetworkAccessPolicySetResource) Update(ctx context.Context, req resourc
 		}
 	}
 
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
+	res, err := r.client.Put(plan.getPath()+"/"+url.PathEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -611,7 +611,7 @@ func (r *NetworkAccessPolicySetResource) Delete(ctx context.Context, req resourc
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()))
+	res, err := r.client.Delete(state.getPath() + "/" + url.PathEscape(state.Id.ValueString()))
 	if err != nil && !strings.Contains(res.String(), "Attempted to delete default") {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return

@@ -49,7 +49,7 @@ type ActiveDirectoryJoinDomainWithAllNodesAdditionalData struct {
 
 //template:begin getPath
 func (data ActiveDirectoryJoinDomainWithAllNodes) getPath() string {
-	return fmt.Sprintf("/ers/config/activedirectory/%v/joinAllNodes", url.QueryEscape(data.JoinPointId.ValueString()))
+	return fmt.Sprintf("/ers/config/activedirectory/%v/joinAllNodes", url.PathEscape(data.JoinPointId.ValueString()))
 }
 
 //template:end getPath
@@ -57,7 +57,7 @@ func (data ActiveDirectoryJoinDomainWithAllNodes) getPath() string {
 //template:begin getPathDelete
 
 func (data ActiveDirectoryJoinDomainWithAllNodes) getPathDelete() string {
-	return fmt.Sprintf("/ers/config/activedirectory/%v/leaveAllNodes", url.QueryEscape(data.JoinPointId.ValueString()))
+	return fmt.Sprintf("/ers/config/activedirectory/%v/leaveAllNodes", url.PathEscape(data.JoinPointId.ValueString()))
 }
 
 //template:end getPathDelete

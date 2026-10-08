@@ -44,7 +44,7 @@ type NetworkAccessAuthenticationRuleUpdateRank struct {
 
 //template:begin getPath
 func (data NetworkAccessAuthenticationRuleUpdateRank) getPath() string {
-	return fmt.Sprintf("/api/v1/policy/network-access/policy-set/%v/authentication", url.QueryEscape(data.PolicySetId.ValueString()))
+	return fmt.Sprintf("/api/v1/policy/network-access/policy-set/%v/authentication", url.PathEscape(data.PolicySetId.ValueString()))
 }
 
 //template:end getPath
