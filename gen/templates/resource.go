@@ -1042,6 +1042,9 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
 		}
+		// Start from empty data for each rule: fromBody keeps values that are
+		// missing in a response, e.g. the condition children of the previous rule.
+		existingData = {{strReplace (camelCase .Name) "UpdateRanks" "" -1}}{}
 		existingData.fromBody(ctx, res)
 
 		// Use the `toBody` function to construct the body from existingData
@@ -1305,6 +1308,9 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
 		}
+		// Start from empty data for each rule: fromBody keeps values that are
+		// missing in a response, e.g. the condition children of the previous rule.
+		existingData = {{strReplace (camelCase .Name) "UpdateRanks" "" -1}}{}
 		existingData.fromBody(ctx, res)
 
 		// Use the `toBody` function to construct the body from existingData

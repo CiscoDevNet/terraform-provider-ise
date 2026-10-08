@@ -141,6 +141,9 @@ func (r *NetworkAccessAuthorizationExceptionRuleUpdateRanksResource) Create(ctx 
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
 		}
+		// Start from empty data for each rule: fromBody keeps values that are
+		// missing in a response, e.g. the condition children of the previous rule.
+		existingData = NetworkAccessAuthorizationExceptionRule{}
 		existingData.fromBody(ctx, res)
 
 		// Use the `toBody` function to construct the body from existingData
@@ -230,6 +233,9 @@ func (r *NetworkAccessAuthorizationExceptionRuleUpdateRanksResource) Update(ctx 
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
 		}
+		// Start from empty data for each rule: fromBody keeps values that are
+		// missing in a response, e.g. the condition children of the previous rule.
+		existingData = NetworkAccessAuthorizationExceptionRule{}
 		existingData.fromBody(ctx, res)
 
 		// Use the `toBody` function to construct the body from existingData
