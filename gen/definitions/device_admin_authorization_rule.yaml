@@ -438,7 +438,37 @@ attributes:
                       - model_name: operator
                         type: String
                         normalize_operator: true
-                        enum_values: [contains, endsWith, equals, greaterOrEquals, greaterThan, in, ipEquals, ipGreaterThan, ipLessThan, ipNotEquals, lessOrEquals, lessThan, matches, notContains, notEndsWith, notEquals, notIn, notStartsWith, startsWith]
+                        enum_values: [
+                          contains,
+                          endsWith,
+                          equals,
+                          greaterOrEquals,
+                          greaterThan,
+                          in,
+                          ipEquals,
+                          ipGreaterThan,
+                          ipLessThan,
+                          ipNotEquals,
+                          lessOrEquals,
+                          lessThan,
+                          matches,
+                          notContains,
+                          notEndsWith,
+                          notEquals,
+                          notIn,
+                          notStartsWith,
+                          startsWith,
+                          macContains,
+                          macEndsWith,
+                          macEquals,
+                          macIn,
+                          macNotContains,
+                          macNotEndsWith,
+                          macNotEquals,
+                          macNotIn,
+                          macNotStartsWith,
+                          macStartsWith,
+                        ]
                         description: Equality operator
                       - model_name: children
                         type: List
