@@ -257,6 +257,16 @@ attributes:
                 notIn,
                 notStartsWith,
                 startsWith,
+                macContains,
+                macEndsWith,
+                macEquals,
+                macIn,
+                macNotContains,
+                macNotEndsWith,
+                macNotEquals,
+                macNotIn,
+                macNotStartsWith,
+                macStartsWith,
               ]
             description: Equality operator
             example: equals
@@ -317,6 +327,16 @@ attributes:
                     notIn,
                     notStartsWith,
                     startsWith,
+                    macContains,
+                    macEndsWith,
+                    macEquals,
+                    macIn,
+                    macNotContains,
+                    macNotEndsWith,
+                    macNotEquals,
+                    macNotIn,
+                    macNotStartsWith,
+                    macStartsWith,
                   ]
                 description: Equality operator
               - model_name: children
@@ -376,6 +396,16 @@ attributes:
                         notIn,
                         notStartsWith,
                         startsWith,
+                        macContains,
+                        macEndsWith,
+                        macEquals,
+                        macIn,
+                        macNotContains,
+                        macNotEndsWith,
+                        macNotEquals,
+                        macNotIn,
+                        macNotStartsWith,
+                        macStartsWith,
                       ]
                     description: Equality operator
                   - model_name: children
@@ -462,6 +492,16 @@ attributes:
                                 notIn,
                                 notStartsWith,
                                 startsWith,
+                                macContains,
+                                macEndsWith,
+                                macEquals,
+                                macIn,
+                                macNotContains,
+                                macNotEndsWith,
+                                macNotEquals,
+                                macNotIn,
+                                macNotStartsWith,
+                                macStartsWith,
                               ]
                             description: Equality operator
   - model_name: commands
