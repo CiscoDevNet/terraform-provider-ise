@@ -9,6 +9,7 @@ description: |-
 
 ## 0.5.1 (unreleased)
 
+- Add support for MAC condition operators at condition nesting levels 3–7 across Network Access and Device Admin condition resources and inline rules
 - Escape object IDs and names in URL paths as path segments (`url.PathEscape`) instead of query values: a space was sent as `+`, which ISE reads as a plus sign, so objects identified by a name with a space (e.g. the `Network Access` dictionary or a `Device Type` attribute) could not be read, updated, deleted or imported [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/282)
 - Fix perpetual drift in the `children` attribute of the `ise_device_admin_policy_set` and `ise_network_access_policy_set` resources, where ISE normalizes condition operators (e.g. returning `ipEquals` for `equals`), causing Terraform to fail key matching and plan attribute changes to null on every refresh. [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/277)
 - Fix the `*_update_ranks` resources sending the condition children of one rule with the next rule: they reused the data of the previous rule for each rule, and rules without condition children kept the previous rule's children [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/283)
