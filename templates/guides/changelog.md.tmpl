@@ -7,7 +7,7 @@ description: |-
 
 # Changelog
 
-## 0.5.1 (unreleased)
+## 0.5.1
 
 - Add support for MAC condition operators at condition nesting levels 3–7 across Network Access and Device Admin condition resources and inline rules
 - Escape object IDs and names in URL paths as path segments (`url.PathEscape`) instead of query values: a space was sent as `+`, which ISE reads as a plus sign, so objects identified by a name with a space (e.g. the `Network Access` dictionary or a `Device Type` attribute) could not be read, updated, deleted or imported [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/282)
