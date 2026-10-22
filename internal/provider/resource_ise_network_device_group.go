@@ -25,7 +25,6 @@ import (
 	"net/url"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -119,8 +118,6 @@ func (r *NetworkDeviceGroupResource) Create(ctx context.Context, req resource.Cr
 	}
 	locationElements := strings.Split(location, "/")
 	plan.Id = types.StringValue(locationElements[len(locationElements)-1])
-
-	time.Sleep(5 * time.Second)
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Id.ValueString()))
 

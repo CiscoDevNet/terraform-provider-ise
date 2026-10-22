@@ -1,3 +1,7 @@
+## 0.5.2 (unreleased)
+
+- Improve network device group creation performance by removing the five-second delay introduced as part of the API workaround in v0.1.14
+
 ## 0.5.1
 
 - Add support for MAC condition operators at condition nesting levels 3–7 across Network Access and Device Admin condition resources and inline rules
