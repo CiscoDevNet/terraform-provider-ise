@@ -1,4 +1,4 @@
-## 0.5.2 (unreleased)
+## 0.5.2
 
 - Improve network device group creation performance by removing the five-second delay introduced as part of the API workaround in v0.1.14
 
