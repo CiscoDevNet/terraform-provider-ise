@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// ISE GET encodes CRL/OCSP flags and periods as strings, while PUT expects
+// ISE GET encodes CRL/OCSP switches as on/off and periods as strings, while PUT expects
 // booleans and integers. Accept native JSON values too, for ISE versions that
 // already return them. Never guess a default for an unrecognized value.
 func preserveTrustedCertificateSettings(body map[string]any, current map[string]json.RawMessage) error {
@@ -61,9 +61,9 @@ func preserveTrustedCertificateSettings(body map[string]any, current map[string]
 			body[key] = text
 		case "bool":
 			switch value {
-			case "true":
+			case "true", "on":
 				body[key] = true
-			case "false":
+			case "false", "off":
 				body[key] = false
 			default:
 				return invalid()
