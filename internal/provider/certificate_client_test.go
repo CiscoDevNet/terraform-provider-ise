@@ -10,12 +10,10 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"regexp"
 	"strings"
 	"testing"
 
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
-	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	ise "github.com/netascode/go-ise"
 )
 
@@ -50,6 +48,7 @@ func TestTrustedCertificateFingerprintAndPEM(t *testing.T) {
 		t.Error("different certificate semantically equal")
 	}
 }
+
 func TestTrustedCertificateAPIErrorRedaction(t *testing.T) {
 	for _, body := range []string{`{"response":{"status":"Fail","message":"secret-key"}}`, `{"errors":["secret-key"]}`, `{"status":"ERROR","message":"secret-key"}`, `secret-key`} {
 		err := decodeCertificateResponse([]byte(body), nil)
@@ -71,6 +70,7 @@ func TestTrustedCertificateAPIErrorRedaction(t *testing.T) {
 		t.Fatalf("redirect followed or error leaked: %v", err)
 	}
 }
+
 func TestTrustedCertificatePaginationAndIdentity(t *testing.T) {
 	pages := 0
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -97,18 +97,6 @@ func TestTrustedCertificatePaginationAndIdentity(t *testing.T) {
 	}
 	if _, _, err := c.detail(context.Background(), "wrong-id"); err == nil {
 		t.Error("accepted wrong certificate ID")
-	}
-}
-func TestTrustedCertificateRefusesImplicitTakeover(t *testing.T) {
-	f := &trustedCertificateFixture{pem: testCertificate(t, 12)}
-	f.metadata = map[string]any{"id": "test-id", "friendlyName": "Other name", "description": "", "trustedFor": "Infrastructure, Endpoints", "sha256Fingerprint": testFingerprint(t, f.pem)}
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { f.serve(t, w, r) }))
-	defer server.Close()
-	resource.UnitTest(t, resource.TestCase{ProtoV6ProviderFactories: testAccProtoV6ProviderFactories, Steps: []resource.TestStep{{Config: trustedTestConfig(server.URL, f.pem, "Test CA", false), ExpectError: regexp.MustCompile("Trusted certificate already exists")}}})
-	f.Lock()
-	defer f.Unlock()
-	if f.posts+f.puts+f.deletes != 0 {
-		t.Fatal("mismatching existing certificate was modified")
 	}
 }
 

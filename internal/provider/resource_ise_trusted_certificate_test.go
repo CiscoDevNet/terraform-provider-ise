@@ -17,6 +17,7 @@ import (
 	"math/big"
 	"net/http"
 	"net/http/httptest"
+	"regexp"
 	"strings"
 	"sync"
 	"testing"
@@ -92,7 +93,11 @@ func (f *trustedCertificateFixture) serve(t *testing.T, w http.ResponseWriter, r
 		if body["data"] != f.pem || body["validateCertificateExtensions"] != true || body["allowOutOfDateCert"] != false || body["allowSHA1Certificates"] != false || body["allowBasicConstraintCAFalse"] != false {
 			t.Error("unexpected certificate import or validation flags")
 		}
-		f.metadata = map[string]any{"id": "test-id", "sha256Fingerprint": testFingerprint(t, f.pem), "enableOCSPValidation": true, "rejectIfUnreachableFromOCSP": true, "crlDistributionUrl": "https://example.com/ca.crl", "automaticCRLUpdate": true, "status": "Enabled"}
+		f.metadata = map[string]any{"id": "test-id", "sha256Fingerprint": testFingerprint(t, f.pem), "status": "Enabled", "crlDistributionUrl": "https://example.com/ca.crl",
+			"downloadCRL": "true", "automaticCRLUpdate": "false", "automaticCRLUpdatePeriod": "0", "automaticCRLUpdateUnits": "Minutes",
+			"nonAutomaticCRLUpdatePeriod": "2", "nonAutomaticCRLUpdateUnits": "Hours", "crlDownloadFailureRetries": "10", "crlDownloadFailureRetriesUnits": "Minutes",
+			"authenticateBeforeCRLReceived": "false", "ignoreCRLExpiration": "false", "enableOCSPValidation": "true", "enableServerIdentityCheck": "true",
+			"selectedOCSPService": "Example OCSP", "rejectIfNoStatusFromOCSP": "true", "rejectIfUnreachableFromOCSP": "true"}
 		f.apply(body)
 		if f.lostResponse {
 			connection, _, err := w.(http.Hijacker).Hijack()
@@ -110,9 +115,17 @@ func (f *trustedCertificateFixture) serve(t *testing.T, w http.ResponseWriter, r
 		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 			t.Error(err)
 		}
-		for _, key := range []string{"enableOCSPValidation", "rejectIfUnreachableFromOCSP", "crlDistributionUrl", "automaticCRLUpdate", "status"} {
-			if body[key] != f.metadata[key] {
-				t.Errorf("update lost unmanaged setting %s", key)
+		// GET returns strings; PUT must retain the settings using native JSON types.
+		expected := map[string]any{
+			"status": "Enabled", "crlDistributionUrl": "https://example.com/ca.crl",
+			"downloadCRL": true, "automaticCRLUpdate": false, "automaticCRLUpdatePeriod": float64(0), "automaticCRLUpdateUnits": "Minutes",
+			"nonAutomaticCRLUpdatePeriod": float64(2), "nonAutomaticCRLUpdateUnits": "Hours", "crlDownloadFailureRetries": float64(10), "crlDownloadFailureRetriesUnits": "Minutes",
+			"authenticateBeforeCRLReceived": false, "ignoreCRLExpiration": false, "enableOCSPValidation": true, "enableServerIdentityCheck": true,
+			"selectedOCSPService": "Example OCSP", "rejectIfNoStatusFromOCSP": true, "rejectIfUnreachableFromOCSP": true,
+		}
+		for key, value := range expected {
+			if body[key] != value {
+				t.Errorf("update lost or mistyped unmanaged setting %s: got %#v, want %#v", key, body[key], value)
 			}
 		}
 		f.apply(body)
@@ -126,6 +139,7 @@ func (f *trustedCertificateFixture) serve(t *testing.T, w http.ResponseWriter, r
 		w.WriteHeader(400)
 	}
 }
+
 func (f *trustedCertificateFixture) apply(body map[string]any) {
 	f.metadata["friendlyName"] = body["name"]
 	f.metadata["description"] = body["description"]
@@ -137,6 +151,7 @@ func (f *trustedCertificateFixture) apply(body map[string]any) {
 	}
 	f.metadata["trustedFor"] = strings.Join(purposes, ", ")
 }
+
 func testFingerprint(t *testing.T, encoded string) string {
 	t.Helper()
 	block, _ := pem.Decode([]byte(encoded))
@@ -146,6 +161,7 @@ func testFingerprint(t *testing.T, encoded string) string {
 	}
 	return certificateFingerprint(cert)
 }
+
 func trustedTestConfig(url, encoded, name string, retain bool) string {
 	return fmt.Sprintf(`provider "ise" {
  url = %q
@@ -161,6 +177,7 @@ resource "ise_trusted_certificate" "test" {
 }
 `, url, name, encoded, retain)
 }
+
 func TestTrustedCertificateLifecycle(t *testing.T) {
 	for _, lost := range []bool{false, true} {
 		t.Run(fmt.Sprintf("lost_import_response_%t", lost), func(t *testing.T) {
@@ -172,25 +189,70 @@ func TestTrustedCertificateLifecycle(t *testing.T) {
 				{ResourceName: "ise_trusted_certificate.test", ImportState: true, ImportStateVerify: true, ImportStateVerifyIgnore: []string{"retain_on_destroy", "certificate_pem"}},
 				{Config: trustedTestConfig(server.URL, strings.ReplaceAll(f.pem, "\n", "\r\n"), "Test CA", false)},
 				{Config: trustedTestConfig(server.URL, f.pem, "Renamed CA", false)},
+				{Config: strings.Replace(trustedTestConfig(server.URL, f.pem, "Renamed CA", false), " trust_for_client_auth = true", " trust_for_client_auth = true\n trust_for_certificate_based_admin_auth = true\n trust_for_cisco_services_auth = true", 1), Check: resource.ComposeTestCheckFunc(resource.TestCheckResourceAttr("ise_trusted_certificate.test", "trust_for_certificate_based_admin_auth", "true"), resource.TestCheckResourceAttr("ise_trusted_certificate.test", "trust_for_cisco_services_auth", "true"))},
 			}})
 			f.Lock()
 			defer f.Unlock()
-			if f.posts != 1 || f.puts != 1 || f.deletes != 1 {
+			if f.posts != 1 || f.puts != 2 || f.deletes != 1 {
 				t.Fatalf("writes POST=%d PUT=%d DELETE=%d", f.posts, f.puts, f.deletes)
 			}
 		})
 	}
 }
-func TestTrustedCertificateRetentionAndAdoption(t *testing.T) {
+
+func TestTrustedCertificateRetention(t *testing.T) {
 	f := &trustedCertificateFixture{pem: testCertificate(t, 2)}
-	f.metadata = map[string]any{"id": "test-id", "friendlyName": "Test CA", "description": "", "trustedFor": "Infrastructure, Endpoints", "sha256Fingerprint": testFingerprint(t, f.pem)}
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { f.serve(t, w, r) }))
 	defer server.Close()
 	config := strings.ReplaceAll(trustedTestConfig(server.URL, f.pem, "Test CA", true), " retain_on_destroy = true\n", "")
 	resource.UnitTest(t, resource.TestCase{ProtoV6ProviderFactories: testAccProtoV6ProviderFactories, Steps: []resource.TestStep{{Config: config, Check: resource.TestCheckResourceAttr("ise_trusted_certificate.test", "retain_on_destroy", "true")}}})
 	f.Lock()
 	defer f.Unlock()
-	if f.posts+f.puts+f.deletes != 0 || f.metadata == nil {
-		t.Fatalf("adoption or retention mutated existing CA: %+v", f)
+	if f.posts != 1 || f.puts != 0 || f.deletes != 0 || f.metadata == nil {
+		t.Fatalf("retention failed: POST=%d PUT=%d DELETE=%d", f.posts, f.puts, f.deletes)
+	}
+}
+
+func TestTrustedCertificateRequiresExplicitImport(t *testing.T) {
+	for _, name := range []string{"Test CA", "Other CA"} {
+		for _, retain := range []bool{true, false} {
+			t.Run(fmt.Sprintf("existing_name_%s_retain_%t", name, retain), func(t *testing.T) {
+				f := &trustedCertificateFixture{pem: testCertificate(t, 40)}
+				f.metadata = map[string]any{"id": "test-id", "friendlyName": name, "description": "", "trustedFor": "Infrastructure, Endpoints", "sha256Fingerprint": testFingerprint(t, f.pem)}
+				server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { f.serve(t, w, r) }))
+				defer server.Close()
+				resource.UnitTest(t, resource.TestCase{ProtoV6ProviderFactories: testAccProtoV6ProviderFactories, Steps: []resource.TestStep{{Config: trustedTestConfig(server.URL, f.pem, "Test CA", retain), ExpectError: regexp.MustCompile("Trusted certificate already exists")}}})
+				f.Lock()
+				defer f.Unlock()
+				if f.posts+f.puts+f.deletes != 0 || f.metadata == nil {
+					t.Fatal("existing certificate was modified or deleted without explicit import")
+				}
+			})
+		}
+	}
+}
+
+func TestTrustedCertificateExplicitImportOwnership(t *testing.T) {
+	for _, retain := range []bool{true, false} {
+		t.Run(fmt.Sprintf("retain_%t", retain), func(t *testing.T) {
+			f := &trustedCertificateFixture{pem: testCertificate(t, 41)}
+			f.metadata = map[string]any{"id": "test-id", "friendlyName": "Test CA", "description": "", "trustedFor": "Infrastructure, Endpoints", "sha256Fingerprint": testFingerprint(t, f.pem)}
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { f.serve(t, w, r) }))
+			defer server.Close()
+			config := trustedTestConfig(server.URL, f.pem, "Test CA", retain)
+			resource.UnitTest(t, resource.TestCase{ProtoV6ProviderFactories: testAccProtoV6ProviderFactories, Steps: []resource.TestStep{
+				{Config: config, ResourceName: "ise_trusted_certificate.test", ImportState: true, ImportStateId: "test-id", ImportStatePersist: true},
+				{Config: config, Check: resource.TestCheckResourceAttr("ise_trusted_certificate.test", "retain_on_destroy", fmt.Sprint(retain))},
+			}})
+			f.Lock()
+			defer f.Unlock()
+			expectedDeletes := 0
+			if !retain {
+				expectedDeletes = 1
+			}
+			if f.posts != 0 || f.puts != 0 || f.deletes != expectedDeletes {
+				t.Fatalf("POST=%d PUT=%d DELETE=%d", f.posts, f.puts, f.deletes)
+			}
+		})
 	}
 }

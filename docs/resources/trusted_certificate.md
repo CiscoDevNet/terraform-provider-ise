@@ -3,12 +3,12 @@
 page_title: "ise_trusted_certificate Resource - terraform-provider-ise"
 subcategory: "Certificates"
 description: |-
-  Manages a trusted CA certificate and its ISE trust purposes. Configure the provider against the primary administration node. Certificate identity is immutable. Existing certificates are adopted without a write only when all managed settings match; import other existing certificates by ID. Certificates are retained on destroy by default. Unmanaged CRL, OCSP and status settings are preserved on update. Updates are refused when ISE reports additional, unsupported trust purposes.
+  This resource can manage a Trusted Certificate. Configure the provider against the primary administration node. Certificate identity is immutable. Existing certificates must be explicitly imported by ID before Terraform can manage them. Certificates are retained on destroy by default. Unmanaged CRL, OCSP and status settings are preserved on update. Updates are refused when ISE reports additional, unsupported trust purposes.
 ---
 
 # ise_trusted_certificate (Resource)
 
-Manages a trusted CA certificate and its ISE trust purposes. Configure the provider against the primary administration node. Certificate identity is immutable. Existing certificates are adopted without a write only when all managed settings match; import other existing certificates by ID. Certificates are retained on destroy by default. Unmanaged CRL, OCSP and status settings are preserved on update. Updates are refused when ISE reports additional, unsupported trust purposes.
+This resource can manage a Trusted Certificate. Configure the provider against the primary administration node. Certificate identity is immutable. Existing certificates must be explicitly imported by ID before Terraform can manage them. Certificates are retained on destroy by default. Unmanaged CRL, OCSP and status settings are preserved on update. Updates are refused when ISE reports additional, unsupported trust purposes.
 
 ## Example Usage
 
@@ -33,17 +33,24 @@ resource "ise_trusted_certificate" "example" {
 
 ### Optional
 
-- `create_timeout_seconds` (Number) Maximum time to discover and verify an imported certificate, including recovery after an interrupted import. Defaults to 120 seconds.
+- `create_timeout_seconds` (Number) Maximum time in seconds to discover and verify an imported certificate, including recovery after an interrupted import.
+  - Default value: `120`
+  - Range: `10`-`3600`
 - `description` (String) Description of the trusted certificate.
 - `retain_on_destroy` (Boolean) Retain the live CA certificate when removing this resource. Set false explicitly to delete the certificate from ISE.
+  - Default value: `true`
 - `trust_for_certificate_based_admin_auth` (Boolean) Trust for certificate-based administrator authentication (AdminAuth).
+  - Default value: `false`
 - `trust_for_cisco_services_auth` (Boolean) Trust for authentication of Cisco services.
+  - Default value: `false`
 - `trust_for_client_auth` (Boolean) Trust for client authentication and syslog (Endpoints).
+  - Default value: `false`
 - `trust_for_ise_auth` (Boolean) Trust for authentication within ISE (Infrastructure).
+  - Default value: `false`
 
 ### Read-Only
 
-- `id` (String) The ID of this resource.
+- `id` (String) The id of the object
 - `sha256_fingerprint` (String) Canonical SHA-256 fingerprint of the certificate DER.
 
 ## Import

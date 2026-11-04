@@ -22,12 +22,13 @@ func trustedCertificateState(t *testing.T, encoded string) tfsdk.State {
 	var response resource.SchemaResponse
 	(&TrustedCertificateResource{}).Schema(context.Background(), resource.SchemaRequest{}, &response)
 	state := tfsdk.State{Schema: response.Schema}
-	model := trustedCertificateModel{ID: types.StringValue("test-id"), Name: types.StringValue("Test CA"), Description: types.StringNull(), Certificate: helpers.NewCertificatePEMValue(encoded), Fingerprint: types.StringValue(testFingerprint(t, encoded)), ISEAuth: types.BoolValue(true), ClientAuth: types.BoolValue(false), AdminAuth: types.BoolValue(false), CiscoAuth: types.BoolValue(false), Retain: types.BoolValue(false), Timeout: types.Int64Value(120)}
+	model := TrustedCertificate{Id: types.StringValue("test-id"), Name: types.StringValue("Test CA"), Description: types.StringNull(), CertificatePem: helpers.NewCertificatePEMValue(encoded), Sha256Fingerprint: types.StringValue(testFingerprint(t, encoded)), TrustForIseAuth: types.BoolValue(true), TrustForClientAuth: types.BoolValue(false), TrustForCertificateBasedAdminAuth: types.BoolValue(false), TrustForCiscoServicesAuth: types.BoolValue(false), RetainOnDestroy: types.BoolValue(false), CreateTimeoutSeconds: types.Int64Value(120)}
 	if diagnostics := state.Set(context.Background(), model); diagnostics.HasError() {
 		t.Fatal(diagnostics)
 	}
 	return state
 }
+
 func TestTrustedCertificateReadMissingVersusError(t *testing.T) {
 	encoded := testCertificate(t, 30)
 	for _, test := range []struct {
@@ -62,6 +63,7 @@ func TestTrustedCertificateReadMissingVersusError(t *testing.T) {
 		})
 	}
 }
+
 func TestTrustedCertificateDeleteRefusesReusedID(t *testing.T) {
 	original, replacement := testCertificate(t, 31), testCertificate(t, 32)
 	writes := 0
