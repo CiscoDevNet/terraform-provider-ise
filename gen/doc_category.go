@@ -41,7 +41,7 @@ type YamlConfig struct {
 
 var docPaths = []string{"./docs/data-sources/", "./docs/resources/"}
 
-var extraDocs = map[string]string{}
+var extraDocs = map[string]string{"trusted_certificate": "Certificates"}
 
 func SnakeCase(s string) string {
 	var g []string

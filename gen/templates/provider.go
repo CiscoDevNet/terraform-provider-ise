@@ -273,6 +273,7 @@ func (p *IseProvider) Configure(ctx context.Context, req provider.ConfigureReque
 
 func (p *IseProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
+		NewTrustedCertificateResource,
 		{{- range .}}
 		{{- if not .NoResource}}
 		New{{camelCase .Name}}Resource,
