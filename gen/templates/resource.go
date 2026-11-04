@@ -123,7 +123,7 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 				ElementType:         types.StringType,
 				{{- end}}
 				{{- if .WriteOnlyTF}}
-				Optional:            true,
+				{{if and .WriteOnlyTFOnly .Mandatory}}Required: true,{{else}}Optional: true,{{end}}
 				WriteOnly:           true,
 				Sensitive:           true,
 				{{- else}}
