@@ -39,14 +39,7 @@ func TestTrustedCertificateFingerprintAndPEM(t *testing.T) {
 			t.Error("accepted certificate bundle or non-certificate content")
 		}
 	}
-	equal, diagnostics := helpers.NewCertificatePEMValue(encoded).StringSemanticEquals(context.Background(), helpers.NewCertificatePEMValue("\n"+strings.ReplaceAll(encoded, "\n", "\r\n")))
-	if !equal || diagnostics.HasError() {
-		t.Fatal("equivalent PEM not semantically equal")
-	}
-	equal, _ = helpers.NewCertificatePEMValue(encoded).StringSemanticEquals(context.Background(), helpers.NewCertificatePEMValue(testCertificate(t, 11)))
-	if equal {
-		t.Error("different certificate semantically equal")
-	}
+
 }
 
 func TestTrustedCertificateAPIErrorRedaction(t *testing.T) {

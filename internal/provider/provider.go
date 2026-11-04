@@ -272,7 +272,6 @@ func (p *IseProvider) Configure(ctx context.Context, req provider.ConfigureReque
 
 func (p *IseProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
-		NewTrustedCertificateResource,
 		NewActiveDirectoryAddGroupsResource,
 		NewActiveDirectoryJoinDomainWithAllNodesResource,
 		NewActiveDirectoryJoinPointResource,
@@ -332,6 +331,7 @@ func (p *IseProvider) Resources(ctx context.Context) []func() resource.Resource 
 		NewSXPVPNResource,
 		NewTACACSCommandSetResource,
 		NewTACACSProfileResource,
+		NewTrustedCertificateResource,
 		NewTrustSecEgressMatrixCellResource,
 		NewTrustSecEgressMatrixCellDefaultResource,
 		NewTrustSecEgressPushMatrixResource,

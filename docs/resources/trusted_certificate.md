@@ -3,23 +3,26 @@
 page_title: "ise_trusted_certificate Resource - terraform-provider-ise"
 subcategory: "Certificates"
 description: |-
-  This resource can manage a Trusted Certificate. Configure the provider against the primary administration node. Certificate identity is immutable. Existing certificates must be explicitly imported by ID before Terraform can manage them. Certificates are retained on destroy by default. Unmanaged CRL, OCSP and status settings are preserved on update. Updates are refused when ISE reports additional, unsupported trust purposes.
+  This resource can manage a Trusted Certificate. Configure the provider against the primary administration node. Certificate identity is immutable; equivalent PEM formatting is compared by DER identity. Existing certificates must be explicitly imported by ID before Terraform can manage them. Certificates are retained on destroy by default. Unmanaged CRL, OCSP and status settings are preserved on update. Updates are refused when ISE reports unsupported trust purposes or revocation values that cannot be preserved safely.
 ---
 
 # ise_trusted_certificate (Resource)
 
-This resource can manage a Trusted Certificate. Configure the provider against the primary administration node. Certificate identity is immutable. Existing certificates must be explicitly imported by ID before Terraform can manage them. Certificates are retained on destroy by default. Unmanaged CRL, OCSP and status settings are preserved on update. Updates are refused when ISE reports additional, unsupported trust purposes.
+This resource can manage a Trusted Certificate. Configure the provider against the primary administration node. Certificate identity is immutable; equivalent PEM formatting is compared by DER identity. Existing certificates must be explicitly imported by ID before Terraform can manage them. Certificates are retained on destroy by default. Unmanaged CRL, OCSP and status settings are preserved on update. Updates are refused when ISE reports unsupported trust purposes or revocation values that cannot be preserved safely.
 
 ## Example Usage
 
 ```terraform
 resource "ise_trusted_certificate" "example" {
-  name                  = "Example Root CA"
-  description           = "Root CA for ISE and endpoint authentication"
-  certificate_pem       = file("ca.pem")
-  trust_for_ise_auth    = true
-  trust_for_client_auth = true
-  retain_on_destroy     = true
+  name                                   = "Example Root CA"
+  description                            = "Root CA for ISE and endpoint authentication"
+  certificate_pem                        = file("ca.pem")
+  trust_for_ise_auth                     = true
+  trust_for_client_auth                  = true
+  trust_for_certificate_based_admin_auth = false
+  trust_for_cisco_services_auth          = false
+  retain_on_destroy                      = true
+  create_timeout_seconds                 = 120
 }
 ```
 
@@ -28,14 +31,14 @@ resource "ise_trusted_certificate" "example" {
 
 ### Required
 
-- `certificate_pem` (String) Exactly one PEM-encoded CA certificate. Equivalent PEM formatting is compared by DER identity.
+- `certificate_pem` (String) Exactly one PEM-encoded CA certificate. Only a change of DER identity requires replacement.
 - `name` (String) Friendly name of the trusted certificate.
 
 ### Optional
 
 - `create_timeout_seconds` (Number) Maximum time in seconds to discover and verify an imported certificate, including recovery after an interrupted import.
-  - Default value: `120`
   - Range: `10`-`3600`
+  - Default value: `120`
 - `description` (String) Description of the trusted certificate.
 - `retain_on_destroy` (Boolean) Retain the live CA certificate when removing this resource. Set false explicitly to delete the certificate from ISE.
   - Default value: `true`

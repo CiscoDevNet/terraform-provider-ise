@@ -73,7 +73,7 @@ func TestTrustedCertificateInvalidSettingsPreventUpdate(t *testing.T) {
 			}))
 			defer server.Close()
 			client, _ := ise.NewClient(server.URL, "user", "password")
-			r := &TrustedCertificateResource{client: certificateClient{client: &client}}
+			r := &TrustedCertificateResource{client: &client}
 			state := trustedCertificateState(t, encoded)
 			planned := trustedCertificateState(t, encoded)
 			if d := planned.SetAttribute(context.Background(), path.Root("description"), "Updated description"); d.HasError() {

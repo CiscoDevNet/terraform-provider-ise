@@ -8,9 +8,11 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
-	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/path"
+
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -22,7 +24,7 @@ func trustedCertificateState(t *testing.T, encoded string) tfsdk.State {
 	var response resource.SchemaResponse
 	(&TrustedCertificateResource{}).Schema(context.Background(), resource.SchemaRequest{}, &response)
 	state := tfsdk.State{Schema: response.Schema}
-	model := TrustedCertificate{Id: types.StringValue("test-id"), Name: types.StringValue("Test CA"), Description: types.StringNull(), CertificatePem: helpers.NewCertificatePEMValue(encoded), Sha256Fingerprint: types.StringValue(testFingerprint(t, encoded)), TrustForIseAuth: types.BoolValue(true), TrustForClientAuth: types.BoolValue(false), TrustForCertificateBasedAdminAuth: types.BoolValue(false), TrustForCiscoServicesAuth: types.BoolValue(false), RetainOnDestroy: types.BoolValue(false), CreateTimeoutSeconds: types.Int64Value(120)}
+	model := TrustedCertificate{Id: types.StringValue("test-id"), Name: types.StringValue("Test CA"), Description: types.StringNull(), CertificatePem: types.StringValue(encoded), Sha256Fingerprint: types.StringValue(testFingerprint(t, encoded)), TrustForIseAuth: types.BoolValue(true), TrustForClientAuth: types.BoolValue(false), TrustForCertificateBasedAdminAuth: types.BoolValue(false), TrustForCiscoServicesAuth: types.BoolValue(false), RetainOnDestroy: types.BoolValue(false), CreateTimeoutSeconds: types.Int64Value(120)}
 	if diagnostics := state.Set(context.Background(), model); diagnostics.HasError() {
 		t.Fatal(diagnostics)
 	}
@@ -53,7 +55,7 @@ func TestTrustedCertificateReadMissingVersusError(t *testing.T) {
 			}))
 			defer server.Close()
 			client, _ := ise.NewClient(server.URL, "user", "password")
-			r := &TrustedCertificateResource{client: certificateClient{client: &client}}
+			r := &TrustedCertificateResource{client: &client}
 			state := trustedCertificateState(t, encoded)
 			response := resource.ReadResponse{State: state}
 			r.Read(context.Background(), resource.ReadRequest{State: state}, &response)
@@ -80,10 +82,39 @@ func TestTrustedCertificateDeleteRefusesReusedID(t *testing.T) {
 	}))
 	defer server.Close()
 	client, _ := ise.NewClient(server.URL, "user", "password")
-	r := &TrustedCertificateResource{client: certificateClient{client: &client}}
+	r := &TrustedCertificateResource{client: &client}
 	response := resource.DeleteResponse{}
 	r.Delete(context.Background(), resource.DeleteRequest{State: trustedCertificateState(t, original)}, &response)
 	if !response.Diagnostics.HasError() || writes != 0 {
 		t.Fatalf("deleted different certificate: %v", response.Diagnostics)
+	}
+}
+
+func TestTrustedCertificateIdentityReplacementFromGeneratedSchema(t *testing.T) {
+	encoded := testCertificate(t, 60)
+	for _, test := range []struct {
+		name, pem string
+		replace   bool
+	}{
+		{"PEM formatting", strings.ReplaceAll(encoded, "\n", "\r\n"), false},
+		{"different DER", testCertificate(t, 61), true},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			state := trustedCertificateState(t, encoded)
+			planned := trustedCertificateState(t, encoded)
+			if d := planned.SetAttribute(context.Background(), path.Root("certificate_pem"), test.pem); d.HasError() {
+				t.Fatal(d)
+			}
+			response := resource.ModifyPlanResponse{Plan: tfsdk.Plan{Schema: planned.Schema, Raw: planned.Raw}}
+			(&TrustedCertificateResource{}).ModifyPlan(context.Background(), resource.ModifyPlanRequest{State: state, Plan: response.Plan}, &response)
+			if response.Diagnostics.HasError() || (len(response.RequiresReplace) > 0) != test.replace {
+				t.Fatalf("replacement=%v diagnostics=%v", response.RequiresReplace, response.Diagnostics)
+			}
+			var schemaResponse resource.SchemaResponse
+			(&TrustedCertificateResource{}).Schema(context.Background(), resource.SchemaRequest{}, &schemaResponse)
+			if schemaResponse.Schema.Attributes["sha256_fingerprint"].IsOptional() || !schemaResponse.Schema.Attributes["sha256_fingerprint"].IsComputed() {
+				t.Fatal("generated fingerprint is not read-only")
+			}
+		})
 	}
 }
