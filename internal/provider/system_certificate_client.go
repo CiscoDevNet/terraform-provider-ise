@@ -1,7 +1,7 @@
 // Copyright 2026 Stegra.
 // SPDX-License-Identifier: MPL-2.0
 
-package systemcertificate
+package provider
 
 import (
 	"archive/zip"
@@ -22,31 +22,34 @@ import (
 	"time"
 )
 
-type client struct {
+type systemCertificateClient struct {
 	http               *http.Client
 	username, password string
 	tls                *tls.Config
 	poll, settle       time.Duration
-	probe              func(context.Context, node) (string, error)
+	probe              func(context.Context, systemCertificateNode) (string, error)
 }
-type transportError struct{ message string }
+type systemCertificateTransportError struct{ message string }
 
-func (e *transportError) Error() string { return e.message }
-func interrupted(err error) bool        { var e *transportError; return errors.As(err, &e) }
+func (e *systemCertificateTransportError) Error() string { return e.message }
+func systemCertificateInterrupted(err error) bool {
+	var e *systemCertificateTransportError
+	return errors.As(err, &e)
+}
 
-type httpError struct{ status int }
+type systemCertificateHttpError struct{ status int }
 
-func (e *httpError) Error() string {
+func (e *systemCertificateHttpError) Error() string {
 	return fmt.Sprintf("ISE certificate API returned HTTP %d", e.status)
 }
-func recoverable(err error) bool {
-	var h *httpError
-	return interrupted(err) || (errors.As(err, &h) && h.status >= 500)
+func systemCertificateRecoverable(err error) bool {
+	var h *systemCertificateHttpError
+	return systemCertificateInterrupted(err) || (errors.As(err, &h) && h.status >= 500)
 }
 
 // ConfigureHTTPClient reuses the provider transport, credentials and timeout.
 // Node endpoints come only from explicit Terraform inputs, never API links.
-func (r *DeploymentResource) ConfigureHTTPClient(httpClient *http.Client, username, password string) error {
+func (r *systemCertificateCoordinator) ConfigureHTTPClient(httpClient *http.Client, username, password string) error {
 	transport, ok := httpClient.Transport.(*http.Transport)
 	if !ok {
 		return fmt.Errorf("expected the configured ISE HTTP transport")
@@ -61,15 +64,15 @@ func (r *DeploymentResource) ConfigureHTTPClient(httpClient *http.Client, userna
 	clonedTransport := transport.Clone()
 	clonedTransport.TLSClientConfig = config
 	clone.Transport = clonedTransport
-	r.client = &client{http: &clone, username: username, password: password, tls: config, poll: 10 * time.Second, settle: 60 * time.Second}
+	r.client = &systemCertificateClient{http: &clone, username: username, password: password, tls: config, poll: 10 * time.Second, settle: 60 * time.Second}
 	return nil
 }
 
-func normalizeFingerprint(s string) string {
+func systemCertificateNormalizeFingerprint(s string) string {
 	return strings.ToLower(strings.NewReplacer(":", "", " ", "", "-", "").Replace(s))
 }
-func systemFingerprintMatches(fingerprint string, cert *certificate) bool {
-	fingerprint = normalizeFingerprint(fingerprint)
+func systemCertificateSystemFingerprintMatches(fingerprint string, cert *systemCertificateCertificate) bool {
+	fingerprint = systemCertificateNormalizeFingerprint(fingerprint)
 	if fingerprint == cert.fingerprint {
 		return true
 	}
@@ -81,7 +84,7 @@ func systemFingerprintMatches(fingerprint string, cert *certificate) bool {
 	}
 	return false
 }
-func (c *client) request(ctx context.Context, address, path, method string, payload any) ([]byte, error) {
+func (c *systemCertificateClient) request(ctx context.Context, address, path, method string, payload any) ([]byte, error) {
 	var body io.Reader
 	if payload != nil {
 		encoded, err := json.Marshal(payload)
@@ -104,23 +107,23 @@ func (c *client) request(ctx context.Context, address, path, method string, payl
 	req.Header.Set("Accept", "application/json")
 	resp, err := c.http.Do(req)
 	if err != nil {
-		return nil, &transportError{fmt.Sprintf("ISE %s: %s %s connection interrupted", address, method, path)}
+		return nil, &systemCertificateTransportError{fmt.Sprintf("ISE %s: %s %s connection interrupted", address, method, path)}
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		// ISE may echo secrets in an error body; never return it or request data.
-		return nil, &httpError{status: resp.StatusCode}
+		return nil, &systemCertificateHttpError{status: resp.StatusCode}
 	}
 	data, err := io.ReadAll(io.LimitReader(resp.Body, 8*1024*1024+1))
 	if err != nil {
-		return nil, &transportError{fmt.Sprintf("ISE %s: response interrupted", address)}
+		return nil, &systemCertificateTransportError{fmt.Sprintf("ISE %s: response interrupted", address)}
 	}
 	if len(data) > 8*1024*1024 {
 		return nil, fmt.Errorf("ISE response exceeded size limit")
 	}
 	return data, nil
 }
-func (c *client) json(ctx context.Context, address, path, method string, payload, result any) error {
+func (c *systemCertificateClient) json(ctx context.Context, address, path, method string, payload, result any) error {
 	body, err := c.request(ctx, address, path, method, payload)
 	if err != nil {
 		return err
@@ -138,7 +141,7 @@ func (c *client) json(ctx context.Context, address, path, method string, payload
 			return strings.EqualFold(s, "FAIL") || strings.EqualFold(s, "FAILURE") || strings.EqualFold(s, "FAILED") || strings.EqualFold(s, "ERROR")
 		}
 		response, _ := obj["response"].(map[string]any)
-		if failure(obj["status"]) || failure(response["status"]) || nonempty(obj["errors"]) || nonempty(obj["error"]) {
+		if failure(obj["status"]) || failure(response["status"]) || systemCertificateNonempty(obj["errors"]) || systemCertificateNonempty(obj["error"]) {
 			return fmt.Errorf("ISE %s: %s reported API failure", address, path)
 		}
 	}
@@ -150,7 +153,7 @@ func (c *client) json(ctx context.Context, address, path, method string, payload
 	}
 	return nil
 }
-func nonempty(v any) bool {
+func systemCertificateNonempty(v any) bool {
 	switch x := v.(type) {
 	case nil:
 		return false
@@ -165,20 +168,20 @@ func nonempty(v any) bool {
 	}
 }
 
-type certificateItem struct {
+type systemCertificateCertificateItem struct {
 	ID          string `json:"id"`
 	Fingerprint string `json:"sha256Fingerprint"`
 	UsedBy      string `json:"usedBy"`
 	TrustedFor  string `json:"trustedFor"`
 	GroupTag    string `json:"groupTag"`
 }
-type deploymentNode struct {
+type systemCertificateDeploymentNode struct {
 	FQDN   string   `json:"fqdn"`
 	Status string   `json:"nodeStatus"`
 	Roles  []string `json:"roles"`
 }
 
-func collection[T any](ctx context.Context, c *client, address, path string) ([]T, error) {
+func systemCertificateCollection[T any](ctx context.Context, c *systemCertificateClient, address, path string) ([]T, error) {
 	var items []T
 	for page := 1; page <= 100; page++ {
 		var result struct {
@@ -201,11 +204,11 @@ func collection[T any](ctx context.Context, c *client, address, path string) ([]
 	}
 	return nil, fmt.Errorf("ISE collection pagination limit exceeded")
 }
-func shortHostname(host string) string { return strings.SplitN(host, ".", 2)[0] }
-func (c *client) certificates(ctx context.Context, n node) ([]certificateItem, error) {
-	return collection[certificateItem](ctx, c, n.address, "/api/v1/certs/system-certificate/"+url.PathEscape(shortHostname(n.hostname)))
+func systemCertificateShortHostname(host string) string { return strings.SplitN(host, ".", 2)[0] }
+func (c *systemCertificateClient) certificates(ctx context.Context, n systemCertificateNode) ([]systemCertificateCertificateItem, error) {
+	return systemCertificateCollection[systemCertificateCertificateItem](ctx, c, n.address, "/api/v1/certs/system-certificate/"+url.PathEscape(systemCertificateShortHostname(n.hostname)))
 }
-func hasRole(item certificateItem, role string) bool {
+func systemCertificateHasRole(item systemCertificateCertificateItem, role string) bool {
 	wanted := "Admin"
 	if role == "eap" {
 		wanted = "EAP Authentication"
@@ -220,9 +223,9 @@ func hasRole(item certificateItem, role string) bool {
 	}
 	return false
 }
-func (c *client) export(ctx context.Context, n node, item certificateItem) (*certificate, error) {
+func (c *systemCertificateClient) export(ctx context.Context, n systemCertificateNode, item systemCertificateCertificateItem) (*systemCertificateCertificate, error) {
 	body, err := c.request(ctx, n.address, "/api/v1/certs/system-certificate/export", "POST", map[string]any{
-		"hostName": shortHostname(n.hostname), "id": item.ID, "export": "CERTIFICATE",
+		"hostName": systemCertificateShortHostname(n.hostname), "id": item.ID, "export": "CERTIFICATE",
 	})
 	if err != nil {
 		return nil, err
@@ -262,8 +265,8 @@ func (c *client) export(ctx context.Context, n node, item certificateItem) (*cer
 		// ISE system-certificate metadata can hash the exported PEM file,
 		// whereas TLS and our state use the certificate's DER fingerprint.
 		fileHash := sha256.Sum256(data)
-		if hex.EncodeToString(fileHash[:]) == normalizeFingerprint(item.Fingerprint) {
-			cert, err := parseCertificate(string(data))
+		if hex.EncodeToString(fileHash[:]) == systemCertificateNormalizeFingerprint(item.Fingerprint) {
+			cert, err := systemCertificateParseCertificate(string(data))
 			if err == nil {
 				return cert, nil
 			}
@@ -277,18 +280,18 @@ func (c *client) export(ctx context.Context, n node, item certificateItem) (*cer
 			if block.Type != "CERTIFICATE" {
 				continue
 			}
-			cert, err := parseCertificate(string(pem.EncodeToMemory(block)))
+			cert, err := systemCertificateParseCertificate(string(pem.EncodeToMemory(block)))
 			if err != nil {
 				continue
 			}
-			if cert.fingerprint == normalizeFingerprint(item.Fingerprint) {
+			if cert.fingerprint == systemCertificateNormalizeFingerprint(item.Fingerprint) {
 				return cert, nil
 			}
 		}
 	}
 	return nil, fmt.Errorf("%s: export did not contain the selected active certificate", n.hostname)
 }
-func (c *client) servedFingerprint(ctx context.Context, n node) (string, error) {
+func (c *systemCertificateClient) servedFingerprint(ctx context.Context, n systemCertificateNode) (string, error) {
 	if c.probe != nil {
 		return c.probe(ctx, n)
 	}
@@ -297,7 +300,7 @@ func (c *client) servedFingerprint(ctx context.Context, n node) (string, error) 
 	dialer := tls.Dialer{NetDialer: &net.Dialer{Timeout: 10 * time.Second}, Config: config}
 	connection, err := dialer.DialContext(ctx, "tcp", net.JoinHostPort(n.address, "443"))
 	if err != nil {
-		return "", &transportError{"ISE HTTPS endpoint unavailable"}
+		return "", &systemCertificateTransportError{"ISE HTTPS endpoint unavailable"}
 	}
 	defer connection.Close()
 	tlsConnection := connection.(*tls.Conn)
@@ -308,7 +311,7 @@ func (c *client) servedFingerprint(ctx context.Context, n node) (string, error) 
 	hash := sha256.Sum256(certs[0].Raw)
 	return hex.EncodeToString(hash[:]), nil
 }
-func delay(ctx context.Context, d time.Duration) error {
+func systemCertificateDelay(ctx context.Context, d time.Duration) error {
 	if d <= 0 {
 		return ctx.Err()
 	}
@@ -321,9 +324,9 @@ func delay(ctx context.Context, d time.Duration) error {
 		return nil
 	}
 }
-func (c *client) wait(ctx context.Context, settle bool, check func(context.Context) (bool, error)) error {
+func (c *systemCertificateClient) wait(ctx context.Context, settle bool, check func(context.Context) (bool, error)) error {
 	if settle {
-		if err := delay(ctx, c.settle); err != nil {
+		if err := systemCertificateDelay(ctx, c.settle); err != nil {
 			return fmt.Errorf("ISE recovery timed out or was cancelled")
 		}
 	}
@@ -338,7 +341,7 @@ func (c *client) wait(ctx context.Context, settle bool, check func(context.Conte
 		if stable >= 3 {
 			return nil
 		}
-		if err := delay(ctx, c.poll); err != nil {
+		if err := systemCertificateDelay(ctx, c.poll); err != nil {
 			return fmt.Errorf("ISE recovery timed out or was cancelled; inspect deployment before retrying")
 		}
 	}

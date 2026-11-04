@@ -1,7 +1,7 @@
 // Copyright 2026 Stegra.
 // SPDX-License-Identifier: MPL-2.0
 
-package systemcertificate
+package provider
 
 import (
 	"context"
@@ -15,54 +15,54 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-type node struct {
+type systemCertificateNode struct {
 	hostname, address string
-	admin             *certificate
-	chain             []*certificate
+	admin             *systemCertificateCertificate
+	chain             []*systemCertificateCertificate
 	eap               bool
 	key               *rsa.PrivateKey
 	portalGroup       string
 }
-type rollout struct {
-	client    *client
-	root, eap *certificate
-	eapChain  []*certificate
+type systemCertificateRollout struct {
+	client    *systemCertificateClient
+	root, eap *systemCertificateCertificate
+	eapChain  []*systemCertificateCertificate
 	eapKey    *rsa.PrivateKey
-	nodes     []node
-	cas       []*certificate
+	nodes     []systemCertificateNode
+	cas       []*systemCertificateCertificate
 	timeout   int64
 }
 
-func (c *client) prepare(m deploymentModel, keys map[string]string) (*rollout, error) {
-	if err := validateModel(m); err != nil {
+func (c *systemCertificateClient) prepare(m SystemCertificateDeployment, keys map[string]string) (*systemCertificateRollout, error) {
+	if err := systemCertificateValidateModel(m); err != nil {
 		return nil, err
 	}
-	root, err := parseCertificate(m.Root.ValueString())
+	root, err := systemCertificateParseCertificate(m.RootCertificatePem.ValueString())
 	if err != nil {
 		return nil, err
 	}
-	if err = validateCA(root); keys != nil && err != nil {
+	if err = systemCertificateValidateCA(root); keys != nil && err != nil {
 		return nil, err
 	}
-	r := &rollout{client: c, root: root, timeout: m.Timeout.ValueInt64(), cas: []*certificate{root}}
+	r := &systemCertificateRollout{client: c, root: root, timeout: m.TimeoutSeconds.ValueInt64(), cas: []*systemCertificateCertificate{root}}
 	manageEAP := false
 	for _, n := range m.Nodes {
-		manageEAP = manageEAP || n.EAP.ValueBool()
+		manageEAP = manageEAP || n.Eap.ValueBool()
 	}
 	if manageEAP {
-		r.eap, err = parseCertificate(m.EAPCertificate.ValueString())
+		r.eap, err = systemCertificateParseCertificate(m.EapCertificatePem.ValueString())
 		if err != nil {
 			return nil, err
 		}
-		r.eapChain, err = parseCertificates(m.EAPChain.ValueString())
+		r.eapChain, err = systemCertificateParseCertificates(m.EapCaPem.ValueString())
 		if err != nil {
 			return nil, err
 		}
 		if keys != nil {
-			if !verifies(r.eap, root, r.eapChain) {
+			if !systemCertificateVerifies(r.eap, root, r.eapChain) {
 				return nil, fmt.Errorf("EAP certificate is expired or does not verify against the managed root/chain")
 			}
-			r.eapKey, err = parseKey(keys["eap"], r.eap)
+			r.eapKey, err = systemCertificateParseKey(keys["eap"], r.eap)
 			if err != nil {
 				return nil, err
 			}
@@ -71,40 +71,40 @@ func (c *client) prepare(m deploymentModel, keys map[string]string) (*rollout, e
 	seen := map[string]bool{}
 	addresses := map[string]bool{}
 	for _, model := range m.Nodes {
-		n := node{hostname: model.Hostname.ValueString(), address: model.Address.ValueString(), eap: model.EAP.ValueBool(), portalGroup: model.PortalGroup.ValueString()}
+		n := systemCertificateNode{hostname: model.Hostname.ValueString(), address: model.Address.ValueString(), eap: model.Eap.ValueBool(), portalGroup: model.AdminPortalGroupTag.ValueString()}
 		if seen[strings.ToLower(n.hostname)] || addresses[n.address] {
 			return nil, fmt.Errorf("node hostnames and IP addresses must be unique")
 		}
 		seen[strings.ToLower(n.hostname)], addresses[n.address] = true, true
-		if model.Certificate.IsNull() != model.Chain.IsNull() {
+		if model.AdminCertificatePem.IsNull() != model.AdminCaPem.IsNull() {
 			return nil, fmt.Errorf("Admin certificate and CA chain must either both be set or both omitted")
 		}
-		if model.Certificate.IsNull() {
+		if model.AdminCertificatePem.IsNull() {
 			if n.portalGroup != "" {
 				return nil, fmt.Errorf("Portal transfer requires an explicitly managed Admin certificate")
 			}
-			if err = validateNodeIdentity(n); err != nil {
+			if err = systemCertificateValidateNodeIdentity(n); err != nil {
 				return nil, err
 			}
 			r.nodes = append(r.nodes, n)
 			continue
 		}
-		n.admin, err = parseCertificate(model.Certificate.ValueString())
+		n.admin, err = systemCertificateParseCertificate(model.AdminCertificatePem.ValueString())
 		if err != nil {
 			return nil, err
 		}
-		n.chain, err = parseCertificates(model.Chain.ValueString())
+		n.chain, err = systemCertificateParseCertificates(model.AdminCaPem.ValueString())
 		if err != nil {
 			return nil, err
 		}
-		if err = validateNodeIdentity(n); err != nil {
+		if err = systemCertificateValidateNodeIdentity(n); err != nil {
 			return nil, err
 		}
-		if keys != nil && !verifies(n.admin, root, n.chain) {
+		if keys != nil && !systemCertificateVerifies(n.admin, root, n.chain) {
 			return nil, fmt.Errorf("%s: Admin certificate is expired or does not verify against the managed root/chain", n.hostname)
 		}
 		if keys != nil {
-			n.key, err = parseKey(keys[n.hostname], n.admin)
+			n.key, err = systemCertificateParseKey(keys[n.hostname], n.admin)
 			if err != nil {
 				return nil, fmt.Errorf("%s: %s", n.hostname, err)
 			}
@@ -114,12 +114,12 @@ func (c *client) prepare(m deploymentModel, keys map[string]string) (*rollout, e
 	}
 	r.cas = append(r.cas, r.eapChain...)
 	unique := map[string]bool{}
-	var cas []*certificate
+	var cas []*systemCertificateCertificate
 	for _, ca := range r.cas {
-		if err := validateCA(ca); keys != nil && err != nil {
+		if err := systemCertificateValidateCA(ca); keys != nil && err != nil {
 			return nil, err
 		}
-		if keys != nil && !verifies(ca, root, r.cas) {
+		if keys != nil && !systemCertificateVerifies(ca, root, r.cas) {
 			return nil, fmt.Errorf("issuing CA does not verify against the managed root")
 		}
 		if !unique[ca.fingerprint] {
@@ -130,9 +130,9 @@ func (c *client) prepare(m deploymentModel, keys map[string]string) (*rollout, e
 	r.cas = cas
 	return r, nil
 }
-func (r *rollout) primary() node { return r.nodes[len(r.nodes)-1] }
-func (r *rollout) preflight(ctx context.Context) error {
-	deployment, err := collection[deploymentNode](ctx, r.client, r.primary().address, "/api/v1/deployment/node")
+func (r *systemCertificateRollout) primary() systemCertificateNode { return r.nodes[len(r.nodes)-1] }
+func (r *systemCertificateRollout) preflight(ctx context.Context) error {
+	deployment, err := systemCertificateCollection[systemCertificateDeploymentNode](ctx, r.client, r.primary().address, "/api/v1/deployment/node")
 	if err != nil {
 		return err
 	}
@@ -179,7 +179,7 @@ func (r *rollout) preflight(ctx context.Context) error {
 		if n.admin == nil && !n.eap {
 			continue
 		}
-		if !enabled[strings.ToLower(shortHostname(n.hostname))] {
+		if !enabled[strings.ToLower(systemCertificateShortHostname(n.hostname))] {
 			return fmt.Errorf("enable ISE API Gateway on %s before certificate rollout", n.hostname)
 		}
 		if n.portalGroup != "" {
@@ -189,7 +189,7 @@ func (r *rollout) preflight(ctx context.Context) error {
 			}
 			matching := 0
 			for _, item := range items {
-				if hasRole(item, "portal") && item.GroupTag == n.portalGroup {
+				if systemCertificateHasRole(item, "portal") && item.GroupTag == n.portalGroup {
 					matching++
 				}
 			}
@@ -207,8 +207,8 @@ func (r *rollout) preflight(ctx context.Context) error {
 	}
 	return nil
 }
-func (r *rollout) healthy(ctx context.Context) (bool, error) {
-	deployment, err := collection[deploymentNode](ctx, r.client, r.primary().address, "/api/v1/deployment/node")
+func (r *systemCertificateRollout) healthy(ctx context.Context) (bool, error) {
+	deployment, err := systemCertificateCollection[systemCertificateDeploymentNode](ctx, r.client, r.primary().address, "/api/v1/deployment/node")
 	if err != nil {
 		return false, err
 	}
@@ -228,7 +228,7 @@ func (r *rollout) healthy(ctx context.Context) (bool, error) {
 	}
 	return true, nil
 }
-func trustedForInfrastructure(value string) bool {
+func systemCertificateTrustedForInfrastructure(value string) bool {
 	for _, purpose := range strings.Split(value, ",") {
 		if strings.TrimSpace(purpose) == "Infrastructure" {
 			return true
@@ -237,59 +237,59 @@ func trustedForInfrastructure(value string) bool {
 	return false
 }
 
-func trusted(items []certificateItem, ca *certificate) bool {
+func systemCertificateTrusted(items []systemCertificateCertificateItem, ca *systemCertificateCertificate) bool {
 	for _, item := range items {
-		if systemFingerprintMatches(item.Fingerprint, ca) && trustedForInfrastructure(item.TrustedFor) {
+		if systemCertificateSystemFingerprintMatches(item.Fingerprint, ca) && systemCertificateTrustedForInfrastructure(item.TrustedFor) {
 			return true
 		}
 	}
 	return false
 }
-func (r *rollout) trustReady(ctx context.Context, ca *certificate) (bool, error) {
+func (r *systemCertificateRollout) trustReady(ctx context.Context, ca *systemCertificateCertificate) (bool, error) {
 	for _, n := range r.nodes {
-		items, err := collection[certificateItem](ctx, r.client, n.address, "/api/v1/certs/trusted-certificate")
+		items, err := systemCertificateCollection[systemCertificateCertificateItem](ctx, r.client, n.address, "/api/v1/certs/trusted-certificate")
 		if err != nil {
 			return false, err
 		}
-		if !trusted(items, ca) {
+		if !systemCertificateTrusted(items, ca) {
 			return false, nil
 		}
 	}
 	return true, nil
 }
-func (r *rollout) waitForTrust(ctx context.Context, ca *certificate) error {
-	ctx, cancel := operationContext(ctx, r.timeout)
+func (r *systemCertificateRollout) waitForTrust(ctx context.Context, ca *systemCertificateCertificate) error {
+	ctx, cancel := systemCertificateOperationContext(ctx, r.timeout)
 	defer cancel()
-	items, err := collection[certificateItem](ctx, r.client, r.primary().address, "/api/v1/certs/trusted-certificate")
+	items, err := systemCertificateCollection[systemCertificateCertificateItem](ctx, r.client, r.primary().address, "/api/v1/certs/trusted-certificate")
 	if err != nil {
 		return err
 	}
-	if !trusted(items, ca) {
+	if !systemCertificateTrusted(items, ca) {
 		return fmt.Errorf("required CA is absent or lacks Infrastructure trust; manage trusted certificates before system-certificate rollout")
 	}
 	return r.client.wait(ctx, false, func(ctx context.Context) (bool, error) { return r.trustReady(ctx, ca) })
 }
-func current(items []certificateItem, role string) (certificateItem, bool, error) {
-	var found []certificateItem
+func systemCertificateCurrent(items []systemCertificateCertificateItem, role string) (systemCertificateCertificateItem, bool, error) {
+	var found []systemCertificateCertificateItem
 	for _, item := range items {
-		if hasRole(item, role) {
+		if systemCertificateHasRole(item, role) {
 			found = append(found, item)
 		}
 	}
 	if len(found) > 1 {
-		return certificateItem{}, false, fmt.Errorf("multiple active %s certificates; refusing ambiguous role ownership", role)
+		return systemCertificateCertificateItem{}, false, fmt.Errorf("multiple active %s certificates; refusing ambiguous role ownership", role)
 	}
 	if len(found) == 0 {
-		return certificateItem{}, false, nil
+		return systemCertificateCertificateItem{}, false, nil
 	}
 	return found[0], true, nil
 }
-func (r *rollout) activated(ctx context.Context, n node, role, fingerprint string) (bool, error) {
+func (r *systemCertificateRollout) activated(ctx context.Context, n systemCertificateNode, role, fingerprint string) (bool, error) {
 	items, err := r.client.certificates(ctx, n)
 	if err != nil {
 		return false, err
 	}
-	item, found, err := current(items, role)
+	item, found, err := systemCertificateCurrent(items, role)
 	if err != nil || !found {
 		return false, err
 	}
@@ -301,7 +301,7 @@ func (r *rollout) activated(ctx context.Context, n node, role, fingerprint strin
 		return false, nil
 	}
 	if role == "admin" {
-		if !portalAssigned(item, n) {
+		if !systemCertificatePortalAssigned(item, n) {
 			return false, nil
 		}
 		served, err := r.client.servedFingerprint(ctx, n)
@@ -312,17 +312,17 @@ func (r *rollout) activated(ctx context.Context, n node, role, fingerprint strin
 	}
 	return true, nil
 }
-func portalAssigned(item certificateItem, n node) bool {
-	return n.portalGroup == "" || (hasRole(item, "portal") && item.GroupTag == n.portalGroup)
+func systemCertificatePortalAssigned(item systemCertificateCertificateItem, n systemCertificateNode) bool {
+	return n.portalGroup == "" || (systemCertificateHasRole(item, "portal") && item.GroupTag == n.portalGroup)
 }
-func (r *rollout) assign(ctx context.Context, n node, role string, desired *certificate, chain []*certificate, key *rsa.PrivateKey) error {
-	ctx, cancel := operationContext(ctx, r.timeout)
+func (r *systemCertificateRollout) assign(ctx context.Context, n systemCertificateNode, role string, desired *systemCertificateCertificate, chain []*systemCertificateCertificate, key *rsa.PrivateKey) error {
+	ctx, cancel := systemCertificateOperationContext(ctx, r.timeout)
 	defer cancel()
 	items, err := r.client.certificates(ctx, n)
 	if err != nil {
 		return err
 	}
-	item, found, err := current(items, role)
+	item, found, err := systemCertificateCurrent(items, role)
 	if err != nil {
 		return err
 	}
@@ -331,11 +331,11 @@ func (r *rollout) assign(ctx context.Context, n node, role string, desired *cert
 		if err != nil {
 			return err
 		}
-		keep, err := preferred(installed, desired, r.root, chain)
+		keep, err := systemCertificatePreferred(installed, desired, r.root, chain)
 		if err != nil {
 			return fmt.Errorf("%s %s: %s", n.hostname, role, err)
 		}
-		if keep && (role != "admin" || portalAssigned(item, n)) {
+		if keep && (role != "admin" || systemCertificatePortalAssigned(item, n)) {
 			active, err := r.activated(ctx, n, role, installed.fingerprint)
 			if err == nil && active {
 				healthy, err := r.healthy(ctx)
@@ -365,11 +365,11 @@ func (r *rollout) assign(ctx context.Context, n node, role string, desired *cert
 	}
 	matching := ""
 	for _, item := range items {
-		if systemFingerprintMatches(item.Fingerprint, desired) {
+		if systemCertificateSystemFingerprintMatches(item.Fingerprint, desired) {
 			if role == "admin" && n.portalGroup != "" && item.GroupTag != "" && item.GroupTag != n.portalGroup {
 				return fmt.Errorf("%s: refusing to replace a candidate's different portal group tag", n.hostname)
 			}
-			if role == "eap" && n.admin == nil && hasRole(item, "admin") {
+			if role == "eap" && n.admin == nil && systemCertificateHasRole(item, "admin") {
 				return fmt.Errorf("%s: EAP candidate already serves Admin; refusing an Admin-affecting update in EAP-only mode", n.hostname)
 			}
 			matching = item.ID
@@ -399,12 +399,12 @@ func (r *rollout) assign(ctx context.Context, n node, role string, desired *cert
 		}
 	}
 	if matching != "" {
-		err = r.client.json(ctx, n.address, "/api/v1/certs/system-certificate/"+url.PathEscape(shortHostname(n.hostname))+"/"+url.PathEscape(matching), "PUT", payload, nil)
+		err = r.client.json(ctx, n.address, "/api/v1/certs/system-certificate/"+url.PathEscape(systemCertificateShortHostname(n.hostname))+"/"+url.PathEscape(matching), "PUT", payload, nil)
 	} else {
 		if key == nil {
 			return fmt.Errorf("missing private key for certificate import")
 		}
-		encrypted, password, encryptErr := encryptedKey(key)
+		encrypted, password, encryptErr := systemCertificateEncryptedKey(key)
 		if encryptErr != nil {
 			return encryptErr
 		}
@@ -413,7 +413,7 @@ func (r *rollout) assign(ctx context.Context, n node, role string, desired *cert
 		payload["allowExtendedValidity"], payload["allowWildCardCertificates"], payload["validateCertificateExtensions"] = false, false, true
 		err = r.client.json(ctx, n.address, "/api/v1/certs/system-certificate/import", "POST", payload, nil)
 	}
-	if err != nil && !recoverable(err) {
+	if err != nil && !systemCertificateRecoverable(err) {
 		return err
 	}
 	return r.client.wait(ctx, role == "admin" || payload["admin"] == true, func(ctx context.Context) (bool, error) {
@@ -424,7 +424,7 @@ func (r *rollout) assign(ctx context.Context, n node, role string, desired *cert
 		return r.healthy(ctx)
 	})
 }
-func (r *rollout) run(ctx context.Context) error {
+func (r *systemCertificateRollout) run(ctx context.Context) error {
 	if err := r.preflight(ctx); err != nil {
 		return err
 	}
@@ -457,11 +457,11 @@ func (r *rollout) run(ctx context.Context) error {
 	}
 	return nil
 }
-func (r *rollout) observe(ctx context.Context) (map[string]string, bool, error) {
+func (r *systemCertificateRollout) observe(ctx context.Context) (map[string]string, bool, error) {
 	active := map[string]string{}
 	synced := true
 	for _, ca := range r.cas {
-		if validateCA(ca) != nil {
+		if systemCertificateValidateCA(ca) != nil {
 			synced = false
 		}
 		ready, err := r.trustReady(ctx, ca)
@@ -483,7 +483,7 @@ func (r *rollout) observe(ctx context.Context) (map[string]string, bool, error) 
 			roles = append(roles, "eap")
 		}
 		for _, role := range roles {
-			item, found, err := current(items, role)
+			item, found, err := systemCertificateCurrent(items, role)
 			if err != nil {
 				return nil, false, err
 			}
@@ -500,7 +500,7 @@ func (r *rollout) observe(ctx context.Context) (map[string]string, bool, error) 
 			if role == "eap" {
 				desired, chain = r.eap, r.eapChain
 			}
-			keep, err := preferred(installed, desired, r.root, chain)
+			keep, err := systemCertificatePreferred(installed, desired, r.root, chain)
 			if err != nil {
 				return nil, false, fmt.Errorf("%s %s: %s", n.hostname, role, err)
 			}
@@ -508,7 +508,7 @@ func (r *rollout) observe(ctx context.Context) (map[string]string, bool, error) 
 				synced = false
 			}
 			if role == "admin" {
-				synced = synced && portalAssigned(item, n)
+				synced = synced && systemCertificatePortalAssigned(item, n)
 				served, err := r.client.servedFingerprint(ctx, n)
 				if err != nil {
 					return nil, false, err
@@ -519,9 +519,9 @@ func (r *rollout) observe(ctx context.Context) (map[string]string, bool, error) 
 	}
 	return active, synced, nil
 }
-func (r *DeploymentResource) reconcile(ctx context.Context, m *deploymentModel, config deploymentModel, diagnostics *diag.Diagnostics) {
+func (r *systemCertificateCoordinator) reconcile(ctx context.Context, m *SystemCertificateDeployment, config SystemCertificateDeployment, diagnostics *diag.Diagnostics) {
 	keys := map[string]string{}
-	diagnostics.Append(config.Keys.ElementsAs(ctx, &keys, false)...)
+	diagnostics.Append(config.PrivateKeysWo.ElementsAs(ctx, &keys, false)...)
 	if diagnostics.HasError() {
 		return
 	}
@@ -530,10 +530,10 @@ func (r *DeploymentResource) reconcile(ctx context.Context, m *deploymentModel, 
 		diagnostics.AddError("Invalid ISE certificate inputs", err.Error())
 		return
 	}
-	m.ID = types.StringValue(rollout.primary().hostname)
-	m.Keys = types.MapNull(types.StringType)
+	m.Id = types.StringValue(rollout.primary().hostname)
+	m.PrivateKeysWo = types.MapNull(types.StringType)
 	m.InSync = types.BoolValue(false)
-	m.Active = types.MapNull(types.StringType)
+	m.ActiveFingerprints = types.MapNull(types.StringType)
 	if err := rollout.run(ctx); err != nil {
 		diagnostics.AddError("ISE certificate rollout stopped", err.Error())
 		return
@@ -547,6 +547,6 @@ func (r *DeploymentResource) reconcile(ctx context.Context, m *deploymentModel, 
 		diagnostics.AddError("ISE certificates not synchronized", "Observed certificates and CA trust do not satisfy the desired configuration; inspect ISE before retrying.")
 		return
 	}
-	m.Active, _ = types.MapValueFrom(ctx, types.StringType, active)
+	m.ActiveFingerprints, _ = types.MapValueFrom(ctx, types.StringType, active)
 	m.InSync = types.BoolValue(true)
 }

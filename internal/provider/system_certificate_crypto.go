@@ -1,7 +1,7 @@
 // Copyright 2026 Stegra.
 // SPDX-License-Identifier: MPL-2.0
 
-package systemcertificate
+package provider
 
 import (
 	"bytes"
@@ -18,13 +18,13 @@ import (
 	"time"
 )
 
-type certificate struct {
+type systemCertificateCertificate struct {
 	x509             *x509.Certificate
 	pem, fingerprint string
 }
 
-func parseCertificates(value string) ([]*certificate, error) {
-	var result []*certificate
+func systemCertificateParseCertificates(value string) ([]*systemCertificateCertificate, error) {
+	var result []*systemCertificateCertificate
 	rest := []byte(value)
 	for {
 		rest = bytes.TrimSpace(rest)
@@ -47,7 +47,7 @@ func parseCertificates(value string) ([]*certificate, error) {
 			return nil, fmt.Errorf("invalid X509 certificate")
 		}
 		hash := sha256.Sum256(parsed.Raw)
-		result = append(result, &certificate{parsed, string(pem.EncodeToMemory(block)), hex.EncodeToString(hash[:])})
+		result = append(result, &systemCertificateCertificate{parsed, string(pem.EncodeToMemory(block)), hex.EncodeToString(hash[:])})
 	}
 	if len(result) == 0 {
 		return nil, fmt.Errorf("no PEM certificates supplied")
@@ -57,8 +57,8 @@ func parseCertificates(value string) ([]*certificate, error) {
 	}
 	return result, nil
 }
-func parseCertificate(value string) (*certificate, error) {
-	certs, err := parseCertificates(value)
+func systemCertificateParseCertificate(value string) (*systemCertificateCertificate, error) {
+	certs, err := systemCertificateParseCertificates(value)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func parseCertificate(value string) (*certificate, error) {
 	}
 	return certs[0], nil
 }
-func verifies(cert, root *certificate, chain []*certificate) bool {
+func systemCertificateVerifies(cert, root *systemCertificateCertificate, chain []*systemCertificateCertificate) bool {
 	roots, intermediates := x509.NewCertPool(), x509.NewCertPool()
 	roots.AddCert(root.x509)
 	for _, ca := range chain {
@@ -76,7 +76,7 @@ func verifies(cert, root *certificate, chain []*certificate) bool {
 	_, err := cert.x509.Verify(x509.VerifyOptions{Roots: roots, Intermediates: intermediates, KeyUsages: []x509.ExtKeyUsage{x509.ExtKeyUsageAny}})
 	return err == nil
 }
-func identitiesMatch(installed, desired *certificate) bool {
+func systemCertificateIdentitiesMatch(installed, desired *systemCertificateCertificate) bool {
 	if !bytes.Equal(installed.x509.RawSubject, desired.x509.RawSubject) {
 		return false
 	}
@@ -126,25 +126,25 @@ func identitiesMatch(installed, desired *certificate) bool {
 	}
 	return true
 }
-func preferred(installed, desired, root *certificate, chain []*certificate) (bool, error) {
+func systemCertificatePreferred(installed, desired, root *systemCertificateCertificate, chain []*systemCertificateCertificate) (bool, error) {
 	if installed.fingerprint == desired.fingerprint {
-		return verifies(installed, root, chain), nil
+		return systemCertificateVerifies(installed, root, chain), nil
 	}
 	sameIssuer := false
-	for _, issuer := range append(append([]*certificate{}, chain...), root) {
+	for _, issuer := range append(append([]*systemCertificateCertificate{}, chain...), root) {
 		if installed.x509.CheckSignatureFrom(issuer.x509) == nil && desired.x509.CheckSignatureFrom(issuer.x509) == nil {
 			sameIssuer = true
 		}
 	}
-	if bytes.Equal(installed.x509.RawIssuer, desired.x509.RawIssuer) && sameIssuer && verifies(installed, root, chain) && !installed.x509.NotAfter.Before(desired.x509.NotAfter) {
-		if !identitiesMatch(installed, desired) {
+	if bytes.Equal(installed.x509.RawIssuer, desired.x509.RawIssuer) && sameIssuer && systemCertificateVerifies(installed, root, chain) && !installed.x509.NotAfter.Before(desired.x509.NotAfter) {
+		if !systemCertificateIdentitiesMatch(installed, desired) {
 			return false, fmt.Errorf("newer managed certificate lacks the requested subject/SANs; refusing to overwrite it")
 		}
 		return true, nil
 	}
 	return false, nil
 }
-func parseKey(value string, cert *certificate) (*rsa.PrivateKey, error) {
+func systemCertificateParseKey(value string, cert *systemCertificateCertificate) (*rsa.PrivateKey, error) {
 	value = strings.TrimSpace(value)
 	if !strings.HasPrefix(value, "-----BEGIN ") || strings.Count(value, "-----BEGIN ") != 1 {
 		return nil, fmt.Errorf("expected exactly one private key PEM block")
@@ -181,7 +181,7 @@ func parseKey(value string, cert *certificate) (*rsa.PrivateKey, error) {
 	}
 	return key, nil
 }
-func encryptedKey(key *rsa.PrivateKey) (string, string, error) {
+func systemCertificateEncryptedKey(key *rsa.PrivateKey) (string, string, error) {
 	passwordBytes := make([]byte, 16)
 	if _, err := rand.Read(passwordBytes); err != nil {
 		return "", "", fmt.Errorf("unable to generate upload password")
@@ -195,13 +195,13 @@ func encryptedKey(key *rsa.PrivateKey) (string, string, error) {
 	}
 	return string(pem.EncodeToMemory(block)), password, nil
 }
-func validateCA(root *certificate) error {
+func systemCertificateValidateCA(root *systemCertificateCertificate) error {
 	if !root.x509.IsCA || !root.x509.BasicConstraintsValid || root.x509.NotAfter.Before(time.Now()) || root.x509.NotBefore.After(time.Now()) {
 		return fmt.Errorf("managed CA must be a currently valid CA certificate")
 	}
 	return nil
 }
-func validateNodeIdentity(n node) error {
+func systemCertificateValidateNodeIdentity(n systemCertificateNode) error {
 	if net.ParseIP(n.address) == nil || n.hostname == "" || strings.ContainsAny(n.hostname, " /:\\") {
 		return fmt.Errorf("each node needs a valid IP address and hostname")
 	}

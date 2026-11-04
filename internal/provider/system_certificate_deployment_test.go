@@ -1,7 +1,7 @@
 // Copyright 2026 Stegra.
 // SPDX-License-Identifier: MPL-2.0
 
-package systemcertificate
+package provider
 
 import (
 	"archive/zip"
@@ -29,21 +29,21 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-func newClient(username, password string, insecure bool) *client {
+func systemCertificateNewClient(username, password string, insecure bool) *systemCertificateClient {
 	tlsConfig := &tls.Config{MinVersion: tls.VersionTLS12, InsecureSkipVerify: insecure} // Explicit bootstrap opt-in.
-	return &client{
+	return &systemCertificateClient{
 		http: &http.Client{Timeout: 30 * time.Second, Transport: &http.Transport{TLSClientConfig: tlsConfig},
 			CheckRedirect: func(_ *http.Request, _ []*http.Request) error { return http.ErrUseLastResponse }},
 		username: username, password: password, tls: tlsConfig, poll: 10 * time.Second, settle: 60 * time.Second,
 	}
 }
 
-type fixtures struct {
-	root, issuer, desired, old, newer, missing *certificate
+type systemCertificateFixtures struct {
+	root, issuer, desired, old, newer, missing *systemCertificateCertificate
 	key, issuerKey                             *rsa.PrivateKey
 }
 
-func issue(t *testing.T, parent *certificate, parentKey *rsa.PrivateKey, ca bool, days int, sans []string, key *rsa.PrivateKey) *certificate {
+func systemCertificateIssue(t *testing.T, parent *systemCertificateCertificate, parentKey *rsa.PrivateKey, ca bool, days int, sans []string, key *rsa.PrivateKey) *systemCertificateCertificate {
 	t.Helper()
 	serial, err := rand.Int(rand.Reader, new(big.Int).Lsh(big.NewInt(1), 120))
 	if err != nil {
@@ -67,13 +67,13 @@ func issue(t *testing.T, parent *certificate, parentKey *rsa.PrivateKey, ca bool
 	if err != nil {
 		t.Fatal(err)
 	}
-	cert, err := parseCertificate(string(pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: der})))
+	cert, err := systemCertificateParseCertificate(string(pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: der})))
 	if err != nil {
 		t.Fatal(err)
 	}
 	return cert
 }
-func newFixtures(t *testing.T) fixtures {
+func systemCertificateNewFixtures(t *testing.T) systemCertificateFixtures {
 	t.Helper()
 	key, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
@@ -87,33 +87,33 @@ func newFixtures(t *testing.T) fixtures {
 	if err != nil {
 		t.Fatal(err)
 	}
-	root := issue(t, nil, nil, true, 100, nil, rootKey)
-	issuer := issue(t, root, rootKey, true, 90, nil, issuerKey)
+	root := systemCertificateIssue(t, nil, nil, true, 100, nil, rootKey)
+	issuer := systemCertificateIssue(t, root, rootKey, true, 90, nil, issuerKey)
 	sans := []string{"node.example.test", "alias.example.test", "secondary.example.test", "primary.example.test"}
-	return fixtures{root: root, issuer: issuer, key: key, issuerKey: issuerKey,
-		desired: issue(t, issuer, issuerKey, false, 20, sans, key), newer: issue(t, issuer, issuerKey, false, 40, sans, key),
-		missing: issue(t, issuer, issuerKey, false, 40, []string{"node.example.test"}, key), old: issue(t, nil, nil, false, 80, sans, key)}
+	return systemCertificateFixtures{root: root, issuer: issuer, key: key, issuerKey: issuerKey,
+		desired: systemCertificateIssue(t, issuer, issuerKey, false, 20, sans, key), newer: systemCertificateIssue(t, issuer, issuerKey, false, 40, sans, key),
+		missing: systemCertificateIssue(t, issuer, issuerKey, false, 40, []string{"node.example.test"}, key), old: systemCertificateIssue(t, nil, nil, false, 80, sans, key)}
 }
-func TestCertificateSafety(t *testing.T) {
-	f := newFixtures(t)
-	chain := []*certificate{f.issuer}
+func TestSystemCertificateCertificateSafety(t *testing.T) {
+	f := systemCertificateNewFixtures(t)
+	chain := []*systemCertificateCertificate{f.issuer}
 	t.Run("candidate chain verified", func(t *testing.T) {
-		if !verifies(f.desired, f.root, chain) {
+		if !systemCertificateVerifies(f.desired, f.root, chain) {
 			t.Fatal("valid chain refused")
 		}
-		if verifies(f.old, f.root, chain) {
+		if systemCertificateVerifies(f.old, f.root, chain) {
 			t.Fatal("unmanaged certificate verified")
 		}
 	})
 	for _, test := range []struct {
 		name            string
-		cert            *certificate
+		cert            *systemCertificateCertificate
 		keep, wantError bool
 	}{
 		{"exact", f.desired, true, false}, {"newer managed", f.newer, true, false}, {"newer missing identities", f.missing, false, true}, {"newer unmanaged", f.old, false, false},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			keep, err := preferred(test.cert, f.desired, f.root, chain)
+			keep, err := systemCertificatePreferred(test.cert, f.desired, f.root, chain)
 			if keep != test.keep || (err != nil) != test.wantError {
 				t.Fatalf("keep=%v err=%v", keep, err)
 			}
@@ -121,12 +121,12 @@ func TestCertificateSafety(t *testing.T) {
 	}
 	t.Run("wrong key refused", func(t *testing.T) {
 		value := string(pem.EncodeToMemory(&pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(f.issuerKey)}))
-		if _, err := parseKey(value, f.desired); err == nil {
+		if _, err := systemCertificateParseKey(value, f.desired); err == nil {
 			t.Fatal("wrong key accepted")
 		}
 	})
 	t.Run("encrypted upload decrypts", func(t *testing.T) {
-		encoded, password, err := encryptedKey(f.key)
+		encoded, password, err := systemCertificateEncryptedKey(f.key)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -142,13 +142,13 @@ func TestCertificateSafety(t *testing.T) {
 	})
 }
 
-type fakeISE struct {
+type systemCertificateFakeISE struct {
 	t               *testing.T
-	fixture         fixtures
+	fixture         systemCertificateFixtures
 	server          *httptest.Server
-	client          *client
-	nodes           []node
-	certs           map[string]*certificate
+	client          *systemCertificateClient
+	nodes           []systemCertificateNode
+	certs           map[string]*systemCertificateCertificate
 	trust           map[string]bool
 	writes          []string
 	enabled         bool
@@ -160,46 +160,46 @@ type fakeISE struct {
 	portalTag       string
 }
 
-func (f *fakeISE) exportedPEM(cert *certificate) string {
+func (f *systemCertificateFakeISE) exportedPEM(cert *systemCertificateCertificate) string {
 	if f.pemFingerprints {
 		return strings.ReplaceAll(cert.pem, "\n", "\r\n")
 	}
 	return cert.pem
 }
 
-func (f *fakeISE) fingerprint(cert *certificate) string {
+func (f *systemCertificateFakeISE) fingerprint(cert *systemCertificateCertificate) string {
 	if f.pemFingerprints {
 		return fmt.Sprintf("%x", sha256.Sum256([]byte(f.exportedPEM(cert))))
 	}
 	return cert.fingerprint
 }
 
-func newFakeISE(t *testing.T) *fakeISE {
-	f := &fakeISE{t: t, fixture: newFixtures(t), certs: map[string]*certificate{}, trust: map[string]bool{}, enabled: true}
+func systemCertificateNewFakeISE(t *testing.T) *systemCertificateFakeISE {
+	f := &systemCertificateFakeISE{t: t, fixture: systemCertificateNewFixtures(t), certs: map[string]*systemCertificateCertificate{}, trust: map[string]bool{}, enabled: true}
 	f.server = httptest.NewTLSServer(http.HandlerFunc(f.handle))
 	t.Cleanup(f.server.Close)
 	f.trust[f.fixture.root.fingerprint] = true
 	f.trust[f.fixture.issuer.fingerprint] = true
-	f.client = newClient("test", "test-secret", true)
+	f.client = systemCertificateNewClient("test", "test-secret", true)
 	f.client.poll = time.Microsecond
 	f.client.settle = time.Microsecond
-	f.nodes = []node{{hostname: "secondary.example.test", address: strings.TrimPrefix(f.server.URL, "https://"), admin: f.fixture.desired, chain: []*certificate{f.fixture.issuer}, key: f.fixture.key, eap: true},
-		{hostname: "primary.example.test", address: strings.TrimPrefix(f.server.URL, "https://"), admin: f.fixture.desired, chain: []*certificate{f.fixture.issuer}, key: f.fixture.key}}
+	f.nodes = []systemCertificateNode{{hostname: "secondary.example.test", address: strings.TrimPrefix(f.server.URL, "https://"), admin: f.fixture.desired, chain: []*systemCertificateCertificate{f.fixture.issuer}, key: f.fixture.key, eap: true},
+		{hostname: "primary.example.test", address: strings.TrimPrefix(f.server.URL, "https://"), admin: f.fixture.desired, chain: []*systemCertificateCertificate{f.fixture.issuer}, key: f.fixture.key}}
 	for _, n := range f.nodes {
-		f.certs[shortHostname(n.hostname)+"/admin"] = f.fixture.old
+		f.certs[systemCertificateShortHostname(n.hostname)+"/admin"] = f.fixture.old
 		if n.eap {
-			f.certs[shortHostname(n.hostname)+"/eap"] = f.fixture.old
+			f.certs[systemCertificateShortHostname(n.hostname)+"/eap"] = f.fixture.old
 		}
 	}
-	f.client.probe = func(_ context.Context, n node) (string, error) {
-		return f.certs[shortHostname(n.hostname)+"/admin"].fingerprint, nil
+	f.client.probe = func(_ context.Context, n systemCertificateNode) (string, error) {
+		return f.certs[systemCertificateShortHostname(n.hostname)+"/admin"].fingerprint, nil
 	}
 	return f
 }
-func (f *fakeISE) rollout() *rollout {
-	return &rollout{client: f.client, root: f.fixture.root, eap: f.fixture.desired, eapChain: []*certificate{f.fixture.issuer}, eapKey: f.fixture.key, nodes: f.nodes, cas: []*certificate{f.fixture.root, f.fixture.issuer}, timeout: 120}
+func (f *systemCertificateFakeISE) rollout() *systemCertificateRollout {
+	return &systemCertificateRollout{client: f.client, root: f.fixture.root, eap: f.fixture.desired, eapChain: []*systemCertificateCertificate{f.fixture.issuer}, eapKey: f.fixture.key, nodes: f.nodes, cas: []*systemCertificateCertificate{f.fixture.root, f.fixture.issuer}, timeout: 120}
 }
-func (f *fakeISE) handle(w http.ResponseWriter, r *http.Request) {
+func (f *systemCertificateFakeISE) handle(w http.ResponseWriter, r *http.Request) {
 	username, password, ok := r.BasicAuth()
 	if !ok || username != "test" || password != "test-secret" {
 		f.t.Error("missing basic auth")
@@ -214,16 +214,16 @@ func (f *fakeISE) handle(w http.ResponseWriter, r *http.Request) {
 	p := r.URL.Path
 	switch {
 	case p == "/api/v1/deployment/node":
-		write(map[string]any{"response": []deploymentNode{{FQDN: "secondary.example.test", Status: "Connected"}, {FQDN: "primary.example.test", Status: "Connected", Roles: []string{"PrimaryAdmin"}}}})
+		write(map[string]any{"response": []systemCertificateDeploymentNode{{FQDN: "secondary.example.test", Status: "Connected"}, {FQDN: "primary.example.test", Status: "Connected", Roles: []string{"PrimaryAdmin"}}}})
 	case p == "/admin/API/apiGateway/get":
 		write([]map[string]any{{"hostname": "primary", "isEnabled": true}, {"hostname": "secondary", "isEnabled": f.enabled}})
 	case p == "/api/v1/certs/trusted-certificate/import":
 		f.t.Error("system certificate deployment must never modify CA trust")
 		w.WriteHeader(400)
 	case p == "/api/v1/certs/trusted-certificate":
-		items := []certificateItem{}
+		items := []systemCertificateCertificateItem{}
 		for hash := range f.trust {
-			items = append(items, certificateItem{Fingerprint: hash, TrustedFor: "Infrastructure"})
+			items = append(items, systemCertificateCertificateItem{Fingerprint: hash, TrustedFor: "Infrastructure"})
 		}
 		write(map[string]any{"response": items})
 	case p == "/api/v1/certs/system-certificate/export":
@@ -315,7 +315,7 @@ func (f *fakeISE) handle(w http.ResponseWriter, r *http.Request) {
 		write(map[string]any{})
 	case strings.HasPrefix(p, "/api/v1/certs/system-certificate/"):
 		host := strings.TrimPrefix(p, "/api/v1/certs/system-certificate/")
-		items := []certificateItem{}
+		items := []systemCertificateCertificateItem{}
 		for _, role := range []string{"admin", "eap"} {
 			if cert := f.certs[host+"/"+role]; cert != nil {
 				used := "Admin"
@@ -327,20 +327,20 @@ func (f *fakeISE) handle(w http.ResponseWriter, r *http.Request) {
 					used += ", Portal"
 					groupTag = f.portalTag
 				}
-				items = append(items, certificateItem{ID: host + "/" + role, Fingerprint: f.fingerprint(cert), UsedBy: used, GroupTag: groupTag})
+				items = append(items, systemCertificateCertificateItem{ID: host + "/" + role, Fingerprint: f.fingerprint(cert), UsedBy: used, GroupTag: groupTag})
 			}
 		}
 		if portal := f.certs[host+"/portal"]; portal != nil {
 			admin := f.certs[host+"/admin"]
 			if admin == nil || admin.fingerprint != portal.fingerprint {
-				items = append(items, certificateItem{ID: host + "/portal", Fingerprint: f.fingerprint(portal), UsedBy: "Portal", GroupTag: f.portalTag})
+				items = append(items, systemCertificateCertificateItem{ID: host + "/portal", Fingerprint: f.fingerprint(portal), UsedBy: "Portal", GroupTag: f.portalTag})
 			}
 		}
 		if f.stored {
-			items = append(items, certificateItem{ID: "candidate", Fingerprint: f.fingerprint(f.fixture.desired), UsedBy: "Not in use"})
+			items = append(items, systemCertificateCertificateItem{ID: "candidate", Fingerprint: f.fingerprint(f.fixture.desired), UsedBy: "Not in use"})
 		}
 		if f.unexportable {
-			items = append(items, certificateItem{ID: "unrelated", Fingerprint: strings.Repeat("0", 64), UsedBy: "Not in use"})
+			items = append(items, systemCertificateCertificateItem{ID: "unrelated", Fingerprint: strings.Repeat("0", 64), UsedBy: "Not in use"})
 		}
 		write(map[string]any{"response": items})
 	default:
@@ -348,8 +348,8 @@ func (f *fakeISE) handle(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(404)
 	}
 }
-func TestRolloutAndRefresh(t *testing.T) {
-	f := newFakeISE(t)
+func TestSystemCertificateRolloutAndRefresh(t *testing.T) {
+	f := systemCertificateNewFakeISE(t)
 	r := f.rollout()
 	if err := r.run(context.Background()); err != nil {
 		t.Fatal(err)
@@ -375,10 +375,10 @@ func TestRolloutAndRefresh(t *testing.T) {
 		t.Fatalf("role drift not detected: %v", err)
 	}
 }
-func TestRolloutPreflight(t *testing.T) {
+func TestSystemCertificateRolloutPreflight(t *testing.T) {
 	for _, test := range []string{"disabled gateway", "primary not last"} {
 		t.Run(test, func(t *testing.T) {
-			f := newFakeISE(t)
+			f := systemCertificateNewFakeISE(t)
 			r := f.rollout()
 			if test == "disabled gateway" {
 				f.enabled = false
@@ -394,8 +394,8 @@ func TestRolloutPreflight(t *testing.T) {
 		})
 	}
 }
-func TestInterruptedWriteNotReplayed(t *testing.T) {
-	f := newFakeISE(t)
+func TestSystemCertificateInterruptedWriteNotReplayed(t *testing.T) {
+	f := systemCertificateNewFakeISE(t)
 	f.interrupt = true
 	r := f.rollout()
 	if err := r.assign(context.Background(), r.nodes[0], "eap", r.eap, r.eapChain, r.eapKey); err != nil {
@@ -405,8 +405,8 @@ func TestInterruptedWriteNotReplayed(t *testing.T) {
 		t.Fatalf("ambiguous write replayed: %v", f.writes)
 	}
 }
-func TestStoredCandidateAssignedWithoutUpload(t *testing.T) {
-	f := newFakeISE(t)
+func TestSystemCertificateStoredCandidateAssignedWithoutUpload(t *testing.T) {
+	f := systemCertificateNewFakeISE(t)
 	f.stored = true
 	r := f.rollout()
 	if err := r.assign(context.Background(), r.nodes[0], "eap", r.eap, r.eapChain, r.eapKey); err != nil {
@@ -416,10 +416,10 @@ func TestStoredCandidateAssignedWithoutUpload(t *testing.T) {
 		t.Fatalf("stored certificate reimported: %v", f.writes)
 	}
 }
-func TestNewerCertificatePreservedOrRefused(t *testing.T) {
+func TestSystemCertificateNewerCertificatePreservedOrRefused(t *testing.T) {
 	for _, missing := range []bool{false, true} {
 		t.Run(fmt.Sprintf("missing=%v", missing), func(t *testing.T) {
-			f := newFakeISE(t)
+			f := systemCertificateNewFakeISE(t)
 			r := f.rollout()
 			cert := f.fixture.newer
 			if missing {
@@ -436,7 +436,7 @@ func TestNewerCertificatePreservedOrRefused(t *testing.T) {
 		})
 	}
 }
-func TestAPIErrorRedactionAndLogicalFailure(t *testing.T) {
+func TestSystemCertificateAPIErrorRedactionAndLogicalFailure(t *testing.T) {
 	for _, body := range []string{"secret echoed by HTTP error", `{"response":{"status":"FAILURE"}}`, `{"response":{"status":"Fail"}}`} {
 		t.Run(body, func(t *testing.T) {
 			server := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
@@ -446,7 +446,7 @@ func TestAPIErrorRedactionAndLogicalFailure(t *testing.T) {
 				fmt.Fprint(w, body)
 			}))
 			defer server.Close()
-			c := newClient("test", "secret", true)
+			c := systemCertificateNewClient("test", "secret", true)
 			err := c.json(context.Background(), strings.TrimPrefix(server.URL, "https://"), "/test", "POST", map[string]string{"privateKeyData": "secret"}, nil)
 			if err == nil || strings.Contains(err.Error(), "secret") {
 				t.Fatalf("unsafe diagnostic: %v", err)
@@ -454,23 +454,23 @@ func TestAPIErrorRedactionAndLogicalFailure(t *testing.T) {
 		})
 	}
 }
-func TestRecoveryCancellation(t *testing.T) {
-	c := newClient("test", "test", true)
+func TestSystemCertificateRecoveryCancellation(t *testing.T) {
+	c := systemCertificateNewClient("test", "test", true)
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 	if err := c.wait(ctx, true, func(context.Context) (bool, error) { return false, nil }); err == nil {
 		t.Fatal("cancelled recovery succeeded")
 	}
 }
-func TestResourceSchemaAndDriftPlanning(t *testing.T) {
+func TestSystemCertificateResourceSchemaAndDriftPlanning(t *testing.T) {
 	ctx := context.Background()
-	r := &DeploymentResource{}
+	r := &systemCertificateCoordinator{}
 	var schemaResponse resource.SchemaResponse
 	r.Schema(ctx, resource.SchemaRequest{}, &schemaResponse)
 	if diagnostics := schemaResponse.Schema.ValidateImplementation(ctx); diagnostics.HasError() {
 		t.Fatal(diagnostics)
 	}
-	model := deploymentModel{ID: types.StringValue("primary.example.test"), Root: types.StringValue("root"), EAPCertificate: types.StringValue("eap"), EAPChain: types.StringValue("ca"), Keys: types.MapNull(types.StringType), Timeout: types.Int64Value(1800), Active: types.MapNull(types.StringType), InSync: types.BoolValue(false), Nodes: []nodeModel{}}
+	model := SystemCertificateDeployment{Id: types.StringValue("primary.example.test"), RootCertificatePem: types.StringValue("root"), EapCertificatePem: types.StringValue("eap"), EapCaPem: types.StringValue("ca"), PrivateKeysWo: types.MapNull(types.StringType), TimeoutSeconds: types.Int64Value(1800), ActiveFingerprints: types.MapNull(types.StringType), InSync: types.BoolValue(false), Nodes: []SystemCertificateDeploymentNodes{}}
 	state := tfsdk.State{Schema: schemaResponse.Schema}
 	if diagnostics := state.Set(ctx, model); diagnostics.HasError() {
 		t.Fatal(diagnostics)
@@ -478,7 +478,7 @@ func TestResourceSchemaAndDriftPlanning(t *testing.T) {
 	plan := tfsdk.Plan{Schema: schemaResponse.Schema, Raw: state.Raw}
 	resp := resource.ModifyPlanResponse{Plan: plan}
 	r.ModifyPlan(ctx, resource.ModifyPlanRequest{State: state, Plan: plan}, &resp)
-	var changed deploymentModel
+	var changed SystemCertificateDeployment
 	if diagnostics := resp.Plan.Get(ctx, &changed); diagnostics.HasError() {
 		t.Fatal(diagnostics)
 	}
@@ -486,8 +486,8 @@ func TestResourceSchemaAndDriftPlanning(t *testing.T) {
 		t.Fatal("drift did not schedule reconciliation")
 	}
 }
-func TestDeleteDoesNotContactISE(t *testing.T) {
-	r := &DeploymentResource{}
+func TestSystemCertificateDeleteDoesNotContactISE(t *testing.T) {
+	r := &systemCertificateCoordinator{}
 	var response resource.DeleteResponse
 	r.Delete(context.Background(), resource.DeleteRequest{}, &response)
 	if response.Diagnostics.HasError() || len(response.Diagnostics) != 1 {
@@ -495,34 +495,34 @@ func TestDeleteDoesNotContactISE(t *testing.T) {
 	}
 }
 
-type routeTransport struct {
+type systemCertificateRouteTransport struct {
 	base    http.RoundTripper
 	address string
 }
 
-func (r routeTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+func (r systemCertificateRouteTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	clone := req.Clone(req.Context())
 	clone.URL.Host = r.address
 	return r.base.RoundTrip(clone)
 }
-func (f *fakeISE) model(t *testing.T) deploymentModel {
+func (f *systemCertificateFakeISE) model(t *testing.T) SystemCertificateDeployment {
 	t.Helper()
-	f.client.http.Transport = routeTransport{f.server.Client().Transport, strings.TrimPrefix(f.server.URL, "https://")}
+	f.client.http.Transport = systemCertificateRouteTransport{f.server.Client().Transport, strings.TrimPrefix(f.server.URL, "https://")}
 	f.nodes[0].address = "192.0.2.4"
 	f.nodes[1].address = "192.0.2.5"
 	keys := map[string]string{"eap": string(pem.EncodeToMemory(&pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(f.fixture.key)}))}
-	model := deploymentModel{ID: types.StringNull(), Root: types.StringValue(f.fixture.root.pem), EAPCertificate: types.StringValue(f.fixture.desired.pem), EAPChain: types.StringValue(f.fixture.issuer.pem), KeysVersion: types.Int64Value(1), Timeout: types.Int64Value(120), Active: types.MapNull(types.StringType), InSync: types.BoolNull()}
+	model := SystemCertificateDeployment{Id: types.StringNull(), RootCertificatePem: types.StringValue(f.fixture.root.pem), EapCertificatePem: types.StringValue(f.fixture.desired.pem), EapCaPem: types.StringValue(f.fixture.issuer.pem), PrivateKeysWoVersion: types.Int64Value(1), TimeoutSeconds: types.Int64Value(120), ActiveFingerprints: types.MapNull(types.StringType), InSync: types.BoolNull()}
 	for _, n := range f.nodes {
-		model.Nodes = append(model.Nodes, nodeModel{Hostname: types.StringValue(n.hostname), Address: types.StringValue(n.address), Certificate: types.StringValue(n.admin.pem), Chain: types.StringValue(f.fixture.issuer.pem), EAP: types.BoolValue(n.eap)})
+		model.Nodes = append(model.Nodes, SystemCertificateDeploymentNodes{Hostname: types.StringValue(n.hostname), Address: types.StringValue(n.address), AdminCertificatePem: types.StringValue(n.admin.pem), AdminCaPem: types.StringValue(f.fixture.issuer.pem), Eap: types.BoolValue(n.eap)})
 		keys[n.hostname] = keys["eap"]
 	}
-	model.Keys, _ = types.MapValueFrom(context.Background(), types.StringType, keys)
+	model.PrivateKeysWo, _ = types.MapValueFrom(context.Background(), types.StringType, keys)
 	return model
 }
-func TestResourceCreateReadAndUpdateOffline(t *testing.T) {
-	f := newFakeISE(t)
+func TestSystemCertificateResourceCreateReadAndUpdateOffline(t *testing.T) {
+	f := systemCertificateNewFakeISE(t)
 	ctx := context.Background()
-	r := &DeploymentResource{client: f.client}
+	r := &systemCertificateCoordinator{client: f.client}
 	var schemaResponse resource.SchemaResponse
 	r.Schema(ctx, resource.SchemaRequest{}, &schemaResponse)
 	configModel := f.model(t)
@@ -532,10 +532,10 @@ func TestResourceCreateReadAndUpdateOffline(t *testing.T) {
 	}
 	config := tfsdk.Config{Schema: schemaResponse.Schema, Raw: configState.Raw}
 	planModel := configModel
-	planModel.Keys = types.MapNull(types.StringType)
-	planModel.ID = types.StringUnknown()
+	planModel.PrivateKeysWo = types.MapNull(types.StringType)
+	planModel.Id = types.StringUnknown()
 	planModel.InSync = types.BoolUnknown()
-	planModel.Active = types.MapUnknown(types.StringType)
+	planModel.ActiveFingerprints = types.MapUnknown(types.StringType)
 	plan := tfsdk.Plan{Schema: schemaResponse.Schema}
 	if d := plan.Set(ctx, planModel); d.HasError() {
 		t.Fatal(d)
@@ -545,11 +545,11 @@ func TestResourceCreateReadAndUpdateOffline(t *testing.T) {
 	if created.Diagnostics.HasError() {
 		t.Fatal(created.Diagnostics)
 	}
-	var state deploymentModel
+	var state SystemCertificateDeployment
 	if d := created.State.Get(ctx, &state); d.HasError() {
 		t.Fatal(d)
 	}
-	if !state.Keys.IsNull() || !state.InSync.ValueBool() || state.ID.ValueString() != "primary.example.test" {
+	if !state.PrivateKeysWo.IsNull() || !state.InSync.ValueBool() || state.Id.ValueString() != "primary.example.test" {
 		t.Fatal("invalid creation state or private key persisted")
 	}
 	f.certs["secondary/eap"] = f.fixture.old
@@ -575,15 +575,15 @@ func TestResourceCreateReadAndUpdateOffline(t *testing.T) {
 	if d := updated.State.Get(ctx, &state); d.HasError() {
 		t.Fatal(d)
 	}
-	if !state.InSync.ValueBool() || !state.Keys.IsNull() {
+	if !state.InSync.ValueBool() || !state.PrivateKeysWo.IsNull() {
 		t.Fatal("drift not reconciled or private keys persisted")
 	}
 }
-func TestFailedCreateKeepsRecoverableStateWithoutKeys(t *testing.T) {
-	f := newFakeISE(t)
+func TestSystemCertificateFailedCreateKeepsRecoverableStateWithoutKeys(t *testing.T) {
+	f := systemCertificateNewFakeISE(t)
 	f.enabled = false
 	ctx := context.Background()
-	r := &DeploymentResource{client: f.client}
+	r := &systemCertificateCoordinator{client: f.client}
 	var schemaResponse resource.SchemaResponse
 	r.Schema(ctx, resource.SchemaRequest{}, &schemaResponse)
 	model := f.model(t)
@@ -595,21 +595,21 @@ func TestFailedCreateKeepsRecoverableStateWithoutKeys(t *testing.T) {
 	if !response.Diagnostics.HasError() || len(f.writes) > 0 {
 		t.Fatal("gateway prerequisite failed open")
 	}
-	var state deploymentModel
+	var state SystemCertificateDeployment
 	if d := response.State.Get(ctx, &state); d.HasError() {
 		t.Fatal(d)
 	}
-	if state.ID.IsNull() || !state.Keys.IsNull() || state.InSync.ValueBool() {
+	if state.Id.IsNull() || !state.PrivateKeysWo.IsNull() || state.InSync.ValueBool() {
 		t.Fatal("failed rollout state cannot be recovered safely")
 	}
 }
 
-func TestEAPOnlyLeavesEveryAdminCertificateUntouched(t *testing.T) {
-	f := newFakeISE(t)
+func TestSystemCertificateEAPOnlyLeavesEveryAdminCertificateUntouched(t *testing.T) {
+	f := systemCertificateNewFakeISE(t)
 	model := f.model(t)
 	for i := range model.Nodes {
-		model.Nodes[i].Certificate = types.StringNull()
-		model.Nodes[i].Chain = types.StringNull()
+		model.Nodes[i].AdminCertificatePem = types.StringNull()
+		model.Nodes[i].AdminCaPem = types.StringNull()
 	}
 	keys := map[string]string{"eap": string(pem.EncodeToMemory(&pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(f.fixture.key)}))}
 	r, err := f.client.prepare(model, keys)
@@ -623,7 +623,7 @@ func TestEAPOnlyLeavesEveryAdminCertificateUntouched(t *testing.T) {
 		t.Fatalf("unexpected EAP-only writes: %v", f.writes)
 	}
 	for _, n := range f.nodes {
-		if f.certs[shortHostname(n.hostname)+"/admin"].fingerprint != f.fixture.old.fingerprint {
+		if f.certs[systemCertificateShortHostname(n.hostname)+"/admin"].fingerprint != f.fixture.old.fingerprint {
 			t.Fatal("Admin certificate changed")
 		}
 	}
@@ -635,8 +635,8 @@ func TestEAPOnlyLeavesEveryAdminCertificateUntouched(t *testing.T) {
 		t.Fatal("unmanaged Admin drift is being tracked")
 	}
 }
-func TestEAPOnlyRefusesAdminCandidateReuse(t *testing.T) {
-	f := newFakeISE(t)
+func TestSystemCertificateEAPOnlyRefusesAdminCandidateReuse(t *testing.T) {
+	f := systemCertificateNewFakeISE(t)
 	r := f.rollout()
 	n := r.nodes[0]
 	n.admin = nil
@@ -649,17 +649,17 @@ func TestEAPOnlyRefusesAdminCandidateReuse(t *testing.T) {
 	}
 }
 
-func TestEAPOnlyWithPEMFileFingerprints(t *testing.T) {
+func TestSystemCertificateEAPOnlyWithPEMFileFingerprints(t *testing.T) {
 	for _, stored := range []bool{false, true} {
 		t.Run(fmt.Sprintf("stored=%v", stored), func(t *testing.T) {
-			f := newFakeISE(t)
+			f := systemCertificateNewFakeISE(t)
 			f.pemFingerprints = true
 			f.unexportable = true
 			f.stored = stored
 			model := f.model(t)
 			for i := range model.Nodes {
-				model.Nodes[i].Certificate = types.StringNull()
-				model.Nodes[i].Chain = types.StringNull()
+				model.Nodes[i].AdminCertificatePem = types.StringNull()
+				model.Nodes[i].AdminCaPem = types.StringNull()
 			}
 			keys := map[string]string{"eap": string(pem.EncodeToMemory(&pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(f.fixture.key)}))}
 			r, err := f.client.prepare(model, keys)
@@ -685,7 +685,7 @@ func TestEAPOnlyWithPEMFileFingerprints(t *testing.T) {
 				t.Fatalf("matching certificate was not adopted: %v %v", err, f.writes)
 			}
 			for _, n := range f.nodes {
-				if f.certs[shortHostname(n.hostname)+"/admin"].fingerprint != f.fixture.old.fingerprint {
+				if f.certs[systemCertificateShortHostname(n.hostname)+"/admin"].fingerprint != f.fixture.old.fingerprint {
 					t.Fatal("unmanaged Admin certificate changed")
 				}
 			}
@@ -693,17 +693,17 @@ func TestEAPOnlyWithPEMFileFingerprints(t *testing.T) {
 	}
 }
 
-func TestExportRefusesUnmatchedFingerprint(t *testing.T) {
-	f := newFakeISE(t)
+func TestSystemCertificateExportRefusesUnmatchedFingerprint(t *testing.T) {
+	f := systemCertificateNewFakeISE(t)
 	f.pemFingerprints = true
-	_, err := f.client.export(context.Background(), f.nodes[0], certificateItem{ID: "secondary/eap", Fingerprint: strings.Repeat("0", 64)})
+	_, err := f.client.export(context.Background(), f.nodes[0], systemCertificateCertificateItem{ID: "secondary/eap", Fingerprint: strings.Repeat("0", 64)})
 	if err == nil {
 		t.Fatal("unmatched exported certificate accepted")
 	}
 }
 
-func TestAdminPortalTransferPreservesTagAndEAP(t *testing.T) {
-	f := newFakeISE(t)
+func TestSystemCertificateAdminPortalTransferPreservesTagAndEAP(t *testing.T) {
+	f := systemCertificateNewFakeISE(t)
 	f.pemFingerprints = true
 	f.portalTag = "Existing Portal Group"
 	f.certs["secondary/portal"] = f.fixture.old
@@ -743,8 +743,8 @@ func TestAdminPortalTransferPreservesTagAndEAP(t *testing.T) {
 	}
 }
 
-func TestAdminPortalTransferRequiresExistingTag(t *testing.T) {
-	f := newFakeISE(t)
+func TestSystemCertificateAdminPortalTransferRequiresExistingTag(t *testing.T) {
+	f := systemCertificateNewFakeISE(t)
 	f.portalTag = "Existing Portal Group"
 	f.certs["secondary/portal"] = f.fixture.old
 	r := f.rollout()
@@ -754,8 +754,8 @@ func TestAdminPortalTransferRequiresExistingTag(t *testing.T) {
 	}
 }
 
-func TestAdminLeavesPortalUnmanagedWithoutOptIn(t *testing.T) {
-	f := newFakeISE(t)
+func TestSystemCertificateAdminLeavesPortalUnmanagedWithoutOptIn(t *testing.T) {
+	f := systemCertificateNewFakeISE(t)
 	f.portalTag = "Existing Portal Group"
 	f.certs["secondary/portal"] = f.fixture.old
 	r := f.rollout()
@@ -767,19 +767,19 @@ func TestAdminLeavesPortalUnmanagedWithoutOptIn(t *testing.T) {
 	}
 }
 
-func TestPortalTransferRequiresManagedAdmin(t *testing.T) {
-	f := newFakeISE(t)
+func TestSystemCertificatePortalTransferRequiresManagedAdmin(t *testing.T) {
+	f := systemCertificateNewFakeISE(t)
 	model := f.model(t)
-	model.Nodes[0].Certificate = types.StringNull()
-	model.Nodes[0].Chain = types.StringNull()
-	model.Nodes[0].PortalGroup = types.StringValue("Existing Portal Group")
+	model.Nodes[0].AdminCertificatePem = types.StringNull()
+	model.Nodes[0].AdminCaPem = types.StringNull()
+	model.Nodes[0].AdminPortalGroupTag = types.StringValue("Existing Portal Group")
 	if _, err := f.client.prepare(model, nil); err == nil {
 		t.Fatal("Portal transfer accepted without Admin management")
 	}
 }
 
-func TestMissingTrustStopsBeforeSystemWrites(t *testing.T) {
-	f := newFakeISE(t)
+func TestSystemCertificateMissingTrustStopsBeforeSystemWrites(t *testing.T) {
+	f := systemCertificateNewFakeISE(t)
 	delete(f.trust, f.fixture.issuer.fingerprint)
 	if err := f.rollout().run(context.Background()); err == nil {
 		t.Fatal("missing pre-installed issuer trust accepted")
@@ -789,16 +789,16 @@ func TestMissingTrustStopsBeforeSystemWrites(t *testing.T) {
 	}
 }
 
-func TestAdminOnlyDoesNotRequireEAPMaterial(t *testing.T) {
-	f := newFakeISE(t)
+func TestSystemCertificateAdminOnlyDoesNotRequireEAPMaterial(t *testing.T) {
+	f := systemCertificateNewFakeISE(t)
 	model := f.model(t)
-	model.EAPCertificate = types.StringNull()
-	model.EAPChain = types.StringNull()
+	model.EapCertificatePem = types.StringNull()
+	model.EapCaPem = types.StringNull()
 	for i := range model.Nodes {
-		model.Nodes[i].EAP = types.BoolValue(false)
+		model.Nodes[i].Eap = types.BoolValue(false)
 	}
 	keys := map[string]string{}
-	model.Keys.ElementsAs(context.Background(), &keys, false)
+	model.PrivateKeysWo.ElementsAs(context.Background(), &keys, false)
 	delete(keys, "eap")
 	r, err := f.client.prepare(model, keys)
 	if err != nil {
@@ -814,8 +814,8 @@ func TestAdminOnlyDoesNotRequireEAPMaterial(t *testing.T) {
 	}
 }
 
-func TestRecoveryRequiresConsecutiveHealthyChecks(t *testing.T) {
-	c := newClient("test", "test", true)
+func TestSystemCertificateRecoveryRequiresConsecutiveHealthyChecks(t *testing.T) {
+	c := systemCertificateNewClient("test", "test", true)
 	c.poll = time.Microsecond
 	c.settle = time.Millisecond
 	sequence := []bool{true, false, true, true, true}
@@ -836,8 +836,8 @@ func TestRecoveryRequiresConsecutiveHealthyChecks(t *testing.T) {
 	}
 }
 
-func TestMissingDeploymentMemberStopsBeforeWrites(t *testing.T) {
-	f := newFakeISE(t)
+func TestSystemCertificateMissingDeploymentMemberStopsBeforeWrites(t *testing.T) {
+	f := systemCertificateNewFakeISE(t)
 	r := f.rollout()
 	r.nodes = r.nodes[1:]
 	if err := r.run(context.Background()); err == nil || len(f.writes) != 0 {
@@ -845,10 +845,10 @@ func TestMissingDeploymentMemberStopsBeforeWrites(t *testing.T) {
 	}
 }
 
-func TestInheritedTransportAndRedirectPolicy(t *testing.T) {
+func TestSystemCertificateInheritedTransportAndRedirectPolicy(t *testing.T) {
 	transport := &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: false}}
 	configured := &http.Client{Transport: transport, Timeout: 23 * time.Second}
-	r := &DeploymentResource{}
+	r := &systemCertificateCoordinator{}
 	if err := r.ConfigureHTTPClient(configured, "user", "password"); err != nil {
 		t.Fatal(err)
 	}
@@ -863,8 +863,8 @@ func TestInheritedTransportAndRedirectPolicy(t *testing.T) {
 	}
 }
 
-func TestServerFailureAfterWriteIsNotReplayed(t *testing.T) {
-	f := newFakeISE(t)
+func TestSystemCertificateServerFailureAfterWriteIsNotReplayed(t *testing.T) {
+	f := systemCertificateNewFakeISE(t)
 	f.httpFailure = true
 	r := f.rollout()
 	if err := r.assign(context.Background(), r.nodes[0], "eap", r.eap, r.eapChain, r.eapKey); err != nil {
@@ -875,9 +875,9 @@ func TestServerFailureAfterWriteIsNotReplayed(t *testing.T) {
 	}
 }
 
-func TestUnexpectedServedCertificateStopsBeforeNextNode(t *testing.T) {
-	f := newFakeISE(t)
-	f.client.probe = func(context.Context, node) (string, error) { return strings.Repeat("0", 64), nil }
+func TestSystemCertificateUnexpectedServedCertificateStopsBeforeNextNode(t *testing.T) {
+	f := systemCertificateNewFakeISE(t)
+	f.client.probe = func(context.Context, systemCertificateNode) (string, error) { return strings.Repeat("0", 64), nil }
 	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 	defer cancel()
 	if err := f.rollout().run(ctx); err == nil {
@@ -890,8 +890,8 @@ func TestUnexpectedServedCertificateStopsBeforeNextNode(t *testing.T) {
 	}
 }
 
-func TestSharedEAPAndAdminUsesOrderedNodePhase(t *testing.T) {
-	f := newFakeISE(t)
+func TestSystemCertificateSharedEAPAndAdminUsesOrderedNodePhase(t *testing.T) {
+	f := systemCertificateNewFakeISE(t)
 	r := f.rollout()
 	r.nodes[1].eap = true
 	f.certs["primary/eap"] = f.fixture.old
@@ -901,5 +901,25 @@ func TestSharedEAPAndAdminUsesOrderedNodePhase(t *testing.T) {
 	want := "secondary/eap/POST,secondary/admin/PUT,primary/eap/POST,primary/admin/PUT"
 	if strings.Join(f.writes, ",") != want {
 		t.Fatalf("unexpected order: %v", f.writes)
+	}
+}
+
+// Offline lifecycle tests use the actual generated schema, never a second copy.
+func (r *systemCertificateCoordinator) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	(&SystemCertificateDeploymentResource{}).Schema(ctx, req, resp)
+}
+
+func TestSystemCertificateGeneratedSchemaSecurity(t *testing.T) {
+	var response resource.SchemaResponse
+	(&SystemCertificateDeploymentResource{}).Schema(context.Background(), resource.SchemaRequest{}, &response)
+	secret := response.Schema.Attributes["private_keys_wo"]
+	if !secret.IsRequired() || !secret.IsWriteOnly() || !secret.IsSensitive() {
+		t.Fatal("generated keys must be required, sensitive and write-only")
+	}
+	for _, name := range []string{"active_fingerprints", "in_sync"} {
+		attr := response.Schema.Attributes[name]
+		if !attr.IsComputed() || attr.IsOptional() || attr.IsRequired() {
+			t.Fatalf("%s must be a read-only output", name)
+		}
 	}
 }
