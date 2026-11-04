@@ -25,6 +25,7 @@ func TestTrustedCertificateSettingsTypes(t *testing.T) {
 	}{
 		{"string values", `{"downloadCRL":"true","ignoreCRLExpiration":"false","nonAutomaticCRLUpdatePeriod":"2","nonAutomaticCRLUpdateUnits":"Hours","automaticCRLUpdatePeriod":"0"}`, map[string]any{"downloadCRL": true, "ignoreCRLExpiration": false, "nonAutomaticCRLUpdatePeriod": int64(2), "nonAutomaticCRLUpdateUnits": "Hours", "automaticCRLUpdatePeriod": int64(0)}},
 		{"native values", `{"downloadCRL":false,"ignoreCRLExpiration":false,"nonAutomaticCRLUpdatePeriod":2,"nonAutomaticCRLUpdateUnits":"Hours","automaticCRLUpdatePeriod":0}`, map[string]any{"downloadCRL": false, "ignoreCRLExpiration": false, "nonAutomaticCRLUpdatePeriod": int64(2), "nonAutomaticCRLUpdateUnits": "Hours", "automaticCRLUpdatePeriod": int64(0)}},
+		{"unset ISE settings", `{"downloadCRL":"false","crlDistributionUrl":null,"automaticCRLUpdatePeriod":null,"nonAutomaticCRLUpdateUnits":null,"enableOCSPValidation":null,"rejectIfNoStatusFromOCSP":null}`, map[string]any{"downloadCRL": false}},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			var current map[string]json.RawMessage
@@ -47,14 +48,13 @@ func TestTrustedCertificateInvalidSettingsPreventUpdate(t *testing.T) {
 	for _, test := range []struct{ name, key, raw string }{
 		{"unrecognized boolean", "downloadCRL", `"unexpected-secret-value"`},
 		{"empty boolean", "downloadCRL", `""`},
-		{"null boolean", "downloadCRL", `null`},
+
 		{"numeric boolean", "enableOCSPValidation", `1`},
 		{"fractional period", "nonAutomaticCRLUpdatePeriod", `1.5`},
 		{"negative period", "crlDownloadFailureRetries", `"-1"`},
 		{"overflow period", "automaticCRLUpdatePeriod", `"9223372036854775808"`},
 		{"empty period", "nonAutomaticCRLUpdatePeriod", `""`},
 		{"invalid units type", "nonAutomaticCRLUpdateUnits", `2`},
-		{"null units", "nonAutomaticCRLUpdateUnits", `null`},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			writes := 0

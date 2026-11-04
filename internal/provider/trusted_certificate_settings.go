@@ -43,7 +43,10 @@ func preserveTrustedCertificateSettings(body map[string]any, current map[string]
 			return fmt.Errorf("cannot preserve ISE field %s: expected %s; refusing to update certificate", key, kind)
 		}
 		if value == "null" {
-			return invalid()
+			// ISE returns null for optional settings that have never been
+			// configured. Match the API's omitempty semantics: do not invent
+			// false/zero values that could overwrite inherited/default policy.
+			continue
 		}
 		var text string
 		quoted := json.Unmarshal(raw, &text) == nil
