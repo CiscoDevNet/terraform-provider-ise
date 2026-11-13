@@ -1,0 +1,96 @@
+---
+name: System Certificate Deployment
+rest_endpoint: /api/v1/certs/system-certificate
+no_data_source: true
+no_import: true
+custom_crud: true
+doc_category: Certificates
+res_description: >-
+  This resource can manage a System Certificate Deployment. It coordinates Admin and optional shared EAP certificate
+  assignments across all listed ISE nodes, with the live primary administration node last. Omit a node's Admin inputs
+  to leave its Admin role unmanaged. Set its eap flag only when explicitly managing EAP.
+  Required CA trust must already be installed on every node; manage trusted certificates separately.
+  The provider reuses its configured credentials and HTTPS transport for the explicitly supplied node IPs.
+  Nodes must belong to the same deployment, use the same credentials, and have API Gateway enabled where certificates are changed.
+  Admin certificate changes restart ISE services and a primary PAN change can trigger additional deployment-wide restarts.
+  After a write the resource waits at least 60 seconds for Admin changes and requires three consecutive healthy checks,
+  including the served HTTPS certificate and every node's API/deployment status. This is ordered recovery, not a zero-downtime guarantee.
+  Private keys are write-only and require Terraform 1.11 or later. Increment private_keys_wo_version when the key map changes.
+  Portal transfers require explicit admin_portal_group_tag opt-in; unrelated certificate roles are retained.
+  Reads never export private keys. Destroy relinquishes management and retains installed certificates.
+attributes:
+  - tf_name: root_certificate_pem
+    type: String
+    mandatory: true
+    description: Root CA used to verify desired and installed certificates. Root and issuer CAs must already be trusted for Infrastructure on every node; this resource does not import or alter CA trust.
+    example_expression: file("root-ca.pem")
+  - tf_name: nodes
+    type: List
+    mandatory: true
+    min_list: 1
+    description: All deployment nodes in Admin rollout order; the live primary PAN must be last.
+    attributes:
+      - tf_name: hostname
+        type: String
+        mandatory: true
+        description: Fully qualified node hostname.
+        example: primary.example.test
+      - tf_name: address
+        type: String
+        mandatory: true
+        description: Explicit node IP address used for HTTPS requests.
+        example: 192.0.2.5
+      - tf_name: admin_certificate_pem
+        type: String
+        description: Omit to leave this node's Admin certificate entirely unmanaged.
+        example_expression: file("primary.pem")
+      - tf_name: admin_ca_pem
+        type: String
+        description: Admin issuing CA chain. Supply together with admin_certificate_pem.
+        example_expression: file("issuing-ca.pem")
+      - tf_name: admin_portal_group_tag
+        type: String
+        description: Explicitly transfer Portal with Admin while retaining this existing portal group tag. Omit to leave Portal unmanaged.
+        exclude_example: true
+      - tf_name: eap
+        type: Bool
+        mandatory: true
+        description: Explicitly manage the shared EAP certificate on this node.
+        example: false
+  - tf_name: eap_certificate_pem
+    type: String
+    description: Shared EAP certificate. Required with eap_ca_pem when any node enables EAP management.
+    exclude_example: true
+  - tf_name: eap_ca_pem
+    type: String
+    description: EAP issuing CA chain. Required only when managing EAP.
+    exclude_example: true
+  - tf_name: private_keys_wo
+    type: Map
+    mandatory: true
+    write_only: true
+    write_only_tf_only: true
+    description: Private keys keyed by node FQDN, plus eap when managing EAP. Not retained in resource state. Prefer ephemeral inputs; storing keys elsewhere is outside this resource's control.
+    example_expression: '{ "primary.example.test" = file("primary.key") }'
+  - tf_name: private_keys_wo_version
+    type: Int64
+    mandatory: true
+    min_int: 1
+    max_int: 2147483647
+    description: Rotation trigger for private_keys_wo. Increment when the write-only key map changes; keys are never stored in state.
+    example: 1
+  - tf_name: timeout_seconds
+    type: Int64
+    default_value: 1800
+    min_int: 120
+    max_int: 7200
+    description: Cancellation-aware recovery timeout per operation, in seconds.
+    example: 1800
+  - tf_name: active_fingerprints
+    type: Map
+    computed_only: true
+    description: Observed SHA256 fingerprints keyed by node FQDN/admin or /eap.
+  - tf_name: in_sync
+    type: Bool
+    computed_only: true
+    description: Whether live role assignments, certificate identities, managed CA trust and Admin TLS endpoints satisfy the desired configuration.
