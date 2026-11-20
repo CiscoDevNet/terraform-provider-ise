@@ -8,6 +8,7 @@ no_delete: bool(required=False) # Set to true if the DELETE request is not suppo
 no_import: bool(required=False) # Set to true if the resource does not support importing
 no_update: bool(required=False) # Set to true if the PUT request is not supported
 no_data_source: bool(required=False) # Set to true if no data source should be created
+custom_crud: bool(required=False) # Generate schema, model, configure and import only; supply specialized CRUD and lifecycle tests manually
 no_resource: bool(required=False) # Set to true if no resource should be created
 post_update: bool(required=False) # Set to true if the POST request is used for update
 put_create: bool(required=False) # Set to true if the PUT request is used to create
@@ -34,6 +35,9 @@ test_tags: list(str(), required=False) # List of test tags, tests are only execu
 test_prerequisites: str(required=False) # HCL code that is included in the acceptance tests to define prerequisites
 ---
 attribute:
+  computed_only: bool(required=False) # Read-only resource output; cannot be set in configuration
+  write_only_tf_only: bool(required=False) # Native Terraform write-only attribute without a legacy twin; requires write_only, and an explicit version attribute when needed
+  example_expression: str(required=False) # Raw Terraform expression for examples, such as file("ca.pem")
   model_name: str(required=False) # Name of the attribute in the model (payload)
   requires_replace: bool(required=False) # Set to true if the attribute requires a replace operation
   tf_name: str(required=False) # Name of the attribute in the Terraform resource, by default derived from model_name

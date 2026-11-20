@@ -336,6 +336,7 @@ type {{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}}{{$childC
 //template:end types
 
 //template:begin getPath
+{{- if not .CustomCRUD}}
 func (data {{camelCase .Name}}) getPath() string {
 	{{- if hasReference .Attributes}}
 		return fmt.Sprintf("{{.RestEndpoint}}"{{range .Attributes}}{{if .Reference}}, url.PathEscape(data.{{toGoName .TfName}}.Value{{.Type}}(){{end}}{{end}}))
@@ -343,9 +344,11 @@ func (data {{camelCase .Name}}) getPath() string {
 		return "{{.RestEndpoint}}"
 	{{- end}}
 }
+{{- end}}
 //template:end getPath
 
 //template:begin getPathDelete
+{{- if not .CustomCRUD}}
 {{if .DeleteRestEndpoint}}
 func (data {{camelCase .Name}}) getPathDelete() string {
 	{{- if hasReference .Attributes}}
@@ -355,9 +358,11 @@ func (data {{camelCase .Name}}) getPathDelete() string {
 	{{- end}}
 }
 {{end}}
+{{- end}}
 //template:end getPathDelete
 
 //template:begin toBody
+{{- if not .CustomCRUD}}
 func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .Name}}) string {
 	{{- if .RootList}}
 	body := "[]"
@@ -586,9 +591,11 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 	{{- end}}
 	return body
 }
+{{- end}}
 //template:end toBody
 
 //template:begin fromBody
+{{- if not .CustomCRUD}}
 func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result) {
 	{{- range .Attributes}}
 	{{- if and (not .Value) (not .WriteOnly) (not .WoVersion) (not .Reference)}}
@@ -887,9 +894,11 @@ func (data *{{camelCase .Name}}) fromBody(ctx context.Context, res gjson.Result)
 	{{- end}}
 	{{- end}}
 }
+{{- end}}
 //template:end fromBody
 
 //template:begin updateFromBody
+{{- if not .CustomCRUD}}
 func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.Result) {
 	{{- range .Attributes}}
 
@@ -1385,9 +1394,11 @@ func (data *{{camelCase .Name}}) updateFromBody(ctx context.Context, res gjson.R
 	{{- end}}
 	{{- end}}
 }
+{{- end}}
 //template:end updateFromBody
 
 //template:begin isNull
+{{- if not .CustomCRUD}}
 func (data *{{camelCase .Name}}) isNull(ctx context.Context, res gjson.Result) bool {
 	{{- range .Attributes}}
 	{{- if and (not .Value) (not .Reference)}}
@@ -1404,4 +1415,5 @@ func (data *{{camelCase .Name}}) isNull(ctx context.Context, res gjson.Result) b
 	{{- end}}
 	return true
 }
+{{- end}}
 //template:end isNull

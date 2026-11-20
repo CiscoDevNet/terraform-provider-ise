@@ -1,0 +1,68 @@
+---
+name: Trusted Certificate
+rest_endpoint: /api/v1/certs/trusted-certificate
+no_data_source: true
+custom_crud: true
+doc_category: Certificates
+id_example: certificate-id
+res_description: >-
+  This resource can manage a Trusted Certificate. Configure the provider against the primary administration node.
+  Certificate identity is immutable; equivalent PEM formatting is compared by DER identity.
+  Existing certificates must be explicitly imported by ID before Terraform can manage them.
+  Certificates are retained on destroy by default. Unmanaged CRL, OCSP and status settings are preserved on update.
+  Updates are refused when ISE reports unsupported trust purposes or revocation values that cannot be preserved safely.
+attributes:
+  - model_name: name
+    type: String
+    mandatory: true
+    string_min_length: 1
+    string_max_length: 256
+    description: Friendly name of the trusted certificate.
+    example: Example Root CA
+  - model_name: description
+    type: String
+    description: Description of the trusted certificate.
+    example: Root CA for ISE and endpoint authentication
+  - model_name: data
+    tf_name: certificate_pem
+    type: String
+    mandatory: true
+    write_only: true
+    description: Exactly one PEM-encoded CA certificate. Only a change of DER identity requires replacement.
+    example_expression: file("ca.pem")
+  - model_name: sha256Fingerprint
+    type: String
+    computed_only: true
+    description: Canonical SHA-256 fingerprint of the certificate DER.
+  - model_name: trustForIseAuth
+    type: Bool
+    default_value: false
+    description: Trust for authentication within ISE (Infrastructure).
+    example: true
+  - model_name: trustForClientAuth
+    type: Bool
+    default_value: false
+    description: Trust for client authentication and syslog (Endpoints).
+    example: true
+  - model_name: trustForCertificateBasedAdminAuth
+    type: Bool
+    default_value: false
+    description: Trust for certificate-based administrator authentication (AdminAuth).
+    example: false
+  - model_name: trustForCiscoServicesAuth
+    type: Bool
+    default_value: false
+    description: Trust for authentication of Cisco services.
+    example: false
+  - tf_name: retain_on_destroy
+    type: Bool
+    default_value: true
+    description: Retain the live CA certificate when removing this resource. Set false explicitly to delete the certificate from ISE.
+    example: true
+  - tf_name: create_timeout_seconds
+    type: Int64
+    default_value: 120
+    min_int: 10
+    max_int: 3600
+    description: Maximum time in seconds to discover and verify an imported certificate, including recovery after an interrupted import.
+    example: 120

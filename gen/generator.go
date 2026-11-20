@@ -99,6 +99,7 @@ type YamlConfig struct {
 	DeleteRestEndpoint  string                `yaml:"delete_rest_endpoint"`
 	GetNoId             bool                  `yaml:"get_no_id"`
 	NoDataSource        bool                  `yaml:"no_data_source"`
+	CustomCRUD          bool                  `yaml:"custom_crud"`
 	NoResource          bool                  `yaml:"no_resource"`
 	NoDelete            bool                  `yaml:"no_delete"`
 	NoImport            bool                  `yaml:"no_import"`
@@ -131,6 +132,9 @@ type YamlConfig struct {
 }
 
 type YamlConfigAttribute struct {
+	ComputedOnly                bool                  `yaml:"computed_only"`
+	WriteOnlyTFOnly             bool                  `yaml:"write_only_tf_only"`
+	ExampleExpression           string                `yaml:"example_expression"`
 	ModelName                   string                `yaml:"model_name"`
 	TfName                      string                `yaml:"tf_name"`
 	Type                        string                `yaml:"type"`
@@ -668,6 +672,14 @@ func rewriteWriteOnlyTF(attrs []YamlConfigAttribute) []YamlConfigAttribute {
 		if len(attr.Attributes) > 0 {
 			attr.Attributes = rewriteWriteOnlyTF(attr.Attributes)
 		}
+		if attr.WriteOnlyTFOnly {
+			if !attr.WriteOnly {
+				panic(fmt.Sprintf("write_only_tf_only requires write_only: %s", attr.TfName))
+			}
+			attr.WriteOnlyTF = true
+			newAttrs = append(newAttrs, attr)
+			continue
+		}
 		if !attr.WriteOnlyTF {
 			newAttrs = append(newAttrs, attr)
 			continue
@@ -886,6 +898,7 @@ func main() {
 				(configs[i].NoDataSource && t.path == "./gen/templates/data-source.tf") ||
 				(configs[i].NoResource && t.path == "./gen/templates/resource.go") ||
 				(configs[i].NoResource && t.path == "./gen/templates/resource_test.go") ||
+				(configs[i].CustomCRUD && t.path == "./gen/templates/resource_test.go") ||
 				(configs[i].NoResource && t.path == "./gen/templates/resource.tf") ||
 				(configs[i].NoResource && t.path == "./gen/templates/import.sh") {
 				continue
