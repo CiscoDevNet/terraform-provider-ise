@@ -55,6 +55,7 @@ type IseProviderModel struct {
 	Insecure       types.Bool   `tfsdk:"insecure"`
 	Retries        types.Int64  `tfsdk:"retries"`
 	RequestTimeout types.Int64  `tfsdk:"request_timeout"`
+	EndpointCache  types.Bool   `tfsdk:"endpoint_cache"`
 }
 
 // IseProviderData describes the data maintained by the provider.
@@ -62,6 +63,7 @@ type IseProviderData struct {
 	Client                  *ise.Client
 	NetworkDeviceGroupMutex *sync.Mutex
 	Cache                   *ThreadSafeCache
+	EndpointCache           bool
 }
 
 // Metadata returns the provider type name.
@@ -73,6 +75,10 @@ func (p *IseProvider) Metadata(_ context.Context, _ provider.MetadataRequest, re
 func (p *IseProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
+			"endpoint_cache": schema.BoolAttribute{
+				MarkdownDescription: "Cache endpoint reads using the full paginated ISE endpoint inventory. Defaults to `false`, using one ERS GET per managed endpoint. Set to `true` when managing many endpoints to load the whole inventory into memory on the first eligible endpoint read in each provider session. Leave disabled when managing a small subset of a large ISE inventory.",
+				Optional: true,
+			},
 			"username": schema.StringAttribute{
 				MarkdownDescription: "Username for the ISE instance. This can also be set as the ISE_USERNAME environment variable.",
 				Optional:            true,
@@ -258,7 +264,16 @@ func (p *IseProvider) Configure(ctx context.Context, req provider.ConfigureReque
 		requestTimeout = config.RequestTimeout.ValueInt64()
 	}
 
-	// Create a new NX-OS client and set it to the provider client
+	if config.EndpointCache.IsUnknown() {
+		resp.Diagnostics.AddError("Unknown endpoint_cache", "The endpoint_cache setting must be known before configuring the ISE provider.")
+		return
+	}
+	endpointCache := false
+	if !config.EndpointCache.IsNull() {
+		endpointCache = config.EndpointCache.ValueBool()
+	}
+
+	// Create an ISE client and set it to the provider client
 	c, err := ise.NewClient(url, username, password, ise.Insecure(insecure), ise.MaxRetries(int(retries)), ise.RequestTimeout(time.Duration(requestTimeout)))
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -268,7 +283,7 @@ func (p *IseProvider) Configure(ctx context.Context, req provider.ConfigureReque
 		return
 	}
 
-	data := IseProviderData{Client: &c, NetworkDeviceGroupMutex: &sync.Mutex{}, Cache: NewThreadSafeCache()}
+	data := IseProviderData{Client: &c, NetworkDeviceGroupMutex: &sync.Mutex{}, Cache: NewThreadSafeCache(), EndpointCache: endpointCache}
 	resp.DataSourceData = &data
 	resp.ResourceData = &data
 }

@@ -53,8 +53,9 @@ func NewEndpointResource() resource.Resource {
 }
 
 type EndpointResource struct {
-	client *ise.Client
-	cache  *ThreadSafeCache
+	client       *ise.Client
+	cache        *ThreadSafeCache
+	cacheEnabled bool
 }
 
 func (r *EndpointResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -67,7 +68,7 @@ func (r *EndpointResource) Metadata(ctx context.Context, req resource.MetadataRe
 func (r *EndpointResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage an Endpoint. Reads of this resource are served from a provider-scoped cache populated from a single bulk request, rather than a per-resource GET, to keep refresh performance reasonable with large numbers of endpoints.").String,
+		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage an Endpoint. Reads use per-resource ERS GETs by default. Set `endpoint_cache = true` in the provider configuration to enable a provider-scoped cache populated from the full paginated ISE endpoint inventory when managing many endpoints. Leave caching disabled when managing a small subset of a large inventory.").String,
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -210,6 +211,8 @@ func (r *EndpointResource) Configure(_ context.Context, req resource.ConfigureRe
 
 	r.client = req.ProviderData.(*IseProviderData).Client
 	r.cache = req.ProviderData.(*IseProviderData).Cache
+	r.cacheEnabled = true
+	r.cacheEnabled = req.ProviderData.(*IseProviderData).EndpointCache
 }
 
 //template:end configure
@@ -307,7 +310,9 @@ func (r *EndpointResource) Read(ctx context.Context, req resource.ReadRequest, r
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
 	var res gjson.Result
 	var err error
-	if state.isNull(ctx, gjson.Result{}) {
+	if !r.cacheEnabled || state.isNull(ctx, gjson.Result{}) {
+		// Disabled caching reads only this managed object. Imports also need a
+		// direct read when the bulk payload omits attributes required in state.
 		// Import: some attributes are absent from the cache's bulk payload entirely, so
 		// ReadCache cannot populate them from state (there is none yet) without
 		// fabricating a value. Bypass the cache for the whole resource and read it
@@ -315,12 +320,12 @@ func (r *EndpointResource) Read(ctx context.Context, req resource.ReadRequest, r
 		res, err = r.client.Get(state.getPath() + "/" + url.PathEscape(state.Id.ValueString()))
 	} else {
 		res, err = r.ReadCache(ctx, state)
-	}
-	if err != nil {
-		// A cache miss or a failed bulk load says nothing about whether the object
-		// exists. Only a direct item GET may trigger the 404 state-removal path.
-		tflog.Debug(ctx, "Endpoint: cache unavailable, falling back to direct GET", map[string]any{"error": err.Error()})
-		res, err = r.client.Get(state.getPath() + "/" + url.PathEscape(state.Id.ValueString()))
+		if err != nil {
+			// A cache miss or a failed bulk load says nothing about whether the object
+			// exists. Only a direct item GET may trigger the 404 state-removal path.
+			tflog.Debug(ctx, "Endpoint: cache unavailable, falling back to direct GET", map[string]any{"error": err.Error()})
+			res, err = r.client.Get(state.getPath() + "/" + url.PathEscape(state.Id.ValueString()))
+		}
 	}
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)

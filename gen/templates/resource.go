@@ -70,6 +70,7 @@ type {{camelCase .Name}}Resource struct {
 	client *ise.Client
 	{{- if .UseCache}}
 	cache *ThreadSafeCache
+	cacheEnabled bool
 	{{- end}}
 }
 
@@ -892,6 +893,10 @@ func (r *{{camelCase .Name}}Resource) Configure(_ context.Context, req resource.
 	r.client = req.ProviderData.(*IseProviderData).Client
 	{{- if .UseCache}}
 	r.cache = req.ProviderData.(*IseProviderData).Cache
+	r.cacheEnabled = true
+	{{- if eq .Name "Endpoint"}}
+	r.cacheEnabled = req.ProviderData.(*IseProviderData).EndpointCache
+	{{- end}}
 	{{- end}}
 }
 {{- if or (coexistingSecretAttributes .) (coexistingSecretParentLists .)}}
@@ -1223,24 +1228,24 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 	{{- if .UseCache}}
 	var res gjson.Result
 	var err error
-	{{- if hasNotInCacheAttribute .Attributes}}
-	if state.isNull(ctx, gjson.Result{}) {
+	if !r.cacheEnabled{{if hasNotInCacheAttribute .Attributes}} || state.isNull(ctx, gjson.Result{}){{end}} {
+		// Disabled caching reads only this managed object. Imports also need a
+		// direct read when the bulk payload omits attributes required in state.
+		{{- if hasNotInCacheAttribute .Attributes}}
 		// Import: some attributes are absent from the cache's bulk payload entirely, so
 		// ReadCache cannot populate them from state (there is none yet) without
 		// fabricating a value. Bypass the cache for the whole resource and read it
 		// directly so those attributes get their real value.
+		{{- end}}
 		res, err = r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + url.PathEscape(state.Id.ValueString()){{end}})
 	} else {
 		res, err = r.ReadCache(ctx, state)
-	}
-	{{- else}}
-	res, err = r.ReadCache(ctx, state)
-	{{- end}}
 	if err != nil {
 		// A cache miss or a failed bulk load says nothing about whether the object
 		// exists. Only a direct item GET may trigger the 404 state-removal path.
 		tflog.Debug(ctx, "{{camelCase .Name}}: cache unavailable, falling back to direct GET", map[string]any{"error": err.Error()})
 		res, err = r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + url.PathEscape(state.Id.ValueString()){{end}})
+	}
 	}
 	{{- else}}
 	res, err := r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + url.PathEscape(state.Id.ValueString()){{end}})

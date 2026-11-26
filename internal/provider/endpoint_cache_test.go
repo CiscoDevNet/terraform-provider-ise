@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/CiscoDevNet/terraform-provider-ise/internal/provider/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -38,7 +39,7 @@ func cacheEndpointResource(t *testing.T, handler http.HandlerFunc) *EndpointReso
 	if err != nil {
 		t.Fatal(err)
 	}
-	return &EndpointResource{client: &client, cache: NewThreadSafeCache()}
+	return &EndpointResource{client: &client, cache: NewThreadSafeCache(), cacheEnabled: true}
 }
 
 func cacheTFState(t *testing.T, r *EndpointResource, model Endpoint) tfsdk.State {
@@ -50,6 +51,87 @@ func cacheTFState(t *testing.T, r *EndpointResource, model Endpoint) tfsdk.State
 		t.Fatal(d)
 	}
 	return state
+}
+
+func TestProviderEndpointCache(t *testing.T) {
+	for _, tc := range []struct {
+		name      string
+		value     types.Bool
+		enabled   bool
+		wantError bool
+	}{
+		{"default", types.BoolNull(), false, false},
+		{"enabled", types.BoolValue(true), true, false},
+		{"disabled", types.BoolValue(false), false, false},
+		{"unknown", types.BoolUnknown(), false, true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			p := &IseProvider{}
+			var schemaResp provider.SchemaResponse
+			p.Schema(context.Background(), provider.SchemaRequest{}, &schemaResp)
+			config := IseProviderModel{Username: types.StringValue("admin"), Password: types.StringValue("test"),
+				URL: types.StringValue("http://127.0.0.1"), Insecure: types.BoolNull(),
+				Retries: types.Int64Null(), RequestTimeout: types.Int64Null(), EndpointCache: tc.value}
+			state := tfsdk.State{Schema: schemaResp.Schema}
+			if d := state.Set(context.Background(), &config); d.HasError() {
+				t.Fatal(d)
+			}
+			var resp provider.ConfigureResponse
+			p.Configure(context.Background(), provider.ConfigureRequest{Config: tfsdk.Config{Schema: schemaResp.Schema, Raw: state.Raw}}, &resp)
+			if resp.Diagnostics.HasError() != tc.wantError {
+				t.Fatal(resp.Diagnostics)
+			}
+			if tc.wantError {
+				if resp.ResourceData != nil {
+					t.Fatal("unknown toggle configured a resource client")
+				}
+				return
+			}
+			data := resp.ResourceData.(*IseProviderData)
+			if data.EndpointCache != tc.enabled {
+				t.Fatalf("enabled=%v", data.EndpointCache)
+			}
+			r := &EndpointResource{}
+			r.Configure(context.Background(), resource.ConfigureRequest{ProviderData: data}, &resource.ConfigureResponse{})
+			if r.cacheEnabled != tc.enabled {
+				t.Fatal("resource did not honor provider setting")
+			}
+		})
+	}
+}
+
+func TestEndpointCacheDisabled(t *testing.T) {
+	for _, itemStatus := range []int{200, 404, 503} {
+		t.Run(fmt.Sprint(itemStatus), func(t *testing.T) {
+			var bulkCalls, itemCalls atomic.Int32
+			r := cacheEndpointResource(t, func(w http.ResponseWriter, req *http.Request) {
+				if req.URL.Path == "/api/v1/endpoint" {
+					bulkCalls.Add(1)
+					w.WriteHeader(500)
+					return
+				}
+				itemCalls.Add(1)
+				w.WriteHeader(itemStatus)
+				fmt.Fprint(w, `{"ERSEndPoint":{"id":"test","name":"test","mac":"02:CA:00:00:00:01","description":"after","staticProfileAssignment":false,"staticGroupAssignment":false}}`)
+			})
+			r.Configure(context.Background(), resource.ConfigureRequest{ProviderData: &IseProviderData{Client: r.client, Cache: r.cache, EndpointCache: false}}, &resource.ConfigureResponse{})
+			state := cacheTFState(t, r, cacheEndpointState("test"))
+			resp := resource.ReadResponse{State: state}
+			r.Read(context.Background(), resource.ReadRequest{State: state}, &resp)
+			if bulkCalls.Load() != 0 || itemCalls.Load() != 1 {
+				t.Fatalf("bulk=%d item=%d", bulkCalls.Load(), itemCalls.Load())
+			}
+			if (itemStatus == 503) != resp.Diagnostics.HasError() {
+				t.Fatal(resp.Diagnostics)
+			}
+			if (itemStatus == 404) != resp.State.Raw.IsNull() {
+				t.Fatal("unexpected resource removal")
+			}
+			if len(r.cache.items) != 0 {
+				t.Fatal("disabled cache populated inventory")
+			}
+		})
+	}
 }
 
 func TestEndpointCacheReadFallback(t *testing.T) {
