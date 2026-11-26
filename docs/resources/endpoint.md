@@ -3,12 +3,12 @@
 page_title: "ise_endpoint Resource - terraform-provider-ise"
 subcategory: "Identity Management"
 description: |-
-  This resource can manage an Endpoint.
+  This resource can manage an Endpoint. Reads use per-resource ERS GETs by default. Set endpoint_cache = true in the provider configuration to enable a provider-scoped cache populated from the full paginated ISE endpoint inventory when managing many endpoints. Leave caching disabled when managing a small subset of a large inventory.
 ---
 
 # ise_endpoint (Resource)
 
-This resource can manage an Endpoint.
+This resource can manage an Endpoint. Reads use per-resource ERS GETs by default. Set `endpoint_cache = true` in the provider configuration to enable a provider-scoped cache populated from the full paginated ISE endpoint inventory when managing many endpoints. Leave caching disabled when managing a small subset of a large inventory.
 
 ## Example Usage
 
@@ -23,6 +23,7 @@ resource "ise_endpoint" "example" {
   static_profile_assignment_defined = true
   static_group_assignment           = true
   static_group_assignment_defined   = true
+  custom_attributes                 = { "key1" = "value1" }
 }
 ```
 

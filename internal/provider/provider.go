@@ -22,6 +22,7 @@ package provider
 //template:begin provider
 import (
 	"context"
+	"errors"
 	"os"
 	"strconv"
 	"sync"
@@ -35,6 +36,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/netascode/go-ise"
+	"github.com/tidwall/gjson"
 )
 
 // IseProvider defines the provider implementation.
@@ -53,12 +55,15 @@ type IseProviderModel struct {
 	Insecure       types.Bool   `tfsdk:"insecure"`
 	Retries        types.Int64  `tfsdk:"retries"`
 	RequestTimeout types.Int64  `tfsdk:"request_timeout"`
+	EndpointCache  types.Bool   `tfsdk:"endpoint_cache"`
 }
 
 // IseProviderData describes the data maintained by the provider.
 type IseProviderData struct {
 	Client                  *ise.Client
 	NetworkDeviceGroupMutex *sync.Mutex
+	Cache                   *ThreadSafeCache
+	EndpointCache           bool
 }
 
 // Metadata returns the provider type name.
@@ -70,6 +75,10 @@ func (p *IseProvider) Metadata(_ context.Context, _ provider.MetadataRequest, re
 func (p *IseProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
+			"endpoint_cache": schema.BoolAttribute{
+				MarkdownDescription: "Cache endpoint reads using the full paginated ISE endpoint inventory. Defaults to `false`, using one ERS GET per managed endpoint. Set to `true` when managing many endpoints to load the whole inventory into memory on the first eligible endpoint read in each provider session. Leave disabled when managing a small subset of a large ISE inventory.",
+				Optional:            true,
+			},
 			"username": schema.StringAttribute{
 				MarkdownDescription: "Username for the ISE instance. This can also be set as the ISE_USERNAME environment variable.",
 				Optional:            true,
@@ -255,7 +264,16 @@ func (p *IseProvider) Configure(ctx context.Context, req provider.ConfigureReque
 		requestTimeout = config.RequestTimeout.ValueInt64()
 	}
 
-	// Create a new NX-OS client and set it to the provider client
+	if config.EndpointCache.IsUnknown() {
+		resp.Diagnostics.AddError("Unknown endpoint_cache", "The endpoint_cache setting must be known before configuring the ISE provider.")
+		return
+	}
+	endpointCache := false
+	if !config.EndpointCache.IsNull() {
+		endpointCache = config.EndpointCache.ValueBool()
+	}
+
+	// Create an ISE client and set it to the provider client
 	c, err := ise.NewClient(url, username, password, ise.Insecure(insecure), ise.MaxRetries(int(retries)), ise.RequestTimeout(time.Duration(requestTimeout)))
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -265,7 +283,7 @@ func (p *IseProvider) Configure(ctx context.Context, req provider.ConfigureReque
 		return
 	}
 
-	data := IseProviderData{Client: &c, NetworkDeviceGroupMutex: &sync.Mutex{}}
+	data := IseProviderData{Client: &c, NetworkDeviceGroupMutex: &sync.Mutex{}, Cache: NewThreadSafeCache(), EndpointCache: endpointCache}
 	resp.DataSourceData = &data
 	resp.ResourceData = &data
 }
@@ -401,6 +419,83 @@ func New(version string) func() provider.Provider {
 		return &IseProvider{
 			version: version,
 		}
+	}
+}
+
+// errCacheMiss is returned by a use_cache resource's ReadCache when the requested
+// object is absent from the last bulk cache load. This is deliberately a typed
+// sentinel rather than a crafted "StatusCode 404" string: a cache miss only proves
+// the object is missing from OUR snapshot, never that ISE itself doesn't have it, so
+// callers must confirm with a direct GET before treating it as a real 404 and
+// deleting state.
+var errCacheMiss = errors.New("object not found in cache")
+
+// ThreadSafeCache stores bulk-read objects for one provider session. A miss is
+// loaded once per key, so Terraform parallelism cannot fan out duplicate list
+// requests for large inventories.
+type ThreadSafeCache struct {
+	mu          sync.Mutex
+	items       map[string]map[string]gjson.Result
+	errors      map[string]error
+	loading     map[string]chan struct{}
+	generations map[string]uint64
+}
+
+func NewThreadSafeCache() *ThreadSafeCache {
+	return &ThreadSafeCache{items: make(map[string]map[string]gjson.Result), errors: make(map[string]error), loading: make(map[string]chan struct{}), generations: make(map[string]uint64)}
+}
+
+func (c *ThreadSafeCache) Delete(key string) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.generations[key]++
+	delete(c.items, key)
+	delete(c.errors, key)
+}
+
+func (c *ThreadSafeCache) GetOrLoad(key string, load func() (map[string]gjson.Result, error)) (map[string]gjson.Result, bool, error) {
+	for {
+		c.mu.Lock()
+		if value, found := c.items[key]; found {
+			c.mu.Unlock()
+			return value, true, nil
+		}
+		// Remember failed bulk loads for this generation, so waiting Reads use
+		// their direct GET fallback instead of repeating the same failing load.
+		if err, found := c.errors[key]; found {
+			c.mu.Unlock()
+			return nil, true, err
+		}
+		if waiting, found := c.loading[key]; found {
+			c.mu.Unlock()
+			<-waiting
+			continue
+		}
+		waiting := make(chan struct{})
+		c.loading[key] = waiting
+		generation := c.generations[key]
+		c.mu.Unlock()
+
+		value, err := load()
+		c.mu.Lock()
+		delete(c.loading, key)
+		invalidated := c.generations[key] != generation
+		if !invalidated {
+			if err == nil {
+				c.items[key] = value
+			} else {
+				c.errors[key] = err
+			}
+		}
+		close(waiting)
+		c.mu.Unlock()
+		if invalidated {
+			continue
+		}
+		if err != nil {
+			return nil, false, err
+		}
+		return value, false, nil
 	}
 }
 

@@ -72,6 +72,10 @@ resource "ise_endpoint_identity_group" "test" {
   description    = "Test endpoint identity group"
   system_defined = false
 }
+resource "ise_endpoint_custom_attribute" "test" {
+  attribute_name = "isCorporate"
+  attribute_type = "Boolean"
+}
 
 `
 
@@ -102,6 +106,7 @@ func testAccIseEndpointConfig_all() string {
 	config += `	static_profile_assignment_defined = true` + "\n"
 	config += `	static_group_assignment = true` + "\n"
 	config += `	static_group_assignment_defined = true` + "\n"
+	config += `	custom_attributes = {(ise_endpoint_custom_attribute.test.id) = "true"}` + "\n"
 	config += `}` + "\n"
 	return config
 }

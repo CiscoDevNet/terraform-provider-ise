@@ -35,4 +35,23 @@ The following guides with examples exist to demonstrate the use of the provider:
 
 {{tffile "examples/provider/provider.tf"}}
 
+## Endpoint read caching
+
+Endpoint caching is disabled by default: each managed endpoint is read directly
+through ERS. If Terraform manages many endpoints, enable caching to reduce
+refresh requests:
+
+```terraform
+provider "ise" {
+  endpoint_cache = true
+}
+```
+
+Enabling caching loads the full paginated ISE endpoint inventory into memory on
+the first eligible endpoint read in each provider session. Leave it disabled
+when managing only a small subset of a large ISE inventory.
+
+Bulk load errors and cache misses fall back to direct ERS reads. Imports use
+direct reads to populate attributes omitted by the bulk API.
+
 {{ .SchemaMarkdown | trimspace }}

@@ -36,6 +36,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/netascode/go-ise"
+	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
 )
 
 //template:end imports
@@ -51,7 +53,9 @@ func NewEndpointResource() resource.Resource {
 }
 
 type EndpointResource struct {
-	client *ise.Client
+	client       *ise.Client
+	cache        *ThreadSafeCache
+	cacheEnabled bool
 }
 
 func (r *EndpointResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -64,7 +68,7 @@ func (r *EndpointResource) Metadata(ctx context.Context, req resource.MetadataRe
 func (r *EndpointResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage an Endpoint.").String,
+		MarkdownDescription: helpers.NewAttributeDescription("This resource can manage an Endpoint. Reads use per-resource ERS GETs by default. Set `endpoint_cache = true` in the provider configuration to enable a provider-scoped cache populated from the full paginated ISE endpoint inventory when managing many endpoints. Leave caching disabled when managing a small subset of a large inventory.").String,
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -206,12 +210,16 @@ func (r *EndpointResource) Configure(_ context.Context, req resource.ConfigureRe
 	}
 
 	r.client = req.ProviderData.(*IseProviderData).Client
+	r.cache = req.ProviderData.(*IseProviderData).Cache
+	r.cacheEnabled = true
+	r.cacheEnabled = req.ProviderData.(*IseProviderData).EndpointCache
 }
 
 //template:end configure
 
 func (r *EndpointResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan Endpoint
+	defer r.cache.Delete("Endpoint")
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -300,7 +308,25 @@ func (r *EndpointResource) Read(ctx context.Context, req resource.ReadRequest, r
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
-	res, err := r.client.Get(state.getPath() + "/" + url.PathEscape(state.Id.ValueString()))
+	var res gjson.Result
+	var err error
+	if !r.cacheEnabled || state.isNull(ctx, gjson.Result{}) {
+		// Disabled caching reads only this managed object. Imports also need a
+		// direct read when the bulk payload omits attributes required in state.
+		// Import: some attributes are absent from the cache's bulk payload entirely, so
+		// ReadCache cannot populate them from state (there is none yet) without
+		// fabricating a value. Bypass the cache for the whole resource and read it
+		// directly so those attributes get their real value.
+		res, err = r.client.Get(state.getPath() + "/" + url.PathEscape(state.Id.ValueString()))
+	} else {
+		res, err = r.ReadCache(ctx, state)
+		if err != nil {
+			// A cache miss or a failed bulk load says nothing about whether the object
+			// exists. Only a direct item GET may trigger the 404 state-removal path.
+			tflog.Debug(ctx, "Endpoint: cache unavailable, falling back to direct GET", map[string]any{"error": err.Error()})
+			res, err = r.client.Get(state.getPath() + "/" + url.PathEscape(state.Id.ValueString()))
+		}
+	}
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
@@ -324,9 +350,98 @@ func (r *EndpointResource) Read(ctx context.Context, req resource.ReadRequest, r
 
 //template:end read
 
+// ReadCache obtains all objects from the configured bulk endpoint once, then
+// returns the requested object in the response envelope expected by this ERS
+// resource's existing generated model mapper.
+//
+//template:begin readcache
+func (r *EndpointResource) ReadCache(ctx context.Context, state Endpoint) (gjson.Result, error) {
+	items, cacheHit, err := r.cache.GetOrLoad("Endpoint", func() (map[string]gjson.Result, error) {
+		allItems := make(map[string]gjson.Result)
+		// Bound requests even if a broken server keeps returning new IDs forever.
+		const maxPages = 100000
+		for page := 1; page <= maxPages; page++ {
+			if err := ctx.Err(); err != nil {
+				return nil, err
+			}
+			separator := "?"
+			if strings.Contains("/api/v1/endpoint", "?") {
+				separator = "&"
+			}
+			res, err := r.client.Get(fmt.Sprintf("/api/v1/endpoint%ssize=100&page=%d", separator, page))
+			if err != nil {
+				return nil, err
+			}
+			if !res.IsArray() {
+				return nil, fmt.Errorf("bulk response on page %d is not a JSON array", page)
+			}
+			values := res.Array()
+			newIDs := 0
+			for _, value := range values {
+				id := value.Get("id").String()
+				if id == "" {
+					return nil, fmt.Errorf("bulk response on page %d contains an object without an ID", page)
+				}
+				if _, exists := allItems[id]; !exists {
+					newIDs++
+				}
+				allItems[id] = value
+			}
+			if len(values) > 0 && newIDs == 0 {
+				return nil, fmt.Errorf("bulk pagination made no progress on page %d", page)
+			}
+			if len(values) < 100 {
+				return allItems, nil
+			}
+		}
+		return nil, fmt.Errorf("bulk pagination exceeded %d pages", maxPages)
+	})
+	if err != nil {
+		return gjson.Result{}, err
+	}
+	if cacheHit {
+		tflog.Debug(ctx, "Endpoint: cache hit")
+	} else {
+		tflog.Debug(ctx, "Endpoint: cache populated", map[string]any{"objects": len(items)})
+	}
+	value, found := items[state.Id.ValueString()]
+	if !found {
+		// A cache miss is not proof the object is gone from ISE -- it only means the
+		// object is absent from this bulk snapshot. The caller (Read) confirms with a
+		// direct GET before treating this as a real 404.
+		return gjson.Result{}, errCacheMiss
+	}
+	body, err := sjson.SetRaw("{}", "ERSEndPoint", value.Raw)
+	if err != nil {
+		return gjson.Result{}, err
+	}
+	body, err = helpers.ApplyCacheRewrites(body, [][2]string{
+		{"ERSEndPoint.customAttributes", "ERSEndPoint.customAttributes.customAttributes"},
+	})
+	if err != nil {
+		return gjson.Result{}, err
+	}
+	if !state.StaticProfileAssignmentDefined.IsNull() {
+		body, err = sjson.Set(body, "ERSEndPoint.staticProfileAssignmentDefined", state.StaticProfileAssignmentDefined.ValueBool())
+		if err != nil {
+			return gjson.Result{}, err
+		}
+	}
+	if !state.StaticGroupAssignmentDefined.IsNull() {
+		body, err = sjson.Set(body, "ERSEndPoint.staticGroupAssignmentDefined", state.StaticGroupAssignmentDefined.ValueBool())
+		if err != nil {
+			return gjson.Result{}, err
+		}
+	}
+	return gjson.Parse(body), nil
+}
+
+//template:end readcache
+
 //template:begin update
 func (r *EndpointResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state Endpoint
+	defer r.cache.Delete("Endpoint")
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -377,6 +492,7 @@ func (r *EndpointResource) Update(ctx context.Context, req resource.UpdateReques
 //template:begin delete
 func (r *EndpointResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	var state Endpoint
+	defer r.cache.Delete("Endpoint")
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
