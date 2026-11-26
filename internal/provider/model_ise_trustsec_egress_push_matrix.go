@@ -25,7 +25,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/tidwall/gjson"
-	"github.com/tidwall/sjson"
 )
 
 //template:end imports
@@ -52,9 +51,6 @@ func (data TrustSecEgressPushMatrix) getPath() string {
 //template:begin toBody
 func (data TrustSecEgressPushMatrix) toBody(ctx context.Context, state TrustSecEgressPushMatrix) string {
 	body := ""
-	if !data.Force.IsNull() {
-		body, _ = sjson.Set(body, "", data.Force.ValueBool())
-	}
 	return body
 }
 

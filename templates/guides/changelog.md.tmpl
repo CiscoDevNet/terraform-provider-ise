@@ -7,6 +7,10 @@ description: |-
 
 # Changelog
 
+## 0.5.3
+
+- Fix request bodies of `ise_license_tier_state` (nested array sent instead of a list of objects, HTTP 400), `ise_trustsec_egress_push_matrix` and the `*_update_rank` resources: generated code no longer calls `sjson.Set` with an empty path, which `sjson` 1.2.7 treats as a root array append instead of rejecting
+
 ## 0.5.2
 
 - Improve network device group creation performance by removing the five-second delay introduced as part of the API workaround in v0.1.14

@@ -53,9 +53,6 @@ func (data NetworkAccessPolicySetUpdateRank) getPath() string {
 //template:begin toBody
 func (data NetworkAccessPolicySetUpdateRank) toBody(ctx context.Context, state NetworkAccessPolicySetUpdateRank) string {
 	body := ""
-	if !data.PolicySetId.IsNull() {
-		body, _ = sjson.Set(body, "", data.PolicySetId.ValueString())
-	}
 	if !data.Rank.IsNull() {
 		body, _ = sjson.Set(body, "rank", data.Rank.ValueInt64())
 	}

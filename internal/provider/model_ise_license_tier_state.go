@@ -59,7 +59,6 @@ func (data LicenseTierState) getPath() string {
 func (data LicenseTierState) toBody(ctx context.Context, state LicenseTierState) string {
 	body := "[]"
 	if len(data.Licenses) > 0 {
-		body, _ = sjson.Set(body, "", []interface{}{})
 		for _, item := range data.Licenses {
 			itemBody := ""
 			if !item.Name.IsNull() {
