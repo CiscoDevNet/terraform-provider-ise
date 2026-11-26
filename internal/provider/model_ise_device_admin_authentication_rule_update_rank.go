@@ -56,9 +56,6 @@ func (data DeviceAdminAuthenticationRuleUpdateRank) getPath() string {
 //template:begin toBody
 func (data DeviceAdminAuthenticationRuleUpdateRank) toBody(ctx context.Context, state DeviceAdminAuthenticationRuleUpdateRank) string {
 	body := ""
-	if !data.RuleId.IsNull() {
-		body, _ = sjson.Set(body, "", data.RuleId.ValueString())
-	}
 	if !data.Rank.IsNull() {
 		body, _ = sjson.Set(body, "rule.rank", data.Rank.ValueInt64())
 	}

@@ -53,9 +53,6 @@ func (data NetworkAccessAuthorizationGlobalExceptionRuleUpdateRank) getPath() st
 //template:begin toBody
 func (data NetworkAccessAuthorizationGlobalExceptionRuleUpdateRank) toBody(ctx context.Context, state NetworkAccessAuthorizationGlobalExceptionRuleUpdateRank) string {
 	body := ""
-	if !data.RuleId.IsNull() {
-		body, _ = sjson.Set(body, "", data.RuleId.ValueString())
-	}
 	if !data.Rank.IsNull() {
 		body, _ = sjson.Set(body, "rule.rank", data.Rank.ValueInt64())
 	}
