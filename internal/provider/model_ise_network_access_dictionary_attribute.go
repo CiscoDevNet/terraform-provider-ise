@@ -54,7 +54,7 @@ type NetworkAccessDictionaryAttributeAllowedValues struct {
 
 //template:begin getPath
 func (data NetworkAccessDictionaryAttribute) getPath() string {
-	return fmt.Sprintf("/api/v1/policy/network-access/dictionaries/%v/attribute", url.QueryEscape(data.DictionaryName.ValueString()))
+	return fmt.Sprintf("/api/v1/policy/network-access/dictionaries/%v/attribute", url.PathEscape(data.DictionaryName.ValueString()))
 }
 
 //template:end getPath

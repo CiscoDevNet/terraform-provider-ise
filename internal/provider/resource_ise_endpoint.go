@@ -22,7 +22,6 @@ package provider
 //template:begin imports
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/url"
 	"strings"
@@ -217,7 +216,7 @@ func (r *EndpointResource) Configure(_ context.Context, req resource.ConfigureRe
 
 func (r *EndpointResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan Endpoint
-	r.cache.Delete("Endpoint")
+	defer r.cache.Delete("Endpoint")
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -238,7 +237,7 @@ func (r *EndpointResource) Create(ctx context.Context, req resource.CreateReques
 		// profile_id is Optional+Computed: ISE assigns it (empty for dynamic endpoints
 		// until the profiler runs). Read the created object back so the Computed value
 		// is known after apply, as the framework requires.
-		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+		res, err := r.client.Get(plan.getPath() + "/" + url.PathEscape(plan.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to read back created object (GET), got error: %s, %s", err, res.String()))
 			return
@@ -260,7 +259,7 @@ func (r *EndpointResource) Create(ctx context.Context, req resource.CreateReques
 		resp.Diagnostics.Append(diags...)
 		return
 	} else {
-		res, err := r.client.Get(plan.getPath() + "/name/" + url.QueryEscape(plan.Name.ValueString()))
+		res, err := r.client.Get(plan.getPath() + "/name/" + url.PathEscape(plan.Name.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
 			return
@@ -281,7 +280,7 @@ func (r *EndpointResource) Create(ctx context.Context, req resource.CreateReques
 		tflog.Debug(ctx, fmt.Sprintf("%s: Resource already exists, updating existing resource", plan.Id.ValueString()))
 		// Update existing object
 		body := plan.toBody(ctx, Endpoint{})
-		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
+		res, err = r.client.Put(plan.getPath()+"/"+url.PathEscape(plan.Id.ValueString()), body)
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 			return
@@ -313,16 +312,15 @@ func (r *EndpointResource) Read(ctx context.Context, req resource.ReadRequest, r
 		// ReadCache cannot populate them from state (there is none yet) without
 		// fabricating a value. Bypass the cache for the whole resource and read it
 		// directly so those attributes get their real value.
-		res, err = r.client.Get(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()))
+		res, err = r.client.Get(state.getPath() + "/" + url.PathEscape(state.Id.ValueString()))
 	} else {
 		res, err = r.ReadCache(ctx, state)
 	}
-	if errors.Is(err, errCacheMiss) {
-		// The bulk cache doesn't have this object. That only means it is missing from
-		// our in-memory snapshot -- e.g. it was created after the snapshot was taken, or
-		// the snapshot is otherwise incomplete -- not that ISE itself doesn't have it.
-		// Confirm directly against ISE before ever deleting state.
-		res, err = r.client.Get(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()))
+	if err != nil {
+		// A cache miss or a failed bulk load says nothing about whether the object
+		// exists. Only a direct item GET may trigger the 404 state-removal path.
+		tflog.Debug(ctx, "Endpoint: cache unavailable, falling back to direct GET", map[string]any{"error": err.Error()})
+		res, err = r.client.Get(state.getPath() + "/" + url.PathEscape(state.Id.ValueString()))
 	}
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
@@ -355,7 +353,12 @@ func (r *EndpointResource) Read(ctx context.Context, req resource.ReadRequest, r
 func (r *EndpointResource) ReadCache(ctx context.Context, state Endpoint) (gjson.Result, error) {
 	items, cacheHit, err := r.cache.GetOrLoad("Endpoint", func() (map[string]gjson.Result, error) {
 		allItems := make(map[string]gjson.Result)
-		for page := 1; ; page++ {
+		// Bound requests even if a broken server keeps returning new IDs forever.
+		const maxPages = 100000
+		for page := 1; page <= maxPages; page++ {
+			if err := ctx.Err(); err != nil {
+				return nil, err
+			}
 			separator := "?"
 			if strings.Contains("/api/v1/endpoint", "?") {
 				separator = "&"
@@ -364,17 +367,29 @@ func (r *EndpointResource) ReadCache(ctx context.Context, state Endpoint) (gjson
 			if err != nil {
 				return nil, err
 			}
-			values := res
-			for _, value := range values.Array() {
-				if id := value.Get("id").String(); id != "" {
-					allItems[id] = value
-				}
+			if !res.IsArray() {
+				return nil, fmt.Errorf("bulk response on page %d is not a JSON array", page)
 			}
-			if len(values.Array()) < 100 {
-				break
+			values := res.Array()
+			newIDs := 0
+			for _, value := range values {
+				id := value.Get("id").String()
+				if id == "" {
+					return nil, fmt.Errorf("bulk response on page %d contains an object without an ID", page)
+				}
+				if _, exists := allItems[id]; !exists {
+					newIDs++
+				}
+				allItems[id] = value
+			}
+			if len(values) > 0 && newIDs == 0 {
+				return nil, fmt.Errorf("bulk pagination made no progress on page %d", page)
+			}
+			if len(values) < 100 {
+				return allItems, nil
 			}
 		}
-		return allItems, nil
+		return nil, fmt.Errorf("bulk pagination exceeded %d pages", maxPages)
 	})
 	if err != nil {
 		return gjson.Result{}, err
@@ -421,7 +436,7 @@ func (r *EndpointResource) ReadCache(ctx context.Context, state Endpoint) (gjson
 //template:begin update
 func (r *EndpointResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state Endpoint
-	r.cache.Delete("Endpoint")
+	defer r.cache.Delete("Endpoint")
 
 	// Read plan
 	diags := req.Plan.Get(ctx, &plan)
@@ -439,13 +454,13 @@ func (r *EndpointResource) Update(ctx context.Context, req resource.UpdateReques
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	body := plan.toBody(ctx, state)
 
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
+	res, err := r.client.Put(plan.getPath()+"/"+url.PathEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
 	}
 
-	res, err = r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+	res, err = r.client.Get(plan.getPath() + "/" + url.PathEscape(plan.Id.ValueString()))
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to read back updated object (GET), got error: %s, %s", err, res.String()))
 		return
@@ -472,7 +487,7 @@ func (r *EndpointResource) Update(ctx context.Context, req resource.UpdateReques
 //template:begin delete
 func (r *EndpointResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	var state Endpoint
-	r.cache.Delete("Endpoint")
+	defer r.cache.Delete("Endpoint")
 
 	// Read state
 	diags := req.State.Get(ctx, &state)
@@ -482,7 +497,7 @@ func (r *EndpointResource) Delete(ctx context.Context, req resource.DeleteReques
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()))
+	res, err := r.client.Delete(state.getPath() + "/" + url.PathEscape(state.Id.ValueString()))
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return

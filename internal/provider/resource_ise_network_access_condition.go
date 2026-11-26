@@ -215,11 +215,11 @@ func (r *NetworkAccessConditionResource) Schema(ctx context.Context, req resourc
 										Optional:            true,
 									},
 									"operator": schema.StringAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith").String,
+										MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith").String,
 										CustomType:          helpers.OperatorType{},
 										Optional:            true,
 										Validators: []validator.String{
-											stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
+											stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith"),
 										},
 									},
 									"children": schema.ListNestedAttribute{
@@ -259,11 +259,11 @@ func (r *NetworkAccessConditionResource) Schema(ctx context.Context, req resourc
 													Optional:            true,
 												},
 												"operator": schema.StringAttribute{
-													MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith").String,
+													MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith").String,
 													CustomType:          helpers.OperatorType{},
 													Optional:            true,
 													Validators: []validator.String{
-														stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
+														stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith"),
 													},
 												},
 												"children": schema.ListNestedAttribute{
@@ -303,11 +303,11 @@ func (r *NetworkAccessConditionResource) Schema(ctx context.Context, req resourc
 																Optional:            true,
 															},
 															"operator": schema.StringAttribute{
-																MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith").String,
+																MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith").String,
 																CustomType:          helpers.OperatorType{},
 																Optional:            true,
 																Validators: []validator.String{
-																	stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
+																	stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith"),
 																},
 															},
 															"children": schema.ListNestedAttribute{
@@ -347,11 +347,11 @@ func (r *NetworkAccessConditionResource) Schema(ctx context.Context, req resourc
 																			Optional:            true,
 																		},
 																		"operator": schema.StringAttribute{
-																			MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith").String,
+																			MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith").String,
 																			CustomType:          helpers.OperatorType{},
 																			Optional:            true,
 																			Validators: []validator.String{
-																				stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
+																				stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith"),
 																			},
 																		},
 																		"children": schema.ListNestedAttribute{
@@ -391,11 +391,11 @@ func (r *NetworkAccessConditionResource) Schema(ctx context.Context, req resourc
 																						Optional:            true,
 																					},
 																					"operator": schema.StringAttribute{
-																						MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith").String,
+																						MarkdownDescription: helpers.NewAttributeDescription("Equality operator").AddStringEnumDescription("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith").String,
 																						CustomType:          helpers.OperatorType{},
 																						Optional:            true,
 																						Validators: []validator.String{
-																							stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith"),
+																							stringvalidator.OneOf("contains", "endsWith", "equals", "greaterOrEquals", "greaterThan", "in", "ipEquals", "ipGreaterThan", "ipLessThan", "ipNotEquals", "lessOrEquals", "lessThan", "matches", "notContains", "notEndsWith", "notEquals", "notIn", "notStartsWith", "startsWith", "macContains", "macEndsWith", "macEquals", "macIn", "macNotContains", "macNotEndsWith", "macNotEquals", "macNotIn", "macNotStartsWith", "macStartsWith"),
 																						},
 																					},
 																				},
@@ -475,7 +475,7 @@ func (r *NetworkAccessConditionResource) Read(ctx context.Context, req resource.
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
-	res, err := r.client.Get(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()))
+	res, err := r.client.Get(state.getPath() + "/" + url.PathEscape(state.Id.ValueString()))
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
@@ -519,7 +519,7 @@ func (r *NetworkAccessConditionResource) Update(ctx context.Context, req resourc
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 	body := plan.toBody(ctx, state)
 
-	res, err := r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
+	res, err := r.client.Put(plan.getPath()+"/"+url.PathEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -545,7 +545,7 @@ func (r *NetworkAccessConditionResource) Delete(ctx context.Context, req resourc
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
-	res, err := r.client.Delete(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()))
+	res, err := r.client.Delete(state.getPath() + "/" + url.PathEscape(state.Id.ValueString()))
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))
 		return

@@ -44,7 +44,7 @@ type DeviceAdminAuthorizationExceptionRuleUpdateRank struct {
 
 //template:begin getPath
 func (data DeviceAdminAuthorizationExceptionRuleUpdateRank) getPath() string {
-	return fmt.Sprintf("/api/v1/policy/device-admin/policy-set/%v/exception", url.QueryEscape(data.PolicySetId.ValueString()))
+	return fmt.Sprintf("/api/v1/policy/device-admin/policy-set/%v/exception", url.PathEscape(data.PolicySetId.ValueString()))
 }
 
 //template:end getPath
@@ -56,9 +56,6 @@ func (data DeviceAdminAuthorizationExceptionRuleUpdateRank) getPath() string {
 //template:begin toBody
 func (data DeviceAdminAuthorizationExceptionRuleUpdateRank) toBody(ctx context.Context, state DeviceAdminAuthorizationExceptionRuleUpdateRank) string {
 	body := ""
-	if !data.RuleId.IsNull() {
-		body, _ = sjson.Set(body, "", data.RuleId.ValueString())
-	}
 	if !data.Rank.IsNull() {
 		body, _ = sjson.Set(body, "rule.rank", data.Rank.ValueInt64())
 	}

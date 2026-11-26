@@ -169,7 +169,7 @@ func (d *CertificateAuthenticationProfileDataSource) Read(ctx context.Context, r
 		}
 	}
 
-	res, err := d.client.Get(config.getPath() + "/" + url.QueryEscape(config.Id.ValueString()))
+	res, err := d.client.Get(config.getPath() + "/" + url.PathEscape(config.Id.ValueString()))
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object, got error: %s", err))
 		return

@@ -179,6 +179,8 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 					{{- if .Computed}}
 					{{- if .ComputedWhen}}
 					helpers.ComputedWhen("{{computedWhenAttr .ComputedWhen}}", {{computedWhenValue .ComputedWhen}}),
+					{{- else if .PreserveStateIfUnconfigured}}
+					helpers.PreserveStateIfUnconfigured(),
 					{{- else}}
 					{{snakeCase .Type}}planmodifier.UseStateForUnknown(),
 					{{- end}}
@@ -274,7 +276,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 							{{- end}}
 							{{- if .Computed}}
 							PlanModifiers: []planmodifier.{{.Type}}{
+								{{- if .PreserveStateIfUnconfigured}}
+								helpers.PreserveStateIfUnconfigured(),
+								{{- else}}
 								{{snakeCase .Type}}planmodifier.UseStateForUnknown(),
+								{{- end}}
 							},
 							{{- end}}
 							{{- if isNestedListSet .}}
@@ -366,7 +372,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 										{{- end}}
 										{{- if .Computed}}
 										PlanModifiers: []planmodifier.{{.Type}}{
+											{{- if .PreserveStateIfUnconfigured}}
+											helpers.PreserveStateIfUnconfigured(),
+											{{- else}}
 											{{snakeCase .Type}}planmodifier.UseStateForUnknown(),
+											{{- end}}
 										},
 										{{- end}}
 										{{- if isNestedListSet .}}
@@ -458,7 +468,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 													{{- end}}
 													{{- if .Computed}}
 													PlanModifiers: []planmodifier.{{.Type}}{
+														{{- if .PreserveStateIfUnconfigured}}
+														helpers.PreserveStateIfUnconfigured(),
+														{{- else}}
 														{{snakeCase .Type}}planmodifier.UseStateForUnknown(),
+														{{- end}}
 													},
 													{{- end}}
 													{{- if isNestedListSet .}}
@@ -550,7 +564,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																{{- end}}
 																{{- if .Computed}}
 																PlanModifiers: []planmodifier.{{.Type}}{
+																	{{- if .PreserveStateIfUnconfigured}}
+																	helpers.PreserveStateIfUnconfigured(),
+																	{{- else}}
 																	{{snakeCase .Type}}planmodifier.UseStateForUnknown(),
+																	{{- end}}
 																},
 																{{- end}}
 																{{- if isNestedListSet .}}
@@ -642,7 +660,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																			{{- end}}
 																			{{- if .Computed}}
 																			PlanModifiers: []planmodifier.{{.Type}}{
+																				{{- if .PreserveStateIfUnconfigured}}
+																				helpers.PreserveStateIfUnconfigured(),
+																				{{- else}}
 																				{{snakeCase .Type}}planmodifier.UseStateForUnknown(),
+																				{{- end}}
 																			},
 																			{{- end}}
 																		{{- if isNestedListSet .}}
@@ -734,7 +756,11 @@ func (r *{{camelCase .Name}}Resource) Schema(ctx context.Context, req resource.S
 																					{{- end}}
 																					{{- if .Computed}}
 																					PlanModifiers: []planmodifier.{{.Type}}{
+																						{{- if .PreserveStateIfUnconfigured}}
+																						helpers.PreserveStateIfUnconfigured(),
+																						{{- else}}
 																						{{snakeCase .Type}}planmodifier.UseStateForUnknown(),
+																						{{- end}}
 																					},
 																					{{- end}}
 																				},
@@ -961,7 +987,7 @@ func (r *{{camelCase .Name}}Resource) ValidateConfig(ctx context.Context, req re
 func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan {{camelCase .Name}}
 	{{- if .UseCache}}
-	r.cache.Delete("{{camelCase .Name}}")
+	defer r.cache.Delete("{{camelCase .Name}}")
 	{{- end}}
 	{{- if strContains (camelCase .Name) "UpdateRanks" }}
 	var existingData {{strReplace (camelCase .Name) "UpdateRanks" "" -1}}
@@ -1020,11 +1046,14 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	})
 	{{- end}}
 	for _, rule := range rules{
-		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
+		res, err := r.client.Get(plan.getPath() + "/" + url.PathEscape(rule.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
 		}
+		// Start from empty data for each rule: fromBody keeps values that are
+		// missing in a response, e.g. the condition children of the previous rule.
+		existingData = {{strReplace (camelCase .Name) "UpdateRanks" "" -1}}{}
 		existingData.fromBody(ctx, res)
 
 		// Use the `toBody` function to construct the body from existingData
@@ -1033,10 +1062,10 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 		// Update rank
 		{{- if strContains (camelCase .Name) "Rule" }}
 		body, _ = sjson.Set(body, "rule.rank", rule.Rank.ValueInt64())
-		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.Id.ValueString()), body)
+		res, err = r.client.Put(plan.getPath()+"/"+url.PathEscape(rule.Id.ValueString()), body)
 		{{- else }}
 		body, _ = sjson.Set(body, "rank", rule.Rank.ValueInt64())
-		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.Id.ValueString()), body)
+		res, err = r.client.Put(plan.getPath()+"/"+url.PathEscape(rule.Id.ValueString()), body)
 		{{- end}}
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
@@ -1052,9 +1081,9 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	{{- else if strContains (camelCase .Name) "UpdateRank" }}
 	// Read existing attributes from the API
 	{{- if strContains (camelCase .Name) "Rule" }}
-	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.RuleId.ValueString()))
+	res, err := r.client.Get(plan.getPath() + "/" + url.PathEscape(plan.RuleId.ValueString()))
 	{{- else}}
-	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.PolicySetId.ValueString()))
+	res, err := r.client.Get(plan.getPath() + "/" + url.PathEscape(plan.PolicySetId.ValueString()))
 	{{- end}}
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
@@ -1068,10 +1097,10 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	// Update rank
 	{{- if strContains (camelCase .Name) "Rule" }}
 	body, _ = sjson.Set(body, "rule.rank", plan.Rank.ValueInt64())
-	res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.RuleId.ValueString()), body)
+	res, err = r.client.Put(plan.getPath()+"/"+url.PathEscape(plan.RuleId.ValueString()), body)
 	{{- else}}
 	body, _ = sjson.Set(body, "rank", plan.Rank.ValueInt64())
-	res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.PolicySetId.ValueString()), body)
+	res, err = r.client.Put(plan.getPath()+"/"+url.PathEscape(plan.PolicySetId.ValueString()), body)
 	{{- end}}
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
@@ -1096,7 +1125,7 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 	{{- if .PutCreate}}
 	params := ""
 	{{- if .PutIdQueryPath}}
-	params += "/" + url.QueryEscape(gjson.Get(body, "{{.PutIdIncludePath}}.id").String())
+	params += "/" + url.PathEscape(gjson.Get(body, "{{.PutIdIncludePath}}.id").String())
 	{{- end}}
 	res, err := r.client.Put(plan.getPath() + params, body)
 	{{- else if and (isErs .RestEndpoint) (not .IdPath) (not (hasId .Attributes))}}
@@ -1136,7 +1165,7 @@ func (r *{{camelCase .Name}}Resource) Create(ctx context.Context, req resource.C
 		{{- end}}
 
 		// Read existing attributes from the API
-		res, err = r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+		res, err = r.client.Get(plan.getPath() + "/" + url.PathEscape(plan.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
@@ -1200,22 +1229,21 @@ func (r *{{camelCase .Name}}Resource) Read(ctx context.Context, req resource.Rea
 		// ReadCache cannot populate them from state (there is none yet) without
 		// fabricating a value. Bypass the cache for the whole resource and read it
 		// directly so those attributes get their real value.
-		res, err = r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + url.QueryEscape(state.Id.ValueString()){{end}})
+		res, err = r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + url.PathEscape(state.Id.ValueString()){{end}})
 	} else {
 		res, err = r.ReadCache(ctx, state)
 	}
 	{{- else}}
 	res, err = r.ReadCache(ctx, state)
 	{{- end}}
-	if errors.Is(err, errCacheMiss) {
-		// The bulk cache doesn't have this object. That only means it is missing from
-		// our in-memory snapshot -- e.g. it was created after the snapshot was taken, or
-		// the snapshot is otherwise incomplete -- not that ISE itself doesn't have it.
-		// Confirm directly against ISE before ever deleting state.
-		res, err = r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + url.QueryEscape(state.Id.ValueString()){{end}})
+	if err != nil {
+		// A cache miss or a failed bulk load says nothing about whether the object
+		// exists. Only a direct item GET may trigger the 404 state-removal path.
+		tflog.Debug(ctx, "{{camelCase .Name}}: cache unavailable, falling back to direct GET", map[string]any{"error": err.Error()})
+		res, err = r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + url.PathEscape(state.Id.ValueString()){{end}})
 	}
 	{{- else}}
-	res, err := r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + url.QueryEscape(state.Id.ValueString()){{end}})
+	res, err := r.client.Get(state.getPath(){{if not .GetNoId}} + "/" + url.PathEscape(state.Id.ValueString()){{end}})
 	{{- end}}
 	{{- end}}
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
@@ -1247,7 +1275,12 @@ func (r *{{camelCase .Name}}Resource) ReadCache(ctx context.Context, state {{cam
 	{{- $cacheDataPath := cacheDataPath .Attributes}}
 	items, cacheHit, err := r.cache.GetOrLoad("{{camelCase .Name}}", func() (map[string]gjson.Result, error) {
 		allItems := make(map[string]gjson.Result)
-		for page := 1; ; page++ {
+		// Bound requests even if a broken server keeps returning new IDs forever.
+		const maxPages = 100000
+		for page := 1; page <= maxPages; page++ {
+			if err := ctx.Err(); err != nil {
+				return nil, err
+			}
 			separator := "?"
 			if strings.Contains("{{.CacheRestEndpoint}}", "?") {
 				separator = "&"
@@ -1256,17 +1289,29 @@ func (r *{{camelCase .Name}}Resource) ReadCache(ctx context.Context, state {{cam
 			if err != nil {
 				return nil, err
 			}
-			values := res
-			for _, value := range values.Array() {
-				if id := value.Get("id").String(); id != "" {
-					allItems[id] = value
-				}
+			if !res.IsArray() {
+				return nil, fmt.Errorf("bulk response on page %d is not a JSON array", page)
 			}
-			if len(values.Array()) < {{.CachePageSize}} {
-				break
+			values := res.Array()
+			newIDs := 0
+			for _, value := range values {
+				id := value.Get("id").String()
+				if id == "" {
+					return nil, fmt.Errorf("bulk response on page %d contains an object without an ID", page)
+				}
+				if _, exists := allItems[id]; !exists {
+					newIDs++
+				}
+				allItems[id] = value
+			}
+			if len(values) > 0 && newIDs == 0 {
+				return nil, fmt.Errorf("bulk pagination made no progress on page %d", page)
+			}
+			if len(values) < {{.CachePageSize}} {
+				return allItems, nil
 			}
 		}
-		return allItems, nil
+		return nil, fmt.Errorf("bulk pagination exceeded %d pages", maxPages)
 	})
 	if err != nil {
 		return gjson.Result{}, err
@@ -1318,7 +1363,7 @@ func (r *{{camelCase .Name}}Resource) ReadCache(ctx context.Context, state {{cam
 func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan, state {{camelCase .Name}}
 	{{- if .UseCache}}
-	r.cache.Delete("{{camelCase .Name}}")
+	defer r.cache.Delete("{{camelCase .Name}}")
 	{{- end}}
 	{{- if strContains (camelCase .Name) "UpdateRanks" }}
 	var existingData {{strReplace (camelCase .Name) "UpdateRanks" "" -1}}
@@ -1384,11 +1429,14 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	})
 	{{- end}}
 	for _, rule := range rules{
-		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(rule.Id.ValueString()))
+		res, err := r.client.Get(plan.getPath() + "/" + url.PathEscape(rule.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
 		}
+		// Start from empty data for each rule: fromBody keeps values that are
+		// missing in a response, e.g. the condition children of the previous rule.
+		existingData = {{strReplace (camelCase .Name) "UpdateRanks" "" -1}}{}
 		existingData.fromBody(ctx, res)
 
 		// Use the `toBody` function to construct the body from existingData
@@ -1397,10 +1445,10 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 		// Update rank
 		{{- if strContains (camelCase .Name) "Rule" }}
 		body, _ = sjson.Set(body, "rule.rank", rule.Rank.ValueInt64())
-		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.Id.ValueString()), body)
+		res, err = r.client.Put(plan.getPath()+"/"+url.PathEscape(rule.Id.ValueString()), body)
 		{{- else }}
 		body, _ = sjson.Set(body, "rank", rule.Rank.ValueInt64())
-		res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(rule.Id.ValueString()), body)
+		res, err = r.client.Put(plan.getPath()+"/"+url.PathEscape(rule.Id.ValueString()), body)
 		{{- end}}
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
@@ -1418,9 +1466,9 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	
 	// Read existing attributes from the API
 	{{- if strContains (camelCase .Name) "Rule" }}
-	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.RuleId.ValueString()))
+	res, err := r.client.Get(plan.getPath() + "/" + url.PathEscape(plan.RuleId.ValueString()))
 	{{- else}}
-	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.PolicySetId.ValueString()))
+	res, err := r.client.Get(plan.getPath() + "/" + url.PathEscape(plan.PolicySetId.ValueString()))
 	{{- end}}
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
@@ -1438,7 +1486,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	body, _ = sjson.Set(body, "rank", plan.Rank.ValueInt64())
 	{{- end}}
 
-	res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
+	res, err = r.client.Put(plan.getPath()+"/"+url.PathEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -1453,7 +1501,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	if plan.Rank.IsNull() {
 		var existingData {{camelCase .Name}}
 		// Fetch existing data from the API
-		res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+		res, err := r.client.Get(plan.getPath() + "/" + url.PathEscape(plan.Id.ValueString()))
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 			return
@@ -1477,7 +1525,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	{{- else if .PutNoId}}
 	res, err := r.client.Put(plan.getPath(), body)
 	{{- else}}
-	res, err := r.client.Put(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()), body)
+	res, err := r.client.Put(plan.getPath() + "/" + url.PathEscape(plan.Id.ValueString()), body)
 	{{- end}}
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
@@ -1487,7 +1535,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 	{{- end}}
 	{{- if hasComputedWhen .Attributes}}
 
-	res, err = r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.Id.ValueString()))
+	res, err = r.client.Get(plan.getPath() + "/" + url.PathEscape(plan.Id.ValueString()))
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to read back updated object (GET), got error: %s, %s", err, res.String()))
 		return
@@ -1514,7 +1562,7 @@ func (r *{{camelCase .Name}}Resource) Update(ctx context.Context, req resource.U
 func (r *{{camelCase .Name}}Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	var state {{camelCase .Name}}
 	{{- if .UseCache}}
-	r.cache.Delete("{{camelCase .Name}}")
+	defer r.cache.Delete("{{camelCase .Name}}")
 	{{- end}}
 
 	// Read state
@@ -1531,7 +1579,7 @@ func (r *{{camelCase .Name}}Resource) Delete(ctx context.Context, req resource.D
 	body := state.toBody(ctx, state)
 	res, err := r.client.Put(state.getPathDelete(), body)
 	{{- else}}
-	res, err := r.client.Delete({{if .DeleteRestEndpoint}}state.getPathDelete(){{else}}state.getPath(){{end}} + "/" + url.QueryEscape(state.Id.ValueString()))
+	res, err := r.client.Delete({{if .DeleteRestEndpoint}}state.getPathDelete(){{else}}state.getPath(){{end}} + "/" + url.PathEscape(state.Id.ValueString()))
 	{{- end}}
 	if err != nil{{if .IgnoreDeleteError}} && !strings.Contains(res.String(), "{{.IgnoreDeleteError}}"){{end}} {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to delete object (DELETE), got error: %s, %s", err, res.String()))

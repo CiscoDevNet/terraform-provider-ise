@@ -315,12 +315,13 @@ var errCacheMiss = errors.New("object not found in cache")
 type ThreadSafeCache struct {
 	mu          sync.Mutex
 	items       map[string]map[string]gjson.Result
+	errors      map[string]error
 	loading     map[string]chan struct{}
 	generations map[string]uint64
 }
 
 func NewThreadSafeCache() *ThreadSafeCache {
-	return &ThreadSafeCache{items: make(map[string]map[string]gjson.Result), loading: make(map[string]chan struct{}), generations: make(map[string]uint64)}
+	return &ThreadSafeCache{items: make(map[string]map[string]gjson.Result), errors: make(map[string]error), loading: make(map[string]chan struct{}), generations: make(map[string]uint64)}
 }
 
 func (c *ThreadSafeCache) Delete(key string) {
@@ -328,6 +329,7 @@ func (c *ThreadSafeCache) Delete(key string) {
 	defer c.mu.Unlock()
 	c.generations[key]++
 	delete(c.items, key)
+	delete(c.errors, key)
 }
 
 func (c *ThreadSafeCache) GetOrLoad(key string, load func() (map[string]gjson.Result, error)) (map[string]gjson.Result, bool, error) {
@@ -336,6 +338,12 @@ func (c *ThreadSafeCache) GetOrLoad(key string, load func() (map[string]gjson.Re
 		if value, found := c.items[key]; found {
 			c.mu.Unlock()
 			return value, true, nil
+		}
+		// Remember failed bulk loads for this generation, so waiting Reads use
+		// their direct GET fallback instead of repeating the same failing load.
+		if err, found := c.errors[key]; found {
+			c.mu.Unlock()
+			return nil, true, err
 		}
 		if waiting, found := c.loading[key]; found {
 			c.mu.Unlock()
@@ -350,11 +358,19 @@ func (c *ThreadSafeCache) GetOrLoad(key string, load func() (map[string]gjson.Re
 		value, err := load()
 		c.mu.Lock()
 		delete(c.loading, key)
-		if err == nil && c.generations[key] == generation {
-			c.items[key] = value
+		invalidated := c.generations[key] != generation
+		if !invalidated {
+			if err == nil {
+				c.items[key] = value
+			} else {
+				c.errors[key] = err
+			}
 		}
 		close(waiting)
 		c.mu.Unlock()
+		if invalidated {
+			continue
+		}
 		if err != nil {
 			return nil, false, err
 		}

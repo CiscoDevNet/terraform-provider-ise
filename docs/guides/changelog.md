@@ -7,12 +7,28 @@ description: |-
 
 # Changelog
 
-## 0.5.0 (unreleased)
+## 0.5.3
+
+- Fix request bodies of `ise_license_tier_state` (nested array sent instead of a list of objects, HTTP 400), `ise_trustsec_egress_push_matrix` and the `*_update_rank` resources: generated code no longer calls `sjson.Set` with an empty path, which `sjson` 1.2.7 treats as a root array append instead of rejecting
+
+## 0.5.2
+
+- Improve network device group creation performance by removing the five-second delay introduced as part of the API workaround in v0.1.14
+
+## 0.5.1
+
+- Add support for MAC condition operators at condition nesting levels 3–7 across Network Access and Device Admin condition resources and inline rules
+- Escape object IDs and names in URL paths as path segments (`url.PathEscape`) instead of query values: a space was sent as `+`, which ISE reads as a plus sign, so objects identified by a name with a space (e.g. the `Network Access` dictionary or a `Device Type` attribute) could not be read, updated, deleted or imported [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/282)
+- Fix perpetual drift in the `children` attribute of the `ise_device_admin_policy_set` and `ise_network_access_policy_set` resources, where ISE normalizes condition operators (e.g. returning `ipEquals` for `equals`), causing Terraform to fail key matching and plan attribute changes to null on every refresh. [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/277)
+- Fix the `*_update_ranks` resources sending the condition children of one rule with the next rule: they reused the data of the previous rule for each rule, and rules without condition children kept the previous rule's children [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/283)
+
+## 0.5.0
 
 - Add write-only support for secret attributes on `ise_internal_user`, `ise_network_device` and `ise_repository`. Each secret gains an `<attr>_wo` [write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) variant that is never persisted to Terraform state, paired with an `<attr>_wo_version` integer that must be incremented to rotate the value. The existing attribute keeps working unchanged, and exactly one of the two spellings may be set; using the `_wo` form requires Terraform 1.11 or later
 - The secret attributes of `ise_network_device` are no longer read back from ISE: `authentication_encryption_key`, `authentication_message_authenticator_code_key`, `authentication_radius_shared_secret`, `authentication_second_radius_shared_secret`, `snmp_auth_password`, `snmp_privacy_password`, `tacacs_shared_secret`, `trustsec_device_password`, `trustsec_enable_mode_password` and `trustsec_exec_mode_password`. The Terraform configuration is now the single source of truth for them: the `ise_network_device` data source no longer returns them, `terraform import` no longer populates them, and a secret changed directly in the ISE UI is no longer reported as drift
 - Fix perpetual drift on the `mac` attribute of the `ise_endpoint` resource, where ISE always normalizes MAC addresses to uppercase regardless of the case submitted, causing Terraform to report changes on every plan. `mac` now uses a case-insensitive custom string type so a case-only difference between the stored value and ISE's uppercase value is treated as no change, keeping the practitioner's original casing in state [link](https://github.com/CiscoDevNet/terraform-provider-ise/issues/273)
 - Add read cache to `ise_endpoint` resource to improve performance in deployments with a large number of endpoints
+- Fix destroy/recreate of `ise_active_directory_join_point` during brownfield import, where ISE returns existing `groups` and `rewrite_rules` in the GET response but these attributes were not marked as `Computed`, causing Terraform to plan a destroy and recreate of the resource to reconcile the difference
 
 ## 0.4.1
 

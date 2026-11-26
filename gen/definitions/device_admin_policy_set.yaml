@@ -89,6 +89,7 @@ attributes:
   - model_name: operator
     data_path: [condition]
     tf_name: condition_operator
+    normalize_operator: true
     type: String
     enum_values:
       [
@@ -163,6 +164,7 @@ attributes:
         description: Dictionary value
         example: abc
       - model_name: operator
+        normalize_operator: true
         type: String
         enum_values:
           [
@@ -241,6 +243,7 @@ attributes:
             description: Dictionary value
             example: abc
           - model_name: operator
+            normalize_operator: true
             type: String
             enum_values:
               [
@@ -263,6 +266,16 @@ attributes:
                 notIn,
                 notStartsWith,
                 startsWith,
+                macContains,
+                macEndsWith,
+                macEquals,
+                macIn,
+                macNotContains,
+                macNotEndsWith,
+                macNotEquals,
+                macNotIn,
+                macNotStartsWith,
+                macStartsWith,
               ]
             description: Equality operator
             example: equals
@@ -300,6 +313,7 @@ attributes:
                 type: String
                 description: Dictionary value
               - model_name: operator
+                normalize_operator: true
                 type: String
                 enum_values:
                   [
@@ -322,6 +336,16 @@ attributes:
                     notIn,
                     notStartsWith,
                     startsWith,
+                    macContains,
+                    macEndsWith,
+                    macEquals,
+                    macIn,
+                    macNotContains,
+                    macNotEndsWith,
+                    macNotEquals,
+                    macNotIn,
+                    macNotStartsWith,
+                    macStartsWith,
                   ]
                 description: Equality operator
               - model_name: children
@@ -358,6 +382,7 @@ attributes:
                     type: String
                     description: Dictionary value
                   - model_name: operator
+                    normalize_operator: true
                     type: String
                     enum_values:
                       [
@@ -380,6 +405,16 @@ attributes:
                         notIn,
                         notStartsWith,
                         startsWith,
+                        macContains,
+                        macEndsWith,
+                        macEquals,
+                        macIn,
+                        macNotContains,
+                        macNotEndsWith,
+                        macNotEquals,
+                        macNotIn,
+                        macNotStartsWith,
+                        macStartsWith,
                       ]
                     description: Equality operator
                   - model_name: children
@@ -417,6 +452,7 @@ attributes:
                         type: String
                         description: Dictionary value
                       - model_name: operator
+                        normalize_operator: true
                         type: String
                         enum_values:
                           [
@@ -439,6 +475,16 @@ attributes:
                             notIn,
                             notStartsWith,
                             startsWith,
+                            macContains,
+                            macEndsWith,
+                            macEquals,
+                            macIn,
+                            macNotContains,
+                            macNotEndsWith,
+                            macNotEquals,
+                            macNotIn,
+                            macNotStartsWith,
+                            macStartsWith,
                           ]
                         description: Equality operator
                       - model_name: children
@@ -470,6 +516,7 @@ attributes:
                             type: String
                             description: Dictionary value
                           - model_name: operator
+                            normalize_operator: true
                             type: String
                             enum_values:
                               [
@@ -492,6 +539,16 @@ attributes:
                                 notIn,
                                 notStartsWith,
                                 startsWith,
+                                macContains,
+                                macEndsWith,
+                                macEquals,
+                                macIn,
+                                macNotContains,
+                                macNotEndsWith,
+                                macNotEquals,
+                                macNotIn,
+                                macNotStartsWith,
+                                macStartsWith,
                               ]
                             description: Equality operator
 test_prerequisites: |

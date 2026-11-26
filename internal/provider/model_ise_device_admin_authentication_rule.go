@@ -132,7 +132,7 @@ type DeviceAdminAuthenticationRuleChildrenChildrenChildrenChildrenChildrenChildr
 
 //template:begin getPath
 func (data DeviceAdminAuthenticationRule) getPath() string {
-	return fmt.Sprintf("/api/v1/policy/device-admin/policy-set/%v/authentication", url.QueryEscape(data.PolicySetId.ValueString()))
+	return fmt.Sprintf("/api/v1/policy/device-admin/policy-set/%v/authentication", url.PathEscape(data.PolicySetId.ValueString()))
 }
 
 //template:end getPath

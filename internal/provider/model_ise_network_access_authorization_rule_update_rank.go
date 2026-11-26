@@ -44,7 +44,7 @@ type NetworkAccessAuthorizationRuleUpdateRank struct {
 
 //template:begin getPath
 func (data NetworkAccessAuthorizationRuleUpdateRank) getPath() string {
-	return fmt.Sprintf("/api/v1/policy/network-access/policy-set/%v/authorization", url.QueryEscape(data.PolicySetId.ValueString()))
+	return fmt.Sprintf("/api/v1/policy/network-access/policy-set/%v/authorization", url.PathEscape(data.PolicySetId.ValueString()))
 }
 
 //template:end getPath
@@ -56,9 +56,6 @@ func (data NetworkAccessAuthorizationRuleUpdateRank) getPath() string {
 //template:begin toBody
 func (data NetworkAccessAuthorizationRuleUpdateRank) toBody(ctx context.Context, state NetworkAccessAuthorizationRuleUpdateRank) string {
 	body := ""
-	if !data.RuleId.IsNull() {
-		body, _ = sjson.Set(body, "", data.RuleId.ValueString())
-	}
 	if !data.Rank.IsNull() {
 		body, _ = sjson.Set(body, "rule.rank", data.Rank.ValueInt64())
 	}

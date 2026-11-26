@@ -1,6 +1,4 @@
-
 ---
-layout: ""
 page_title: "Provider: ISE"
 description: |-
   The ISE provider provides resources to interact with a Cisco ISE (Identity Service Engine) instance.

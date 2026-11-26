@@ -338,7 +338,7 @@ type {{$name}}{{$childName}}{{$childChildName}}{{$childChildChildName}}{{$childC
 //template:begin getPath
 func (data {{camelCase .Name}}) getPath() string {
 	{{- if hasReference .Attributes}}
-		return fmt.Sprintf("{{.RestEndpoint}}"{{range .Attributes}}{{if .Reference}}, url.QueryEscape(data.{{toGoName .TfName}}.Value{{.Type}}(){{end}}{{end}}))
+		return fmt.Sprintf("{{.RestEndpoint}}"{{range .Attributes}}{{if .Reference}}, url.PathEscape(data.{{toGoName .TfName}}.Value{{.Type}}(){{end}}{{end}}))
 	{{- else}}
 		return "{{.RestEndpoint}}"
 	{{- end}}
@@ -349,7 +349,7 @@ func (data {{camelCase .Name}}) getPath() string {
 {{if .DeleteRestEndpoint}}
 func (data {{camelCase .Name}}) getPathDelete() string {
 	{{- if hasReference .Attributes}}
-		return fmt.Sprintf("{{.DeleteRestEndpoint}}"{{range .Attributes}}{{if .Reference}}, url.QueryEscape(data.{{toGoName .TfName}}.Value{{.Type}}(){{end}}{{end}}))
+		return fmt.Sprintf("{{.DeleteRestEndpoint}}"{{range .Attributes}}{{if .Reference}}, url.PathEscape(data.{{toGoName .TfName}}.Value{{.Type}}(){{end}}{{end}}))
 	{{- else}}
 		return "{{.DeleteRestEndpoint}}"
 	{{- end}}
@@ -372,7 +372,7 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 	{{- range .Attributes}}
 	{{- if .Value}}
 	body, _ = sjson.Set(body, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if eq .Type "String"}}"{{end}}{{.Value}}{{if eq .Type "String"}}"{{end}})
-	{{- else if and (not .Reference) (not .WoVersion)}}
+	{{- else if and (not .Reference) (not .WoVersion) (or .ModelName .DataPath (isNestedListSet .))}}
 	{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 	{{- if .ExcludeUpdate}}
 	if !data.{{toGoName .TfName}}.IsNull() && state.Id.ValueString() == "" {
@@ -397,13 +397,15 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 	}
 	{{- else if isNestedListSet .}}
 	if len(data.{{toGoName .TfName}}) > 0 {
+		{{- if or .ModelName .DataPath}}
 		body, _ = sjson.Set(body, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", []interface{}{})
+		{{- end}}
 		for _, item := range data.{{toGoName .TfName}} {
 			itemBody := ""
 			{{- range .Attributes}}
 			{{- if .Value}}
 			itemBody, _ = sjson.Set(itemBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if eq .Type "String"}}"{{end}}{{.Value}}{{if eq .Type "String"}}"{{end}})
-			{{- else if and (not .Reference) (not .WoVersion)}}
+			{{- else if and (not .Reference) (not .WoVersion) (or .ModelName .DataPath (isNestedListSet .))}}
 			{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 			if !item.{{toGoName .TfName}}.IsNull() {
 				itemBody, _ = sjson.Set(itemBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if and (eq .Type "String") .NormalizeOperator}}helpers.NormalizeOperator(item.{{toGoName .TfName}}.ValueString()){{else}}item.{{toGoName .TfName}}.Value{{.Type}}(){{end}})
@@ -422,13 +424,15 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 			}
 			{{- else if isNestedListSet .}}
 			if len(item.{{toGoName .TfName}}) > 0 {
+				{{- if or .ModelName .DataPath}}
 				itemBody, _ = sjson.Set(itemBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", []interface{}{})
+				{{- end}}
 				for _, childItem := range item.{{toGoName .TfName}} {
 					itemChildBody := ""
 					{{- range .Attributes}}
 					{{- if .Value}}
 					itemChildBody, _ = sjson.Set(itemChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if eq .Type "String"}}"{{end}}{{.Value}}{{if eq .Type "String"}}"{{end}})
-					{{- else if and (not .Reference) (not .WoVersion)}}
+					{{- else if and (not .Reference) (not .WoVersion) (or .ModelName .DataPath (isNestedListSet .))}}
 					{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 					if !childItem.{{toGoName .TfName}}.IsNull() {
 						itemChildBody, _ = sjson.Set(itemChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if and (eq .Type "String") .NormalizeOperator}}helpers.NormalizeOperator(childItem.{{toGoName .TfName}}.ValueString()){{else}}childItem.{{toGoName .TfName}}.Value{{.Type}}(){{end}})
@@ -447,13 +451,15 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 					}
 					{{- else if isNestedListSet .}}
 					if len(childItem.{{toGoName .TfName}}) > 0 {
+						{{- if or .ModelName .DataPath}}
 						itemChildBody, _ = sjson.Set(itemChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", []interface{}{})
+						{{- end}}
 						for _, childChildItem := range childItem.{{toGoName .TfName}} {
 							itemChildChildBody := ""
 							{{- range .Attributes}}
 							{{- if .Value}}
 							itemChildChildBody, _ = sjson.Set(itemChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if eq .Type "String"}}"{{end}}{{.Value}}{{if eq .Type "String"}}"{{end}})
-							{{- else if and (not .Reference) (not .WoVersion)}}
+							{{- else if and (not .Reference) (not .WoVersion) (or .ModelName .DataPath (isNestedListSet .))}}
 							{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 							if !childChildItem.{{toGoName .TfName}}.IsNull() {
 								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if and (eq .Type "String") .NormalizeOperator}}helpers.NormalizeOperator(childChildItem.{{toGoName .TfName}}.ValueString()){{else}}childChildItem.{{toGoName .TfName}}.Value{{.Type}}(){{end}})
@@ -472,13 +478,15 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 							}
 							{{- else if isNestedListSet .}}
 							if len(childChildItem.{{toGoName .TfName}}) > 0 {
+								{{- if or .ModelName .DataPath}}
 								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", []interface{}{})
+								{{- end}}
 								for _, childChildChildItem := range childChildItem.{{toGoName .TfName}} {
 									itemChildChildChildBody := ""
 									{{- range .Attributes}}
 									{{- if .Value}}
 									itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if eq .Type "String"}}"{{end}}{{.Value}}{{if eq .Type "String"}}"{{end}})
-									{{- else if and (not .Reference) (not .WoVersion)}}
+									{{- else if and (not .Reference) (not .WoVersion) (or .ModelName .DataPath (isNestedListSet .))}}
 									{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 									if !childChildChildItem.{{toGoName .TfName}}.IsNull() {
 										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if and (eq .Type "String") .NormalizeOperator}}helpers.NormalizeOperator(childChildChildItem.{{toGoName .TfName}}.ValueString()){{else}}childChildChildItem.{{toGoName .TfName}}.Value{{.Type}}(){{end}})
@@ -497,13 +505,15 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 									}
 									{{- else if isNestedListSet .}}
 									if len(childChildChildItem.{{toGoName .TfName}}) > 0 {
+										{{- if or .ModelName .DataPath}}
 										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", []interface{}{})
+										{{- end}}
 										for _, childChildChildChildItem := range childChildChildItem.{{toGoName .TfName}} {
 											itemChildChildChildChildBody := ""
 											{{- range .Attributes}}
 											{{- if .Value}}
 											itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if eq .Type "String"}}"{{end}}{{.Value}}{{if eq .Type "String"}}"{{end}})
-											{{- else if and (not .Reference) (not .WoVersion)}}
+											{{- else if and (not .Reference) (not .WoVersion) (or .ModelName .DataPath (isNestedListSet .))}}
 											{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 											if !childChildChildChildItem.{{toGoName .TfName}}.IsNull() {
 												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if and (eq .Type "String") .NormalizeOperator}}helpers.NormalizeOperator(childChildChildChildItem.{{toGoName .TfName}}.ValueString()){{else}}childChildChildChildItem.{{toGoName .TfName}}.Value{{.Type}}(){{end}})
@@ -522,13 +532,15 @@ func (data {{camelCase .Name}}) toBody(ctx context.Context, state {{camelCase .N
 											}
 											{{- else if isNestedListSet .}}
 											if len(childChildChildChildItem.{{toGoName .TfName}}) > 0 {
+												{{- if or .ModelName .DataPath}}
 												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", []interface{}{})
+												{{- end}}
 												for _, childChildChildChildChildItem := range childChildChildChildItem.{{toGoName .TfName}} {
 													itemChildChildChildChildChildBody := ""
 													{{- range .Attributes}}
 													{{- if .Value}}
 													itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if eq .Type "String"}}"{{end}}{{.Value}}{{if eq .Type "String"}}"{{end}})
-													{{- else if and (not .Reference) (not .WoVersion)}}
+													{{- else if and (not .Reference) (not .WoVersion) (or .ModelName .DataPath (isNestedListSet .))}}
 													{{- if or (eq .Type "String") (eq .Type "Int64") (eq .Type "Float64") (eq .Type "Bool")}}
 													if !childChildChildChildChildItem.{{toGoName .TfName}}.IsNull() {
 														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "{{range .DataPath}}{{.}}.{{end}}{{.ModelName}}", {{if and (eq .Type "String") .NormalizeOperator}}helpers.NormalizeOperator(childChildChildChildChildItem.{{toGoName .TfName}}.ValueString()){{else}}childChildChildChildChildItem.{{toGoName .TfName}}.Value{{.Type}}(){{end}})

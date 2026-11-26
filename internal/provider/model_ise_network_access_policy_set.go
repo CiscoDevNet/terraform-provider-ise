@@ -49,7 +49,7 @@ type NetworkAccessPolicySet struct {
 	ConditionAttributeValue  types.String                     `tfsdk:"condition_attribute_value"`
 	ConditionDictionaryName  types.String                     `tfsdk:"condition_dictionary_name"`
 	ConditionDictionaryValue types.String                     `tfsdk:"condition_dictionary_value"`
-	ConditionOperator        types.String                     `tfsdk:"condition_operator"`
+	ConditionOperator        helpers.OperatorValue            `tfsdk:"condition_operator"`
 	Children                 []NetworkAccessPolicySetChildren `tfsdk:"children"`
 }
 
@@ -61,7 +61,7 @@ type NetworkAccessPolicySetChildren struct {
 	AttributeValue  types.String                             `tfsdk:"attribute_value"`
 	DictionaryName  types.String                             `tfsdk:"dictionary_name"`
 	DictionaryValue types.String                             `tfsdk:"dictionary_value"`
-	Operator        types.String                             `tfsdk:"operator"`
+	Operator        helpers.OperatorValue                    `tfsdk:"operator"`
 	Children        []NetworkAccessPolicySetChildrenChildren `tfsdk:"children"`
 }
 
@@ -73,7 +73,7 @@ type NetworkAccessPolicySetChildrenChildren struct {
 	AttributeValue  types.String                                     `tfsdk:"attribute_value"`
 	DictionaryName  types.String                                     `tfsdk:"dictionary_name"`
 	DictionaryValue types.String                                     `tfsdk:"dictionary_value"`
-	Operator        types.String                                     `tfsdk:"operator"`
+	Operator        helpers.OperatorValue                            `tfsdk:"operator"`
 	Children        []NetworkAccessPolicySetChildrenChildrenChildren `tfsdk:"children"`
 }
 
@@ -85,7 +85,7 @@ type NetworkAccessPolicySetChildrenChildrenChildren struct {
 	AttributeValue  types.String                                             `tfsdk:"attribute_value"`
 	DictionaryName  types.String                                             `tfsdk:"dictionary_name"`
 	DictionaryValue types.String                                             `tfsdk:"dictionary_value"`
-	Operator        types.String                                             `tfsdk:"operator"`
+	Operator        helpers.OperatorValue                                    `tfsdk:"operator"`
 	Children        []NetworkAccessPolicySetChildrenChildrenChildrenChildren `tfsdk:"children"`
 }
 
@@ -97,7 +97,7 @@ type NetworkAccessPolicySetChildrenChildrenChildrenChildren struct {
 	AttributeValue  types.String                                                     `tfsdk:"attribute_value"`
 	DictionaryName  types.String                                                     `tfsdk:"dictionary_name"`
 	DictionaryValue types.String                                                     `tfsdk:"dictionary_value"`
-	Operator        types.String                                                     `tfsdk:"operator"`
+	Operator        helpers.OperatorValue                                            `tfsdk:"operator"`
 	Children        []NetworkAccessPolicySetChildrenChildrenChildrenChildrenChildren `tfsdk:"children"`
 }
 
@@ -109,19 +109,19 @@ type NetworkAccessPolicySetChildrenChildrenChildrenChildrenChildren struct {
 	AttributeValue  types.String                                                             `tfsdk:"attribute_value"`
 	DictionaryName  types.String                                                             `tfsdk:"dictionary_name"`
 	DictionaryValue types.String                                                             `tfsdk:"dictionary_value"`
-	Operator        types.String                                                             `tfsdk:"operator"`
+	Operator        helpers.OperatorValue                                                    `tfsdk:"operator"`
 	Children        []NetworkAccessPolicySetChildrenChildrenChildrenChildrenChildrenChildren `tfsdk:"children"`
 }
 
 type NetworkAccessPolicySetChildrenChildrenChildrenChildrenChildrenChildren struct {
-	ConditionType   types.String `tfsdk:"condition_type"`
-	Id              types.String `tfsdk:"id"`
-	IsNegate        types.Bool   `tfsdk:"is_negate"`
-	AttributeName   types.String `tfsdk:"attribute_name"`
-	AttributeValue  types.String `tfsdk:"attribute_value"`
-	DictionaryName  types.String `tfsdk:"dictionary_name"`
-	DictionaryValue types.String `tfsdk:"dictionary_value"`
-	Operator        types.String `tfsdk:"operator"`
+	ConditionType   types.String          `tfsdk:"condition_type"`
+	Id              types.String          `tfsdk:"id"`
+	IsNegate        types.Bool            `tfsdk:"is_negate"`
+	AttributeName   types.String          `tfsdk:"attribute_name"`
+	AttributeValue  types.String          `tfsdk:"attribute_value"`
+	DictionaryName  types.String          `tfsdk:"dictionary_name"`
+	DictionaryValue types.String          `tfsdk:"dictionary_value"`
+	Operator        helpers.OperatorValue `tfsdk:"operator"`
 }
 
 //template:end types
@@ -183,7 +183,7 @@ func (data NetworkAccessPolicySet) toBody(ctx context.Context, state NetworkAcce
 		body, _ = sjson.Set(body, "condition.dictionaryValue", data.ConditionDictionaryValue.ValueString())
 	}
 	if !data.ConditionOperator.IsNull() {
-		body, _ = sjson.Set(body, "condition.operator", data.ConditionOperator.ValueString())
+		body, _ = sjson.Set(body, "condition.operator", helpers.NormalizeOperator(data.ConditionOperator.ValueString()))
 	}
 	if len(data.Children) > 0 {
 		body, _ = sjson.Set(body, "condition.children", []interface{}{})
@@ -211,7 +211,7 @@ func (data NetworkAccessPolicySet) toBody(ctx context.Context, state NetworkAcce
 				itemBody, _ = sjson.Set(itemBody, "dictionaryValue", item.DictionaryValue.ValueString())
 			}
 			if !item.Operator.IsNull() {
-				itemBody, _ = sjson.Set(itemBody, "operator", item.Operator.ValueString())
+				itemBody, _ = sjson.Set(itemBody, "operator", helpers.NormalizeOperator(item.Operator.ValueString()))
 			}
 			if len(item.Children) > 0 {
 				itemBody, _ = sjson.Set(itemBody, "children", []interface{}{})
@@ -239,7 +239,7 @@ func (data NetworkAccessPolicySet) toBody(ctx context.Context, state NetworkAcce
 						itemChildBody, _ = sjson.Set(itemChildBody, "dictionaryValue", childItem.DictionaryValue.ValueString())
 					}
 					if !childItem.Operator.IsNull() {
-						itemChildBody, _ = sjson.Set(itemChildBody, "operator", childItem.Operator.ValueString())
+						itemChildBody, _ = sjson.Set(itemChildBody, "operator", helpers.NormalizeOperator(childItem.Operator.ValueString()))
 					}
 					if len(childItem.Children) > 0 {
 						itemChildBody, _ = sjson.Set(itemChildBody, "children", []interface{}{})
@@ -267,7 +267,7 @@ func (data NetworkAccessPolicySet) toBody(ctx context.Context, state NetworkAcce
 								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "dictionaryValue", childChildItem.DictionaryValue.ValueString())
 							}
 							if !childChildItem.Operator.IsNull() {
-								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "operator", childChildItem.Operator.ValueString())
+								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "operator", helpers.NormalizeOperator(childChildItem.Operator.ValueString()))
 							}
 							if len(childChildItem.Children) > 0 {
 								itemChildChildBody, _ = sjson.Set(itemChildChildBody, "children", []interface{}{})
@@ -295,7 +295,7 @@ func (data NetworkAccessPolicySet) toBody(ctx context.Context, state NetworkAcce
 										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "dictionaryValue", childChildChildItem.DictionaryValue.ValueString())
 									}
 									if !childChildChildItem.Operator.IsNull() {
-										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "operator", childChildChildItem.Operator.ValueString())
+										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "operator", helpers.NormalizeOperator(childChildChildItem.Operator.ValueString()))
 									}
 									if len(childChildChildItem.Children) > 0 {
 										itemChildChildChildBody, _ = sjson.Set(itemChildChildChildBody, "children", []interface{}{})
@@ -323,7 +323,7 @@ func (data NetworkAccessPolicySet) toBody(ctx context.Context, state NetworkAcce
 												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "dictionaryValue", childChildChildChildItem.DictionaryValue.ValueString())
 											}
 											if !childChildChildChildItem.Operator.IsNull() {
-												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "operator", childChildChildChildItem.Operator.ValueString())
+												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "operator", helpers.NormalizeOperator(childChildChildChildItem.Operator.ValueString()))
 											}
 											if len(childChildChildChildItem.Children) > 0 {
 												itemChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildBody, "children", []interface{}{})
@@ -351,7 +351,7 @@ func (data NetworkAccessPolicySet) toBody(ctx context.Context, state NetworkAcce
 														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "dictionaryValue", childChildChildChildChildItem.DictionaryValue.ValueString())
 													}
 													if !childChildChildChildChildItem.Operator.IsNull() {
-														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "operator", childChildChildChildChildItem.Operator.ValueString())
+														itemChildChildChildChildChildBody, _ = sjson.Set(itemChildChildChildChildChildBody, "operator", helpers.NormalizeOperator(childChildChildChildChildItem.Operator.ValueString()))
 													}
 													itemChildChildChildChildBody, _ = sjson.SetRaw(itemChildChildChildChildBody, "children.-1", itemChildChildChildChildChildBody)
 												}
@@ -449,9 +449,9 @@ func (data *NetworkAccessPolicySet) fromBody(ctx context.Context, res gjson.Resu
 		data.ConditionDictionaryValue = types.StringNull()
 	}
 	if value := res.Get("response.condition.operator"); value.Exists() && value.Type != gjson.Null {
-		data.ConditionOperator = types.StringValue(value.String())
+		data.ConditionOperator = helpers.NewOperatorValue(helpers.NormalizeOperator(value.String()))
 	} else {
-		data.ConditionOperator = types.StringNull()
+		data.ConditionOperator = helpers.NewOperatorNull()
 	}
 	if value := res.Get("response.condition.children"); value.Exists() {
 		data.Children = make([]NetworkAccessPolicySetChildren, 0)
@@ -493,9 +493,9 @@ func (data *NetworkAccessPolicySet) fromBody(ctx context.Context, res gjson.Resu
 				item.DictionaryValue = types.StringNull()
 			}
 			if cValue := v.Get("operator"); cValue.Exists() && cValue.Type != gjson.Null {
-				item.Operator = types.StringValue(cValue.String())
+				item.Operator = helpers.NewOperatorValue(helpers.NormalizeOperator(cValue.String()))
 			} else {
-				item.Operator = types.StringNull()
+				item.Operator = helpers.NewOperatorNull()
 			}
 			if cValue := v.Get("children"); cValue.Exists() {
 				item.Children = make([]NetworkAccessPolicySetChildrenChildren, 0)
@@ -537,9 +537,9 @@ func (data *NetworkAccessPolicySet) fromBody(ctx context.Context, res gjson.Resu
 						cItem.DictionaryValue = types.StringNull()
 					}
 					if ccValue := cv.Get("operator"); ccValue.Exists() && ccValue.Type != gjson.Null {
-						cItem.Operator = types.StringValue(ccValue.String())
+						cItem.Operator = helpers.NewOperatorValue(helpers.NormalizeOperator(ccValue.String()))
 					} else {
-						cItem.Operator = types.StringNull()
+						cItem.Operator = helpers.NewOperatorNull()
 					}
 					if ccValue := cv.Get("children"); ccValue.Exists() {
 						cItem.Children = make([]NetworkAccessPolicySetChildrenChildrenChildren, 0)
@@ -581,9 +581,9 @@ func (data *NetworkAccessPolicySet) fromBody(ctx context.Context, res gjson.Resu
 								ccItem.DictionaryValue = types.StringNull()
 							}
 							if cccValue := ccv.Get("operator"); cccValue.Exists() && cccValue.Type != gjson.Null {
-								ccItem.Operator = types.StringValue(cccValue.String())
+								ccItem.Operator = helpers.NewOperatorValue(helpers.NormalizeOperator(cccValue.String()))
 							} else {
-								ccItem.Operator = types.StringNull()
+								ccItem.Operator = helpers.NewOperatorNull()
 							}
 							if cccValue := ccv.Get("children"); cccValue.Exists() {
 								ccItem.Children = make([]NetworkAccessPolicySetChildrenChildrenChildrenChildren, 0)
@@ -625,9 +625,9 @@ func (data *NetworkAccessPolicySet) fromBody(ctx context.Context, res gjson.Resu
 										cccItem.DictionaryValue = types.StringNull()
 									}
 									if ccccValue := cccv.Get("operator"); ccccValue.Exists() && ccccValue.Type != gjson.Null {
-										cccItem.Operator = types.StringValue(ccccValue.String())
+										cccItem.Operator = helpers.NewOperatorValue(helpers.NormalizeOperator(ccccValue.String()))
 									} else {
-										cccItem.Operator = types.StringNull()
+										cccItem.Operator = helpers.NewOperatorNull()
 									}
 									if ccccValue := cccv.Get("children"); ccccValue.Exists() {
 										cccItem.Children = make([]NetworkAccessPolicySetChildrenChildrenChildrenChildrenChildren, 0)
@@ -669,9 +669,9 @@ func (data *NetworkAccessPolicySet) fromBody(ctx context.Context, res gjson.Resu
 												ccccItem.DictionaryValue = types.StringNull()
 											}
 											if cccccValue := ccccv.Get("operator"); cccccValue.Exists() && cccccValue.Type != gjson.Null {
-												ccccItem.Operator = types.StringValue(cccccValue.String())
+												ccccItem.Operator = helpers.NewOperatorValue(helpers.NormalizeOperator(cccccValue.String()))
 											} else {
-												ccccItem.Operator = types.StringNull()
+												ccccItem.Operator = helpers.NewOperatorNull()
 											}
 											if cccccValue := ccccv.Get("children"); cccccValue.Exists() {
 												ccccItem.Children = make([]NetworkAccessPolicySetChildrenChildrenChildrenChildrenChildrenChildren, 0)
@@ -713,9 +713,9 @@ func (data *NetworkAccessPolicySet) fromBody(ctx context.Context, res gjson.Resu
 														cccccItem.DictionaryValue = types.StringNull()
 													}
 													if ccccccValue := cccccv.Get("operator"); ccccccValue.Exists() && ccccccValue.Type != gjson.Null {
-														cccccItem.Operator = types.StringValue(ccccccValue.String())
+														cccccItem.Operator = helpers.NewOperatorValue(helpers.NormalizeOperator(ccccccValue.String()))
 													} else {
-														cccccItem.Operator = types.StringNull()
+														cccccItem.Operator = helpers.NewOperatorNull()
 													}
 													ccccItem.Children = append(ccccItem.Children, cccccItem)
 													return true
@@ -818,14 +818,14 @@ func (data *NetworkAccessPolicySet) updateFromBody(ctx context.Context, res gjso
 		data.ConditionDictionaryValue = types.StringNull()
 	}
 	if value := res.Get("response.condition.operator"); value.Exists() && !data.ConditionOperator.IsNull() {
-		data.ConditionOperator = types.StringValue(value.String())
+		data.ConditionOperator = helpers.NewOperatorValue(helpers.NormalizeOperator(value.String()))
 	} else {
-		data.ConditionOperator = types.StringNull()
+		data.ConditionOperator = helpers.NewOperatorNull()
 	}
 	for i := range data.Children {
 		keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
 		keyValues := [...]string{data.Children[i].ConditionType.ValueString(), data.Children[i].Id.ValueString(), strconv.FormatBool(data.Children[i].IsNegate.ValueBool()), data.Children[i].AttributeName.ValueString(), data.Children[i].AttributeValue.ValueString(), data.Children[i].DictionaryName.ValueString(), data.Children[i].DictionaryValue.ValueString(), data.Children[i].Operator.ValueString()}
-		keyNormalize := [...]bool{false, false, false, false, false, false, false, false}
+		keyNormalize := [...]bool{false, false, false, false, false, false, false, true}
 
 		var r gjson.Result
 		parentItems := res.Get("response.condition.children").Array()
@@ -888,14 +888,14 @@ func (data *NetworkAccessPolicySet) updateFromBody(ctx context.Context, res gjso
 			data.Children[i].DictionaryValue = types.StringNull()
 		}
 		if value := r.Get("operator"); value.Exists() && !data.Children[i].Operator.IsNull() {
-			data.Children[i].Operator = types.StringValue(value.String())
+			data.Children[i].Operator = helpers.NewOperatorValue(helpers.NormalizeOperator(value.String()))
 		} else {
-			data.Children[i].Operator = types.StringNull()
+			data.Children[i].Operator = helpers.NewOperatorNull()
 		}
 		for ci := range data.Children[i].Children {
 			keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
 			keyValues := [...]string{data.Children[i].Children[ci].ConditionType.ValueString(), data.Children[i].Children[ci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].IsNegate.ValueBool()), data.Children[i].Children[ci].AttributeName.ValueString(), data.Children[i].Children[ci].AttributeValue.ValueString(), data.Children[i].Children[ci].DictionaryName.ValueString(), data.Children[i].Children[ci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Operator.ValueString()}
-			keyNormalize := [...]bool{false, false, false, false, false, false, false, false}
+			keyNormalize := [...]bool{false, false, false, false, false, false, false, true}
 
 			var cr gjson.Result
 			childItems := r.Get("children").Array()
@@ -958,14 +958,14 @@ func (data *NetworkAccessPolicySet) updateFromBody(ctx context.Context, res gjso
 				data.Children[i].Children[ci].DictionaryValue = types.StringNull()
 			}
 			if value := cr.Get("operator"); value.Exists() && !data.Children[i].Children[ci].Operator.IsNull() {
-				data.Children[i].Children[ci].Operator = types.StringValue(value.String())
+				data.Children[i].Children[ci].Operator = helpers.NewOperatorValue(helpers.NormalizeOperator(value.String()))
 			} else {
-				data.Children[i].Children[ci].Operator = types.StringNull()
+				data.Children[i].Children[ci].Operator = helpers.NewOperatorNull()
 			}
 			for cci := range data.Children[i].Children[ci].Children {
 				keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
 				keyValues := [...]string{data.Children[i].Children[ci].Children[cci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Operator.ValueString()}
-				keyNormalize := [...]bool{false, false, false, false, false, false, false, false}
+				keyNormalize := [...]bool{false, false, false, false, false, false, false, true}
 
 				var ccr gjson.Result
 				cciItems := cr.Get("children").Array()
@@ -1028,14 +1028,14 @@ func (data *NetworkAccessPolicySet) updateFromBody(ctx context.Context, res gjso
 					data.Children[i].Children[ci].Children[cci].DictionaryValue = types.StringNull()
 				}
 				if value := ccr.Get("operator"); value.Exists() && !data.Children[i].Children[ci].Children[cci].Operator.IsNull() {
-					data.Children[i].Children[ci].Children[cci].Operator = types.StringValue(value.String())
+					data.Children[i].Children[ci].Children[cci].Operator = helpers.NewOperatorValue(helpers.NormalizeOperator(value.String()))
 				} else {
-					data.Children[i].Children[ci].Children[cci].Operator = types.StringNull()
+					data.Children[i].Children[ci].Children[cci].Operator = helpers.NewOperatorNull()
 				}
 				for ccci := range data.Children[i].Children[ci].Children[cci].Children {
 					keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
 					keyValues := [...]string{data.Children[i].Children[ci].Children[cci].Children[ccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Operator.ValueString()}
-					keyNormalize := [...]bool{false, false, false, false, false, false, false, false}
+					keyNormalize := [...]bool{false, false, false, false, false, false, false, true}
 
 					var cccr gjson.Result
 					ccciItems := ccr.Get("children").Array()
@@ -1098,14 +1098,14 @@ func (data *NetworkAccessPolicySet) updateFromBody(ctx context.Context, res gjso
 						data.Children[i].Children[ci].Children[cci].Children[ccci].DictionaryValue = types.StringNull()
 					}
 					if value := cccr.Get("operator"); value.Exists() && !data.Children[i].Children[ci].Children[cci].Children[ccci].Operator.IsNull() {
-						data.Children[i].Children[ci].Children[cci].Children[ccci].Operator = types.StringValue(value.String())
+						data.Children[i].Children[ci].Children[cci].Children[ccci].Operator = helpers.NewOperatorValue(helpers.NormalizeOperator(value.String()))
 					} else {
-						data.Children[i].Children[ci].Children[cci].Children[ccci].Operator = types.StringNull()
+						data.Children[i].Children[ci].Children[cci].Children[ccci].Operator = helpers.NewOperatorNull()
 					}
 					for cccci := range data.Children[i].Children[ci].Children[cci].Children[ccci].Children {
 						keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
 						keyValues := [...]string{data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator.ValueString()}
-						keyNormalize := [...]bool{false, false, false, false, false, false, false, false}
+						keyNormalize := [...]bool{false, false, false, false, false, false, false, true}
 
 						var ccccr gjson.Result
 						cccciItems := cccr.Get("children").Array()
@@ -1168,14 +1168,14 @@ func (data *NetworkAccessPolicySet) updateFromBody(ctx context.Context, res gjso
 							data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].DictionaryValue = types.StringNull()
 						}
 						if value := ccccr.Get("operator"); value.Exists() && !data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator.IsNull() {
-							data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator = types.StringValue(value.String())
+							data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator = helpers.NewOperatorValue(helpers.NormalizeOperator(value.String()))
 						} else {
-							data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator = types.StringNull()
+							data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Operator = helpers.NewOperatorNull()
 						}
 						for ccccci := range data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children {
 							keys := [...]string{"conditionType", "id", "isNegate", "attributeName", "attributeValue", "dictionaryName", "dictionaryValue", "operator"}
 							keyValues := [...]string{data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].ConditionType.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Id.ValueString(), strconv.FormatBool(data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].IsNegate.ValueBool()), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].AttributeName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].AttributeValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].DictionaryName.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].DictionaryValue.ValueString(), data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Operator.ValueString()}
-							keyNormalize := [...]bool{false, false, false, false, false, false, false, false}
+							keyNormalize := [...]bool{false, false, false, false, false, false, false, true}
 
 							var cccccr gjson.Result
 							ccccciItems := ccccr.Get("children").Array()
@@ -1238,9 +1238,9 @@ func (data *NetworkAccessPolicySet) updateFromBody(ctx context.Context, res gjso
 								data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].DictionaryValue = types.StringNull()
 							}
 							if value := cccccr.Get("operator"); value.Exists() && !data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Operator.IsNull() {
-								data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Operator = types.StringValue(value.String())
+								data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Operator = helpers.NewOperatorValue(helpers.NormalizeOperator(value.String()))
 							} else {
-								data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Operator = types.StringNull()
+								data.Children[i].Children[ci].Children[cci].Children[ccci].Children[cccci].Children[ccccci].Operator = helpers.NewOperatorNull()
 							}
 						}
 					}

@@ -121,7 +121,7 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Create(ctx context.C
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
 	// Read existing attributes from the API
-	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.RuleId.ValueString()))
+	res, err := r.client.Get(plan.getPath() + "/" + url.PathEscape(plan.RuleId.ValueString()))
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 		return
@@ -133,7 +133,7 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Create(ctx context.C
 
 	// Update rank
 	body, _ = sjson.Set(body, "rule.rank", plan.Rank.ValueInt64())
-	res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.RuleId.ValueString()), body)
+	res, err = r.client.Put(plan.getPath()+"/"+url.PathEscape(plan.RuleId.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
@@ -160,7 +160,7 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Read(ctx context.Con
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Read", state.Id.String()))
-	res, err := r.client.Get(state.getPath() + "/" + url.QueryEscape(state.Id.ValueString()))
+	res, err := r.client.Get(state.getPath() + "/" + url.PathEscape(state.Id.ValueString()))
 	if err != nil && strings.Contains(err.Error(), "StatusCode 404") {
 		resp.State.RemoveResource(ctx)
 		return
@@ -205,7 +205,7 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Update(ctx context.C
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
 	// Read existing attributes from the API
-	res, err := r.client.Get(plan.getPath() + "/" + url.QueryEscape(plan.RuleId.ValueString()))
+	res, err := r.client.Get(plan.getPath() + "/" + url.PathEscape(plan.RuleId.ValueString()))
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s", err))
 		return
@@ -218,7 +218,7 @@ func (r *NetworkAccessAuthenticationRuleUpdateRankResource) Update(ctx context.C
 	// Update rank
 	body, _ = sjson.Set(body, "rule.rank", plan.Rank.ValueInt64())
 
-	res, err = r.client.Put(plan.getPath()+"/"+url.QueryEscape(plan.Id.ValueString()), body)
+	res, err = r.client.Put(plan.getPath()+"/"+url.PathEscape(plan.Id.ValueString()), body)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (PUT), got error: %s, %s", err, res.String()))
 		return
